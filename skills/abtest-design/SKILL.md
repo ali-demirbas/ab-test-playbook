@@ -39,7 +39,7 @@ metadata:
    - Hassas veri alanı (kimlik no, doğum tarihi, gelir, adres) söz konusuysa B'yi "alanı kaldır" diye kurma; kural 14'teki ara yöntemlerden birini seç ve hangisini neden seçtiğini yaz.
    - Form akışında çok adımlıya geçmeyi varsayılan çözüm sayma; önce tek sayfada yoğunlaştırmayı değerlendir (`methodology.md` → Değişken izolasyonu).
 6. Trafik kullanıcı tarafından verilmişse kaba süre tahmini ver; verilmemişse süre/örneklem konusuna hiç girme — sorma da, "eksik" diye de yazma (CLAUDE.md kural 5).
-7. **Doğrudan tam senaryoyu üret.** Aday başlıklarını listeleyip "hangisini açayım" diye sorma. Sayfada birden fazla güçlü test adayı varsa en yüksek ICE'lı 2-3'ünü tam formatta (üç kutu + Variant A/B + kurulum spesifikasyonu) yaz; kalanları tek satırlık not olarak en sona ekle.
+7. **Doğrudan senaryoları üret.** Aday başlıklarını listeleyip "hangisini açayım" diye sorma. Sayfada birden fazla güçlü test adayı varsa en yüksek ICE'lı 2-5'ini doğrudan üret (üç kutu + Variant A/B, `abtest-card` ile kart olarak — kural 9), kurulum spesifikasyonu sohbette kalır; kalanları tek satırlık not olarak en sona ekle. 5'ten fazla güçlü aday varsa hepsini sormadan üretme: sayıyı söyle ve devam edilip edilmeyeceğini sor.
 
 ## Çıktı biçimi
 
@@ -61,7 +61,7 @@ Karar kuralı: <hangi eşikte ne yapılacak>
 
 Bu blok tahmin üzerine kurulmaz: bilinmeyen alanı uydurma, "kullanıcıdan alınmalı" diye işaretle.
 
-**Sıra her zaman metin önce, görsel sonra — ikisi de üretilir (CLAUDE.md kural 9).** Metin çıktısı bittikten hemen sonra, kullanıcı ayrıca istemese de `abtest-card`'ı çağır ve senaryonun görselini üret. Birden fazla tam senaryo verdiysen liste aşamasında kart üretme (kural 9'un çoklu-liste istisnası); kullanıcı birini seçince onun kartını üret. Görsel üretmeden önce `abtest-card`'ın marka kılavuzu adımını çalıştır (kural 12) — bu oturumda daha önce sorulmadıysa.
+**Görsel zorunludur; üç kutu ayrıca metin olarak yazılmaz (CLAUDE.md kural 9).** Görsel üretmeden önce `abtest-card`'ın marka kılavuzu adımını çalıştır (kural 12) — bu oturumda daha önce sorulmadıysa. Ardından üretilen her senaryoyu (2-5 arası) doğrudan `abtest-card` ile HTML'e çevir; sohbette yalnızca başlık + tek cümlelik özet + kurulum spesifikasyonu kalır, üç kutunun tam içeriği kartın kendisindedir.
 
 ## Asla yapma
 

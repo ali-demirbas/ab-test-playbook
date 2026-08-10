@@ -28,13 +28,13 @@ claude --plugin-dir ./ab-test-playbook
 
 | You say | What happens |
 |---|---|
-| `/abtest suggest` — "checkout için test öner" | Picks matching scenarios from the archive, ranks by ICE, outputs in the three-box format |
+| `/abtest suggest` — "checkout için test öner" | Picks matching scenarios from the archive, ranks by ICE, ships each as an HTML card |
 | `/abtest design` — "şu sayfam var, test tasarla" (+ screenshot/URL) | Designs a new single-variable scenario for your page in the same framework |
 | `/abtest audit` — "bu test doğru kurulmuş mu?" | Audits a plan or variant pair: confounds, missing guardrails, p-hacking risk, unrealistic duration |
 | `/abtest results` — "sonuçları yorumla" / "kaç ziyaretçi lazım" | Runs a real two-proportion z-test on your numbers (significance, CI, lift) or calculates required sample size — math via script, never eyeballed — then states the decision and what happens next (staged rollout, guardrail watch, or the follow-up experiment) |
 | `/abtest card` — "bunu karta çevir" | Renders the scenario as a single-file HTML card (Variant A/B wireframes + three boxes) |
 
-When you share a page, the router asks exactly one multiple-choice question — which problem you're solving — and nothing else up front; no traffic, tool, or setup questions before it produces a scenario. Sample-size or duration numbers appear only when real traffic data exists — volunteered by you, or asked for when you request them. If you shared a screenshot or page, brand colors are taken straight from it with no question; otherwise it asks once, before the first card, whether to upload a brand guide — say no and it uses a neutral palette. Cards follow the text output automatically: a single designed scenario gets its card immediately; any multi-scenario list gets one right after you pick a scenario.
+When you share a page, the router asks exactly one multiple-choice question — which problem you're solving — and nothing else up front; no traffic, tool, or setup questions before it produces a scenario. Sample-size or duration numbers appear only when real traffic data exists — volunteered by you, or asked for when you request them. If you shared a screenshot or page, brand colors are taken straight from it with no question; otherwise it asks once, before the first card, whether to upload a brand guide — say no and it uses a neutral palette. Every scenario a run produces (2-5 of them, whether from `suggest` or `design`) becomes its own HTML card immediately — the three boxes live in the card, not as duplicate chat text. More than 5 strong candidates in one run gets flagged and confirmed before generating the rest.
 
 ## What a session looks like
 
@@ -44,9 +44,9 @@ A product-page example, end to end:
 
 **It asks once:** a single multiple-choice question — which problem you're trying to solve (users start the flow but don't finish / never start / arrive but convert poorly / no specific problem, just look). No traffic, tool, or setup questions up front; those aren't needed to produce a scenario and only get asked if you later ask about sample size or duration.
 
-**It returns** 2-3 full scenarios directly — no "which one should I expand" round-trip — each in the three-box format with the primary KPI marked, guardrails in "must not degrade" form, and an evidence label — `Kanıt: arşiv emsali` when it is a known pattern, `Kanıt: sezgi` when it is a hunch, said out loud rather than dressed up. Variant A is the page exactly as shown, never redesigned.
+**It returns** 2-5 full scenarios directly — no "which one should I expand" round-trip — each rendered straight to a self-contained HTML card (Variant A/B mockup + the three boxes, primary KPI marked, guardrails in "must not degrade" form) so the chat itself only carries a title and a one-line summary with the evidence label — `Kanıt: arşiv emsali` when it is a known pattern, `Kanıt: sezgi` when it is a hunch, said out loud rather than dressed up. Variant A is the page exactly as shown, never redesigned. More than 5 strong candidates? It says so and asks before generating the rest.
 
-**Each scenario ships with** the single-variable hypothesis, Variant A/B definitions, and a tool-agnostic setup spec (audience, split, exposure event, guardrail events, attribution window, decision rule) — named in your tool's vocabulary if you mention one — plus the scenario card as a self-contained HTML file (brand colors pulled from your screenshot when you shared one; otherwise a one-time brand-guide question, with a neutral palette as the fallback).
+**Each scenario ships with** the single-variable hypothesis, Variant A/B definitions, and a tool-agnostic setup spec (audience, split, exposure event, guardrail events, attribution window, decision rule) — named in your tool's vocabulary if you mention one, kept as chat text — plus the card itself (brand colors pulled from your screenshot when you shared one; otherwise a one-time brand-guide question, with a neutral palette as the fallback).
 
 **Test finishes, you paste the numbers** → a real two-proportion z-test runs (never eyeballed), and because this was a price test it also runs the revenue check: conversion up 12% while revenue per visitor drops 4.8% is the finding, not a footnote. Then it states the decision and what happens next — staged rollout with a guardrail watch, or the follow-up experiment if there was no difference.
 

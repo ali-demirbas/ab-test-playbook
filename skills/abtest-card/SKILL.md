@@ -10,7 +10,7 @@ metadata:
 
 Görsel dilin tanımı `${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md`'dedir — üretmeden önce oku. Şablon: `${CLAUDE_PLUGIN_ROOT}/templates/scenario-card.html`.
 
-Bu skill, `abtest-design` metin çıktısı verildikten hemen sonra otomatik çalışır (CLAUDE.md kural 9) — kullanıcının ayrıca istemesi gerekmez. `abtest-suggest` çoklu öneri listesinde ise **liste aşamasında kart üretilmez** (kural 9'un tek istisnası): kullanıcı bir senaryo seçtikten sonra o senaryonun kartı üretilir. Kullanıcı doğrudan "kart yap" derse de aynı akış işler.
+Bu skill, `abtest-suggest` veya `abtest-design`'ın bir turda ürettiği HER senaryo için otomatik çalışır (CLAUDE.md kural 9) — kullanıcının ayrıca istemesi gerekmez. Üç kutunun ("Test edilmesi gerekenler" / "Takip edilecek ana KPI'lar" / "Yapılmaması gerekenler") tam içeriği yalnızca bu kartta bulunur; aynı içerik sohbete ayrıca metin olarak yazılmaz — sohbette yalnızca başlık, kaynak etiketi ve tek cümlelik özet kalır. Bir turda 2-5 senaryo doğrudan kart olur; 5'ten fazla güçlü aday varsa hepsi sormadan üretilmez (kural 9). Kullanıcı doğrudan "kart yap" derse de aynı akış işler.
 
 ## Akış
 

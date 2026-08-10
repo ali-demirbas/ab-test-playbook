@@ -3,7 +3,6 @@
 Yolculuk aşaması: kullanıcı ürün listesinde geziniyor; grid düzeni, sıralama, kart içeriği ve listeden aksiyon. Her KPI listesinin ilk maddesi birincil metriktir; listede en az bir madde bozulmaması gereken guardrail’dir.
 
 ---
-
 ## Kampanya banner’ında geri sayım sayacı aciliyet yaratıp dönüşümü artırıyor mu?
 
 Geri sayım sayacı “şimdi karar ver” baskısı yaratır ve kısa vadede tıklamayı artırabilir. Ama süre sürekli sıfırlanıyorsa (her ziyarette yeniden başlıyorsa) güvenilirliğini kaybeder ve marka algısını zedeler.
@@ -514,3 +513,91 @@ Konumun karar için belirleyici olduğu listelerde (emlak, mekân, mağaza, ilan
 - Harita işaretlerini listedeki sırayla eşleşmeyecek şekilde numaralandırmayın.
 - Konum bilgisini kullanıcıdan izin almadan otomatik kullanmayın.
 - Harita kullanımı düşük diye kaldırmayın; kullanan küçük grup için belirleyici olabilir.
+
+
+---
+
+## “Peşin fiyatına taksit” rozeti dönüşümü artırıyor mu?
+
+Ürün kartında taksit avantajını küçük bir rozetle göstermek, fiyat algısını ve satın alma eğilimini değiştirebilir.
+
+**Test edilmesi gerekenler**
+- Görünürlük: Rozet görselin üzerinde olunca daha hızlı fark ediliyor mu?
+- Fiyat Algısı: Rozet ürünü daha uygun algılatıyor mu?
+- Tıklama: Rozetli ürünler daha çok tıklanıyor mu?
+- Konum: Üst sağ, üst sol veya görsel içi hangisi daha etkili?
+- Kategori: Hangi kategoride rozet daha iyi çalışıyor?
+
+**Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): Gelir anlamlı artıyor mu? Rozet CR’yi artırsa bile birincil karar bu metrikle verilir.
+- Dönüşüm Oranı (CR): Rozetli üründe satın alma artıyor mu? — RPV ile birlikte okunur.
+- Tıklama Oranı (CTR): Rozetli ürünler daha çok tıklanıyor mu?
+- Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
+- İptal / İade Oranı: Yükselmemeli; taksit beklentisi hayal kırıklığına dönüşmemeli.
+
+**Yapılmaması gerekenler**
+- Rozeti her üründe kullanmayın; etkisi sulanır.
+- Rozeti ürün görselini gölgeleyecek kadar büyütmeyin.
+- Rozet, kart içindeki metin ve CTA hiyerarşisini bozmasın.
+- Rozet indirim etiketiyle çakışmasın.
+- Mobilde rozet kartı sıkıştırmasın veya görseli kapatmasın.
+
+> Bu senaryo tek ürünü test ederken varyantlar arasında ürün adı, yorum sayısı ve ek rozetler eşit tutulmalıdır — aksi halde sonucun taksit rozetinden mi, farklı üründen mi geldiği ayırt edilemez.
+
+> **Pazar notu:** Kart taksitinin ve taksit kampanyalarının kurumsallaştığı pazarlara (Türkiye, MENA) özgüdür; taksit mekanizmasının olmadığı pazarlarda bu rozetin karşılığı yoktur.
+
+---
+
+## Kampanya rozeti satın almayı etkiler mi?
+
+Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edilmesini ve satın alma motivasyonunu artırabilir.
+
+**Test edilmesi gerekenler**
+- Görünürlük: Rozet ürünün görünürlüğünü artırıyor mu?
+- Algı: Kullanıcı kampanya fiyatı olduğunu daha hızlı anlıyor mu?
+- Cihaz: Mobilde ve masaüstünde etki aynı mı?
+- Konum: Kartın üstünde mi, fiyatın yanında mı daha etkili?
+- Kapsam: Sadece bazı ürünlerde olması bilgi eksikliği yaratıyor mu?
+
+**Takip edilecek ana KPI’lar**
+- Dönüşüm Oranı (CR): Rozet satın almaya yönlendiriyor mu?
+- Tıklama Oranı (CTR): Rozetli ürünler daha çok tıklanıyor mu?
+- Sepete Ekleme Oranı: Rozetli ürün daha sık ekleniyor mu?
+- Çıkış Oranı: Yükselmemeli; rozet karmaşası kullanıcıyı kaçırmamalı.
+- Ziyaretçi Başına Gelir (RPV): Toplam gelir artıyor mu?
+
+**Yapılmaması gerekenler**
+- Çok fazla rozet kullanmayın; görsel karmaşa yaratır.
+- Fiyat rozetiyle kampanya rozetini aynı renkte yapmayın.
+- Gerçek kampanyaya uymayan rozet kullanmayın.
+- Rozeti ürün fotoğrafını kapatacak kadar büyütmeyin.
+- Test sırasında rozetin rengini veya yerini değiştirmeyin.
+
+
+> **Pazar notu:** İndirim ve referans fiyat gösterimi yasal olarak düzenlenen bir alandır (kural 11). Rozet bir indirim iması taşıyorsa hedef pazarın kuralını doğrulamadan varyantı yayınlamayın; AB'de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatına bağlıdır.
+---
+
+## İlk alışveriş indirimi satın almayı etkiliyor mu?
+
+Ürün kartında “İlk alışverişe özel indirim” bilgisinin görünür olması, özellikle yeni kullanıcıların satın alma motivasyonunu artırabilir.
+
+**Test edilmesi gerekenler**
+- Görünürlük: İndirim kartta görününce avantaj fark ediliyor mu?
+- Yeni kullanıcı: Yeni kullanıcı dönüşümü anlamlı artıyor mu?
+- Konum: İndirimin yeri tıklama davranışını değiştiriyor mu?
+- Cihaz: Mobilde ve masaüstünde etki aynı mı?
+- Tutar: Yüzde mi, TL mi göstermek daha etkili?
+
+**Takip edilecek ana KPI’lar**
+- Yeni Kullanıcı Başına Net Gelir: İndirim maliyeti düşüldükten sonra yeni kullanıcı başına gelir artıyor mu?
+- Yeni Kullanıcı Dönüşümü (CR): İlk alışveriş oranı artıyor mu?
+- Sepete Ekleme Oranı: İndirimi gören daha çok ekliyor mu?
+- Brüt Marj: Erimemeli; indirim maliyeti kazancı yememeli.
+- İkinci Sipariş Oranı: Yeni kullanıcı geri dönüyor mu?
+
+**Yapılmaması gerekenler**
+- İndirimi aşırı büyük ve agresif tasarlamayın; güven azaltır.
+- Fiyatı manipüle ediyormuş gibi göstermeyin.
+- Yalnızca yeni kullanıcıya özel olduğunu açıkça belirtin.
+- Aynı testte hem indirimi hem kampanya alanını değiştirmeyin.
+- Metni ürün görselinin üzerine taşırmayın.
