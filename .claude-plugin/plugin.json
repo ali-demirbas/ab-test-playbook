@@ -1,0 +1,22 @@
+{
+  "name": "ab-test-playbook",
+  "version": "0.1.0",
+  "description": "A/B test engine for Claude Code. Suggests proven test scenarios by journey stage, designs new ones in a disciplined test/KPI/guardrail framework, audits existing test plans for confounds, and renders deck-style scenario cards — text and visual together by default.",
+  "author": {
+    "name": "Ali Demirbaş"
+  },
+  "homepage": "https://github.com/ali-demirbas/ab-test-playbook",
+  "repository": "https://github.com/ali-demirbas/ab-test-playbook",
+  "license": "MIT",
+  "keywords": [
+    "ab-testing",
+    "cro",
+    "conversion-rate-optimization",
+    "experimentation",
+    "growth",
+    "ecommerce",
+    "product-growth",
+    "claude-code",
+    "claude-skills"
+  ]
+}

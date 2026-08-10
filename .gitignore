@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
+abtest-card-*.html
+.abtest-history.md

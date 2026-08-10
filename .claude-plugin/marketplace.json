@@ -1,0 +1,13 @@
+{
+  "name": "ab-test-playbook",
+  "owner": {
+    "name": "Ali Demirbaş"
+  },
+  "plugins": [
+    {
+      "name": "ab-test-playbook",
+      "source": "./",
+      "description": "A/B test engine: suggests proven scenarios by journey stage, designs single-variable experiments, audits test plans, interprets results with a real z-test, renders deck-style scenario cards."
+    }
+  ]
+}
