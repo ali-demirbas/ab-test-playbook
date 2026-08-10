@@ -1,12 +1,34 @@
 # ab-test-playbook
 
-A/B test engine for Claude Code. Suggests proven test scenarios by journey stage, designs new ones in a disciplined framework, audits existing test plans for methodological flaws, and renders deck-style scenario cards — text and visual card together by default, no extra ask needed.
+[![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
+![Scenarios](https://img.shields.io/badge/scenarios-179-blue)
+![Tests](https://img.shields.io/badge/tests-66_passing-brightgreen)
 
-Built from an archive of A/B test scenarios used in real e-commerce, mobile app and SaaS growth work — 179 scenarios shipped as text. The visual deck itself is intentionally not included; this repo is the methodology and text content. Every scenario follows the same three-box discipline:
+A/B test engine for Claude Code. Suggests proven test scenarios by journey stage, designs new ones in a disciplined framework, audits existing test plans for methodological flaws, and renders every scenario straight to a deck-style HTML card — no extra ask needed.
+
+Built from an archive of A/B test scenarios used in real e-commerce, mobile app and SaaS growth work — 179 scenarios, methodology and text content, not a shipped visual deck. Every scenario follows the same three-box discipline:
 
 - **Test edilmesi gerekenler** — what questions the experiment must answer
 - **Takip edilecek ana KPI’lar** — one primary metric + guardrails that must not degrade
 - **Yapılmaması gerekenler** — the mistakes that invalidate the test
+
+```mermaid
+flowchart LR
+    subgraph Generate["Generate a scenario"]
+        S["/abtest suggest\narchive, ranked by ICE"]
+        D["/abtest design\nnew scenario for your page"]
+    end
+    C["/abtest card\nHTML scenario card"]
+    R["/abtest results\nz-test + decision"]
+    A["/abtest audit\ncatch flaws before it runs"]
+
+    S --> C
+    D --> C
+    C --> R
+    R -->|next hypothesis| D
+    A -.->|fix, before launch| D
+```
 
 ## Install
 
@@ -28,11 +50,11 @@ claude --plugin-dir ./ab-test-playbook
 
 | You say | What happens |
 |---|---|
-| `/abtest suggest` — "checkout için test öner" | Picks matching scenarios from the archive, ranks by ICE, ships each as an HTML card |
-| `/abtest design` — "şu sayfam var, test tasarla" (+ screenshot/URL) | Designs a new single-variable scenario for your page in the same framework |
-| `/abtest audit` — "bu test doğru kurulmuş mu?" | Audits a plan or variant pair: confounds, missing guardrails, p-hacking risk, unrealistic duration |
-| `/abtest results` — "sonuçları yorumla" / "kaç ziyaretçi lazım" | Runs a real two-proportion z-test on your numbers (significance, CI, lift) or calculates required sample size — math via script, never eyeballed — then states the decision and what happens next (staged rollout, guardrail watch, or the follow-up experiment) |
-| `/abtest card` — "bunu karta çevir" | Renders the scenario as a single-file HTML card (Variant A/B wireframes + three boxes) |
+| `/abtest suggest` — "suggest tests for my checkout page" | Picks matching scenarios from the archive, ranks by ICE, ships each as an HTML card |
+| `/abtest design` — "design a test for this" (+ screenshot/URL) | Designs a new single-variable scenario for your page in the same framework |
+| `/abtest audit` — "is this test set up correctly?" | Audits a plan or variant pair: confounds, missing guardrails, p-hacking risk, unrealistic duration |
+| `/abtest results` — "interpret these results" / "how many visitors do I need" | Runs a real two-proportion z-test on your numbers (significance, CI, lift) or calculates required sample size — math via script, never eyeballed — then states the decision and what happens next (staged rollout, guardrail watch, or the follow-up experiment) |
+| `/abtest card` — "turn this into a card" | Renders the scenario as a single-file HTML card (Variant A/B wireframes + three boxes) |
 
 When you share a page, the router asks exactly one multiple-choice question — which problem you're solving — and nothing else up front; no traffic, tool, or setup questions before it produces a scenario. Sample-size or duration numbers appear only when real traffic data exists — volunteered by you, or asked for when you request them. If you shared a screenshot or page, brand colors are taken straight from it with no question; otherwise it asks once, before the first card, whether to upload a brand guide — say no and it uses a neutral palette. Every scenario a run produces (2-5 of them, whether from `suggest` or `design`) becomes its own HTML card immediately — the three boxes live in the card, not as duplicate chat text. More than 5 strong candidates in one run gets flagged and confirmed before generating the rest.
 
@@ -45,6 +67,12 @@ A product-page example, end to end:
 **It asks once:** a single multiple-choice question — which problem you're trying to solve (users start the flow but don't finish / never start / arrive but convert poorly / no specific problem, just look). No traffic, tool, or setup questions up front; those aren't needed to produce a scenario and only get asked if you later ask about sample size or duration.
 
 **It returns** 2-5 full scenarios directly — no "which one should I expand" round-trip — each rendered straight to a self-contained HTML card (Variant A/B mockup + the three boxes, primary KPI marked, guardrails in "must not degrade" form) so the chat itself only carries a title and a one-line summary with the evidence label — `Kanıt: arşiv emsali` when it is a known pattern, `Kanıt: sezgi` when it is a hunch, said out loud rather than dressed up. Variant A is the page exactly as shown, never redesigned. More than 5 strong candidates? It says so and asks before generating the rest.
+
+<p align="center">
+  <img src="assets/example-card.png" alt="Example scenario card: does an open coupon-code field increase cart abandonment? Variant A/B mockups on the left, the three-box breakdown on the right." width="900">
+</p>
+
+<p align="center"><sub>A card generated from an archived scenario — fictional product and store, neutral palette (no brand guide was supplied). This is what `abtest card` renders for every scenario, not a hand-built mockup.</sub></p>
 
 **Each scenario ships with** the single-variable hypothesis, Variant A/B definitions, and a tool-agnostic setup spec (audience, split, exposure event, guardrail events, attribution window, decision rule) — named in your tool's vocabulary if you mention one, kept as chat text — plus the card itself (brand colors pulled from your screenshot when you shared one; otherwise a one-time brand-guide question, with a neutral palette as the fallback).
 
