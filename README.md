@@ -46,6 +46,12 @@ git clone https://github.com/ali-demirbas/ab-test-playbook.git
 claude --plugin-dir ./ab-test-playbook
 ```
 
+Or install individual skills with the [skills CLI](https://skills.sh):
+
+```bash
+npx skills add ali-demirbas/ab-test-playbook --all
+```
+
 ## Usage
 
 | You say | What happens |
