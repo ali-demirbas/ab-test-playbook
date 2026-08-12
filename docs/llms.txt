@@ -1,0 +1,35 @@
+# ab-test-playbook
+
+> An A/B testing and CRO engine that runs inside Claude Code. It suggests experiment scenarios from a curated archive of 179, designs new single-variable tests for a page you share, audits an existing test plan for methodological flaws, runs real two-proportion z-test math on results you paste in, and renders every scenario as a self-contained HTML card. Open source, MIT, stdlib-only.
+
+The playbook is opinionated on purpose. Five rules it will not bend: one variable per variant pair; exactly one primary KPI plus at least one guardrail that must not degrade; no dark patterns and no treating security or consent steps as removable friction; every proposal states its evidence level (your own data, an archive precedent, a sector observation, or intuition); and no sample-size or duration promise without real traffic numbers.
+
+## Core documentation
+
+- [README](https://github.com/ali-demirbas/ab-test-playbook/blob/main/README.md): what it does, install, usage, and a worked session from screenshot to decision
+- [Binding rules (CLAUDE.md)](https://github.com/ali-demirbas/ab-test-playbook/blob/main/CLAUDE.md): the 18 non-negotiable rules every skill obeys
+- [Architecture](https://github.com/ali-demirbas/ab-test-playbook/blob/main/docs/architecture.md): where judgement lives versus where enforcement lives, and why review is split across two agents
+- [FAQ](https://github.com/ali-demirbas/ab-test-playbook/blob/main/FAQ.md): common questions about scope, statistics and usage
+- [Methodology](https://github.com/ali-demirbas/ab-test-playbook/blob/main/knowledge/methodology.md): experiment design, ICE prioritisation, significance and sample-size reasoning
+
+## Questions it answers
+
+- What A/B tests should I run on an e-commerce checkout, cart, or product detail page?
+- How do I write an A/B test hypothesis that states a mechanism rather than a guess?
+- Which metrics belong in a test as guardrails, and why is one primary KPI mandatory?
+- How many visitors do I need for statistical significance, and how long will the test take?
+- What mistakes invalidate an A/B test result before it even starts?
+- How do I prioritise which CRO experiments to run first?
+- Is my existing test plan set up correctly, or does it have a confound?
+
+## Reference
+
+- [Scenario schema](https://github.com/ali-demirbas/ab-test-playbook/blob/main/templates/scenario.schema.json): a platform-agnostic test definition, portable to any experimentation tool
+- [Scenario archive](https://github.com/ali-demirbas/ab-test-playbook/tree/main/knowledge/scenarios): 179 curated scenarios grouped by journey stage
+- [Examples](https://github.com/ali-demirbas/ab-test-playbook/tree/main/examples): one scenario carried end to end, definition through rendered card
+- [Live card demo](https://ali-demirbas.github.io/ab-test-playbook/): the real output of the card builder, no install
+
+## Optional
+
+- [Contributing](https://github.com/ali-demirbas/ab-test-playbook/blob/main/CONTRIBUTING.md)
+- [Changelog](https://github.com/ali-demirbas/ab-test-playbook/blob/main/CHANGELOG.md)

@@ -328,6 +328,16 @@ print("  ok: KPI roles %s and device types %s agree across schema, validator and
       % (sorted(roles), sorted(devices)))
 PY
 
+echo "== 12. Published Markdown bundle matches its sources =="
+# docs/llms-full.txt is a concatenation of the core docs. Its only value is
+# being current, and a stale bundle is worse than none: it answers questions
+# with documentation the repo no longer ships.
+if python3 scripts/build_llms_full.py --check >/dev/null 2>&1; then
+  ok "docs/llms-full.txt is in sync with README, CLAUDE.md, architecture, FAQ and methodology"
+else
+  err "docs/llms-full.txt is stale — run: python3 scripts/build_llms_full.py"
+fi
+
 echo
 if [ "$FAIL" = 1 ]; then
   echo "VALIDATION FAILED"; exit 1

@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ab-test-playbook — A/B test engine for Claude Code</title>
 <meta name="description" content="A/B test engine for Claude Code: suggests, designs and audits test scenarios, and renders each one as a ready HTML card. 179 curated scenarios, a real stats engine, and a methodology that refuses dark patterns.">
+<!-- Markdown alternates. The rel=alternate pattern is the same one RSS has used
+     for two decades, and it is what actually reaches assistants: a chat tool
+     handed this URL can follow it to plain Markdown instead of parsing markup.
+     Deliberately not here: JSON-LD and ai.txt-style files — controlled tests
+     show assistants read structured data as ordinary page text, so the markup
+     buys nothing the visible copy does not already say. -->
+<link rel="alternate" type="text/markdown" href="llms-full.txt" title="Full documentation as Markdown">
+<link rel="alternate" type="text/markdown" href="llms.txt" title="Documentation index as Markdown">
 <style>
   :root {
     --navy: #14293d;
@@ -103,6 +111,9 @@ npx skills add ali-demirbas/ab-test-playbook --all</code></pre>
   <footer>
     Source, methodology and the full scenario archive:
     <a href="https://github.com/ali-demirbas/ab-test-playbook">github.com/ali-demirbas/ab-test-playbook</a> · MIT
+    <br>
+    Reading this with an assistant? The whole documentation set is one Markdown file:
+    <a href="llms-full.txt">llms-full.txt</a> — or just the index, <a href="llms.txt">llms.txt</a>.
   </footer>
 
 </div>
