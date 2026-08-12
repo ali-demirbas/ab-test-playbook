@@ -4,6 +4,7 @@ description: Interpret A/B test results the user pastes (visitor/conversion coun
 metadata:
   version: 0.1.0
   category: analyze
+  updated: 2026-08-11
 ---
 
 # abtest-results — Sonuç Yorumlama ve Örneklem Hesabı

@@ -6,4 +6,5 @@ __pycache__/
 !.env.example
 .claude/settings.local.json
 abtest-card-*.html
+!examples/*.html
 .abtest-history.md

@@ -4,6 +4,7 @@ description: Render an A/B test scenario as a single-file HTML card in the archi
 metadata:
   version: 0.1.0
   category: render
+  updated: 2026-08-13
 ---
 
 # abtest-card — Senaryo Kartı Üretimi
@@ -21,14 +22,25 @@ Bu skill, `abtest-suggest` veya `abtest-design`'ın bir turda ürettiği HER sen
    - **Verilmezse/"hayır" derse:** `mockup-style.md`'deki nötr palet (teal/amber/navy) kullanılır.
    - Karar oturum boyunca hatırlanır (CLAUDE.md kural 12), sonraki kartlarda tekrar sorulmaz — kullanıcı değiştirmek istemedikçe.
 1. Karta basılacak senaryoyu al: bu oturumda `abtest-suggest`/`abtest-design` çıktısı, ya da kullanıcının verdiği metin. Üç kutu eksikse önce tamamlat (`abtest-design`'a yönlendir). Metindeki içeriği birebir kullan; karta basarken maddeleri yeniden yazma veya kısaltma.
-2. `templates/scenario-card.html` şablonunu oku ve doldur:
-   - Başlık, açıklama, üç kutunun maddeleri (etiketler bold).
+2. Senaryoyu bir JSON dosyasına yaz; şablonu elle doldurma (CLAUDE.md kural 9 → Mekanizma). Alanlar:
+   - `title`, `desc` ve üç kutunun maddeleri (`test_items`, `kpi_items`, `dont_items`): **düz metin ver, kaçırma yapma** — script `html.escape` uygular. Bold etiket isteyen madde `{"label": "Birincil KPI", "text": "sepet → ödeme"}` biçiminde verilir; elle `<b>` yazma, sıra bozulur.
+   - `device`: mobil bağlamda `"phone"`, masaüstü/web bağlamda `"web"` (+ adres çubuğu için `url`). Browser iskeletine geçişi script yapar; yorumdaki iskeleti elle kopyalama.
+   - `variant_a` / `variant_b`: mockup markup'ı, **ham HTML** olarak. Aşağıdaki kurallar bu iki alan içindir.
    - Mockup bölgesi: senaryo mobil bağlamlıysa `.phone` iskeletini (durum çubuğu + alt nav) kullan; masaüstü/web bağlamlıysa şablondaki `.browser`/`.browser-bar`/`.browser-url`/`.browser-screen` iskeletini kullan (üç nokta + adres çubuğu + beyaz gövde, statusbar/bottomnav yok). Marka kılavuzu verildiyse header/CTA rengi ve marka adı ona göre; verilmediyse nötr palet.
    - **İçerik tam gerçekçi yazılır** (`mockup-style.md` → Gerçekçilik seviyesi): metin, fiyat, etiket ve düzen gerçek; "Başlık", "Lorem ipsum" gibi doldurma yok. Şablondaki `.r-*` bileşenlerini kullan (`.r-item` ürün satırı, `.r-field` form alanı, `.r-line` fiyat satırı, `.r-cta`, `.r-badge`, `.r-stars`) — markup'ı sıfırdan uydurma. Gri `.ph` blokları yalnızca fotoğrafın yerini tutar (ürün görseli, avatar), metnin yerine kullanılmaz.
    - **Kullanıcı bir sayfa paylaştıysa mockup O SAYFANIN yeniden çizimidir, uydurulmuş bir sayfa değil.** Ürün adı, fiyat, buton metni, alan etiketleri, bölüm sırası — ekranda ne varsa o yazılır. Variant A ekrandaki hâlin birebir kendisidir (kural 15): yeniden tasarlama, sadeleştirme, eksiğini tamamlama. Kendi kafandan örnek bir sayfa kurup testi ona oturtma. Ekran görüntüsünde okunamayan bir ayrıntıyı uydurma: ya mockup'a koyma ya da sor. Paylaşılmış sayfa yoksa (arşiv senaryosu) temsili örnek kurulur ama gerçek müşteri sayfasıymış gibi sunulmaz.
    - Test edilen fark kırmızı çerçeveyle vurgulanır ve **çerçeveye ne değiştiğini söyleyen kısa bir etiket konur**: `<div class="hl" data-note="kupon alanı katlandı">`. Etiket iki üç kelimeyi geçmez. Kaldırma testinde çerçeve A'daki öğeye çizilir.
    - İki varyantta test edilen öğe dışında HER ŞEY aynı olmalı (mockup-style.md kuralı).
-3. Tek dosyalık, bağımsız HTML üret (inline CSS, dış kaynak yok). Kullanıcının çalışma dizinine `abtest-card-<slug>.html` olarak yaz.
+3. Kartı üret:
+
+   ```bash
+   python3 ${CLAUDE_PLUGIN_ROOT}/scripts/build_card.py \
+     --template ${CLAUDE_PLUGIN_ROOT}/templates/scenario-card.html \
+     --scenario senaryo.json \
+     --out abtest-card-<slug>.html
+   ```
+
+   Script tek dosyalık bağımsız HTML üretir (inline CSS, dış kaynak yok) ve yazdıktan sonra sabit iskeletin sürüklenmediğini doğrular. Hata verirse dosya yazılmaz: hatayı düzelt, kartı elle üretmeye kaçma. Çıktı kullanıcının çalışma dizinine yazılır.
 4. Kullanıcıya doğrudan gönder (dosya teslimi). Görüntüleme imkânın varsa (tarayıcı aracı) açıp doğrula: metin taşması, Türkçe karakter, kutu hizası, marka renklerinin doğru uygulandığı.
 
 ## Asla yapma
@@ -36,7 +48,8 @@ Bu skill, `abtest-suggest` veya `abtest-design`'ın bir turda ürettiği HER sen
 - Üç kutusu eksik senaryoyu karta basma.
 - Dark pattern içeren senaryoyu karta basma — kullanıcı doğrudan "kart yap" dese de CLAUDE.md kural 6 geçerlidir; reddet ve nedenini söyle.
 - Karta `<script>` veya etkileşimli kod koyma; kart salt statik HTML/CSS'tir.
-- **Metni şablona koymadan önce HTML olarak kaçır.** Senaryo başlığı, açıklama ve üç kutunun maddeleri `{{TITLE}}`, `{{DESC}}`, `{{TEST_ITEMS}}` gibi yer tutuculara doğrudan gömülür; içinde `<`, `>` veya `&` geçen bir metin (ör. "CTA < 3 kelime olmalı mı?", "kargo & iade") kartı bozar ya da beklenmeyen etiket üretir. Bu karakterleri sırasıyla `&lt;`, `&gt;`, `&amp;` yaz. Kaçırma işlemi, madde metnindeki kasıtlı `<b>` vurgusundan **sonra** değil önce yapılır: önce içerik kaçırılır, sonra biçimlendirme etiketleri eklenir. Kullanıcının yapıştırdığı bir metni doğrudan karta aktarıyorsan bu kural özellikle geçerlidir.
+- **Metin alanlarını elle kaçırma, kaçırılmış metin de verme.** `title`, `desc` ve üç kutunun maddeleri script tarafından kaçırılır; JSON'a `&lt;` yazarsan kartta `&amp;lt;` görünür. Düz metin ver. (Kaçırmanın neden koda alındığı: "CTA < 3 kelime olmalı mı?" veya "kargo & iade" gibi bir metin elle gömüldüğünde kartı sessizce bozar, ve bold etiket kaçırmadan önce uygulanırsa etiket içeriği tag olarak sızar. Bu iki hata da tek tek hatırlanmaya bırakılamaz.)
+- **`variant_a`/`variant_b` markup'ında kullanıcı metnini ham gömme.** Bu iki alan ham HTML olarak geçer — mockup'a ürün adı, buton metni veya kullanıcının paylaştığı bir metin yazarken `<`, `>`, `&` karakterlerini sen kaçır. Kaçırma yalnızca metin alanlarında otomatiktir.
 - Mockup'ta iki varyant arasına ikinci bir fark koyma.
 - Kaldırılan bir öğenin yerine "gösterilmez / kaldırıldı" yazan yer tutucu koyma (`mockup-style.md`); B'de o bloğu hiç yazma, altındaki içerik doğal olarak yukarı kaysın. Kaymayı görünür kılmak için mockup'ın **altına** tek satır not düş: `<div class="shift-note">…</div>` — bu not ekranın içine girmez.
 - Dış font/CDN bağlantısı ekleme; kart çevrimdışı açılabilmeli (sistem fontu: Inter yoksa -apple-system/Segoe UI düşüşü).

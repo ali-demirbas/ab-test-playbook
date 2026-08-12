@@ -4,6 +4,7 @@ description: Audit an existing A/B test plan, running experiment or mockup pair 
 metadata:
   version: 0.1.0
   category: audit
+  updated: 2026-08-11
 ---
 
 # abtest-audit — Test Planı Denetimi

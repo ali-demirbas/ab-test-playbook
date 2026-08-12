@@ -90,7 +90,7 @@ A product-page example, end to end:
   <img src="assets/example-card.png" alt="Example scenario card: does an open coupon-code field increase cart abandonment? Variant A/B mockups on the left, the three-box breakdown on the right." width="900">
 </p>
 
-<p align="center"><sub>A card generated from an archived scenario — fictional product and store, neutral palette (no brand guide was supplied). This is what `abtest card` renders for every scenario, not a hand-built mockup.</sub></p>
+<p align="center"><sub>A card generated from an archived scenario — fictional product and store, neutral palette (no brand guide was supplied). This is what `abtest card` renders for every scenario, not a hand-built mockup. <a href="https://ali-demirbas.github.io/ab-test-playbook/">Live, zero-install version →</a> · source in <a href="examples/">examples/</a></sub></p>
 
 **Each scenario ships with** the single-variable hypothesis, Variant A/B definitions, and a tool-agnostic setup spec (audience, split, exposure event, guardrail events, attribution window, decision rule) — named in your tool's vocabulary if you mention one, kept as chat text — plus the card itself (brand colors pulled from your screenshot when you shared one; otherwise a one-time brand-guide question, with a neutral palette as the fallback).
 
@@ -107,6 +107,8 @@ scripts/         analyze_results.py — z-test, sample size, revenue/margin chec
 templates/       scenario-card.html · abtest-history.md — test memory template
 tests/           test_analyze_results.py — unit tests for the stats engine
 evals/           manual acceptance tests for the four core flows (suggest / design / audit / results)
+examples/        a real end-to-end scenario → card render, with the matching chat-side output
+docs/            source for the live zero-install demo (GitHub Pages)
 ```
 
 See [FAQ.md](FAQ.md) for answers to common A/B testing and CRO questions, drawn from this playbook's own methodology.

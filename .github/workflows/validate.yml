@@ -16,7 +16,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Run unit tests (stats engine + scenario validator)
+      - name: Run unit tests (stats engine + scenario validator + card builder)
         run: python3 -m unittest discover -s tests -v
       - name: Validate scenario archive format
         run: python3 scripts/validate_scenarios.py
+      - name: Build a card from the template (smoke test)
+        run: |
+          python3 scripts/build_card.py \
+            --template templates/scenario-card.html \
+            --scenario examples/scenario-card-input.json \
+            --out /tmp/card.html

@@ -4,6 +4,7 @@ description: A/B test engine router. Use when the user says "abtest", "/abtest",
 metadata:
   version: 0.1.0
   category: router
+  updated: 2026-08-11
 ---
 
 # abtest — Router

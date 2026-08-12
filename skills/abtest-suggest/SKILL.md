@@ -4,6 +4,7 @@ description: Suggest proven A/B test scenarios for a given page or journey stage
 metadata:
   version: 0.1.0
   category: recommend
+  updated: 2026-08-11
 ---
 
 # abtest-suggest — Arşivden Test Önerisi

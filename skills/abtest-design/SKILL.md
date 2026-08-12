@@ -4,6 +4,7 @@ description: Design a NEW A/B test scenario for the user's specific page, featur
 metadata:
   version: 0.1.0
   category: generate
+  updated: 2026-08-11
 ---
 
 # abtest-design — Yeni Senaryo Tasarımı

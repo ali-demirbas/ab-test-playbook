@@ -1,0 +1,28 @@
+{
+  "title": "Açık kupon kodu alanı sepet terkini artırır mı?",
+  "desc": "Görünür bir kupon kutusu, kodu olmayan kullanıcıyı “indirim arayayım” diye siteden çıkarabilir. Kodu bağlantı arkasına almak bu kaçağı kapatabilir ama kampanya kullanımını düşürebilir.",
+  "device": "phone",
+  "test_items": [
+    {"label": "Kaçak", "text": "Kupon alanını bağlantı arkasına almak terk oranını düşürüyor mu?"},
+    {"label": "Segment", "text": "Yeni ve dönen kullanıcıda kupon arama davranışı farklı mı?"},
+    {"label": "Metin", "text": "“İndirim kodum var” ile “Kupon kullan” farklı sonuç veriyor mu?"},
+    {"label": "Kampanya", "text": "Kampanya dönemlerinde etki tersine dönüyor mu?"},
+    {"label": "Hata", "text": "Kod girip başarısız olan kullanıcının terk oranı ne kadar?"}
+  ],
+  "kpi_items": [
+    {"label": "Ziyaretçi Başına Gelir (RPV) — birincil", "text": "Kaçak kapanırken indirim kullanımındaki değişim toplam geliri artırıyor mu?"},
+    {"label": "Sipariş Tamamlama Oranı", "text": "Kupon kutusu kaçağı kapanıyor mu?"},
+    {"label": "Kupon Kullanım Oranı", "text": "Kuponu olan kullanıcı alanı bulabilmeli, kullanım çökmemeli."},
+    {"label": "Ödeme Adımı Terk Oranı", "text": "Doğrudan hedef davranış."},
+    {"label": "Kampanya Katılımı", "text": "Aktif kampanya performansı çökmemeli."}
+  ],
+  "dont_items": [
+    "Kupon alanını tamamen kaldırmayın; kodu olan kullanıcı öfkelenir.",
+    "Geçersiz kod hatasını belirsiz bırakmayın.",
+    "Test sırasında aktif kampanya kurmayın veya kaldırmayın.",
+    "Kupon alanını CTA altına gizleyip fark edilmez yapmayın.",
+    "Aynı testte hem konumu hem metni değiştirmeyin."
+  ],
+  "variant_a": "<div class=\"r-h\">Sepetim</div>\n          <div class=\"r-item\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Kadife Ceket</div>\n              <div class=\"r-meta\">Beden M · 1 adet</div>\n            </div>\n            <div class=\"r-price\">890 TL</div>\n          </div>\n          <div class=\"hl\" data-note=\"kupon alanı açık\">\n            <div class=\"r-label\">Kupon kodunuz</div>\n            <div class=\"r-field empty\">Kodu buraya girin</div>\n          </div>\n          <div class=\"r-line\"><span>Ara toplam</span><span>890 TL</span></div>\n          <div class=\"r-line total\"><span>Toplam</span><span>890 TL</span></div>\n          <div class=\"r-cta\">Ödemeye geç</div>",
+  "variant_b": "<div class=\"r-h\">Sepetim</div>\n          <div class=\"r-item\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Kadife Ceket</div>\n              <div class=\"r-meta\">Beden M · 1 adet</div>\n            </div>\n            <div class=\"r-price\">890 TL</div>\n          </div>\n          <div class=\"hl\" data-note=\"bağlantı olarak\">\n            <div class=\"r-link\">İndirim kodum var</div>\n          </div>\n          <div class=\"r-line\"><span>Ara toplam</span><span>890 TL</span></div>\n          <div class=\"r-line total\"><span>Toplam</span><span>890 TL</span></div>\n          <div class=\"r-cta\">Ödemeye geç</div>"
+}
