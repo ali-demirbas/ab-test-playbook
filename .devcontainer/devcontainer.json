@@ -1,0 +1,35 @@
+{
+  "name": "ab-test-playbook",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+
+  "// why this exists": [
+    "CI runs the test suite on Python 3.12 and lints the shell layer with",
+    "shellcheck. A contributor whose local Python is older, or who has no",
+    "shellcheck, finds that out from a red build rather than from their own",
+    "terminal. This container is the same two things, nothing more — there are",
+    "no runtime dependencies to install because the scripts are stdlib-only."
+  ],
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false,
+      "upgradePackages": true
+    }
+  },
+
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y shellcheck",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "timonwong.shellcheck"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  },
+
+  "remoteUser": "vscode"
+}
