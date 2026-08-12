@@ -5,13 +5,25 @@
 ![Scenarios](https://img.shields.io/badge/scenarios-179-blue)
 ![Tests](https://img.shields.io/badge/tests-66_passing-brightgreen)
 
-A/B test engine for Claude Code. Suggests proven test scenarios by journey stage, designs new ones in a disciplined framework, audits existing test plans for methodological flaws, and renders every scenario straight to a deck-style HTML card — no extra ask needed.
+A practical A/B testing and CRO (conversion rate optimization) playbook for e-commerce, mobile apps, SaaS and digital products — powered by Claude Code. Suggests proven experiment ideas by journey stage, designs new ones in a disciplined single-variable framework, audits existing test plans for methodological flaws (confounds, missing guardrails, p-hacking risk), and renders every scenario straight to a deck-style HTML card — no extra ask needed.
 
-Built from an archive of A/B test scenarios used in real e-commerce, mobile app and SaaS growth work — 179 scenarios, methodology and text content, not a shipped visual deck. Every scenario follows the same three-box discipline:
+Built from an archive of A/B test scenarios and hypothesis-generation patterns used in real e-commerce, mobile app and SaaS growth work — 179 scenarios, methodology and text content, not a shipped visual deck. Covers experiment design, test prioritization (ICE scoring), statistical significance and sample-size math, guardrail metrics, and checkout/product-page/pricing optimization. Every scenario follows the same three-box discipline:
 
 - **Test edilmesi gerekenler** — what questions the experiment must answer
 - **Takip edilecek ana KPI’lar** — one primary metric + guardrails that must not degrade
 - **Yapılmaması gerekenler** — the mistakes that invalidate the test
+
+## Questions this playbook helps answer
+
+- What A/B tests should I run on my e-commerce checkout or cart?
+- What should I test on a product detail page (PDP)?
+- How do I formulate an A/B test hypothesis with real evidence behind it?
+- What metrics should I track as guardrails in an A/B test?
+- How many visitors do I need for statistical significance? (real z-test math, not a guess)
+- What are common A/B testing mistakes that invalidate a result?
+- How do I prioritize which CRO experiments to run first?
+- What should I A/B test in a SaaS pricing page or onboarding flow?
+- Is my test plan set up correctly, or does it have a confound?
 
 ```mermaid
 flowchart LR
@@ -97,6 +109,8 @@ tests/           test_analyze_results.py — unit tests for the stats engine
 evals/           manual acceptance tests for the four core flows (suggest / design / audit / results)
 ```
 
+See [FAQ.md](FAQ.md) for answers to common A/B testing and CRO questions, drawn from this playbook's own methodology.
+
 Contributing a scenario: follow the three-box format of the existing files, then run the validator — it enforces five items per box, a guardrail in the KPI list, a device/segment question, and typographic rules.
 
 ```bash
@@ -116,6 +130,12 @@ Every output honors these, non-negotiable: one variable per test, one primary KP
 ## Language
 
 Scenario content is Turkish (the archive's native language). The skills answer in whatever language you use; metric abbreviations (CR, AOV, LCP, SQL) are kept as-is.
+
+## Scope
+
+What this is: a scenario archive, a disciplined design/audit methodology, and a real stats engine (`scripts/analyze_results.py` — z-test, confidence interval, sample size, sample-ratio-mismatch check) for interpreting numbers you paste in.
+
+What this isn't: it doesn't connect to a data warehouse or analytics tool (GA4, Mixpanel, PostHog, BigQuery) to pull live numbers on its own, and it doesn't monitor a running test in real time — you bring the numbers when you have them.
 
 ## License
 
