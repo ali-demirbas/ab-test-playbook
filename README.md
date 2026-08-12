@@ -100,12 +100,17 @@ A product-page example, end to end:
 
 ```
 skills/          abtest (router) + suggest / design / audit / results / card
+agents/          scenario-critic — adversarial methodology review before a scenario is rendered
+                 mockup-reviewer — checks the two mockups differ in exactly one thing
 knowledge/       methodology.md · mockup-style.md
                  scenarios/ — curated scenarios by journey stage (TR)
 scripts/         analyze_results.py — z-test, sample size, revenue/margin check, sample-ratio-mismatch check (stdlib-only)
                  validate_scenarios.py — format check for the scenario archive
+                 build_card.py — deterministic card render: fills the template, escapes text, self-verifies against drift
+                 validate_scenario_json.py — checks a scenario against the schema (one primary KPI, a guardrail, two variants)
 templates/       scenario-card.html · abtest-history.md — test memory template
-tests/           test_analyze_results.py — unit tests for the stats engine
+                 scenario.schema.json — tool-agnostic test definition, portable to any experimentation platform
+tests/           unit tests for the stats engine, the scenario validator and the card builder
 evals/           manual acceptance tests for the four core flows (suggest / design / audit / results)
 examples/        a real end-to-end scenario → card render, with the matching chat-side output
 docs/            source for the live zero-install demo (GitHub Pages)

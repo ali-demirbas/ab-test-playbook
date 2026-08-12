@@ -1,0 +1,58 @@
+{
+  "id": "cart-checkout-coupon-field-01",
+  "title": "Açık kupon kodu alanı sepet terkini artırır mı?",
+  "stage": "cart-checkout",
+  "source": "archive",
+
+  "rationale": "Görünür bir kupon kutusu, kodu olmayan kullanıcıyı “indirim arayayım” diye siteden çıkarabilir. Kodu bağlantı arkasına almak bu kaçağı kapatabilir ama kampanya kullanımını düşürebilir.",
+
+  "variable": "Kupon kodu alanının görünürlüğü",
+
+  "hypothesis": {
+    "change": "Kupon alanı açık kutu yerine “İndirim kodum var” bağlantısının arkasına alınır.",
+    "mechanism": "Açık kutu, kodu olmayan kullanıcıya elinde eksik bir şey olduğunu hatırlatır ve kod aramak için siteden çıkmasına yol açar; bağlantı arkasındaki alan bu hatırlatmayı yapmaz, kodu olan kullanıcı ise aramayı sürdürür.",
+    "expected_direction": "increase"
+  },
+
+  "device": "phone",
+  "market": "TR",
+
+  "variants": [
+    {"id": "A", "description": "Kupon alanı sepette açık kutu olarak duruyor", "is_current": true},
+    {"id": "B", "description": "Kupon alanı “İndirim kodum var” bağlantısının arkasında"}
+  ],
+
+  "test_items": [
+    {"label": "Kaçak", "text": "Kupon alanını bağlantı arkasına almak terk oranını düşürüyor mu?"},
+    {"label": "Segment", "text": "Yeni ve dönen kullanıcıda kupon arama davranışı farklı mı?"},
+    {"label": "Metin", "text": "“İndirim kodum var” ile “Kupon kullan” farklı sonuç veriyor mu?"},
+    {"label": "Kampanya", "text": "Kampanya dönemlerinde etki tersine dönüyor mu?"}
+  ],
+
+  "kpis": [
+    {"name": "Ziyaretçi Başına Gelir (RPV)", "role": "primary", "question": "Kaçak kapanırken indirim kullanımındaki değişim toplam geliri artırıyor mu?"},
+    {"name": "Sipariş Tamamlama Oranı", "role": "secondary", "question": "Kupon kutusu kaçağı kapanıyor mu?"},
+    {"name": "Kupon Kullanım Oranı", "role": "guardrail", "question": "Kuponu olan kullanıcı alanı bulabilmeli, kullanım çökmemeli."},
+    {"name": "Kampanya Katılımı", "role": "guardrail", "question": "Aktif kampanya performansı çökmemeli."}
+  ],
+
+  "dont_items": [
+    "Kupon alanını tamamen kaldırmayın; kodu olan kullanıcı öfkelenir.",
+    "Geçersiz kod hatasını belirsiz bırakmayın.",
+    "Test sırasında aktif kampanya kurmayın veya kaldırmayın.",
+    "Aynı testte hem konumu hem metni değiştirmeyin."
+  ],
+
+  "evidence": {
+    "level": "archive",
+    "note": "Arşivde sepet-ödeme aşamasında emsali var; bu sayfanın kendi verisiyle doğrulanmadı."
+  },
+
+  "sample": {
+    "traffic_known": false
+  },
+
+  "history": {
+    "tested_before": false
+  }
+}

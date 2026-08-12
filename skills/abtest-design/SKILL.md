@@ -41,6 +41,7 @@ metadata:
    - Form akışında çok adımlıya geçmeyi varsayılan çözüm sayma; önce tek sayfada yoğunlaştırmayı değerlendir (`methodology.md` → Değişken izolasyonu).
 6. Trafik kullanıcı tarafından verilmişse kaba süre tahmini ver; verilmemişse süre/örneklem konusuna hiç girme — sorma da, "eksik" diye de yazma (CLAUDE.md kural 5).
 7. **Doğrudan senaryoları üret.** Aday başlıklarını listeleyip "hangisini açayım" diye sorma. Sayfada birden fazla güçlü test adayı varsa en yüksek ICE'lı 2-5'ini doğrudan üret (üç kutu + Variant A/B, `abtest-card` ile kart olarak — kural 9), kurulum spesifikasyonu sohbette kalır; kalanları tek satırlık not olarak en sona ekle. 5'ten fazla güçlü aday varsa hepsini sormadan üretme: sayıyı söyle ve devam edilip edilmeyeceğini sor.
+8. **Denetle (CLAUDE.md kural 17).** Üretilen senaryoları karta basmadan önce `agents/scenario-critic`'e ver. `FIX` dönen maddeyi düzelt ve denetimi tekrarla; `RET` dönen senaryoyu üretme, gerekçesini kullanıcıya tek cümleyle söyle. Denetim raporunu sohbete dökme (kural 9). Bu adım özellikle burada kritiktir: yeni üretilen senaryoda tek-değişken ihlali ve mekanizması zayıf aday, arşivden gelene göre daha olasıdır.
 
 ## Çıktı biçimi
 

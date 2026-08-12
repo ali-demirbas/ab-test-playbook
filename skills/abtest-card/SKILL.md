@@ -41,7 +41,8 @@ Bu skill, `abtest-suggest` veya `abtest-design`'ın bir turda ürettiği HER sen
    ```
 
    Script tek dosyalık bağımsız HTML üretir (inline CSS, dış kaynak yok) ve yazdıktan sonra sabit iskeletin sürüklenmediğini doğrular. Hata verirse dosya yazılmaz: hatayı düzelt, kartı elle üretmeye kaçma. Çıktı kullanıcının çalışma dizinine yazılır.
-4. Kullanıcıya doğrudan gönder (dosya teslimi). Görüntüleme imkânın varsa (tarayıcı aracı) açıp doğrula: metin taşması, Türkçe karakter, kutu hizası, marka renklerinin doğru uygulandığı.
+4. **Denetle (CLAUDE.md kural 17).** Kart üretildikten sonra `agents/mockup-reviewer`'ı çalıştır: iki mockup arasında test edilen öğe dışında ikinci bir fark olup olmadığını arar. `FIX` dönerse düzelt ve kartı yeniden üret. Denetim raporunu sohbete yazma; yalnızca kullanıcının bilmesi gereken bir kısıt varsa tek cümleyle söyle.
+5. Kullanıcıya doğrudan gönder (dosya teslimi). Görüntüleme imkânın varsa (tarayıcı aracı) açıp doğrula: metin taşması, Türkçe karakter, kutu hizası, marka renklerinin doğru uygulandığı.
 
 ## Asla yapma
 
