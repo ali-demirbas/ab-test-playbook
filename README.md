@@ -3,7 +3,7 @@
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 ![Scenarios](https://img.shields.io/badge/scenarios-179-blue)
-![Tests](https://img.shields.io/badge/tests-66_passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-121_passing-brightgreen)
 
 A practical A/B testing and CRO (conversion rate optimization) playbook for e-commerce, mobile apps, SaaS and digital products — powered by Claude Code. Suggests proven experiment ideas by journey stage, designs new ones in a disciplined single-variable framework, audits existing test plans for methodological flaws (confounds, missing guardrails, p-hacking risk), and renders every scenario straight to a deck-style HTML card — no extra ask needed.
 
@@ -12,6 +12,8 @@ Built from an archive of A/B test scenarios and hypothesis-generation patterns u
 - **Test edilmesi gerekenler** — what questions the experiment must answer
 - **Takip edilecek ana KPI’lar** — one primary metric + guardrails that must not degrade
 - **Yapılmaması gerekenler** — the mistakes that invalidate the test
+
+**Zero-install demo:** see a real scenario card — two mockups differing in exactly one thing, the tested element boxed, and the three boxes filled — at [ali-demirbas.github.io/ab-test-playbook](https://ali-demirbas.github.io/ab-test-playbook/). It is the actual output of `scripts/build_card.py`, not a picture of one.
 
 ## Questions this playbook helps answer
 
@@ -108,12 +110,14 @@ scripts/         analyze_results.py — z-test, sample size, revenue/margin chec
                  validate_scenarios.py — format check for the scenario archive
                  build_card.py — deterministic card render: fills the template, escapes text, self-verifies against drift
                  validate_scenario_json.py — checks a scenario against the schema (one primary KPI, a guardrail, two variants)
+                 validate_input.py — flags instruction-shaped text and script payloads in anything you paste in
+                 validate.sh — repo consistency: frontmatter, internal links, plugin-root refs, rule citations
 templates/       scenario-card.html · abtest-history.md — test memory template
                  scenario.schema.json — tool-agnostic test definition, portable to any experimentation platform
-tests/           unit tests for the stats engine, the scenario validator and the card builder
+tests/           unit tests for the stats engine, the validators and the card builder
 evals/           manual acceptance tests for the four core flows (suggest / design / audit / results)
 examples/        a real end-to-end scenario → card render, with the matching chat-side output
-docs/            source for the live zero-install demo (GitHub Pages)
+docs/            architecture.md · the live zero-install demo (GitHub Pages)
 ```
 
 See [FAQ.md](FAQ.md) for answers to common A/B testing and CRO questions, drawn from this playbook's own methodology.
@@ -133,6 +137,8 @@ A past loss is information, not a veto — if the page has since changed, or the
 ## Hard rules (CLAUDE.md)
 
 Every output honors these, non-negotiable: one variable per test, one primary KPI, at least one guardrail, no dark patterns, no fake reference prices, no duration estimates without traffic data, and an explicit evidence label on every recommendation — including "this is intuition, treat it as low confidence."
+
+Two of them are enforced in code rather than prose: every generated scenario passes an adversarial review agent before it is rendered, and anything you paste in is scanned for instruction-shaped content first — text you supply is data, never an instruction ([architecture](docs/architecture.md)).
 
 ## Language
 

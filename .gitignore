@@ -5,6 +5,8 @@ __pycache__/
 .env.*
 !.env.example
 .claude/settings.local.json
+# Cards a run writes into the user's working directory. docs/demo/ is the one
+# checked-in card (the published demo) and is not named this way, so it is
+# unaffected by this rule.
 abtest-card-*.html
-!examples/*.html
 .abtest-history.md

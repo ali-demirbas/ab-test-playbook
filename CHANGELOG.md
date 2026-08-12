@@ -5,6 +5,13 @@ All notable changes to this project are documented here. Format loosely follows 
 ## Unreleased
 
 ### Added
+- `scripts/build_card.py` + tests: deterministic card rendering from a JSON scenario — fills the template, HTML-escapes text fields, drops the template's developer comment, and self-verifies that no fixed skeleton line drifted. `CLAUDE.md` rule 9 now names it as the mechanism; hand-filling the template is the fallback.
+- `agents/scenario-critic` and `agents/mockup-reviewer`: adversarial review before delivery, bound by new rule 17. The critic runs a methodology checklist over every generated scenario; the reviewer compares the two rendered mockups for a second difference — the failure that silently invalidates the test a card illustrates.
+- `scripts/validate_input.py` + rule 18: anything pasted in (page text, results tables, `.abtest-history.md`) is scanned for instruction-shaped content and script payloads. Findings are quoted back, never obeyed. The markup case is not theoretical — mockup bodies are raw HTML by design, so a payload that survives into a variant renders in whatever browser opens the card.
+- `templates/scenario.schema.json` + `scripts/validate_scenario_json.py`: a tool-agnostic test definition, portable to any experimentation platform.
+- `scripts/validate.sh`: single-entry repo validation covering the cross-file seams nothing checked before — skill/agent frontmatter, internal links (markdown and the published HTML), `${CLAUDE_PLUGIN_ROOT}` references, and rule citations against `CLAUDE.md`. Wired into CI alongside a shellcheck job.
+- `docs/`: an architecture write-up and a zero-install demo published to GitHub Pages, rendered by the real builder rather than mocked up.
+- `examples/`: one scenario carried end to end — schema-valid definition, card input, rendered card, and the matching chat-side output.
 - `FAQ.md` — common A/B testing and CRO questions answered from this repo's own methodology.
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, this `CHANGELOG.md`.
 - `updated` field on every skill's metadata block.

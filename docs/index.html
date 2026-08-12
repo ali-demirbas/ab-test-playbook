@@ -1,193 +1,110 @@
-<!DOCTYPE html>
-<html lang="tr">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Açık kupon kodu alanı sepet terkini artırır mı?</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ab-test-playbook — A/B test engine for Claude Code</title>
+<meta name="description" content="A/B test engine for Claude Code: suggests, designs and audits test scenarios, and renders each one as a ready HTML card. 179 curated scenarios, a real stats engine, and a methodology that refuses dark patterns.">
 <style>
-  :root{
-    --teal:#08616b; --amber:#6b3804; --navy:#17086b;
-    --body:rgba(0,0,0,.6); --ink:#111;
-    --red:#e62d37;
+  :root {
+    --navy: #14293d;
+    --teal: #1f7a72;
+    --teal-soft: #e2f0ee;
+    --amber: #b26a12;
+    --ink: #16202a;
+    --muted: #5b6b7a;
+    --rule: #d8dee5;
+    --paper: #f4f6f8;
+    --card: #ffffff;
   }
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--ink)}
-  .card{width:1600px;min-height:900px;display:flex;gap:36px;padding:44px;background:#fff}
-
-  /* ---- sol: mockup çifti ---- */
-  .mockups{flex:0 0 54%;display:flex;gap:28px;background:#f4f4f5;border-radius:28px;padding:56px 28px 28px;position:relative}
-  .variant{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
-  .pill{position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:#5cf679;color:#0b3512;font-weight:700;font-size:15px;
-        padding:7px 20px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.12);white-space:nowrap}
-  .phone{width:300px;height:640px;background:#fff;border-radius:32px;box-shadow:0 16px 50px rgba(12,12,13,.10);
-         padding:14px 14px 0;display:flex;flex-direction:column;overflow:hidden;position:relative;margin-top:14px}
-  .statusbar{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:#111;padding:2px 6px 10px}
-  .screen{flex:1;display:flex;flex-direction:column;gap:10px}
-  .ph{background:#e7e7ea;border-radius:8px}
-  .ph.img{height:120px;background:#dfe6ef}
-  .bottomnav{display:flex;justify-content:space-around;border-top:1px solid #ececee;padding:10px 0 12px;margin-top:auto}
-  .bottomnav span{font-size:9px;color:#70707a}
-
-  /* ---- değişen öğe işareti ----
-     .hl değişen öğenin etrafına sarılır. data-note ile ne değiştiği yazılır:
-     <div class="hl" data-note="kupon alanı katlandı"> … </div>
-     Kaldırma testinde halka A'daki öğeye çizilir; B'de o alan gerçekten boş kalır
-     ve altındaki içerik yukarı kayar (yer tutucu konmaz — bkz. mockup-style.md). */
-  .hl{border:3px solid var(--red);border-radius:12px;box-shadow:0 0 14px rgba(230,45,55,.35);
-      padding:8px;position:relative}
-  .hl[data-note]::after{content:attr(data-note);position:absolute;right:-3px;top:-22px;
-      background:var(--red);color:#fff;font-size:11px;font-weight:700;line-height:1;
-      padding:4px 8px;border-radius:6px;white-space:nowrap}
-  /* B'de alanın kapandığını ve içeriğin yukarı kaydığını anlatan tek satırlık not.
-     Mockup'ın İÇİNE değil, telefonun/tarayıcının ALTINA konur. */
-  .shift-note{font-size:11px;color:#70707a;font-style:italic;text-align:center;margin-top:8px}
-
-  /* ---- web/masaüstü mockup (device_type: web) — .phone bloğunun yerine kullanılır ---- */
-  .browser{width:520px;height:640px;background:#fff;border-radius:16px;box-shadow:0 16px 50px rgba(12,12,13,.10);
-            display:flex;flex-direction:column;overflow:hidden;position:relative;margin-top:14px}
-  .browser-bar{height:36px;background:#e8e8ea;display:flex;align-items:center;padding:0 14px;gap:6px;flex:0 0 auto}
-  .browser-dot{width:9px;height:9px;border-radius:50%;background:#d0d0d3}
-  .browser-url{flex:1;height:20px;background:#fff;border-radius:10px;margin-left:8px;
-               display:flex;align-items:center;padding:0 10px;font-size:10px;color:#70707a}
-  .browser-screen{flex:1;display:flex;flex-direction:column;gap:10px;padding:16px}
-
-  /* ---- GERÇEKÇİ İÇERİK BİLEŞENLERİ ----
-     Kartlar tam gerçekçi seviyede üretilir (mockup-style.md → Gerçekçilik seviyesi):
-     metin, fiyat ve etiketler gerçek yazılır, gri kutu kullanılmaz.
-     .ph.* blokları yalnızca FOTOĞRAF yerine kullanılır (ürün görseli, avatar). */
-  .r-h{font-size:13px;font-weight:700;color:#111;margin:2px 0 4px}
-  .r-sub{font-size:11px;color:#6a6a70}
-  .r-item{display:flex;gap:9px;align-items:center}
-  .r-thumb{width:42px;height:42px;border-radius:7px;background:#dfe6ef;flex:0 0 auto}
-  .r-item-body{flex:1;min-width:0}
-  .r-name{font-size:12px;color:#111;font-weight:600}
-  .r-meta{font-size:10.5px;color:#70707a;margin-top:1px}
-  .r-price{font-size:13px;font-weight:700;color:#111;white-space:nowrap}
-  .r-label{font-size:10.5px;color:#6a6a70;margin-bottom:3px}
-  .r-field{border:1px solid #dcdce0;border-radius:7px;padding:8px 10px;font-size:11.5px;color:#111;background:#fff}
-  .r-field.empty{color:#70707a}
-  .r-help{font-size:10px;color:#70707a;margin-top:3px}
-  .r-link{font-size:11.5px;color:#1b62d6;font-weight:600}
-  .r-line{display:flex;justify-content:space-between;font-size:11.5px;color:#5a5a60;padding:2px 0}
-  .r-line.total{font-size:13px;font-weight:700;color:#111;border-top:1px solid #ececee;margin-top:4px;padding-top:7px}
-  .r-cta{background:#ff6a00;color:#fff;font-weight:700;font-size:13px;text-align:center;
-         padding:12px;border-radius:10px}
-  .r-cta.ghost{background:#fff;color:#111;border:1.5px solid #111}
-  .r-badge{display:inline-block;background:#eaf7ec;color:#1c7a34;font-size:10px;font-weight:700;
-           padding:3px 8px;border-radius:999px}
-  .r-badge.warn{background:#fff3e6;color:#a55600}
-  .r-stars{font-size:11px;color:#b06f00;letter-spacing:1px}
-  .r-divider{height:1px;background:#ececee;margin:2px 0}
-
-  /* ---- sağ: metin sütunu ---- */
-  .copy{flex:1;display:flex;flex-direction:column;gap:22px}
-  h1{font-size:40px;line-height:1.15;font-weight:800;letter-spacing:-.5px}
-  .desc{font-size:17px;line-height:1.5;color:#3a3a3f}
-  .box{border-radius:16px;box-shadow:0 10px 26px rgba(0,0,0,.05);border:1px solid #ededf0;overflow:hidden}
-  .box header{padding:12px 20px;font-size:19px;font-weight:800}
-  .box.test header{background:linear-gradient(90deg,#a5f6ff,#cbf9ff);color:var(--teal)}
-  .box.kpi  header{background:linear-gradient(90deg,#ffe3a5,#ffe5cb);color:var(--amber)}
-  .box.dont header{background:linear-gradient(90deg,#d9cfff,#e9dcff);color:var(--navy)}
-  .box ul{list-style:none;padding:14px 22px 18px;display:flex;flex-direction:column;gap:7px}
-  .box li{font-size:15.5px;line-height:1.4;color:var(--body);padding-left:16px;position:relative}
-  .box li::before{content:"•";position:absolute;left:0;color:var(--body)}
-  .box li b{color:rgba(0,0,0,.78)}
-  .top-banner{max-width:1600px;margin:0 auto;padding:20px 44px 0;font-size:14px;color:#3a3a3f}
-  .top-banner a{color:#1b62d6;font-weight:700;text-decoration:none}
-  .top-banner a:hover{text-decoration:underline}
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --navy: #cfe0ee; --teal: #5cb8ae; --teal-soft: #17302e; --amber: #d59a4c;
+      --ink: #e6ecf2; --muted: #97a6b5; --rule: #2a3642; --paper: #10161d; --card: #171f28;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 3.5rem 1.25rem 5rem; }
+  header { border-bottom: 1px solid var(--rule); padding-bottom: 1.75rem; margin-bottom: 2.25rem; }
+  h1 { margin: 0 0 .5rem; font-size: clamp(1.7rem, 4vw, 2.3rem); letter-spacing: -.01em; color: var(--navy); }
+  .tag {
+    display: inline-block; font-size: .72rem; letter-spacing: .09em; text-transform: uppercase;
+    color: var(--teal); background: var(--teal-soft); padding: .22rem .5rem; border-radius: 3px; margin-bottom: .9rem;
+  }
+  .lede { font-size: 1.06rem; color: var(--muted); max-width: 62ch; margin: 0; }
+  h2 { font-size: 1.15rem; margin: 2.5rem 0 .75rem; color: var(--navy); }
+  p { max-width: 66ch; }
+  a { color: var(--teal); }
+  ul { max-width: 66ch; padding-left: 1.1rem; }
+  li { margin-bottom: .4rem; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .88em; }
+  pre {
+    background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
+    padding: .9rem 1rem; overflow-x: auto;
+  }
+  .demo {
+    background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
+    padding: .75rem; margin: 1rem 0;
+  }
+  .demo iframe { width: 100%; height: 760px; border: 0; border-radius: 3px; background: #fff; }
+  .demo-note { font-size: .84rem; color: var(--muted); margin: .6rem .25rem 0; }
+  .rule-list li strong { color: var(--navy); }
+  footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); font-size: .88rem; color: var(--muted); }
 </style>
 </head>
 <body>
-<div class="top-banner">Zero-install demo — this is what <code>/abtest card</code> renders for every scenario. <a href="https://github.com/ali-demirbas/ab-test-playbook">ab-test-playbook on GitHub →</a></div>
-<div class="card">
-  <div class="mockups">
-    <div class="variant">
-      <span class="pill">Variant A</span>
-      <div class="phone">
-        <div class="statusbar"><span>12:41</span><span>▮▮▮ ⏻</span></div>
-        <div class="screen">
-          <div class="r-h">Sepetim</div>
-          <div class="r-item">
-            <div class="ph img r-thumb"></div>
-            <div class="r-item-body">
-              <div class="r-name">Kadife Ceket</div>
-              <div class="r-meta">Beden M · 1 adet</div>
-            </div>
-            <div class="r-price">890 TL</div>
-          </div>
-          <div class="hl" data-note="kupon alanı açık">
-            <div class="r-label">Kupon kodunuz</div>
-            <div class="r-field empty">Kodu buraya girin</div>
-          </div>
-          <div class="r-line"><span>Ara toplam</span><span>890 TL</span></div>
-          <div class="r-line total"><span>Toplam</span><span>890 TL</span></div>
-          <div class="r-cta">Ödemeye geç</div>
-        </div>
-        <div class="bottomnav"><span>Anasayfa</span><span>Keşfet</span><span>Favoriler</span><span>Sepet</span><span>Profil</span></div>
-      </div>
-    </div>
-    <div class="variant">
-      <span class="pill">Variant B</span>
-      <div class="phone">
-        <div class="statusbar"><span>12:41</span><span>▮▮▮ ⏻</span></div>
-        <div class="screen">
-          <div class="r-h">Sepetim</div>
-          <div class="r-item">
-            <div class="ph img r-thumb"></div>
-            <div class="r-item-body">
-              <div class="r-name">Kadife Ceket</div>
-              <div class="r-meta">Beden M · 1 adet</div>
-            </div>
-            <div class="r-price">890 TL</div>
-          </div>
-          <div class="hl" data-note="bağlantı olarak">
-            <div class="r-link">İndirim kodum var</div>
-          </div>
-          <div class="r-line"><span>Ara toplam</span><span>890 TL</span></div>
-          <div class="r-line total"><span>Toplam</span><span>890 TL</span></div>
-          <div class="r-cta">Ödemeye geç</div>
-        </div>
-        <div class="bottomnav"><span>Anasayfa</span><span>Keşfet</span><span>Favoriler</span><span>Sepet</span><span>Profil</span></div>
-      </div>
-    </div>
+<div class="wrap">
+
+  <header>
+    <span class="tag">Claude Code plugin</span>
+    <h1>ab-test-playbook</h1>
+    <p class="lede">An A/B test engine for Claude Code. It suggests test scenarios, designs them against a written methodology, audits plans you already have, interprets the numbers you paste in, and renders every scenario as a single-file HTML card.</p>
+  </header>
+
+  <h2>What a scenario card looks like</h2>
+  <p>Rendered below with no install and no build step: this is the real output of <code>scripts/build_card.py</code> run against the shipped example, not a mockup of one.</p>
+
+  <div class="demo">
+    <iframe src="demo/scenario-card.html" title="Example scenario card: does an open coupon field increase cart abandonment?" loading="lazy"></iframe>
+    <p class="demo-note">Two mockups differing in exactly one thing, the tested element boxed in red, and the three mandatory boxes. <a href="demo/scenario-card.html">Open full size</a>.</p>
   </div>
 
-  <div class="copy">
-    <h1>Açık kupon kodu alanı sepet terkini artırır mı?</h1>
-    <p class="desc">Görünür bir kupon kutusu, kodu olmayan kullanıcıyı “indirim arayayım” diye siteden çıkarabilir. Kodu bağlantı arkasına almak bu kaçağı kapatabilir ama kampanya kullanımını düşürebilir.</p>
+  <h2>What makes it opinionated</h2>
+  <ul class="rule-list">
+    <li><strong>One variable.</strong> A variant pair changes exactly one thing. If you insist on more, the output says the result cannot be attributed.</li>
+    <li><strong>One primary KPI, always a guardrail.</strong> Five metrics of equal weight is not a measurement plan. Every scenario names the metric that decides, and at least one that must not break.</li>
+    <li><strong>No dark patterns, and protections are not test subjects.</strong> Fake scarcity, hidden totals and uncloseable modals are refused. So is treating bot checks, identity verification or legal consent steps as friction to remove.</li>
+    <li><strong>Evidence is labelled.</strong> Every proposal states whether it rests on your own data, an archive precedent, a sector observation, or intuition — and says so when it is weak.</li>
+    <li><strong>No sample promises without traffic.</strong> Duration and significance are not estimated from thin air.</li>
+  </ul>
 
-    <div class="box test">
-      <header>Test Edilmesi Gerekenler</header>
-      <ul>
-        <li><b>Kaçak</b> Kupon alanını bağlantı arkasına almak terk oranını düşürüyor mu?</li>
-        <li><b>Segment</b> Yeni ve dönen kullanıcıda kupon arama davranışı farklı mı?</li>
-        <li><b>Metin</b> “İndirim kodum var” ile “Kupon kullan” farklı sonuç veriyor mu?</li>
-        <li><b>Kampanya</b> Kampanya dönemlerinde etki tersine dönüyor mu?</li>
-        <li><b>Hata</b> Kod girip başarısız olan kullanıcının terk oranı ne kadar?</li>
-      </ul>
-    </div>
+  <h2>Install</h2>
+  <pre><code># as a Claude Code plugin
+/plugin install ab-test-playbook
 
-    <div class="box kpi">
-      <header>Takip edilecek ana KPI’lar</header>
-      <ul>
-        <li><b>Ziyaretçi Başına Gelir (RPV) — birincil</b> Kaçak kapanırken indirim kullanımındaki değişim toplam geliri artırıyor mu?</li>
-        <li><b>Sipariş Tamamlama Oranı</b> Kupon kutusu kaçağı kapanıyor mu?</li>
-        <li><b>Kupon Kullanım Oranı</b> Kuponu olan kullanıcı alanı bulabilmeli, kullanım çökmemeli.</li>
-        <li><b>Ödeme Adımı Terk Oranı</b> Doğrudan hedef davranış.</li>
-        <li><b>Kampanya Katılımı</b> Aktif kampanya performansı çökmemeli.</li>
-      </ul>
-    </div>
+# or install the skills with the skills CLI
+npx skills add ali-demirbas/ab-test-playbook --all</code></pre>
 
-    <div class="box dont">
-      <header>Yapılmaması Gerekenler</header>
-      <ul>
-        <li>Kupon alanını tamamen kaldırmayın; kodu olan kullanıcı öfkelenir.</li>
-        <li>Geçersiz kod hatasını belirsiz bırakmayın.</li>
-        <li>Test sırasında aktif kampanya kurmayın veya kaldırmayın.</li>
-        <li>Kupon alanını CTA altına gizleyip fark edilmez yapmayın.</li>
-        <li>Aynı testte hem konumu hem metni değiştirmeyin.</li>
-      </ul>
-    </div>
-  </div>
+  <p>Then, inside Claude Code: <code>/abtest suggest</code>, <code>/abtest design</code>, <code>/abtest audit</code>, <code>/abtest results</code>.</p>
+
+  <h2>What is inside</h2>
+  <ul>
+    <li><strong>179 curated scenarios</strong> across journey stages, each already carrying the three boxes.</li>
+    <li><strong>A real stats engine</strong> — z-test, confidence interval, sample size, sample-ratio-mismatch check, all stdlib-only.</li>
+    <li><strong>Adversarial review</strong> — a methodology critic reads every generated scenario, and a mockup reviewer checks the two variants differ in exactly one thing, before anything reaches you.</li>
+    <li><strong>A portable schema</strong> — a test definition independent of any experimentation platform.</li>
+  </ul>
+
+  <footer>
+    Source, methodology and the full scenario archive:
+    <a href="https://github.com/ali-demirbas/ab-test-playbook">github.com/ali-demirbas/ab-test-playbook</a> · MIT
+  </footer>
+
 </div>
 </body>
 </html>
