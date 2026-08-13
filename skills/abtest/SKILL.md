@@ -1,6 +1,6 @@
 ---
 name: abtest
-description: A/B test engine router. Use when the user says "abtest", "/abtest", "A/B test", "test öner", "hangi testi yapmalıyım", "test planımı denetle", "deney tasarla", "sonuçları yorumla", "örneklem hesapla", "CRO testi" or any /abtest subcommand — or when a request plausibly matches more than one abtest-* skill (the router disambiguates instead of guessing). Routes to abtest-suggest, abtest-design, abtest-audit, abtest-results, abtest-card.
+description: A/B test engine router. Use when the user says "abtest", "/abtest", "A/B test", "split test", "experiment", "CRO", "conversion rate optimization", "test öner", "hangi testi yapmalıyım", "test planımı denetle", "deney tasarla", "sonuçları yorumla", "örneklem hesapla", "CRO testi" or any /abtest subcommand — or when a request plausibly matches more than one abtest-* skill, in which case the router disambiguates instead of guessing. Also use when the request sounds like experimentation but may not be an A/B question at all (a diagnosis, a measurement setup, an already-made decision, or a page whose traffic cannot support a split), so the wrong tool is not applied silently. Routes to abtest-suggest (ideas from the archive), abtest-design (a new test for your page), abtest-audit (review a plan), abtest-results (statistics on real numbers) and abtest-card (render a scenario).
 metadata:
   version: 0.1.0
   category: router

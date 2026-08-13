@@ -1,6 +1,6 @@
 ---
 name: abtest-suggest
-description: Suggest proven A/B test scenarios for a given page or journey stage. Use when the user asks "test öner", "checkout için hangi testler", "anasayfam için test fikirleri", "what should I test on my PDP". Picks from the curated archive in knowledge/scenarios/, ranks by ICE, delivers each as an HTML card via abtest-card.
+description: Suggest proven A/B test scenarios for a given page or journey stage, ranked by ICE. Use when the user asks "what should I test", "what should I A/B test on my checkout / cart / product page / pricing page / homepage", "give me A/B test ideas", "experiment ideas", "split test ideas", "CRO ideas", "which tests should I run first", "what tests are worth running", "test öner", "hangi testleri yapmalıyım", "checkout için hangi testler", "anasayfam için test fikirleri", "ne test edeyim". Picks matching scenarios from the curated archive in knowledge/scenarios/ (e-commerce, mobile app, SaaS/B2B, search and filtering, forms, pricing) and delivers each as an HTML card via abtest-card. For a test designed specifically for a page or screenshot you share, see abtest-design. To review a plan you already have, see abtest-audit.
 metadata:
   version: 0.1.0
   category: recommend

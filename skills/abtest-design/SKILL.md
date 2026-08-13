@@ -1,6 +1,6 @@
 ---
 name: abtest-design
-description: Design a NEW A/B test scenario for the user's specific page, feature or funnel step, in the archive's disciplined three-box framework. Use when the user shares a page/screenshot/URL/feature description and asks "bunun için test tasarla", "bu akışta ne test edilir", "design an experiment for this".
+description: Design a NEW single-variable A/B test for the user's specific page, feature or funnel step, in the archive's three-box framework. Use when the user shares a page, screenshot, URL, wireframe or feature description and asks "design an experiment for this", "design a test for this page", "how should I test this", "set up an A/B test for this", "create a test plan", "write a hypothesis for this", "what variant should I try", "bunun için test tasarla", "bu akışta ne test edilir", "hipotez kur", "buna nasıl test kurarım". Produces the hypothesis, Variant A/B definitions, a tool-agnostic setup spec, and an HTML card per scenario. For ready-made ideas from the archive instead, see abtest-suggest. To check a plan you already wrote, see abtest-audit.
 metadata:
   version: 0.1.0
   category: generate

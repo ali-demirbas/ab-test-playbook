@@ -1,6 +1,6 @@
 ---
 name: abtest-audit
-description: Audit an existing A/B test plan, running experiment or mockup pair for methodological flaws. Use when the user says "test planımı denetle", "bu test doğru mu kurulmuş", "review my experiment", or shares variant designs asking what's wrong.
+description: Audit an existing A/B test plan, running experiment or mockup pair for methodological flaws. Use when the user says "review my experiment", "is this test set up correctly", "what is wrong with this test", "check my A/B test", "is my test valid", "did I set this up right", "why did my test fail", "does this test have a confound", "test planımı denetle", "bu test doğru mu kurulmuş", "testimde sorun var mı", or shares variant designs, a test brief or a running experiment asking what is wrong. Checks confounds and multi-variable changes, missing or wrong primary metric, absent guardrails, p-hacking and peeking risk, sample ratio mismatch, selective attrition, novelty effect, unrealistic duration and overlapping concurrent tests. To interpret numbers from a finished test, see abtest-results.
 metadata:
   version: 0.1.0
   category: audit

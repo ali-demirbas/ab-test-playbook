@@ -1,6 +1,6 @@
 ---
 name: abtest-results
-description: Interpret A/B test results the user pastes (visitor/conversion counts per variant, or a stated conversion rate). Use when the user says "sonuçları yorumla", "test bitti, ne çıktı", "anlamlı mı", "kaç ziyaretçi lazım", "örneklem hesapla", "significant mi", or shares raw numbers from a running/finished test.
+description: Interpret A/B test results and run the statistics on real numbers. Use when the user pastes visitor and conversion counts per variant, or asks "is this significant", "interpret these results", "did my test win", "which variant won", "calculate statistical significance", "what is the p-value", "confidence interval", "how many visitors do I need", "what sample size do I need", "how long should I run this test", "minimum detectable effect", "is my traffic split off", "sample ratio mismatch", "SRM", "sonuçları yorumla", "test bitti ne çıktı", "anlamlı mı", "kaç ziyaretçi lazım", "örneklem hesapla". Runs a real two-proportion z-test, confidence interval, required sample size, revenue and margin check, and an SRM check through scripts/analyze_results.py — the math is computed, never estimated — then states the decision and what happens next. To check whether the test was set up correctly in the first place, see abtest-audit.
 metadata:
   version: 0.1.0
   category: analyze
