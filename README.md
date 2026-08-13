@@ -1,4 +1,4 @@
-# ab-test-playbook
+# ab-test-playbook — A/B testing & CRO playbook with 179 experiment scenarios
 
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
