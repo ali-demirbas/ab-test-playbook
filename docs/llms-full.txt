@@ -375,7 +375,7 @@ Her senaryo üç bloktan oluşur, üçü de zorunludur ve her biri tam 5 maddede
 ## KPI kuralları
 
 - İlk sıradaki metrik **birincil metriktir** — testin kazananını tek başına o belirler. Beş metriği eşit ağırlıkta okumak p-hacking'e davetiyedir.
-- Listede en az bir **guardrail** bulunur: dönüşüm artarken bozulabilecek şey. Tipik guardrail'ler: brüt marj, iade oranı, sayfa hızı (LCP), destek talebi, terk oranı, RPV. Guardrail maddeleri "Düşmemeli / Yükselmemeli / Artmamalı" kalıbıyla yazılır.
+- Listede en az bir **guardrail** bulunur: dönüşüm artarken bozulabilecek şey. Tipik guardrail'ler: brüt marj, iade oranı, sayfa hızı (LCP), destek talebi, terk oranı, RPV. Guardrail maddeleri "Düşmemeli / Yükselmemeli / Artmamalı" kalıbıyla yazılır. Guardrail'i olmayan kazanç, ertelenmiş bir kayıptır: testte ölçmediğiniz maliyet iptal edilmez, yalnızca sonraki çeyreğin iade oranına veya destek yüküne taşınır.
 - Metrik, aracın gerçekten ölçebileceği bir şey olmalı. "Güven algısı" bir KPI değildir; onun vekili (proxy) yazılır.
 - **Ara adım metriği tamamlamayı gizleyebilir.** Bir değişiklik huninin ortasındaki bir adımı (sepete ekleme, ödeme başlatma, formu açma, hızlı ödeme seçme) kolayca artırabilir ve bu ilk bakışta kazanç gibi görünür — ama o adımı daha kolay geçen kullanıcı bir sonrakinde takılıyorsa toplam sipariş değişmez, hatta düşer. Özellikle bir akışı hızlandıran, atlayan veya öne çıkaran varyantlarda risk yüksektir: kullanıcı henüz vermediği bir kararın sonucuna fırlatılır ve geri döner. Bu yüzden birincil metrik daima huninin sonundaki gerçek sonuçtur (tamamlanan sipariş, gönderilen form); ara adım metriği tanı metriği olarak ikinci sırada izlenir. İkisi ters yönde hareket ediyorsa bulgu budur.
 - **Dönüşüm oranı geliri gizleyebilir.** Fiyat, taksit, indirim veya paket testlerinde birincil metrik olarak salt "Dönüşüm Oranı (CR)" yeterli değildir — fiyat düşürmek CR'yi neredeyse her zaman artırır ama geliri düşürebilir. Bu tür senaryolarda birincil metrik gelir bazlı olmalı: Ziyaretçi Başına Gelir (RPV) veya Ortalama Sepet Tutarı (AOV) × CR. `knowledge/scenarios/product-detail.md` ve `cart-checkout.md`'deki fiyat senaryoları bu ayrımı zaten uygular; yeni fiyat/paket senaryosu üretilirken aynı kural geçerlidir.
@@ -445,7 +445,7 @@ Bu dört filtre önceliklendirmenin yerine geçmez, öncesinde çalışır: merc
 
 ## Değişken izolasyonu
 
-- Bir testte **tek değişken** değişir. Variant B'de fiyat, ürün, puan sayısı, rozet gibi ikinci bir fark varsa test kirlenmiştir (confound) ve sonucu yorumlanamaz.
+- Bir testte **tek değişken** değişir. Variant B'de fiyat, ürün, puan sayısı, rozet gibi ikinci bir fark varsa test kirlenmiştir (confound) ve sonucu yorumlanamaz. Aynı ekranda iki fark, iki ayrı testtir; tek raporda birleşmeleri onları tek test yapmaz.
 - Variant A her zaman kontroldür (mevcut durum), Variant B testtir. Rolleri ters kurmayın.
 - **Test yalnızca var olanı değiştirmek değildir.** Bir sayfada üç tür fırsat vardır: mevcut öğeyi değiştirmek, mevcut öğeyi kaldırmak ve **olmayan bir öğeyi eklemek**. Üçüncüsü genelde en yüksek etkilidir ama en az akla gelendir, çünkü ekrana bakıldığında görünen şey hep "orada olan"dır. Sayfayı değerlendirirken şu soru ayrıca sorulur: kullanıcı bu adımda hangi soruyu soruyor ve cevabı ekranda var mı? Eksik bilgi veya eksik aksiyon, bir varyantın konusu olabilir.
 - **Kullanıcı sayfasını paylaştıysa A o sayfadır.** Kontrolü yeniden tasarlamak, sadeleştirmek veya "temsili" hâle getirmek testi geçersiz kılar — ölçtüğünüz şey artık önerinizin etkisi değil, iki ayrı tasarımın farkı olur. Ekranda ne varsa A odur; üretilecek tek şey B'dir.
@@ -510,6 +510,8 @@ Bu senaryolar zamansız değildir. Bir senaryonun geçerliliği şu durumlarda d
 - **Desen standartlaştı:** Bir zamanlar ayrıştırıcı olan şey (misafir ödeme, mobil uyum, arama önerisi) artık asgari beklentiyse, testin sorusu "eklemeli miyiz" değil "nasıl yapmalıyız"a döner.
 - **Teknoloji değişti:** Sayfa hızı, arayüz kalıbı veya cihaz kullanımı senaryonun varsaydığı zemini kaydırdıysa.
 - **Kendi verinizde tükendi:** Aynı desen sizin ürününüzde art arda "fark yok" verdiyse, arşivde durması onu sizin için geçerli kılmaz (bkz. yerel tepe riski).
+
+Arşiv bir vaat değil, bir emsaldir: bir senaryonun burada durması onun sizin ürününüzde kazanacağını değil, benzer bir bağlamda daha önce sorulmaya değer bulunduğunu gösterir.
 
 Bir senaryo bu nedenlerden biriyle geçersizleştiğinde arşivden sessizce silinmez: senaryonun kendi altına neyin değiştiği ve yerine ne önerildiği yazılır, böylece gerekçe senaryoyla birlikte kalır. Senaryonun altındaki "Pazar notu" satırları da bu amaca hizmet eder — bağımlılık görünür olur, kullanıcı kendi bağlamında geçerli olup olmadığına karar verebilir.
 

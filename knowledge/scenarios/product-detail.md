@@ -28,6 +28,7 @@ Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. 
 - Tüm katalogda tek tip sonuca göre karar vermeyin; kategoriye göre tekrarlayın.
 - Stüdyo görseli tamamen kaldırıp yalnızca kullanıcı fotoğrafına geçmeyin; A/B olarak karşılaştırın.
 
+> **Ölçüm notu:** Görsel değişiklikleri sepete ekleme oranını hızlı hareket ettirir ama iade oranını geç hareket ettirir. İkisini aynı pencerede okumazsanız kazanç gerçek değil, henüz faturası gelmemiş olur.
 ---
 
 ## Tek görsel mi, çoklu görsel mi daha etkili?
