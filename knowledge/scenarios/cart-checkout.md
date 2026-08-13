@@ -359,6 +359,7 @@ Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci h
 - Test boyunca funnel adımlarını değiştirmeyin.
 - Aşırı animasyonlu veya yavaş yüklenen çubuk kullanmayın.
 
+> **Ölçüm notu:** Bu senaryoda ilk adımın tamamlanma oranı neredeyse her zaman yükselir; asıl soru yükselen adımın siparişe dönüp dönmediğidir. Adım metriği testin fotoğrafını çeker, sonucunu değil — birincil metrik huninin sonunda kalır.
 ---
 
 ## Otomatik indirim kodu davranışı nasıl etkiler?
