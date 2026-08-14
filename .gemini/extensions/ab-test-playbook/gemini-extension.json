@@ -1,0 +1,6 @@
+{
+  "name": "ab-test-playbook",
+  "version": "0.1.0",
+  "description": "A/B test engine. Suggests proven test scenarios by journey stage, designs new ones in a disciplined test/KPI/guardrail framework, audits existing test plans for confounds, and renders deck-style scenario cards \u2014 text and visual together by default.",
+  "contextFileName": "GEMINI.md"
+}

@@ -16,6 +16,8 @@ All notable changes to this project are documented here. Format loosely follows 
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, this `CHANGELOG.md`.
 - `updated` field on every skill's metadata block.
 - "Questions this playbook helps answer" and "Scope" sections in the README.
+- `.gemini/extensions/ab-test-playbook/` + `scripts/build_gemini.py`: the plugin packaged for Gemini CLI, generated from the same `CLAUDE.md`, skills and agents the Claude Code plugin ships — not a hand-maintained second copy. `${CLAUDE_PLUGIN_ROOT}` is rewritten to Gemini CLI's `${extensionPath}`, and the two review agents' tool names are translated to Gemini CLI's vocabulary (an unmapped tool fails the build rather than shipping a no-op). Wired into `validate.sh` via `--check` so an edited skill or agent with a stale extension fails CI.
+- `scripts/validate.sh`: a 13th check that every skill description contains "Use when" and that every sibling skill it names by name still exists — the router depends on descriptions alone to pick a skill, so a renamed or removed sibling would otherwise fail silently, findable only by a user who goes looking for a skill that isn't there.
 
 ### Changed
 - README positioning broadened from "A/B test engine for Claude Code" to a practical A/B testing/CRO playbook description, with more of the actual coverage (ICE prioritization, guardrails, statistical significance) stated up front.

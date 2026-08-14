@@ -32,6 +32,14 @@ count_files() {
 }
 
 echo "== 1. Skills: frontmatter with name + description + metadata =="
+# Parseability comes first. Everything below reads front matter with grep, which
+# finds `description:` just as happily in a block no YAML parser can load — and
+# the installers that matter (Claude Code, `npx skills add`) do parse it. This
+# caught a real one: an unquoted `visual style: a Variant …` made the whole
+# abtest-card skill invisible to `npx skills add`, silently, while every other
+# check here passed.
+python3 scripts/check_frontmatter.py skills/*/SKILL.md agents/*.md || FAIL=1
+
 # `updated` is deliberately not checked against git: a skill's prose can be
 # edited without its behavior changing, so the date is a curated claim about the
 # last substantive revision, not a mirror of the last commit touching the file.
@@ -328,7 +336,65 @@ print("  ok: KPI roles %s and device types %s agree across schema, validator and
       % (sorted(roles), sorted(devices)))
 PY
 
-echo "== 12. Published Markdown bundle matches its sources =="
+echo "== 12. Skill description contract (sibling refs + 'Use when') =="
+# The router relies on the description alone to decide whether a skill fires
+# (progressive disclosure: the body never loads until picked). Two things can
+# silently break that contract: a description that names a sibling skill which
+# has since been renamed or removed (a dead pointer nothing else notices — the
+# reader just never finds the skill it was told to look at), and a description
+# missing the "Use when ..." sentence the routing logic depends on.
+python3 - <<'PY' || FAIL=1
+import glob
+import re
+import sys
+
+SKILL_DIR_RE = re.compile(r'^skills/([a-z-]+)/SKILL\.md$')
+skill_names = set()
+for f in glob.glob("skills/*/SKILL.md"):
+    m = SKILL_DIR_RE.match(f)
+    if m:
+        skill_names.add(m.group(1))
+
+failed = False
+checked = 0
+for f in sorted(glob.glob("skills/*/SKILL.md")):
+    own = SKILL_DIR_RE.match(f).group(1)
+    with open(f, encoding="utf-8") as fh:
+        text = fh.read()
+    fm = text.split("---", 2)[1] if text.startswith("---") else ""
+    m = re.search(r'^description:\s*(.+)$', fm, re.M)
+    desc = m.group(1) if m else ""
+    checked += 1
+
+    if "Use when" not in desc:
+        print(f"FAIL: {f}: description has no 'Use when ...' sentence")
+        failed = True
+
+    # `abtest-*` is a glob standing for "any abtest skill", not a literal
+    # reference — the [a-z]+ requirement (no bare "abtest", no "abtest-*")
+    # excludes it and the router's own name without a separate special case.
+    for ref in set(re.findall(r'\babtest-[a-z]+\b', desc)) - {own}:
+        if ref not in skill_names:
+            print(f"FAIL: {f}: description points at '{ref}', no such skill directory")
+            failed = True
+
+if failed:
+    sys.exit(1)
+print(f"  ok: {checked} skill descriptions carry 'Use when' and resolve their sibling references")
+PY
+
+echo "== 13. Gemini CLI extension matches its sources =="
+# .gemini/extensions/ is generated from CLAUDE.md, skills/ and agents/, not
+# hand-maintained — the same reasoning as docs/llms-full.txt below, and the
+# same failure mode: a source file edited without regenerating ships an
+# out-of-date second copy of the plugin under a different runtime.
+if python3 scripts/build_gemini.py --check >/dev/null 2>&1; then
+  ok "gemini extension is in sync with CLAUDE.md, skills and agents"
+else
+  err ".gemini/extensions/ is stale — run: python3 scripts/build_gemini.py"
+fi
+
+echo "== 14. Published Markdown bundle matches its sources =="
 # docs/llms-full.txt is a concatenation of the core docs. Its only value is
 # being current, and a stale bundle is worse than none: it answers questions
 # with documentation the repo no longer ships.
