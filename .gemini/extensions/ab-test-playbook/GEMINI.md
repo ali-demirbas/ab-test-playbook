@@ -465,6 +465,6 @@ Liste sonunda, öneri kümesinin güveni zayıfsa bunu tek cümleyle söyle — 
 - Üç kutunun tam içeriğini kartın yanında ayrıca sohbete metin olarak yazma (kural 9) — yalnızca kullanıcı açıkça metin hâlini isterse ayrıca yaz.
 - Senaryo başlıklarını listeleyip "hangisini açayım" diye sorma (CLAUDE.md kural 13); seçilenleri doğrudan kart olarak ver.
 
-## Review agents
+## Agents
 
-This extension bundles the adversarial review agents the skills above reference, under `agents/`. Invoke them the way a skill's text says to — do not skip a review step just because no tool call syntax is shown inline.
+This extension bundles the subagents the skills above reference, under `agents/`. Invoke them the way a skill's text says to — do not skip a spawn step just because no tool call syntax is shown inline.

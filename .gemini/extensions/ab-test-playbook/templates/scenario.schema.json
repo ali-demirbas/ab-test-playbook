@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ali-demirbas/ab-test-playbook/templates/scenario.schema.json",
+  "title": "Scenario",
+  "description": "Tool-agnostic definition of a single A/B test: one variable, two variants, exactly one primary KPI and at least one guardrail. Deliberately independent of any testing platform's own schema — whoever imports it maps it to their tool. Several of CLAUDE.md's binding rules are enforced here structurally rather than in prose: rule 2 (one primary KPI), rule 3 (a guardrail exists), rule 4 (one variable, two variants), rule 8 (source is stated), rule 10 (evidence level is stated).",
+  "type": "object",
+  "required": ["id", "title", "variable", "hypothesis", "variants", "kpis", "evidence", "source"],
+  "additionalProperties": false,
+
+  "$defs": {
+    "boxItem": {
+      "description": "One bullet in one of the three boxes. The object form carries a bold label; the string form is a plain line.",
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        {
+          "type": "object",
+          "required": ["label", "text"],
+          "additionalProperties": false,
+          "properties": {
+            "label": { "type": "string", "minLength": 1 },
+            "text": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    }
+  },
+
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Stable slug, e.g. cart-checkout-coupon-field-01"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The scenario's question. Archive convention is an actual question ending in '?' — a title that asserts an answer prejudges the test."
+    },
+    "stage": {
+      "type": "string",
+      "description": "Journey stage / archive file this belongs to, e.g. cart-checkout"
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Why this is worth testing, in prose. Becomes the card's description."
+    },
+
+    "source": {
+      "type": "string",
+      "enum": ["archive", "generated"],
+      "description": "Rule 8: a scenario lifted from the archive and one produced for this page must be distinguishable."
+    },
+
+    "variable": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Rule 4: the ONE thing that differs between the variants. A value naming two things ('renk ve metin') is a rule-4 violation the schema cannot catch — scenario-critic does."
+    },
+
+    "hypothesis": {
+      "type": "object",
+      "required": ["change", "mechanism"],
+      "additionalProperties": false,
+      "description": "A hypothesis states a mechanism, not just a prediction. 'B will convert better' is a guess; 'B converts better because the coupon field stops sending code-less users off-site' is testable.",
+      "properties": {
+        "change": { "type": "string", "minLength": 1 },
+        "mechanism": { "type": "string", "minLength": 1, "description": "The causal clause: why the change should move the metric." },
+        "expected_direction": { "type": "string", "enum": ["increase", "decrease", "unknown"] }
+      }
+    },
+
+    "device": { "type": "string", "enum": ["phone", "web", "both"] },
+    "market": {
+      "type": ["string", "null"],
+      "description": "Rule 11: market is separate from language. null means unknown — which is honest, and blocks carrying one market's result to another."
+    },
+
+    "variants": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "Exactly two. A third variant is a different test design and this schema deliberately refuses to express it.",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "enum": ["A", "B"] },
+          "description": { "type": "string", "minLength": 1 },
+          "is_current": {
+            "type": "boolean",
+            "description": "Rule 15: when the user shared a real page, variant A is that page as-is. Mark it true rather than quietly redesigning the control."
+          }
+        }
+      }
+    },
+
+    "test_items": { "type": "array", "items": { "$ref": "#/$defs/boxItem" } },
+    "dont_items": { "type": "array", "items": { "$ref": "#/$defs/boxItem" } },
+
+    "kpis": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Rule 2 and rule 3, enforced structurally: exactly one primary, at least one guardrail.",
+      "items": {
+        "type": "object",
+        "required": ["name", "role"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "role": { "type": "string", "enum": ["primary", "secondary", "guardrail"] },
+          "question": { "type": "string", "description": "What this metric answers." }
+        }
+      },
+      "allOf": [
+        {
+          "contains": { "type": "object", "properties": { "role": { "const": "primary" } }, "required": ["role"] },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": { "type": "object", "properties": { "role": { "const": "guardrail" } }, "required": ["role"] },
+          "minContains": 1
+        }
+      ]
+    },
+
+    "evidence": {
+      "type": "object",
+      "required": ["level"],
+      "additionalProperties": false,
+      "description": "Rule 10: the strength of the evidence behind the proposal is always stated. A weak level is allowed; hiding it is not.",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["user_data", "archive", "sector", "intuition"]
+        },
+        "note": { "type": "string" }
+      }
+    },
+
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Rule 5: no duration or sample promise without known traffic. Leave the numeric fields out rather than estimating them.",
+      "properties": {
+        "traffic_known": { "type": "boolean" },
+        "daily_visitors": { "type": "integer", "minimum": 1 },
+        "baseline_rate": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+        "mde": { "type": "number", "exclusiveMinimum": 0 },
+        "estimated_days": { "type": "integer", "minimum": 1 }
+      },
+      "dependentRequired": {
+        "estimated_days": ["traffic_known"],
+        "daily_visitors": ["traffic_known"]
+      }
+    },
+
+    "history": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Rule 16: what .abtest-history.md says about this variable on this page.",
+      "properties": {
+        "tested_before": { "type": "boolean" },
+        "previous_result": { "type": "string", "enum": ["win", "loss", "no_difference", "invalid"] },
+        "rerun_justification": { "type": "string" }
+      }
+    },
+
+    "card": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional visual layer consumed by scripts/build_card.py. Absent when the scenario is only being exported, not rendered.",
+      "properties": {
+        "url": { "type": "string" },
+        "variant_a": { "type": "string", "minLength": 1 },
+        "variant_b": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
