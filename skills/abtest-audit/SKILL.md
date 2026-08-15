@@ -9,6 +9,8 @@ metadata:
 
 # abtest-audit — Test Planı Denetimi
 
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7). / Output always matches the language you write in.
+
 `${CLAUDE_PLUGIN_ROOT}/CLAUDE.md` ve `${CLAUDE_PLUGIN_ROOT}/knowledge/methodology.md` bağlayıcıdır.
 
 ## Denetim listesi

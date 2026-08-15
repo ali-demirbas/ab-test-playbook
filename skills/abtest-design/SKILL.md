@@ -9,6 +9,8 @@ metadata:
 
 # abtest-design — Yeni Senaryo Tasarımı
 
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7). / Output always matches the language you write in.
+
 `${CLAUDE_PLUGIN_ROOT}/CLAUDE.md` kuralları bağlayıcıdır. Formatın tanımı `${CLAUDE_PLUGIN_ROOT}/knowledge/methodology.md`'dedir — üretmeden önce oku.
 
 ## Akış

@@ -9,6 +9,8 @@ metadata:
 
 # abtest — Router
 
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7) — Türkçe yazarsan Türkçe, İngilizce yazarsan İngilizce alırsın. / Output always matches the language you write in.
+
 Sen ab-test-playbook motorunun giriş noktasısın. Kullanıcının niyetini ayrıştır ve doğru alt-skill'e yönlendir. Önce `${CLAUDE_PLUGIN_ROOT}/CLAUDE.md` kurallarını oku — bağlayıcıdır.
 
 ## Yönlendirme tablosu

@@ -51,6 +51,8 @@ metadata:
 
 # abtest — Router
 
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7) — Türkçe yazarsan Türkçe, İngilizce yazarsan İngilizce alırsın. / Output always matches the language you write in.
+
 Sen ab-test-playbook motorunun giriş noktasısın. Kullanıcının niyetini ayrıştır ve doğru alt-skill'e yönlendir. Önce `${extensionPath}/CLAUDE.md` kurallarını oku — bağlayıcıdır.
 
 ## Yönlendirme tablosu
@@ -111,6 +113,8 @@ metadata:
 
 # abtest-audit — Test Planı Denetimi
 
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7). / Output always matches the language you write in.
+
 `${extensionPath}/CLAUDE.md` ve `${extensionPath}/knowledge/methodology.md` bağlayıcıdır.
 
 ## Denetim listesi
@@ -159,6 +163,8 @@ metadata:
 ---
 
 # abtest-card — Senaryo Kartı Üretimi
+
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7). / Output always matches the language you write in.
 
 Görsel dilin tanımı `${extensionPath}/knowledge/mockup-style.md`'dedir — üretmeden önce oku. Şablon: `${extensionPath}/templates/scenario-card.html`.
 
@@ -219,6 +225,8 @@ metadata:
 ---
 
 # abtest-design — Yeni Senaryo Tasarımı
+
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7). / Output always matches the language you write in.
 
 `${extensionPath}/CLAUDE.md` kuralları bağlayıcıdır. Formatın tanımı `${extensionPath}/knowledge/methodology.md`'dedir — üretmeden önce oku.
 
@@ -293,6 +301,8 @@ metadata:
 ---
 
 # abtest-results — Sonuç Yorumlama ve Örneklem Hesabı
+
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7). / Output always matches the language you write in.
 
 `${extensionPath}/CLAUDE.md` ve `${extensionPath}/knowledge/methodology.md` bağlayıcıdır. Hesaplamalar `${extensionPath}/scripts/analyze_results.py` ile yapılır — anlamlılık ve p-değeri asla elle/tahminle hesaplanmaz, script çalıştırılır.
 
@@ -409,6 +419,8 @@ metadata:
 ---
 
 # abtest-suggest — Arşivden Test Önerisi
+
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7). / Output always matches the language you write in.
 
 `${extensionPath}/CLAUDE.md` kuralları bağlayıcıdır.
 

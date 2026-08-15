@@ -9,6 +9,8 @@ metadata:
 
 # abtest-results — Sonuç Yorumlama ve Örneklem Hesabı
 
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7). / Output always matches the language you write in.
+
 `${CLAUDE_PLUGIN_ROOT}/CLAUDE.md` ve `${CLAUDE_PLUGIN_ROOT}/knowledge/methodology.md` bağlayıcıdır. Hesaplamalar `${CLAUDE_PLUGIN_ROOT}/scripts/analyze_results.py` ile yapılır — anlamlılık ve p-değeri asla elle/tahminle hesaplanmaz, script çalıştırılır.
 
 ## İki mod

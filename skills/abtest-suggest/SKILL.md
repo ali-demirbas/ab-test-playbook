@@ -9,6 +9,8 @@ metadata:
 
 # abtest-suggest — Arşivden Test Önerisi
 
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7). / Output always matches the language you write in.
+
 `${CLAUDE_PLUGIN_ROOT}/CLAUDE.md` kuralları bağlayıcıdır.
 
 ## Akış

@@ -9,6 +9,8 @@ metadata:
 
 # abtest-card — Senaryo Kartı Üretimi
 
+> **Türkçe/English:** Çıktı dili kullanıcının yazdığı dildir (CLAUDE.md kural 7). / Output always matches the language you write in.
+
 Görsel dilin tanımı `${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md`'dedir — üretmeden önce oku. Şablon: `${CLAUDE_PLUGIN_ROOT}/templates/scenario-card.html`.
 
 Bu skill, `abtest-suggest` veya `abtest-design`'ın bir turda ürettiği HER senaryo için otomatik çalışır (CLAUDE.md kural 9) — kullanıcının ayrıca istemesi gerekmez. Üç kutunun ("Test edilmesi gerekenler" / "Takip edilecek ana KPI'lar" / "Yapılmaması gerekenler") tam içeriği yalnızca bu kartta bulunur; aynı içerik sohbete ayrıca metin olarak yazılmaz — sohbette yalnızca başlık, kaynak etiketi ve tek cümlelik özet kalır. Bir turda 2-5 senaryo doğrudan kart olur; 5'ten fazla güçlü aday varsa hepsi sormadan üretilmez (kural 9). Kullanıcı doğrudan "kart yap" derse de aynı akış işler.
