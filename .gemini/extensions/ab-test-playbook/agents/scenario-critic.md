@@ -1,6 +1,6 @@
 ---
 name: scenario-critic
-description: Adversarially reviews a proposed A/B test scenario against CLAUDE.md's binding rules and knowledge/methodology.md. Spawned by abtest-suggest and abtest-design before any scenario reaches a card. Returns PASS/FIX per scenario with the exact rule violated. Nothing gets rendered without this review.
+description: Adversarially reviews a proposed A/B test scenario against CLAUDE.md's binding rules and knowledge/methodology.md. Spawned by ab-test-suggest and ab-test-design before any scenario reaches a card. Returns PASS/FIX per scenario with the exact rule violated. Nothing gets rendered without this review.
 tools: read_file, grep_search, glob, run_shell_command
 ---
 

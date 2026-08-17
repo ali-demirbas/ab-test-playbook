@@ -36,7 +36,7 @@ echo "== 1. Skills: frontmatter with name + description + metadata =="
 # finds `description:` just as happily in a block no YAML parser can load — and
 # the installers that matter (Claude Code, `npx skills add`) do parse it. This
 # caught a real one: an unquoted `visual style: a Variant …` made the whole
-# abtest-card skill invisible to `npx skills add`, silently, while every other
+# ab-test-card skill invisible to `npx skills add`, silently, while every other
 # check here passed.
 python3 scripts/check_frontmatter.py skills/*/SKILL.md agents/*.md || FAIL=1
 
@@ -247,9 +247,10 @@ PY
 echo "== 9. Rule references point at rules that exist =="
 python3 - <<'PY' || FAIL=1
 import os, re, sys
-# Skills and agents cite the binding rules by number ("kural 17"). CLAUDE.md is
-# the only place those numbers are defined; a citation past the end of the list
-# is a rule the reader will look for and not find.
+# Skills and agents cite the binding rules by number — "kural 17" in the Turkish
+# files (CLAUDE.md, knowledge/, agents/), "rule 17" in the English skill bodies.
+# CLAUDE.md is the only place those numbers are defined; a citation past the end
+# of the list is a rule the reader will look for and not find.
 with open('CLAUDE.md', encoding='utf-8') as f:
     rules = re.findall(r'^(\d+)\.\s+\*\*', f.read(), re.M)
 highest = max(int(r) for r in rules) if rules else 0
@@ -257,7 +258,7 @@ if highest == 0:
     print("FAIL: CLAUDE.md: no numbered rules found")
     sys.exit(1)
 
-cite_re = re.compile(r'kural\s+(\d+)', re.I)
+cite_re = re.compile(r'\b(?:kural|rule)\s+(\d+)', re.I)
 failed = False
 checked = 0
 for dirpath, dirs, files in os.walk('.'):
@@ -274,7 +275,7 @@ for dirpath, dirs, files in os.walk('.'):
                     n = int(m.group(1))
                     checked += 1
                     if n < 1 or n > highest:
-                        print(f"FAIL: {path}:{lineno} cites 'kural {n}' but CLAUDE.md defines 1-{highest}")
+                        print(f"FAIL: {path}:{lineno} cites '{m.group(0)}' but CLAUDE.md defines 1-{highest}")
                         failed = True
 if failed:
     sys.exit(1)
@@ -370,10 +371,10 @@ for f in sorted(glob.glob("skills/*/SKILL.md")):
         print(f"FAIL: {f}: description has no 'Use when ...' sentence")
         failed = True
 
-    # `abtest-*` is a glob standing for "any abtest skill", not a literal
-    # reference — the [a-z]+ requirement (no bare "abtest", no "abtest-*")
+    # `ab-test-*` is a glob standing for "any ab-test skill", not a literal
+    # reference — the [a-z]+ requirement (no bare "ab-test", no "ab-test-*")
     # excludes it and the router's own name without a separate special case.
-    for ref in set(re.findall(r'\babtest-[a-z]+\b', desc)) - {own}:
+    for ref in set(re.findall(r'\bab-test-[a-z]+\b', desc)) - {own}:
         if ref not in skill_names:
             print(f"FAIL: {f}: description points at '{ref}', no such skill directory")
             failed = True

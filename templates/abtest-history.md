@@ -4,7 +4,7 @@ Bu dosya projenin test hafızasıdır. `ab-test-playbook` skill'leri öneri üre
 
 **Nereye konur:** Projenin kök dizininde `.abtest-history.md` adıyla. (Bu dosya o şablonun kendisidir — kopyalayıp adını değiştirin.)
 
-**Kim doldurur:** Bir test bittiğinde `/abtest results` çalıştırdığınızda, sonucu yorumladıktan sonra kaydın satır hâlini size verir; onu buraya yapıştırırsınız. Elle de yazabilirsiniz.
+**Kim doldurur:** Bir test bittiğinde `/ab-test results` çalıştırdığınızda, sonucu yorumladıktan sonra kaydın satır hâlini size verir; onu buraya yapıştırırsınız. Elle de yazabilirsiniz.
 
 **Gizlilik:** Bu dosya sizin iş verinizi içerir. Public bir depoda tutuyorsanız `.gitignore`'a ekleyin.
 
@@ -12,7 +12,7 @@ Bu dosya projenin test hafızasıdır. `ab-test-playbook` skill'leri öneri üre
 
 Yeni kayıt en üste eklenir (en yeni önce).
 
-> **Aşağıdaki dört satır örnektir, gerçek veri değildir.** Biçimi göstermek için konmuştur; kendi ilk kaydınızı eklerken bu satırları silin. Silmezseniz `abtest-suggest` ve `abtest-design` bunları sizin geçmiş testleriniz sanır ve önerileri buna göre süzer.
+> **Aşağıdaki dört satır örnektir, gerçek veri değildir.** Biçimi göstermek için konmuştur; kendi ilk kaydınızı eklerken bu satırları silin. Silmezseniz `ab-test-suggest` ve `ab-test-design` bunları sizin geçmiş testleriniz sanır ve önerileri buna göre süzer.
 
 | Tarih | Sayfa/Akış | Test edilen tek değişken | Sonuç | Birincil metrik etkisi | Guardrail | Genellenebilir örüntü | Not |
 |---|---|---|---|---|---|---|---|
@@ -34,7 +34,7 @@ Yalnızca şunlardan biri yazılır — yorum "Not" sütununa gider:
 
 ## Genellenebilir örüntü sütunu
 
-Yalnızca **kazandı** sonucunda doldurulur. Buraya yazılan şey testin kendisi değil, testin ardındaki soyut fikirdir — "kargo çubuğu kazandı" değil, "ilerleme göstergesi harcama davranışını güçlendiriyor" gibi. Amaç: bir sayfada işe yarayan bir mekanizmanın başka sayfalarda da denenebilir olduğunu görmek. `abtest-suggest` bu sütunu okur ve benzer bir mekanizma başka bir sayfaya uyuyorsa "burada da denenebilir, çünkü [X sayfasında] aynı mekanizma kazanmıştı" diye önerebilir — ama bunu otomatik varsaymaz, hâlâ ayrı bir test olarak kurar.
+Yalnızca **kazandı** sonucunda doldurulur. Buraya yazılan şey testin kendisi değil, testin ardındaki soyut fikirdir — "kargo çubuğu kazandı" değil, "ilerleme göstergesi harcama davranışını güçlendiriyor" gibi. Amaç: bir sayfada işe yarayan bir mekanizmanın başka sayfalarda da denenebilir olduğunu görmek. `ab-test-suggest` bu sütunu okur ve benzer bir mekanizma başka bir sayfaya uyuyorsa "burada da denenebilir, çünkü [X sayfasında] aynı mekanizma kazanmıştı" diye önerebilir — ama bunu otomatik varsaymaz, hâlâ ayrı bir test olarak kurar.
 
 ## Neden "kaybetti" kaydı fikri öldürmez
 

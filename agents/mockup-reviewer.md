@@ -1,6 +1,6 @@
 ---
 name: mockup-reviewer
-description: Adversarially reviews a scenario card's two mockups for the single-variable rule and visual realism before the card is delivered. Spawned by abtest-card after build_card.py produces the HTML. Returns PASS/FIX with the exact difference found. A card with two differences invalidates the test it illustrates.
+description: Adversarially reviews a scenario card's two mockups for the single-variable rule and visual realism before the card is delivered. Spawned by ab-test-card after build_card.py produces the HTML. Returns PASS/FIX with the exact difference found. A card with two differences invalidates the test it illustrates.
 tools: Read, Grep, Glob, Bash
 ---
 

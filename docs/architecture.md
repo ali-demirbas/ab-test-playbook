@@ -12,7 +12,7 @@ rule that holds only as long as it is remembered.
 user asks (page / URL / screenshot / question)
         │
         ▼
-  abtest (router)  ──────────────────────────────────┐
+  ab-test (router)  ─────────────────────────────────┐
         │                                            │
         ├── suggest ──┐                              │
         ├── design ───┤                              │
@@ -36,7 +36,7 @@ user asks (page / URL / screenshot / question)
               single-file HTML card
 ```
 
-`abtest-audit` is the one branch that skips the critic: there, review *is* the
+`ab-test-audit` is the one branch that skips the critic: there, review *is* the
 requested work and findings are reported directly rather than silently fixed
 (CLAUDE.md rule 17).
 
@@ -48,7 +48,7 @@ requested work and findings are reported directly rather than silently fixed
 | Method and statistics reasoning | `knowledge/methodology.md` | Referenced by skills rather than restated in each one |
 | Visual language of a card | `knowledge/mockup-style.md` | Same reason — one definition, many consumers |
 | Curated scenarios | `knowledge/scenarios/` | Content, not logic. Adding a scenario is a content change |
-| Per-task instructions | `skills/abtest-*/SKILL.md` | The task-specific part, kept thin because the rules live above |
+| Per-task instructions | `skills/ab-test-*/SKILL.md` | The task-specific part, kept thin because the rules live above |
 | Adversarial review | `agents/` | Separate context: the producer systematically misses its own single-variable violation |
 | Text escaping, template fill, drift check | `scripts/build_card.py` | Deterministic — a model rewriting ~180 lines of CSS per card is both the slowest step and the drift risk |
 | Statistics | `scripts/analyze_results.py` | Same reason: arithmetic is not a judgement call |
@@ -77,5 +77,5 @@ split is deliberate, not a gap waiting to be closed.
 
 - **A new scenario** → `knowledge/scenarios/<stage>.md`, then `python3 scripts/validate_scenarios.py`.
 - **A new rule that applies everywhere** → `CLAUDE.md`, numbered. If it can be checked mechanically, add the check to a script in the same change; a rule with no enforcement path degrades into a suggestion.
-- **A new skill** → `skills/abtest-<name>/SKILL.md` with the `metadata` block (`version`, `category`, `updated`). Keep it thin: reference `CLAUDE.md` and `knowledge/` instead of restating them.
+- **A new skill** → `skills/ab-test-<name>/SKILL.md` with the `metadata` block (`version`, `category`, `updated`). Keep it thin: reference `CLAUDE.md` and `knowledge/` instead of restating them.
 - **A change to the card's look** → `templates/scenario-card.html`. `build_card.py` self-verifies against the template, so a structural edit will surface immediately as a drift error rather than as a quietly malformed card.

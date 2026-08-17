@@ -30,12 +30,12 @@ Built from an archive of A/B test scenarios and hypothesis-generation patterns u
 ```mermaid
 flowchart LR
     subgraph Generate["Generate a scenario"]
-        S["/abtest suggest\narchive, ranked by ICE"]
-        D["/abtest design\nnew scenario for your page"]
+        S["/ab-test suggest\narchive, ranked by ICE"]
+        D["/ab-test design\nnew scenario for your page"]
     end
-    C["/abtest card\nHTML scenario card"]
-    R["/abtest results\nz-test + decision"]
-    A["/abtest audit\ncatch flaws before it runs"]
+    C["/ab-test card\nHTML scenario card"]
+    R["/ab-test results\nz-test + decision"]
+    A["/ab-test audit\ncatch flaws before it runs"]
 
     S --> C
     D --> C
@@ -79,11 +79,11 @@ cd ab-test-playbook/.gemini/extensions/ab-test-playbook && gemini extensions lin
 
 | You say | What happens |
 |---|---|
-| `/abtest suggest` — "suggest tests for my checkout page" | Picks matching scenarios from the archive, ranks by ICE, ships each as an HTML card |
-| `/abtest design` — "design a test for this" (+ screenshot/URL) | Designs a new single-variable scenario for your page in the same framework |
-| `/abtest audit` — "is this test set up correctly?" | Audits a plan or variant pair: confounds, missing guardrails, p-hacking risk, unrealistic duration |
-| `/abtest results` — "interpret these results" / "how many visitors do I need" | Runs a real two-proportion z-test on your numbers (significance, CI, lift) or calculates required sample size — math via script, never eyeballed — then states the decision and what happens next (staged rollout, guardrail watch, or the follow-up experiment) |
-| `/abtest card` — "turn this into a card" | Renders the scenario as a single-file HTML card (Variant A/B wireframes + three boxes) |
+| `/ab-test suggest` — "suggest tests for my checkout page" | Picks matching scenarios from the archive, ranks by ICE, ships each as an HTML card |
+| `/ab-test design` — "design a test for this" (+ screenshot/URL) | Designs a new single-variable scenario for your page in the same framework |
+| `/ab-test audit` — "is this test set up correctly?" | Audits a plan or variant pair: confounds, missing guardrails, p-hacking risk, unrealistic duration |
+| `/ab-test results` — "interpret these results" / "how many visitors do I need" | Runs a real two-proportion z-test on your numbers (significance, CI, lift) or calculates required sample size — math via script, never eyeballed — then states the decision and what happens next (staged rollout, guardrail watch, or the follow-up experiment) |
+| `/ab-test card` — "turn this into a card" | Renders the scenario as a single-file HTML card (Variant A/B wireframes + three boxes) |
 
 When you share a page, the router asks exactly one multiple-choice question — which problem you're solving — and nothing else up front; no traffic, tool, or setup questions before it produces a scenario. Sample-size or duration numbers appear only when real traffic data exists — volunteered by you, or asked for when you request them. If you shared a screenshot or page, brand colors are taken straight from it with no question; otherwise it asks once, before the first card, whether to upload a brand guide — say no and it uses a neutral palette. Every scenario a run produces (2-5 of them, whether from `suggest` or `design`) becomes its own HTML card immediately — the three boxes live in the card, not as duplicate chat text. More than 5 strong candidates in one run gets flagged and confirmed before generating the rest.
 
@@ -101,7 +101,7 @@ A product-page example, end to end:
   <img src="assets/example-card.png" alt="Example scenario card: does an open coupon-code field increase cart abandonment? Variant A/B mockups on the left, the three-box breakdown on the right." width="900">
 </p>
 
-<p align="center"><sub>A card generated from an archived scenario — fictional product and store, neutral palette (no brand guide was supplied). This is what `abtest card` renders for every scenario, not a hand-built mockup. <a href="https://ali-demirbas.github.io/ab-test-playbook/">Live, zero-install version →</a> · source in <a href="examples/">examples/</a></sub></p>
+<p align="center"><sub>A card generated from an archived scenario — fictional product and store, neutral palette (no brand guide was supplied). This is what `ab-test card` renders for every scenario, not a hand-built mockup. <a href="https://ali-demirbas.github.io/ab-test-playbook/">Live, zero-install version →</a> · source in <a href="examples/">examples/</a></sub></p>
 
 **Each scenario ships with** the single-variable hypothesis, Variant A/B definitions, and a tool-agnostic setup spec (audience, split, exposure event, guardrail events, attribution window, decision rule) — named in your tool's vocabulary if you mention one, kept as chat text — plus the card itself (brand colors pulled from your screenshot when you shared one; otherwise a one-time brand-guide question, with a neutral palette as the fallback).
 
@@ -110,7 +110,7 @@ A product-page example, end to end:
 ## What's inside
 
 ```
-skills/          abtest (router) + suggest / design / audit / results / card
+skills/          ab-test (router) + suggest / design / audit / results / card
 agents/          scenario-critic — adversarial methodology review before a scenario is rendered
                  mockup-reviewer — checks the two mockups differ in exactly one thing
 knowledge/       methodology.md · mockup-style.md
@@ -139,7 +139,7 @@ python3 scripts/validate_scenarios.py
 
 ## Test memory
 
-Keep a `.abtest-history.md` in your project (copy `templates/abtest-history.md`) and the skills read it before suggesting, designing, or auditing: they will tell you when you have already run this variable on this page and what came of it, stop re-proposing a pattern that already won, and switch to a structural change when the same element keeps returning no difference. After each result, `/abtest results` hands you the row to paste in.
+Keep a `.abtest-history.md` in your project (copy `templates/abtest-history.md`) and the skills read it before suggesting, designing, or auditing: they will tell you when you have already run this variable on this page and what came of it, stop re-proposing a pattern that already won, and switch to a structural change when the same element keeps returning no difference. After each result, `/ab-test results` hands you the row to paste in.
 
 A past loss is information, not a veto — if the page has since changed, or the earlier run was underpowered or invalid, the scenario comes back with the reason stated. The file is yours and stays out of this repo; it is gitignored here.
 

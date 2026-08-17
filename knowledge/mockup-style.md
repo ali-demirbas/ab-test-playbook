@@ -1,6 +1,6 @@
 # Görsel Dil — Senaryo Kartı ve Mockup Kuralları
 
-`abtest-card` skill'i ve `templates/scenario-card.html` bu spec'e uyar. Kaynak: arşivin görsel destesi (repo dışında tutulan dahili tasarım referansı — repoya görsel dosya eklenmez).
+`ab-test-card` skill'i ve `templates/scenario-card.html` bu spec'e uyar. Kaynak: arşivin görsel destesi (repo dışında tutulan dahili tasarım referansı — repoya görsel dosya eklenmez).
 
 ## Nötr palet
 
@@ -34,7 +34,7 @@ Mockup **tam gerçekçi** üretilir: metin, fiyat, etiket ve düzen gerçek yaz�
 
 - **Kullanıcı bir sayfa paylaştıysa (ekran görüntüsü, URL veya akış):** mockup o sayfanın yeniden çizimidir. Ürün adı, fiyat, buton metni, alan etiketleri, bölüm sırası, menü öğeleri — ekranda ne varsa o yazılır. Variant A ekrandaki hâlin birebir kendisidir (CLAUDE.md kural 15): yeniden tasarlanmaz, sadeleştirilmez, "daha iyisi" yapılmaz, eksikleri tamamlanmaz. Variant B yalnızca tek bir öğede A'dan ayrılır. Kendi kafandan bir e-ticaret sayfası kurup üstüne testi oturtmak, gerçekçilik değil uydurmadır ve kural 15'in ihlalidir.
 - **Ekran görüntüsünden okunamayan bir ayrıntı varsa** (kesilmiş bir metin, görünmeyen bir bölüm) uydurma: ya o bölümü mockup'a hiç koyma, ya da kullanıcıya sor. Boşluğu makul görünen bir içerikle doldurmak, kullanıcının sayfasını yanlış temsil eder.
-- **Ortada paylaşılmış bir sayfa yoksa** (arşivden gelen jenerik senaryo, `abtest-suggest` çıktısı): temsili bir örnek kurulur, ama bu durum kartta belli olur — örnek içerik gerçek bir müşteri sayfasıymış gibi sunulmaz.
+- **Ortada paylaşılmış bir sayfa yoksa** (arşivden gelen jenerik senaryo, `ab-test-suggest` çıktısı): temsili bir örnek kurulur, ama bu durum kartta belli olur — örnek içerik gerçek bir müşteri sayfasıymış gibi sunulmaz.
 
 Gerekçesi: kart çoğu zaman testi yürütecek veya onaylayacak kişiye gösterilir; ne test edildiği ancak ekran gerçekten göründüğü hâliyle sunulduğunda tartışılabilir. Yarım görünen bir mockup, tartışmayı testin kendisinden mockup'ın eksikliklerine kaydırır.
 

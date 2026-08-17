@@ -40,7 +40,7 @@ Not a statistical-power requirement — a coverage requirement. Weekday/weekend 
 
 ## What should I test on an e-commerce checkout or cart page?
 
-Field count before step count is the playbook's own applied finding here — cutting unnecessary fields tends to move completion more reliably than splitting one page into several steps; multi-step is suggested only when fields genuinely don't fit one screen or belong to naturally separate phases, and that's flagged as an assumption when it's suggested. Guardrails to watch: margin, coupon usage, support tickets. Run `/abtest suggest` on a checkout screenshot for the full, ranked scenario set.
+Field count before step count is the playbook's own applied finding here — cutting unnecessary fields tends to move completion more reliably than splitting one page into several steps; multi-step is suggested only when fields genuinely don't fit one screen or belong to naturally separate phases, and that's flagged as an assumption when it's suggested. Guardrails to watch: margin, coupon usage, support tickets. Run `/ab-test suggest` on a checkout screenshot for the full, ranked scenario set.
 
 ## What should I test on a product detail page (PDP)?
 
@@ -48,7 +48,7 @@ Depends on which problem you actually have: users arriving but not converting, u
 
 ## What should I A/B test in a SaaS pricing or onboarding flow?
 
-The same single-variable discipline applies, with SaaS-relevant guardrails: cancellation requests, support tickets, plan downgrades — not just signup rate. A test that improves signups but spikes churn or downgrades isn't a win; see `/abtest audit` for catching that before it ships.
+The same single-variable discipline applies, with SaaS-relevant guardrails: cancellation requests, support tickets, plan downgrades — not just signup rate. A test that improves signups but spikes churn or downgrades isn't a win; see `/ab-test audit` for catching that before it ships.
 
 ## Is this playbook the right tool for every product?
 

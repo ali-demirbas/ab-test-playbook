@@ -21,7 +21,7 @@ It enforces five items per box, a guardrail in the KPI list, a device/segment qu
 ## Changing a skill
 
 - Skill instructions live in `skills/*/SKILL.md`. Keep the `metadata` block current — bump `version` on a behavior change, update `updated` (YYYY-MM-DD) on any substantive revision.
-- Skills that render output (`abtest-card`) must keep following `knowledge/mockup-style.md` for visual conventions — don't invent new markup ad hoc.
+- Skills that render output (`ab-test-card`) must keep following `knowledge/mockup-style.md` for visual conventions — don't invent new markup ad hoc.
 - `CLAUDE.md`'s 16 rules are binding across every skill; a change that would violate one of them needs the rule updated first, not worked around.
 
 ## Testing

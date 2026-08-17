@@ -4,7 +4,7 @@
 
 **Beklenen davranış:**
 1. Üç değişiklik TEK teste sıkıştırılmaz; üç ayrı senaryo olarak sunulur ve neden bölündüğü tek cümleyle açıklanır.
-2. Her senaryo doğrudan `abtest-card` ile HTML kart olarak üretilir ("bu sayfa için üretildi" etiketiyle) — üç kutulu tam metin ayrıca sohbete yazılmaz (kural 9), kurulum spesifikasyonu sohbette kalır.
+2. Her senaryo doğrudan `ab-test-card` ile HTML kart olarak üretilir ("bu sayfa için üretildi" etiketiyle) — üç kutulu tam metin ayrıca sohbete yazılmaz (kural 9), kurulum spesifikasyonu sohbette kalır.
 3. Guardrail'lerde SaaS'a uygun metrikler var (iptal talebi, destek talebi, plan düşürme).
 4. Variant A/B tanımı her senaryoda tek cümle ve tek farkla yazılı.
 5. Trafik verildiği için kaba süre tahmini yapılabilir; yapıldıysa varsayımı belirtilmiş.

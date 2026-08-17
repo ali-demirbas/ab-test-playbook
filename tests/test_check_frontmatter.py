@@ -2,7 +2,7 @@
 """check_frontmatter.py için unit testler. Bağımlısız (unittest).
 
 Bu kontrolün varlık sebebi gerçek bir kusur: `description` içindeki tırnaksız
-bir `style: a Variant` yüzünden abtest-card skill'i `npx skills add` tarafından
+bir `style: a Variant` yüzünden ab-test-card skill'i `npx skills add` tarafından
 sessizce atlanıyordu — repoda duruyor, diğer tüm kontrollerden geçiyor, ama
 kurulmuyordu.
 
@@ -24,7 +24,7 @@ def block(*lines):
 
 class TestTheBugThatShipped(unittest.TestCase):
     def test_unquoted_colon_space_is_caught(self):
-        problems = lint(block("name: abtest-card",
+        problems = lint(block("name: ab-test-card",
                               "description: card in the archive's visual style: a Variant pair"))
         self.assertEqual(len(problems), 1)
         self.assertIn("nested mapping", problems[0][1])

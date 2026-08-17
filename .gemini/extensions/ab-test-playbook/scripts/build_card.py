@@ -8,7 +8,7 @@ Why a script rather than hand-editing:
   1. **Escaping is a correctness bug, not a style preference.** The card's text
      fields are interpolated straight into markup. A scenario titled
      "CTA < 3 kelime olmalı mı?" or a KPI item mentioning "kargo & iade"
-     silently produces broken or unexpected tags. abtest-card/SKILL.md already
+     silently produces broken or unexpected tags. ab-test-card/SKILL.md already
      warns about this in prose; prose cannot enforce it. Here it is enforced:
      every text field goes through html.escape() before it reaches the template,
      and the bold label is applied AFTER escaping (the order SKILL.md specifies),
