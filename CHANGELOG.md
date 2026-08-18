@@ -4,6 +4,9 @@ All notable changes to this project are documented here. Format loosely follows 
 
 ## Unreleased
 
+### Added
+- "Why a playbook instead of ad-hoc testing" — a Without/With comparison table in both READMEs, and a closing line on the License section. Loosely modeled on affaan-m/ECC's "Why Choose ECC?" table and sign-off, scaled to what's actually true here — no personal-background blurb yet (parked, not skipped by oversight).
+
 ### Changed
 - `CLAUDE.md` (all 18 rules), `knowledge/methodology.md` and `knowledge/mockup-style.md` translated to English. These are the files that actually demonstrate the engine's rigor (statistical hygiene, the mechanism gate, adversarial review) to a reader evaluating the repo, and until now they were unreadable to anyone who doesn't read Turkish. The three-box header names ("Test edilmesi gerekenler" etc.) are kept as-is where they're the literal output-template strings, not translated prose — same treatment as `CR`/`AOV` staying English in Turkish output (rule 7). `knowledge/scenarios/` (the 179-scenario archive itself) stays Turkish, deliberately — see the README's "Language" section for why.
 

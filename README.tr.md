@@ -22,6 +22,18 @@ Gerçek e-ticaret, mobil uygulama ve SaaS büyüme çalışmalarında kullanıla
 
 **Kurulumsuz demo:** gerçek bir senaryo kartı — tam olarak tek bir şeyde farklılaşan iki mockup, işaretli test edilen öğe, doldurulmuş üç kutu — [ali-demirbas.github.io/ab-test-playbook](https://ali-demirbas.github.io/ab-test-playbook/) adresinde. Bu, `scripts/build_card.py`'nin gerçek çıktısıdır, bir resmi değil.
 
+## Neden rastgele test etmek yerine bir rehber
+
+| Rehber olmadan | ab-test-playbook ile |
+|---|---|
+| Test fikirleri hafızadan ya da o gün akla gelenden gelir | 179 senaryoluk arşivden ICE'a göre sıralı, ya da belirtilmiş bir mekanizmayla üretilir — "daha dikkat çekici olur" kabul edilen bir gerekçe değildir |
+| "Anlamlı görünüyor" iki yüzdeye bakıp verilen bir izlenimdir | Gerçek bir iki-oranlı z-testi, güven aralığı, örneklem ve SRM kontrolü — script ile hesaplanır, asla gözle kestirilmez |
+| Beş metrik izlenir, hiçbiri kararı vermez | Adı konmuş tek bir birincil metrik, zorunlu bir guardrail — p-hacking riski işaretlenir, yayınlanmaz |
+| Senaryoyu yazan model kendi ödevini kendi notlandırır | Kart render edilmeden önce metodolojiyi bir adversarial denetçi kontrol eder; ikinci bir denetçi görseldeki gizli ikinci farkı arar |
+| Fiyat veya indirim testi yalnızca dönüşüm oranına bakar | Gelir ve marj kontrolü otomatik çalışır — dönüşüm artarken ziyaretçi başına gelirin düşmesi bir dipnot değil, asıl bulgudur |
+| Kullanıcı isterse dark pattern yayına girer | İstense bile reddedilir, nedeni çıktıda söylenir |
+| Daha önce denenen bir şey varsa birinin hafızasında kalır, o kadar | `.abtest-history.md` — skill bunu okur ve gerekçesiz olarak zaten kaybetmiş bir şeyi tekrar önermez |
+
 ## Bu rehberin cevapladığı sorular
 
 - E-ticaret checkout veya sepetimde hangi A/B testlerini çalıştırmalıyım?
@@ -168,4 +180,4 @@ Bu ne değil: bir veri ambarına veya analitik aracına (GA4, Mixpanel, PostHog,
 
 ## Lisans
 
-MIT
+MIT — kullanın, kendi işinize uyarlayın, elinizde iyi bir senaryo varsa geri gönderin. Kötü bir testi yayınlamaktan sizi kurtardıysa, bir yıldız sıradaki kişinin bunu bulmasına yardım eder.

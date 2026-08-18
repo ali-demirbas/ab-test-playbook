@@ -38,6 +38,18 @@ Built from an archive of A/B test scenarios and hypothesis-generation patterns u
 
 **Zero-install demo:** see a real scenario card — two mockups differing in exactly one thing, the tested element boxed, and the three boxes filled — at [ali-demirbas.github.io/ab-test-playbook](https://ali-demirbas.github.io/ab-test-playbook/). It is the actual output of `scripts/build_card.py`, not a picture of one.
 
+## Why a playbook instead of ad-hoc testing
+
+| Without a system | With ab-test-playbook |
+|---|---|
+| Test ideas come from memory or whatever feels right today | Ranked by ICE from a 179-scenario archive, or generated with a stated mechanism — "more eye-catching" isn't an accepted reason |
+| "Looks significant" is a judgment call from staring at two percentages | A real two-proportion z-test, confidence interval, sample size, and an SRM check — computed by script, never eyeballed |
+| Five metrics get watched, none of them decides anything | One named primary metric, one mandatory guardrail — p-hacking risk gets flagged, not shipped |
+| The model that wrote the scenario also grades its own homework | An adversarial critic checks methodology before a card renders; a second reviewer checks the visual for a hidden second difference |
+| A price or discount test reads conversion rate alone | Revenue and margin check runs automatically — conversion up while revenue per visitor drops is the finding, not a footnote |
+| A dark pattern ships if a user asks for one | Refused even on request, with the reason stated in the output |
+| What you tried before lives in someone's memory, if anywhere | `.abtest-history.md` — the skill reads it and won't re-suggest what already lost without a stated reason |
+
 ## Questions this playbook helps answer
 
 - What A/B tests should I run on my e-commerce checkout or cart?
@@ -184,7 +196,7 @@ What this isn't: it doesn't connect to a data warehouse or analytics tool (GA4, 
 
 ## License
 
-MIT
+MIT — use it, adapt it, send a scenario back if you've got a good one. If it saves you from shipping a bad test, a star helps the next person find it.
 
 
 ---
