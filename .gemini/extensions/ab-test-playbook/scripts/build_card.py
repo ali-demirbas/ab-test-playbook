@@ -78,6 +78,28 @@ SCREEN_PLACEHOLDERS = {
 # has no place in a delivered card.
 COMMENT_RE = re.compile(r"[ \t]*<!--.*?-->\n?", re.DOTALL)
 
+# `variant_a`/`variant_b` are inserted raw by design (SCREEN_PLACEHOLDERS below)
+# — the mockup markup is generative, so it can't be html.escape()'d without also
+# escaping the legitimate HTML it's made of. That leaves this deny-list as the
+# only code-level backstop against a payload that survived into a variant from
+# user-shared page text (CLAUDE.md rule 18). It is a deny-list, not an allowlist
+# HTML sanitizer — a determined adversary could still find a bypass an allowlist
+# parser would close; that would need an actual HTML-parsing dependency, which
+# conflicts with this repo's stdlib-only convention (see analyze_results.py).
+# Each pattern below is a known-live vector, not an exhaustive vocabulary of tag
+# names — SKILL.md and CLAUDE.md's own claim about what's blocked has to match
+# what this list actually checks, or the claim is a false one.
+DANGEROUS_PATTERNS = (
+    (re.compile(r"<script", re.IGNORECASE), "a <script> tag"),
+    (re.compile(r'\bon[a-z]+\s*=\s*["\']', re.IGNORECASE), "an inline event-handler attribute (onerror=, onclick=, ...)"),
+    (re.compile(r"javascript:", re.IGNORECASE), "a javascript: URI"),
+    (re.compile(r"vbscript:", re.IGNORECASE), "a vbscript: URI"),
+    (re.compile(r"<iframe", re.IGNORECASE), "an <iframe> tag"),
+    (re.compile(r"<object", re.IGNORECASE), "an <object> tag"),
+    (re.compile(r"<embed", re.IGNORECASE), "an <embed> tag"),
+    (re.compile(r"data:text/html", re.IGNORECASE), "a data:text/html URI"),
+)
+
 # Provenance, added by the builder rather than kept in the template — the line
 # above strips every template comment, so a notice living there would be
 # removed from exactly the artifact that travels. Cards get shared, forwarded
@@ -247,8 +269,9 @@ def self_verify(built_text, template_text, device=None):
             "drift: %d fixed template line(s) missing from the built card:\n  %s"
             % (len(missing), preview)
         )
-    if "<script" in built_text.lower():
-        die("cards are static HTML; refusing to emit a card containing <script>")
+    for pattern, description in DANGEROUS_PATTERNS:
+        if pattern.search(built_text):
+            die("cards are static HTML; refusing to emit a card containing %s" % description)
 
 
 def die(msg):

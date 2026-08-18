@@ -214,6 +214,37 @@ class TestSelfVerify(unittest.TestCase):
         with self.assertRaises(SystemExit):
             self_verify(built + "<script>x</script>", FAKE_TEMPLATE, "phone")
 
+    def test_event_handler_attribute_is_refused(self):
+        # The one CLAUDE.md rule 18 names by example: an onerror= payload that
+        # survived into a variant, e.g. via a screenshot's product name.
+        built = build(FAKE_TEMPLATE, make_scenario(variant_a='<img src=x onerror="alert(1)">'))
+        with self.assertRaises(SystemExit):
+            self_verify(built, FAKE_TEMPLATE, "phone")
+
+    def test_javascript_uri_is_refused(self):
+        built = build(FAKE_TEMPLATE, make_scenario(variant_a='<a href="javascript:alert(1)">go</a>'))
+        with self.assertRaises(SystemExit):
+            self_verify(built, FAKE_TEMPLATE, "phone")
+
+    def test_iframe_is_refused(self):
+        built = build(FAKE_TEMPLATE, make_scenario(variant_a='<iframe src="https://evil.example"></iframe>'))
+        with self.assertRaises(SystemExit):
+            self_verify(built, FAKE_TEMPLATE, "phone")
+
+    def test_data_html_uri_is_refused(self):
+        built = build(FAKE_TEMPLATE, make_scenario(variant_a='<a href="data:text/html,<script>alert(1)</script>">go</a>'))
+        with self.assertRaises(SystemExit):
+            self_verify(built, FAKE_TEMPLATE, "phone")
+
+    def test_ordinary_mockup_markup_is_not_a_false_positive(self):
+        # The event-handler pattern requires on<word>= immediately followed by a
+        # quote — ordinary copy like "based on..." or a class named "button-on"
+        # must not trip it.
+        built = build(FAKE_TEMPLATE, make_scenario(
+            variant_a='<div class="r-h">Fiyat karşılaştırması ekranda mı?</div>',
+        ))
+        self_verify(built, FAKE_TEMPLATE, "phone")  # should not raise
+
     def test_fixed_lines_skips_placeholder_and_comment_lines(self):
         lines = fixed_lines(FAKE_TEMPLATE)
         self.assertFalse(any("{{" in ln for ln in lines))
