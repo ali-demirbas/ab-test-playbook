@@ -4,6 +4,9 @@ All notable changes to this project are documented here. Format loosely follows 
 
 ## Unreleased
 
+### Changed
+- `CLAUDE.md` (all 18 rules), `knowledge/methodology.md` and `knowledge/mockup-style.md` translated to English. These are the files that actually demonstrate the engine's rigor (statistical hygiene, the mechanism gate, adversarial review) to a reader evaluating the repo, and until now they were unreadable to anyone who doesn't read Turkish. The three-box header names ("Test edilmesi gerekenler" etc.) are kept as-is where they're the literal output-template strings, not translated prose — same treatment as `CR`/`AOV` staying English in Turkish output (rule 7). `knowledge/scenarios/` (the 179-scenario archive itself) stays Turkish, deliberately — see the README's "Language" section for why.
+
 ### Added
 - `README.tr.md` — full Turkish translation of the README, plus a `Language: English · Türkçe` switcher at the top of both. The archive itself is Turkish-native and most of the current audience reads Turkish; the README was the last English-only surface.
 - A `[!NOTE]` in both READMEs naming the one official source (this repo + `npx skills add ali-demirbas/ab-test-playbook`) after noticing an unrelated skills.sh listing using a similarly named skill.

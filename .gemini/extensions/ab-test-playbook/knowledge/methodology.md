@@ -1,216 +1,216 @@
-# Metodoloji — Her Senaryonun Uyması Gereken Çerçeve
+# Methodology — The Framework Every Scenario Must Fit
 
-Bu playbook'taki her senaryo (arşivden gelen veya yeni üretilen) aynı çerçeveyle yazılır. Bu dosya bağlayıcıdır: `ab-test-design` yeni senaryo üretirken, `ab-test-audit` mevcut bir planı denetlerken buradaki kuralları uygular.
+Every scenario in this playbook (from the archive or newly generated) is written in the same framework. This file is binding: `ab-test-design` applies these rules when producing a new scenario, `ab-test-audit` applies them when auditing an existing plan.
 
-## Üç kutu çerçevesi
+## The three-box framework
 
-Her senaryo üç bloktan oluşur, üçü de zorunludur ve her biri tam 5 maddeden oluşur (`validate_scenarios.py` bunu şart koşar):
+Every scenario is made of three blocks, all three mandatory, each with exactly 5 items (`validate_scenarios.py` requires this):
 
-1. **Test edilmesi gerekenler** — hipotezi hangi soruların doğrulayacağı. Her madde `Etiket: soru?` biçimindedir (ör. `Konum: Header'da mı, menü içinde mi?`). Maddelerden en az biri cihaz/segment kırılımı sorar.
-2. **Takip edilecek ana KPI’lar** — ölçüm seti. Kurallar aşağıda. (Kutu adındaki kesme işareti kıvrıktır — U+2019; düz kesme ile yazılan başlığı doğrulayıcı tanımaz.)
-3. **Yapılmaması gerekenler** — testi geçersiz kılan veya kullanıcıya zarar veren hatalar. En az bir madde "aynı testte X ile Y'yi birlikte değiştirmeyin" biçiminde değişken izolasyonunu korur.
+1. **Test edilmesi gerekenler ("What to test")** — which questions the hypothesis has to answer. Each item is in `Label: question?` form (e.g. `Position: in the header, or inside the menu?`). At least one item asks a device/segment breakdown.
+2. **Takip edilecek ana KPI'lar ("Primary KPIs to track")** — the measurement set. Rules below. (The apostrophe in the box name is curly — U+2019; the validator doesn't recognize a straight-apostrophe version of the heading.)
+3. **Yapılmaması gerekenler ("Never do")** — the mistakes that invalidate the test or harm the user. At least one item protects variable isolation, in the form "don't change X and Y together in the same test."
 
-## KPI kuralları
+## KPI rules
 
-- İlk sıradaki metrik **birincil metriktir** — testin kazananını tek başına o belirler. Beş metriği eşit ağırlıkta okumak p-hacking'e davetiyedir.
-- Listede en az bir **guardrail** bulunur: dönüşüm artarken bozulabilecek şey. Tipik guardrail'ler: brüt marj, iade oranı, sayfa hızı (LCP), destek talebi, terk oranı, RPV. Guardrail maddeleri "Düşmemeli / Yükselmemeli / Artmamalı" kalıbıyla yazılır. Guardrail'i olmayan kazanç, ertelenmiş bir kayıptır: testte ölçmediğiniz maliyet iptal edilmez, yalnızca sonraki çeyreğin iade oranına veya destek yüküne taşınır.
-- Metrik, aracın gerçekten ölçebileceği bir şey olmalı. "Güven algısı" bir KPI değildir; onun vekili (proxy) yazılır.
-- **Ara adım metriği tamamlamayı gizleyebilir.** Bir değişiklik huninin ortasındaki bir adımı (sepete ekleme, ödeme başlatma, formu açma, hızlı ödeme seçme) kolayca artırabilir ve bu ilk bakışta kazanç gibi görünür — ama o adımı daha kolay geçen kullanıcı bir sonrakinde takılıyorsa toplam sipariş değişmez, hatta düşer. Özellikle bir akışı hızlandıran, atlayan veya öne çıkaran varyantlarda risk yüksektir: kullanıcı henüz vermediği bir kararın sonucuna fırlatılır ve geri döner. Bu yüzden birincil metrik daima huninin sonundaki gerçek sonuçtur (tamamlanan sipariş, gönderilen form); ara adım metriği tanı metriği olarak ikinci sırada izlenir. İkisi ters yönde hareket ediyorsa bulgu budur.
-- **Dönüşüm oranı geliri gizleyebilir.** Fiyat, taksit, indirim veya paket testlerinde birincil metrik olarak salt "Dönüşüm Oranı (CR)" yeterli değildir — fiyat düşürmek CR'yi neredeyse her zaman artırır ama geliri düşürebilir. Bu tür senaryolarda birincil metrik gelir bazlı olmalı: Ziyaretçi Başına Gelir (RPV) veya Ortalama Sepet Tutarı (AOV) × CR. `knowledge/scenarios/product-detail.md` ve `cart-checkout.md`'deki fiyat senaryoları bu ayrımı zaten uygular; yeni fiyat/paket senaryosu üretilirken aynı kural geçerlidir.
+- The metric in first position is the **primary metric** — it alone decides the test's winner. Reading five metrics as equally weighted is an invitation to p-hacking.
+- The list carries at least one **guardrail**: something that could degrade while conversion rises. Typical guardrails: gross margin, return rate, page speed (LCP), support tickets, abandonment rate, RPV. Guardrail items are written in "must not drop / must not rise / must not increase" form. A win with no guardrail is a deferred loss: a cost you didn't measure in the test doesn't get canceled, it just gets carried into next quarter's return rate or support load.
+- The metric has to be something the tool can actually measure. "Trust perception" isn't a KPI; its proxy is written instead.
+- **An intermediate-step metric can hide whether completion actually happened.** A change can easily boost a step in the middle of the funnel (add-to-cart, starting checkout, opening the form, choosing express checkout), and this looks like a win at first glance — but if the user who clears that step more easily then gets stuck at the next one, the total order count doesn't change, or even drops. The risk is especially high for variants that speed up, skip, or foreground a step: the user gets thrown at the outcome of a decision they haven't actually made yet, and bounces back. This is why the primary metric is always the real outcome at the end of the funnel (completed order, submitted form); the intermediate-step metric is tracked second, as a diagnostic. If the two move in opposite directions, that's the finding.
+- **Conversion rate can hide revenue.** In price, installment, discount, or bundle tests, plain "Conversion Rate (CR)" isn't enough as the primary metric — lowering price almost always raises CR but can drop revenue. In these scenarios the primary metric should be revenue-based: Revenue Per Visitor (RPV), or Average Order Value (AOV) × CR. The price scenarios in `knowledge/scenarios/product-detail.md` and `cart-checkout.md` already apply this distinction; the same rule holds when a new price/bundle scenario is produced.
 
-## Hipotez üç parçalıdır
+## The hypothesis has three parts
 
-Tek cümlelik hipotez ("X'i Y yapmak Z'yi artırır") yetmez, üç ayrı soruya cevap vermelidir:
+A one-sentence hypothesis ("making X into Y increases Z") isn't enough — it has to answer three separate questions:
 
-1. **Teori:** Bu değişikliği neden öneriyoruz? Hangi gözlem, veri veya kullanıcı geri bildirimi bu hipotezi doğurdu?
-2. **Dayanak:** Bu teoriyi destekleyen somut kanıt ne? (Bir metrik, bir kullanıcı yorumu, bir davranış deseni.) Kanıt yoksa "sezgi" olarak işaretlenir, güven düzeyi buna göre düşük tutulur. Dayanak dört seviyeden biriyle etiketlenir ve çıktıda görünür:
-   - **Kullanıcının kendi verisi** — bu üründe/sayfada ölçülmüş bir sinyal (en güçlü).
-   - **Arşiv emsali** — benzer bağlamda daha önce test edilmiş bir desen.
-   - **Sektör gözlemi** — yaygın pratik, ama bu ürüne özel doğrulaması yok.
-   - **Sezgi** — hiçbiri yok; öneri verilebilir ama düşük güvenli olduğu söylenir.
-3. **Öğrenilecek şey:** Test kazanırsa ne öğreniriz, kaybederse ne öğreniriz? İkisi de bilgi üretmiyorsa test zaten kurgusu zayıf demektir.
+1. **Theory:** Why are we proposing this change? What observation, data, or user feedback produced this hypothesis?
+2. **Basis:** What concrete evidence supports this theory? (A metric, a user comment, a behavioral pattern.) If there's no evidence, it's marked "intuition," and the confidence level is kept low accordingly. The basis is labeled with one of four levels and shown in the output:
+   - **The user's own data** — a signal measured on this exact product/page (the strongest).
+   - **Archive precedent** — a pattern already tested in a similar context.
+   - **Industry observation** — common practice, but with no product-specific verification.
+   - **Intuition** — none of the above; a suggestion can still be given, but it's stated as low-confidence.
+3. **What we'd learn:** What do we learn if the test wins, what do we learn if it loses? If neither outcome produces information, the test is already weakly designed.
 
-`ab-test-design` her senaryonun açıklama paragrafında bu üçünü zımnen taşır; kullanıcı açıkça isterse üçü ayrı ayrı yazılır. Tek cümlelik doldurma şablonu:
+`ab-test-design` carries these three implicitly in every scenario's description paragraph; if the user explicitly wants them, all three are written out separately. The one-sentence fill-in template:
 
-> "[Gözlem/veri]'ye dayanarak, [değişiklik] yaparsak [hedef kitle] için [beklenen sonuç] olacağını düşünüyoruz. Bunu [metrik]'te göreceğiz."
+> "Based on [observation/data], we think that making [change] will produce [expected outcome] for [target audience]. We'll see this in [metric]."
 
-Zayıf örnek: "Buton rengini değiştirmek tıklamayı artırabilir." (Dayanaksız, sonuç ölçülemez netlikte.)
-Güçlü örnek: "Mobil kullanıcıların CTA'yı geç fark ettiğini ısı haritalarından biliyoruz; butonu büyütüp kontrastı artırırsak yeni ziyaretçilerde tıklama oranı en az %15 artar. Bunu sayfa görüntülemeden kayda geçiş oranında göreceğiz."
+Weak example: "Changing the button color might increase clicks." (No basis, outcome isn't measurable with any clarity.)
+Strong example: "We know from heatmaps that mobile users notice the CTA late; if we enlarge the button and raise contrast, click rate among new visitors will increase by at least 15%. We'll see this in the page-view-to-signup conversion rate."
 
-Değişiklik metrikte fark yaratamayacak kadar silikse (ör. 2px kenarlık kalınlığı) hipotez kurmayın; "bu değişiklik fark edilecek kadar belirgin mi?" sorusu her senaryo tasarımının ilk filtresidir.
+If the change is too subtle to make a difference in the metric (e.g. a 2px border-width change), don't build a hypothesis; "is this change distinct enough to be noticed?" is the first filter of every scenario design.
 
-**Hangi itirazı çözüyoruz?** Bir kullanıcı bir adımı tamamlamıyorsa altında çoğu zaman adı konmamış bir itiraz vardır. Beş kalıp tekrar eder:
+**Which objection are we resolving?** If a user isn't completing a step, there's usually an unnamed objection underneath it. Five patterns repeat:
 
-| İtiraz | Kullanıcının sorusu | Tipik karşılık |
+| Objection | The user's question | Typical counter |
 |---|---|---|
-| Güven | "Neden buna inanayım?" | İsimli referans, somut kanıt, güvenlik sinyali |
-| Fiyat | "Buna değer mi?" | Değer karşılaştırması, taksit, ROI gösterimi |
-| Uygunluk | "Bu benim durumuma uyar mı?" | Benzer kullanıcı örneği, segment bazlı içerik |
-| Zamanlama | "Neden şimdi?" | Gerçek (uydurma olmayan) aciliyet, fırsat maliyeti |
-| Efor | "Bu ne kadar zor olacak?" | "5 dakikada kurulum", adım adım gösterim |
+| Trust | "Why should I believe this?" | A named reference, concrete evidence, a security signal |
+| Price | "Is this worth it?" | Value comparison, installments, an ROI display |
+| Fit | "Does this suit my situation?" | A similar-user example, segment-based content |
+| Timing | "Why now?" | Real (not made-up) urgency, opportunity cost |
+| Effort | "How hard will this be?" | "Set up in 5 minutes," a step-by-step walkthrough |
 
-Hipotez kurarken hangi itirazın hedeflendiğini bir kelimeyle adlandırmak, testin neden işe yarayacağını (veya yaramayacağını) daha net gösterir. Kanıt varsa (destek talebi, iptal nedeni, anket yanıtı) hangi itiraza denk geldiği söylenir; yoksa varsayım olarak işaretlenir. İtiraz kapatan mesaj örtük de kurulabilir — "Tembel olduğunuzdan mı endişeleniyorsunuz?" gibi itirazı doğrudan söylemek yerine "Bu işi sizin yerinize hallediyoruz" gibi doğrudan çözüme geçmek genelde daha iyi çalışır; itirazı yüksek sesle söylemek onu güçlendirebilir.
+Naming which objection is being targeted in one word when building the hypothesis makes it clearer why the test will (or won't) work. If there's evidence (support tickets, cancellation reasons, a survey answer), which objection it maps to is stated; if not, it's marked as an assumption. The objection-closing message can also be built implicitly — instead of naming the objection directly ("worried you're being lazy?"), moving straight to the solution ("we handle this for you") usually works better; saying the objection out loud can reinforce it.
 
-**İstatistiksel anlamlılık ≠ pratik anlamlılık.** `p < 0.05` çıkması tek başına "uygula" demek değildir. %0,1'lik istatistiksel olarak anlamlı bir lift, uygulama/bakım maliyetine değmeyebilir. Sonuç yorumlanırken iki soru ayrı sorulur: (1) İstatistiksel olarak gerçek mi? (2) Mutlak büyüklüğü, değişikliği kalıcı hale getirmenin mühendislik/tasarım/operasyon maliyetini karşılıyor mu? İkinci soru bir sayı değil, bir karardır — `ab-test-results` bunu "uygulanabilir" kararının bir parçası olarak sorar.
+**Statistical significance ≠ practical significance.** `p < 0.05` alone doesn't mean "ship it." A statistically significant 0.1% lift might not be worth the implementation/maintenance cost. Two separate questions are asked when interpreting a result: (1) Is it statistically real? (2) Does its absolute size cover the engineering/design/operations cost of making the change permanent? The second question isn't a number, it's a decision — `ab-test-results` asks it as part of the "shippable" decision.
 
-## Fikir üretme merceği
+## The idea-generation lens
 
-Fikirler sayfaya bakılıp akla gelenin yazılmasıyla üretilmez. Dört filtre sırayla uygulanır.
+Ideas aren't produced by looking at the page and writing down whatever comes to mind. Four filters are applied, in order.
 
-**1. Fırsat taraması.** Yukarıdaki beş itiraz merceği (Güven, Fiyat, Uygunluk, Zamanlama, Efor) fırsat taraması için kullanılır: her itiraz için bu sayfada gerçek bir karşılıksızlık veya kullanıcı engeli var mı diye bakılır. Karşılığı zaten varsa o mercek atlanır. **Her mercekten fikir üretmek zorunlu değildir**; ilgisiz bir mercekten fikir zorlamak sayfayla alakası olmayan öneri üretir (checkout adımında "uzman görüşü ekleyelim" gibi). Tarama, ekranda olana ek olarak olması gerekip olmayanı da görünür kılar (bkz. Değişken izolasyonu → ekleme ekseni).
+**1. Opportunity scan.** The five objection lenses above (Trust, Price, Fit, Timing, Effort) are used for the opportunity scan: for each objection, is there a genuine gap or user obstacle on this page? If it's already answered, that lens is skipped. **Not every lens has to produce an idea**; forcing one out of an irrelevant lens produces a suggestion unrelated to the page (e.g. "let's add an expert opinion" at the checkout step). The scan also makes visible what should exist but doesn't, in addition to what's already on screen (see Variable isolation → the addition axis).
 
-**2. Mekanizma kapısı.** Her aday "bu değişiklik kullanıcı davranışını neden değiştirsin?" sorusuna somut cevap vermek zorundadır. "Daha dikkat çekici olur", "daha modern görünür", "daha temiz olur" cevap değildir; bu adaylar önerilmez. Mekanizma **sayfada gözlemlenebilen bir kullanıcı engeline** dayanmalıdır, genel bir psikoloji iddiasına değil:
+**2. The mechanism gate.** Every candidate has to give a concrete answer to "why would this change alter user behavior?" "More eye-catching," "looks more modern," "cleaner" aren't answers; those candidates aren't suggested. The mechanism has to rest on **an observable user obstacle on the page**, not a generic psychology claim:
 
-- Mekanizma değil: "Sosyal kanıt güveni artırır."
-- Mekanizma: "Bu sayfada kullanıcı ürünün kalitesini değerlendirecek bir kanıt göremiyor; doğrulanabilir kullanıcı değerlendirmesini karar noktasına taşımak bu belirsizliği azaltır."
+- Not a mechanism: "Social proof increases trust."
+- A mechanism: "On this page the user can't see any evidence to judge the product's quality; moving a verifiable user review to the decision point reduces this uncertainty."
 
-Mekanizma hipotezin **Teori** kısmına yazılır; yeni bir çıktı alanı açılmaz. İki sınırı vardır:
+The mechanism goes in the hypothesis's **Theory** part; no new output field is opened for it. It has two limits:
 
-- **Kapı yalnızca playbook'un kendiliğinden ürettiği adaylara uygulanır.** Kullanıcı açıkça bir testi istiyorsa (ör. "butonu kırmızı yapalım") test reddedilmez: kurulur, ama mekanizmasının zayıf olduğu açıkça söylenir ve daha güçlü mekanizmalı bir alternatif yanına konur. Reddedilen tek şey dark pattern'dir (kural 6).
-- **Mekanizma ile dayanak farklı eksenlerdir.** Dayanak "bu problem gerçekten var mı" sorusudur (kanıt seviyesi, kural 10); mekanizma "varsa bu değişiklik neden çözer" sorusudur. Güçlü mekanizma ile `Kanıt: sezgi` birlikte bulunabilir ve bu aday elenmez — yalnızca güven düzeyi düşük olarak işaretlenir.
+- **The gate only applies to candidates the playbook produces on its own.** If the user explicitly wants a test (e.g. "let's make the button red"), the test isn't refused: it's built, but its mechanism is explicitly stated as weak, and a stronger-mechanism alternative is placed next to it. The only thing that's refused is a dark pattern (rule 6).
+- **Mechanism and basis are different axes.** Basis is the question "does this problem genuinely exist" (evidence level, rule 10); mechanism is the question "if it does, why does this change fix it." A strong mechanism can coexist with `Evidence: intuition`, and this candidate isn't eliminated — only its confidence level is marked low.
 
-**3. Mekanizma tekrarı kontrolü.** Aynı sayfa alanında aynı davranış mekanizmasına dayanan fikirler farklı kelimelerle ayrı öneri olarak sunulmaz; birleştirilir veya en güçlüsü seçilir. "Sosyal kanıt ekle", "yorumları görünür yap", "popüler ürünleri öne çıkar" üç fikir değil, tek mekanizmanın üç ifadesidir.
+**3. Mechanism-duplication check.** Ideas resting on the same behavioral mechanism in the same page area aren't presented as separate suggestions just because they're worded differently; they're merged, or the strongest one is picked. "Add social proof," "make reviews visible," "highlight popular products" aren't three ideas, they're three phrasings of the same mechanism.
 
-**4. Etki sıralaması — yasak değil, sıra.** Kapıdan geçen birden fazla aday varsa şu sırayla önceliklendirilir:
+**4. Impact ranking — not a ban, an order.** If more than one candidate passes the gate, they're prioritized in this order:
 
-1. Teklifin kendisi, akıştan bir adımın kalkması, karar anında eksik bilginin eklenmesi, bilgi mimarisi ve karar yapısı.
-2. Hiyerarşi ve görsel ağırlık, bir itiraza cevap veren metin, sürtünme noktasındaki güven sinyali.
-3. Renk, köşe yuvarlaklığı, yazı tipi, jenerik CTA kelimesi, mikro boşluk.
+1. The offer itself, removing a step from the flow, adding missing information at the decision point, information architecture and decision structure.
+2. Hierarchy and visual weight, copy that answers an objection, a trust signal at the friction point.
+3. Color, corner radius, font, generic CTA wording, micro-spacing.
 
-Üçüncü kademeden bir aday güçlü bir mekanizmaya sahipse önerilir; bu bir yasak değil, eşit koşulda sıralama ölçütüdür. Sıralama sezgisel bir önceliktir, ölçülmüş bir sonuç değildir. Kullanıcının test hafızası (kural 16) bu sıralamayı **yalnızca aynı bileşen veya aynı mekanizma için** ezer: geçmişte bir CTA rengi testinin kazanmış olması, tüm kozmetik adayların yapısal adayların önüne geçmesi anlamına gelmez.
+A third-tier candidate with a strong mechanism is still suggested; this isn't a ban, it's a tie-break criterion under equal conditions. The ranking is a heuristic priority, not a measured outcome. The user's test memory (rule 16) overrides this ranking **only for the same component or the same mechanism**: a CTA-color test having won in the past doesn't mean every cosmetic candidate now jumps ahead of structural ones.
 
-Bu dört filtre önceliklendirmenin yerine geçmez, öncesinde çalışır: mercek "bu fikir öneriye değer mi" sorusunu, ICE "kalanlardan hangisi önce" sorusunu cevaplar. Etki sıralaması ICE'ı ezmez: kapıdan geçen adaylar ICE ile sıralanır; kademe, aday seçiminde ve ICE puanları eşitken devreye girer.
+These four filters don't replace prioritization, they run before it: the lens answers "is this idea worth suggesting at all," ICE answers "which of the remaining ones goes first." Impact ranking doesn't override ICE: candidates that pass the gate are ranked with ICE; the tier only kicks in for candidate selection and when ICE scores are tied.
 
-## Değişken izolasyonu
+## Variable isolation
 
-- Bir testte **tek değişken** değişir. Variant B'de fiyat, ürün, puan sayısı, rozet gibi ikinci bir fark varsa test kirlenmiştir (confound) ve sonucu yorumlanamaz. Aynı ekranda iki fark, iki ayrı testtir; tek raporda birleşmeleri onları tek test yapmaz.
-- Variant A her zaman kontroldür (mevcut durum), Variant B testtir. Rolleri ters kurmayın.
-- **Test yalnızca var olanı değiştirmek değildir.** Bir sayfada üç tür fırsat vardır: mevcut öğeyi değiştirmek, mevcut öğeyi kaldırmak ve **olmayan bir öğeyi eklemek**. Üçüncüsü genelde en yüksek etkilidir ama en az akla gelendir, çünkü ekrana bakıldığında görünen şey hep "orada olan"dır. Sayfayı değerlendirirken şu soru ayrıca sorulur: kullanıcı bu adımda hangi soruyu soruyor ve cevabı ekranda var mı? Eksik bilgi veya eksik aksiyon, bir varyantın konusu olabilir.
-- **Kullanıcı sayfasını paylaştıysa A o sayfadır.** Kontrolü yeniden tasarlamak, sadeleştirmek veya "temsili" hâle getirmek testi geçersiz kılar — ölçtüğünüz şey artık önerinizin etkisi değil, iki ayrı tasarımın farkı olur. Ekranda ne varsa A odur; üretilecek tek şey B'dir.
-- **Form akışında çok adımlıya geçmek varsayılan çözüm değildir.** Adım eklemek her adımda yeni bir terk noktası açar; pratikte tek sayfa kalıp ekrana sığacak şekilde yoğunlaştırılan form çoğu zaman daha iyi çalışır (ilişkili alanları yan yana almak, gereksiz alanı çıkarmak, dikey boşluğu azaltmak). Çok adımlı form yalnızca alanlar gerçekten tek ekrana sığmıyorsa veya alanlar doğal olarak ayrı aşamalara ait olduğunda önerilir — ve önerildiğinde bunun bir varsayım olduğu söylenir. **Alan sayısı, adım sayısından önce gelir:** bir formu test ederken önce alan sayısını azaltma/gereksiz alanı kaldırma senaryosu, sonra tek-sayfa-vs-çok-adım senaryosu önerilir — checkout kullanılabilirliği üzerine büyük ölçekli bağımsız araştırmalar, akışı kaç adıma böldüğünüzden çok kaç alan doldurttuğunuzun deneyimi belirlediğini tekrar tekrar gösteriyor.
-- İki varyantta aynı ürün, aynı fiyat, aynı içerik kullanılır; yalnızca test edilen öğe farklıdır.
+- A test changes **exactly one variable**. If there's a second difference in Variant B — price, product, rating count, a badge — the test is contaminated (a confound) and the result can't be interpreted. Two differences on the same screen are two separate tests; bundling them into one report doesn't make them one test.
+- Variant A is always the control (the current state), Variant B is the test. Don't swap the roles.
+- **A test isn't only about changing what already exists.** A page has three kinds of opportunity: changing an existing element, removing an existing element, and **adding an element that doesn't exist**. The third is usually the highest-impact and the least obvious, because whatever's on screen is always what "seems to be there." When evaluating a page, this question is also asked separately: what question is the user asking at this step, and is the answer on screen? Missing information or a missing action can be the subject of a variant.
+- **If the user shared their page, A is that page.** Redesigning the control, simplifying it, or making it "representative" invalidates the test — what you're measuring is no longer your suggestion's effect, it's the difference between two separate designs. Whatever's on screen is A; the only thing to be produced is B.
+- **Moving to multi-step in a form flow isn't the default fix.** Adding a step opens a new abandonment point at every step; in practice, consolidating onto a single page that fits the screen often works better (grouping related fields, dropping unnecessary fields, reducing vertical spacing). A multi-step form is only suggested when the fields genuinely don't fit one screen or naturally belong to separate phases — and when it is suggested, it's stated as an assumption. **Field count comes before step count:** when testing a form, a field-reduction/unnecessary-field-removal scenario is suggested before a single-page-vs-multi-step scenario — large-scale independent research on checkout usability shows again and again that how many fields you make someone fill in shapes the experience more than how many steps you split the flow into.
+- The same product, price, and content are used in both variants; only the tested element differs.
 
-## İstatistiksel hijyen
+## Statistical hygiene
 
-- Kazananı ilk anlamlı sonuçta ilan etmeyin. Bunun iki ayrı gerekçesi var, birbirine karıştırılmaz:
-  - **İstatistiksel (peeking riski):** Bir testi sonuçlar akarken tekrar tekrar kontrol edip ilk anlamlı ana çıktığınızda durdurmak (peeking), yanlış pozitif oranını nominal eşiğin (%5) çok üzerine çıkarır — iki özdeş deneyimi karşılaştıran bir A/A testinde bile, süreç boyunca birden fazla kez bakılırsa en az bir noktada geçici olarak "anlamlı" görünme ihtimali yüksektir. Çözüm: önceden belirlenen örneklem/süre dolmadan karar vermeyin, sonuca yalnızca planlanan noktada bakın. Bu bir istatistiksel zorunluluktur, ama "hiç bakmayın" demek değildir — sıralı test (sequential testing) yöntemleri, testin başında planlanan her ara-bakış için önceden bir karar sınırı hesaplayarak erken bakmayı geçerli kılabilir. `analyze_results.py` bu tür bir sınır hesaplamıyor; kural bu yüzden bağlayıcıdır. Hazırlıksız, tekrarlanan ham anlamlılık kontrolü (sıralı sınır olmadan) her durumda geçersizdir.
-  - **Dış geçerlilik (iş döngüsü kapsama):** En az iki tam hafta koşturma kuralı istatistiksel güç şartı değildir — haftanın günlerini (hafta içi/hafta sonu davranış farkı), maaş günü etkisini ve operasyonel döngüleri kapsamak için bir deney hijyeni kuralıdır. Örneklem hedefine 3 günde ulaşılsa bile, test en az iki hafta açık tutulur.
-- **Ortalamaya dönüş:** Testin ilk günlerinde bir varyant büyük farkla önde görünüp üçüncü haftada sonuç tersine dönebilir. İlk haftanın "kazananı" ilan edilmez; eğri düzleşene kadar beklenir.
-- **Yenilik etkisi:** Yeni görünen bir değişiklik salt yeni olduğu için ilk günlerde fazladan dikkat çeker; bu fazlalık zamanla söner. Kısa süre koşup kapatılan bir testin lifti büyük olasılıkla yenilik etkisidir, kalıcı davranış değişikliği değil. `ab-test-audit` bunu ayrı bir bulgu olarak işaretler (bkz. `skills/ab-test-audit/SKILL.md` → denetim listesi, yenilik etkisi maddesi).
-- Test süresince kampanya, fiyat, algoritma veya tasarım değişikliği yapmayın; veri kirlenir. Test sırasında bir teknik hata (script hatası, ölçüm kopması, yanlış segment ataması) fark edilirse testi düzeltip sıfırdan başlatın — SRM'nin en sık nedeni budur, kirli veriyle devam etmeyin.
-- **Aynı kullanıcı aynı anda birden fazla teste dahil olmamalı.** İki test aynı sayfayı veya akışı etkiliyorsa (ör. biri fiyat kartını, diğeri ödeme butonunu test ediyor) varyasyonlar birbirine karışır ve hangi testin sonucu neyi ürettiği ayırt edilemez. Testler ya sıraya alınır ya da kullanıcı havuzu tamamen ayrılır (mutually exclusive traffic). Kurulum spesifikasyonundaki "Hariç tutulanlar" alanı bunun içindir.
-- **Seçici kayıp (selective attrition) kontrolü.** Kontrol ve varyant arasında ölçüm/veri kaybı oranı asimetrikse (ör. bir varyant teknik nedenle bazı kullanıcılardan veri toplayamıyor — yavaş bağlantılı kullanıcı ağır bir görsel varyantta daha çok "kaybolur" gibi) sonuç geçersiz sayılır. Bu, SRM'den farklıdır: SRM örnekleme oranı sapmasını yakalar, seçici kayıp her iki kolda eşit örneklenmiş ama farklı oranda veri kaybedilmiş olmasını yakalar. `ab-test-audit` bunu ayrı bir kontrol olarak sorar.
-- **İstisna — guardrail erken durdurma:** "Erken bakmayın" kuralı birincil metrik içindir. Bir guardrail metriği (marj, hata oranı, destek talebi) test sırasında anlamlı biçimde kötüleşiyorsa, testi örneklem dolmadan durdurmak doğrudur — burada karar "kazanan kim" değil "zarar var mı" sorusuna dayanır, farklı bir eşiktir.
-- Yeni bir test aracına geçerken veya trafik segmentasyonu değiştiğinde önce **A/A testi** koşun: iki grup birebir aynı deneyimi görür; anlamlı fark çıkarsa sorun üründe değil ölçüm altyapısındadır.
-  - A/A'da bakılacaklar: %50/%50 bölünme gerçekten rastgele mi, p-değeri dağılımı düzgün mü, örneklem dengeli mi, yanlış pozitif oranı %5 anlamlılıkta beklenenin üstünde mi.
-  - Tek bir A/A'ya bakıp aracı güvenilir ilan etmeyin; birkaç kez tekrarlayın.
-  - **Daha hafif alternatif:** Ayrı bir A/A testi kurmak zaman maliyetlidir. Kontrolü ikiye bölüp gerçek varyantla birlikte üç kollu koşmak (A₁ / A₂ / B) da aynı doğrulamayı yapar — A₁ ile A₂ arasında anlamlı fark çıkarsa araç/segmentasyon şüphelidir, ayrıca test kurmaya gerek kalmaz.
-- Trafiğin düşük olduğu **biliniyorsa** (kullanıcı söylediyse ya da sayfanın doğası gereği belliyse, ör. iade formu) klasik A/B önermek yerine Uygunluk tablosundaki alternatiflere geçin. Trafiği öğrenmek için ön kapıda soru sormayın (kural 5): senaryo üretmek trafiğe bağlı değildir, yalnızca süre ve örneklem hesabı bağlıdır.
+- Don't declare a winner the first time a result looks significant. There are two separate reasons for this, and they shouldn't be conflated:
+  - **Statistical (peeking risk):** Repeatedly checking a test while results are still coming in, and stopping the moment it first looks significant (peeking), pushes the false-positive rate well above the nominal threshold (5%) — even in an A/A test comparing two identical experiences, if it's checked more than once during the run, there's a high chance it will look temporarily "significant" at some point. Fix: don't decide before the pre-determined sample/duration target is reached, look at the result only at the planned point. This is a statistical necessity, but it doesn't mean "never look" — sequential-testing methods can make early looks valid by computing a decision boundary in advance for each planned interim look at the start of the test. `analyze_results.py` doesn't compute this kind of boundary; that's exactly why the rule is binding. Unprepared, repeated raw significance checks (without a sequential boundary) are invalid in every case.
+  - **External validity (business-cycle coverage):** The at-least-two-full-weeks rule isn't a statistical-power requirement — it's an experiment-hygiene rule for covering days of the week (weekday/weekend behavior difference), payday effects, and operational cycles. Even if the sample target is reached in 3 days, the test stays open for at least two weeks.
+- **Regression to the mean:** In a test's first days, one variant can appear far ahead, then reverse by the third week. The first week's "winner" isn't declared; the wait continues until the curve flattens.
+- **Novelty effect:** A change that looks new draws extra attention in the first days purely because it's new; this excess fades over time. The lift of a test that ran briefly and was then closed is most likely a novelty effect, not a lasting behavior change. `ab-test-audit` flags this as a separate finding (see `skills/ab-test-audit/SKILL.md` → audit checklist, novelty-effect item).
+- Don't make a campaign, price, algorithm, or design change during the test — it contaminates the data. If a technical bug (a script error, a measurement gap, a wrong segment assignment) is noticed during the test, fix it and restart the test from zero — this is the most common cause of SRM, don't continue with dirty data.
+- **The same user shouldn't be in more than one test at the same time.** If two tests touch the same page or flow (e.g. one tests the price card, the other tests the checkout button), the variations mix and it becomes impossible to tell which test produced which result. Tests are either sequenced, or the user pool is fully separated (mutually exclusive traffic). The "Exclusions" field in the setup spec exists for exactly this.
+- **Selective attrition check.** If the measurement/data-loss rate is asymmetric between control and variant (e.g. a variant can't collect data from some users for a technical reason — a slow-connection user is more likely to "vanish" from a heavy visual variant), the result is invalid. This differs from SRM: SRM catches a sampling-ratio deviation, selective attrition catches equal sampling with unequal data loss across the two arms. `ab-test-audit` asks about this as a separate check.
+- **Exception — early stopping for a guardrail:** the "don't look early" rule is for the primary metric. If a guardrail metric (margin, error rate, support tickets) meaningfully degrades during the test, it's correct to stop the test before the sample fills — here the decision rests on "is there harm," not "who won," a different threshold.
+- When switching to a new test tool or when traffic segmentation changes, run an **A/A test** first: two groups see the identical experience; a significant difference means the problem is in the measurement infrastructure, not the product.
+  - What to check in an A/A: is the 50/50 split genuinely random, is the p-value distribution uniform, is the sample balanced, is the false-positive rate above what's expected at 5% significance.
+  - Don't declare the tool trustworthy from a single A/A; repeat it a few times.
+  - **A lighter alternative:** setting up a separate A/A test costs time. Splitting the control in two and running a three-arm test alongside the real variant (A₁ / A₂ / B) does the same verification — if A₁ and A₂ come out significantly different, the tool/segmentation is suspect, with no need to set up a separate test.
+- If traffic is **known** to be low (the user said so, or it's obvious from the page's nature, e.g. a return form), move to the alternatives in the Fit table instead of suggesting a classic A/B. Don't ask a question at the front door to learn traffic (rule 5): producing a scenario doesn't depend on traffic, only duration and sample-size math does.
 
-## Sonuç yorumlama — genel farksızlık segment farksızlığı demek değildir
+## Interpreting results — overall no-difference doesn't mean segment no-difference
 
-Toplamda A ile B arasında anlamlı fark çıkmaması testin "kazananı yok" demek olduğu anlamına gelmez. Bir segmentte (mobil, yeni kullanıcı, belirli bir trafik kaynağı) B kazanırken başka bir segmentte (masaüstü, dönen kullanıcı) A kazanıyorsa, ikisi toplamda birbirini götürüp yanlışlıkla "fark yok" görüntüsü yaratır. `ab-test-audit`, genel sonuç "fark yok" olarak raporlandığında en az iki temel kırılımı (cihaz, yeni/dönen kullanıcı) ayrıca sormadan denetimi kapatmaz — segment başına örneklem yeterli değilse bunu bulgu olarak yazar, tahmin uydurmaz.
+An overall non-significant difference between A and B doesn't mean the test has "no winner." If B wins in one segment (mobile, new users, a specific traffic source) while A wins in another (desktop, returning users), the two can cancel out in total and produce a false "no difference" appearance. When the overall result is reported as "no difference," `ab-test-audit` doesn't close the audit without also asking about at least two basic breakdowns (device, new/returning) — if the per-segment sample isn't sufficient, it writes that as a finding rather than making up a guess.
 
-**Tuzak — segment taraması p-hacking'e dönüşmesin:** Bu kontrol, sonucu anlamak içindir, kazanan bir alt grup arayana kadar veriyi dilimlemek için değil. Segmentlere yalnızca genel sonuç belirsiz/farksızken bakılır; genel sonuç zaten netse "acaba şu segmentte daha iyi çıkar mı" diye tarama yapılmaz. ~250-350 dönüşüm, segment örnekleminin "muhtemelen çok küçük" olduğunu gösteren kaba bir uyarı eşiğidir — formal bir güç hesabı yerine geçmez; segment başına gerçek yeterlilik o segmentin kendi baz oranı ve hedeflenen MDE'siyle `analyze_results.py samplesize` üzerinden hesaplanır. Eşiğin altındaki segment farkı güvenilir sayılmaz, bulgu olarak "doğrulanmalı" diye işaretlenir.
+**Pitfall — don't let a segment sweep turn into p-hacking:** this check exists to understand the result, not to slice the data until a winning subgroup turns up. Segments are only looked at when the overall result is inconclusive/no-difference; if the overall result is already clear, a "maybe it does better in this segment" sweep isn't suggested. ~250-350 conversions is a rough warning threshold indicating the segment sample is "probably too small" — it isn't a substitute for a formal power calculation; real sufficiency per segment is computed from that segment's own baseline rate and target MDE via `analyze_results.py samplesize`. A segment difference below the threshold isn't treated as reliable; it's flagged as a finding that "needs verifying."
 
-**"Fark yok" sonucunun iki farklı nedeni olabilir:** Ya trafik/süre yetersiz kaldı (istatistiksel güç düşük), ya da değişiklik kullanıcının davranışını etkileyecek kadar belirgin değildi. `ab-test-audit` "fark yok" bulgusunu raporlarken ikisini ayırt eder — örneklem hedefine ulaşılmış mı, ulaşılmışsa değişikliğin kendisi zayıf mıydı.
+**A "no difference" result can have two different causes:** either traffic/duration fell short (low statistical power), or the change wasn't distinct enough to affect the user's behavior. `ab-test-audit` separates the two when reporting a "no difference" finding — was the sample target reached, and if so, was the change itself weak.
 
-**Segmentasyonun üç merceği:** Cihaz/kullanıcı tipi tek kırılım değildir. Anlamlı segment üç kaynaktan gelir:
-- **Kaynağa göre:** Trafiğin geldiği kanal (organik arama, sosyal, e-posta, ücretli). Bir kanaldan gelen kullanıcı değişikliğe farklı tepki verebilir.
-- **Davranışa göre:** Kullanım sıklığı veya derinliği (ilk kez gelen vs. sık ziyaret eden, az sayfa gezen vs. çok gezen).
-- **Sonuca göre:** Ne satın aldığı, sepete ne kadar harcadığı, hangi plana kaydolduğu.
-Bir segmentte kazanan, başka bir segmentte kaybediyor olabilir; bu üç mercekten en az biri, "fark yok" veya sınırda çıkan sonuçlarda mutlaka sorulur.
+**The three lenses of segmentation:** device/user type isn't the only breakdown. A meaningful segment comes from three sources:
+- **By source:** the channel traffic arrives from (organic search, social, email, paid). A user from one channel may respond differently to the change.
+- **By behavior:** usage frequency or depth (first-time vs. frequent visitor, browses few pages vs. many).
+- **By outcome:** what they bought, how much they spent in cart, which plan they signed up for.
+One segment can win while another loses; at least one of these three lenses is always asked about on a "no difference" or borderline result.
 
-## Önceliklendirme (ICE)
+## Prioritization (ICE)
 
-Birden fazla senaryo önerirken ICE ile sıralayın: Etki (Impact) × Güven (Confidence) × Kolaylık (Ease). Yüksek trafikli sayfadaki düşük eforlu test, düşük trafikli sayfadaki iddialı testten önce gelir.
+When suggesting multiple scenarios, rank them with ICE: Impact × Confidence × Ease. A low-effort test on a high-traffic page comes before an ambitious test on a low-traffic page.
 
-Aynı girdiyle aynı sıralamanın çıkması için skala sabittir (her boyut 1-10, toplam = üç puanın çarpımı):
+The scale is fixed so the same input produces the same ranking (each dimension 1-10, total = the product of the three scores):
 
-| Boyut | 1-3 | 4-7 | 8-10 |
+| Dimension | 1-3 | 4-7 | 8-10 |
 |---|---|---|---|
-| Etki | Kozmetik fark, birincil KPI'a dolaylı etki | Birincil KPI'ı etkilemesi makul | Huninin pahalı noktasında doğrudan etki |
-| Güven | Sezgi / sektör gözlemi | Arşiv emsali veya kendi verinde dolaylı gözlem (ısı haritası, oturum kaydı, anket) | Kendi ürününde doğrudan sinyal veya kendi ürününde tekrarlanmış geçmiş test |
-| Kolaylık | Yeni akış / backend işi | Orta ölçekli cephe işi | Metin/stil/sıralama düzeyinde değişiklik |
+| Impact | Cosmetic difference, indirect effect on the primary KPI | Plausible effect on the primary KPI | Direct effect at an expensive point in the funnel |
+| Confidence | Intuition / industry observation | Archive precedent or an indirect observation in your own data (heatmap, session recording, survey) | A direct signal in your own product, or a repeated past test in your own product |
+| Ease | New flow / backend work | Medium-scale front-end work | Copy/style/ordering-level change |
 
-Eşitlikte sıra: hedef sayfanın trafiği yüksek olan → ölçümü basit olan (tek net olay) → guardrail riski düşük olan önce gelir. Trafik bilinmiyorsa ilk eşitlik bozucu atlanır — kural 5 gereği sorulmaz, kural 10 gereği tahmin edilmez; sıralama kalan iki ölçütle yapılır. Güven puanının dayanağı tek cümleyle yazılır ("Güven 8: aynı sayfada geçen çeyrekteki benzer test kazandı" gibi); dayanaksız yüksek güven puanı verilmez.
+Tie-break order: higher traffic on the target page → simpler to measure (a single clear event) → lower guardrail risk comes first. If traffic is unknown, the first tie-breaker is skipped — it isn't asked per rule 5, and isn't guessed per rule 10; ranking is done with the remaining two criteria. The basis for a confidence score is written in one sentence ("Confidence 8: a similar test on the same page won last quarter"); an unsupported high confidence score isn't given.
 
-**Yerel tepe (local maximum) riski:** Sadece küçük, tek-değişkenli iyileştirmeler biriktirmek (buton rengi, satır aralığı, madde sırası) belirli bir noktadan sonra platoya oturur — küçük artışlar tükenir ama daha büyük bir kazanç için sayfanın kendisi yeniden tasarlanmalı. Bir ürün/sayfa için art arda birkaç küçük test "fark yok" veya "ihmal edilebilir" çıkıyorsa, `ab-test-suggest` bir sonraki öneride daha cesur/yapısal bir varyant önerir (ör. tek alan değil tüm akışın yeniden kurgulanması) ve bunu neden önerdiğini söyler. Somut kaçış taktiği: değişkeni tek bir küçük elemandan sayfanın/akışın tamamına genişletin (radikal redesign testi); anlamlı bir kazanan bulununca tekrar mikro-optimizasyona dönülür.
+**Local-maximum risk:** Stacking only small, single-variable improvements (button color, line spacing, item order) plateaus past a certain point — the small gains run out, and a larger win needs the page itself redesigned. If several small tests in a row come back "no difference" or "negligible" for a product/page, `ab-test-suggest` suggests a bolder/more structural variant in its next suggestion (e.g. restructuring the whole flow, not just one field) and states why. A concrete escape tactic: widen the variable from a single small element to the entire page/flow (a radical-redesign test); once a meaningful winner is found, return to micro-optimization.
 
-**Kantitatif KPI'lara kalitatif geri bildirim eklenir.** Sadece sayılara bakmak yanıltıcı olabilir — KPI'nın *neden* değiştiğini kullanıcı yorumu açıklar. Test sayfasının altına kısa bir anket linki eklemek ucuz bir ek sinyaldir; zorunlu değildir ama özellikle "fark yok" veya sınırda çıkan sonuçlarda önerilir. Tek soruluk anketler en yüksek yanıt oranını verir — örnek sorular: "Bugün [aksiyon]'u tamamlamanızı ne engelliyor?" (tamamlamayanlara), "Satın almanızı ne az kalsın engelliyordu?" (satın alanlara, satın almadan hemen sonra sorulursa en dürüst cevabı verir). Destek talebi ve iptal nedeni kayıtları da aynı sinyali ücretsiz taşır — "ama", "endişe", "emin değilim" gibi ifadeler aranır.
+**Qualitative feedback is added to quantitative KPIs.** Looking only at numbers can be misleading — user comments explain *why* a KPI changed. Adding a short survey link at the bottom of the test page is a cheap extra signal; it isn't mandatory but is especially recommended on "no difference" or borderline results. Single-question surveys give the highest response rate — example questions: "What's stopping you from completing [action] today?" (to those who didn't complete it), "What almost stopped you from buying?" (to those who did buy, asked right after purchase gives the most honest answer). Support-ticket and cancellation-reason records carry the same signal for free — look for phrases like "but," "worried," "not sure."
 
-## Arşiv bayatlar — ne zaman güvenilmeyeceğini bilin
+## When the archive goes stale — knowing when not to trust it
 
-Bu senaryolar zamansız değildir. Bir senaryonun geçerliliği şu durumlarda düşer; `ab-test-suggest` bunlardan birini fark ederse senaryoyu önerirken uyarır veya hiç önermez:
+These scenarios aren't timeless. A scenario's validity drops in these cases; if `ab-test-suggest` notices one of them, it warns when suggesting the scenario, or doesn't suggest it at all:
 
-- **Platform kuralı değişti:** İzin akışları, bildirim politikaları, tarayıcı çerez/izleme kısıtları, uygulama mağazası kuralları. Ölçüm veya uygulama artık mümkün olmayabilir.
-- **Mevzuat değişti:** İndirim ve referans fiyat gösterimi, veri toplama, abonelik iptali, erişilebilirlik zorunlulukları.
-- **Desen standartlaştı:** Bir zamanlar ayrıştırıcı olan şey (misafir ödeme, mobil uyum, arama önerisi) artık asgari beklentiyse, testin sorusu "eklemeli miyiz" değil "nasıl yapmalıyız"a döner.
-- **Teknoloji değişti:** Sayfa hızı, arayüz kalıbı veya cihaz kullanımı senaryonun varsaydığı zemini kaydırdıysa.
-- **Kendi verinizde tükendi:** Aynı desen sizin ürününüzde art arda "fark yok" verdiyse, arşivde durması onu sizin için geçerli kılmaz (bkz. yerel tepe riski).
+- **A platform rule changed:** Consent flows, notification policies, browser cookie/tracking restrictions, app-store rules. Measurement or implementation may no longer be possible.
+- **Regulation changed:** Discount and reference-price display, data collection, subscription cancellation, accessibility requirements.
+- **The pattern became standard:** Something that was once differentiating (guest checkout, mobile responsiveness, search suggestions) is now a baseline expectation, and the test's question turns from "should we add this" into "how should we do it."
+- **The technology changed:** If page speed, interface conventions, or device usage have shifted the ground the scenario assumed.
+- **It ran dry in your own data:** If the same pattern gave you "no difference" repeatedly in your own product, being in the archive doesn't make it valid for you (see local-maximum risk).
 
-Arşiv bir vaat değil, bir emsaldir: bir senaryonun burada durması onun sizin ürününüzde kazanacağını değil, benzer bir bağlamda daha önce sorulmaya değer bulunduğunu gösterir.
+The archive isn't a promise, it's a precedent: a scenario being here doesn't mean it will win in your product, only that it was found worth asking in a similar context before.
 
-Bir senaryo bu nedenlerden biriyle geçersizleştiğinde arşivden sessizce silinmez: senaryonun kendi altına neyin değiştiği ve yerine ne önerildiği yazılır, böylece gerekçe senaryoyla birlikte kalır. Senaryonun altındaki "Pazar notu" satırları da bu amaca hizmet eder — bağımlılık görünür olur, kullanıcı kendi bağlamında geçerli olup olmadığına karar verebilir.
+When a scenario is invalidated by one of these reasons, it isn't quietly deleted from the archive: what changed and what's suggested instead is written underneath the scenario itself, so the reasoning stays attached to it. The "Market note" lines under a scenario serve the same purpose — the dependency becomes visible, and the user can decide whether it applies in their own context.
 
-## Bu kuralların dayanağı
+## Where this discipline comes from
 
-Buradaki disiplinin çoğu bu arşivin kendi saha pratiğinden gelir. Bir kısmı ise deney metodolojisinde yaygın kabul görmüş, tekrar tekrar doğrulanmış sonuçlardır — kullanıcı "bunu ekibime nasıl savunurum" diye sorduğunda bunların yerleşik pratik olduğu söylenebilir, ama tek bir kuruma/yayına atıfla değil:
+Most of the discipline here comes from this archive's own field practice. Some of it is widely accepted, repeatedly verified findings in experiment methodology — when a user asks "how do I defend this to my team," these can be described as established practice, but not attributed to any single institution or publication:
 
-- **Erken bakma (peeking) ve tekrarlı kontrolün yanlış pozitifi artırması** — çevrimiçi kontrollü deneylerde standart bir bulgu; sıralı test (sequential testing) yöntemleri tam da bu sorunu çözmek için vardır.
-- **A/A testiyle ölçüm altyapısını doğrulama** — deney platformu güvenilirliği kontrollerinin klasik parçasıdır.
-- **Örneklem oranı uyuşmazlığı (SRM)** — büyük ölçekli deney sistemlerinde en sık raporlanan veri kalitesi hatalarından biridir; sapma varsa sonuç okunmaz.
-- **Yenilik etkisi ve ortalamaya dönüş** — deney sonuçlarının zaman içinde sönmesinin bilinen iki nedenidir.
-- **Dönüşüm oranının geliri gizlemesi** — fiyat ve indirim deneylerinde gelir bazlı metrik (RPV) kullanma gerekçesi buradan gelir.
-- **Normal yaklaşımın nadir olaylarda geçersizleşmesi** — iki oran karşılaştırmasının temel varsayımıdır (bkz. `scripts/analyze_results.py` içindeki beklenen sayı kontrolü).
-- **Seçici kayıp ve eşzamanlı test kirlenmesi** — ölçekli deney altyapılarının ve açık kaynak A/B test araçlarının ortak pratiğidir; bu playbook'un istatistiksel hijyen bölümünde ayrı maddeler olarak yer alır.
-- **Checkout/form kullanılabilirliği** — bağımsız, uzun soluklu kullanılabilirlik araştırmalarının tekrar eden bulgusu; alan sayısının adım sayısından önce geldiği bulgusu buradan gelir.
+- **Peeking and repeated checking raising the false-positive rate** — a standard finding in online controlled experiments; sequential-testing methods exist specifically to solve this problem.
+- **Verifying measurement infrastructure with an A/A test** — a classic part of experimentation-platform reliability checks.
+- **Sample ratio mismatch (SRM)** — one of the most commonly reported data-quality bugs in large-scale experimentation systems; if there's a deviation, the result isn't read.
+- **Novelty effect and regression to the mean** — two known reasons experiment results fade over time.
+- **Conversion rate hiding revenue** — this is where the reasoning for using a revenue-based metric (RPV) in price and discount experiments comes from.
+- **The normal approximation breaking down for rare events** — a foundational assumption of the two-proportion comparison (see the expected-count check inside `scripts/analyze_results.py`).
+- **Selective attrition and cross-test contamination** — common practice across large-scale experimentation infrastructure and open-source A/B testing tools; this playbook lists them as separate items in the statistical-hygiene section.
+- **Checkout/form usability** — a recurring finding of independent, long-running usability research; the field-count-before-step-count finding comes from here.
 
-Kullanıcı bir kuralın gerekçesini sorduğunda "kural böyle" demek yeterli değildir — nedeni tek cümleyle açıklanır. Bu playbook'a özgü, literatürde karşılığı olmayan tercihler (üç kutu formatı, ICE skalası, arşiv seçimi) böyle olduğu belirtilir; dış otorite gibi sunulmaz. Hiçbir kural belirli bir şirket, ürün veya yayına atıfla savunulmaz — dayanağın kendisi (istatistiksel mantık, tekrarlanmış gözlem) yeterlidir.
+When a user asks for the reason behind a rule, "that's just the rule" isn't a sufficient answer — the reason is explained in one sentence. Choices specific to this playbook with no counterpart in the literature (the three-box format, the ICE scale, archive curation) are stated as such; they aren't presented as external authority. No rule is defended by citing a specific company, product, or publication — the basis itself (statistical reasoning, repeated observation) is enough.
 
-## Pazar bağlamı — dil ile pazar aynı şey değil
+## Market context — language and market aren't the same thing
 
-Kullanıcının dili Türkçe olması, hedef pazarının Türkiye olduğu anlamına gelmez; İngilizce sorması da pazarının ABD olduğu anlamına gelmez. Bu arşiv Türkiye e-ticaret pratiğinden doğdu ve senaryoların çoğu evrenseldir (buton, görsel, sıralama, arama, form) — ama bir bölümü doğrudan pazara bağlıdır ve başka pazara taşınırken kırılır.
+The user's language being Turkish doesn't mean their target market is Turkey; asking in English doesn't mean their market is the US. This archive grew out of Turkish e-commerce practice, and most of its scenarios are universal (buttons, visuals, ordering, search, forms) — but some are directly market-dependent, and break when carried to a different market.
 
-**Pazara bağlı davranış sınıfları:**
-- **Ödeme kültürü:** Kredi kartı taksiti Türkiye, MENA ve Latin Amerika'da satın alma kararının merkezindedir; ABD ve Kuzey Avrupa'da bu mekanizma yoktur, oradaki karşılığı olan "sonra öde" (BNPL) çözümlerinin hedef kitlesi ve güven algısı farklıdır. Taksit senaryolarının sonucu bu pazarlar arasında taşınamaz.
-- **Güven sinyalinin kaynağı:** Hangi logonun güven verdiği pazara bağlıdır — bir pazarda banka/kart doğrulama işareti tanıdıkken, başka pazarda ödeme sağlayıcısı veya bağımsız güvenlik mührü daha güçlü sinyaldir.
-- **Kargo ve iade beklentisi:** Ücretsiz ve sorusuz iadenin standart sayıldığı pazarlarda "kolay iade" vurgusu ayrıştırıcı değil asgari şarttır; iade kültürünün zayıf olduğu pazarlarda ise güçlü bir güven sinyalidir. Ücretsiz kargo eşiğinin psikolojik ağırlığı da kargo maliyetinin sepete oranıyla birlikte değişir.
-- **Fiyat algısı:** Fiyat sonu etkisi (9 ile bitmek) evrensel bir yasa değil, kültürel bir alışkanlıktır; bazı pazarlarda belirli rakamların ayrı çağrışımları vardır.
-- **Destek kanalı beklentisi:** Mesajlaşma uygulaması veya telefon üzerinden satış desteği bazı pazarlarda güven artırırken, bazılarında kurumsallık algısını zayıflatabilir.
-- **Kurumsal satın alma:** Fiyat şeffaflığının beklenti olduğu pazarlar ile teklif/pazarlık kültürünün baskın olduğu pazarlar farklı davranır.
+**Market-dependent behavior classes:**
+- **Payment culture:** Credit-card installments are central to the purchase decision in Turkey, MENA, and Latin America; the US and Northern Europe don't have this mechanism, and the "buy now, pay later" (BNPL) equivalent there has a different target audience and trust perception. Installment-scenario results don't transfer between these markets.
+- **Source of trust signal:** Which logo signals trust is market-dependent — in one market a bank/card verification mark is familiar, in another the payment provider's or an independent security seal is the stronger signal.
+- **Shipping and returns expectations:** In markets where free, no-questions-asked returns are the standard, an "easy returns" callout isn't differentiating, it's table stakes; in markets with weak return culture it's a strong trust signal. The psychological weight of a free-shipping threshold also shifts with shipping cost as a share of cart size.
+- **Price perception:** The charm-pricing effect (ending in 9) isn't a universal law, it's a cultural habit; in some markets specific digits carry separate associations.
+- **Support-channel expectations:** Sales support via a messaging app or phone can increase trust in some markets, and weaken the perception of professionalism in others.
+- **Enterprise purchasing:** Markets where price transparency is expected behave differently from markets where a quote/negotiation culture dominates.
 
-**Mevzuat, pazardan ayrı bir kısıttır.** İndirim ve referans fiyat gösterimi, çerez/izin akışları, veri toplama ve abonelik iptali bazı bölgelerde yasal olarak bağlıdır — orada "hangi varyant daha çok satar" sorusu ancak izin verilen varyantlar arasında sorulabilir. Testi kurmadan önce hedef pazarın kuralını doğrulayın; playbook bunu bilmez ve tahmin etmez.
+**Regulation is a separate constraint from market.** Discount and reference-price display, cookie/consent flows, data collection, and subscription cancellation are legally bound in some regions — there, the question "which variant sells more" can only be asked among the variants that are actually permitted. Verify the target market's rule before setting up the test; the playbook doesn't know this and doesn't guess it.
 
-**Uygulama:** Pazara bağlı bir senaryo önerilirken bu bağımlılık çıktıda söylenir (senaryoların altındaki "Pazar notu" satırları). Kullanıcının hedef pazarı bilinmiyorsa ve pazara bağlı bir senaryo öneriliyorsa, önce hangi pazar için çalıştığı sorulur.
+**Application:** When a market-dependent scenario is suggested, this dependency is stated in the output (the "Market note" lines under the scenarios). If the user's target market is unknown and a market-dependent scenario is being suggested, which market they're working for is asked first.
 
-## Bu playbook nerede iyi çalışır, nerede çalışmaz
+## Where this playbook works well, and where it doesn't
 
-Klasik %50/%50 A/B testi her iş modeli için doğru araç değildir. Öneri üretmeden önce uygunluğu değerlendirin ve düşükse bunu açıkça söyleyin.
+A classic 50/50 A/B test isn't the right tool for every business model. Fit is evaluated before producing a suggestion, and if it's low, that's stated plainly.
 
-| Uygunluk | Bağlam |
+| Fit | Context |
 |---|---|
-| Yüksek | B2C e-ticaret, tüketici mobil uygulaması, self-servis SaaS — haftalık binlerce oturum, hızlı ve tekrarlanan dönüşüm olayı |
-| Orta | Pazaryeri (arz/talep yan etkisi olabilir), abonelik, B2B lead formu — test edilebilir ama örneklem ve gecikmeli dönüşüm dikkat ister |
-| Düşük | Düşük trafikli kurumsal satış sayfaları, uzun satış döngüsü (aylarca), ağır regülasyonlu akışlar (sigorta/finans/sağlık teklif ve sözleşme adımları), fiziksel mağaza etkisi baskın işler |
+| High | B2C e-commerce, consumer mobile apps, self-serve SaaS — thousands of weekly sessions, a fast, repeated conversion event |
+| Medium | Marketplaces (may have supply/demand side effects), subscriptions, B2B lead forms — testable, but sample size and delayed conversion need care |
+| Low | Low-traffic enterprise sales pages, long sales cycles (months), heavily regulated flows (insurance/finance/health offer and contract steps), businesses dominated by physical-store effects |
 
-**Uygunluk düşükse ne önerilir (çıkmaz sokak bırakmayın):**
-- **Nitel yöntemler:** 5-8 kişilik kullanılabilirlik testi, oturum kaydı incelemesi, çıkış anketi — küçük örneklemde bile problem tespitinde işe yarar, "hangi varyant kazandı" sorusuna değil "sorun ne" sorusuna cevap verir.
-- **Öncesi/sonrası ölçüm (quasi-experiment):** Rastgele bölme mümkün değilse, değişiklik öncesi ve sonrası dönemleri mevsimsellik/kampanya etkisini not ederek karşılaştırın — nedensellik iddiası zayıftır, bunu açıkça yazın.
-- **Daha kaba ama daha büyük değişiklik:** Küçük farkı ölçecek trafik yoksa, ölçülebilir büyüklükte bir fark yaratacak yapısal değişiklik test edin (küçük MDE devasa örneklem ister).
-- **Yukarı taşıma:** Testi düşük trafikli alt sayfada değil, aynı problemi barındıran üst huni adımında koşun.
-- **Regülasyonlu akışlarda:** Varyantlardan biri yasal metni, zorunlu bilgilendirmeyi veya fiyat şeffaflığını değiştiriyorsa test edilmez; önce hukuk/uyum onayı alınır.
+**What's suggested when fit is low (don't leave a dead end):**
+- **Qualitative methods:** A 5-8-person usability test, session-recording review, an exit survey — useful for problem detection even on a small sample; it answers "what's wrong," not "which variant won."
+- **Before/after measurement (quasi-experiment):** If random splitting isn't possible, compare the before and after periods while noting seasonality/campaign effects — the causal claim is weak, and that's stated explicitly.
+- **A cruder but bigger change:** If there isn't enough traffic to measure a small difference, test a structural change large enough to be measurable (a small MDE demands a huge sample).
+- **Move it upstream:** Run the test on a higher-traffic step of the funnel that carries the same problem, not on the low-traffic sub-page.
+- **In regulated flows:** If one of the variants changes legal text, mandatory disclosure, or price transparency, it isn't tested; legal/compliance approval is obtained first.
 
-## Kapsam: tek değişkenli A/B, çok değişkenli (MVT) değil
+## Scope: single-variable A/B, not multivariate (MVT)
 
-Bu playbook yalnızca **tek değişkenli A/B testleri** üretir ve denetler — aynı anda birden fazla öğenin (başlık + görsel + buton rengi) farklı kombinasyonlarıyla test edildiği multivariate testing (MVT) kapsam dışıdır. Sebep: MVT anlamlı sonuç için çok yüksek trafik gerektirir ve kombinasyon sayısı arttıkça hangi öğenin etkili olduğunu ayırt etmek zorlaşır — bizim tüm çerçevemiz (tek değişken, üç kutu, confound denetimi) buna göre kurulu. Uygunluğu sabit bir trafik sayısıyla değil hesapla belirleyin: MVT'de örneklem her **kombinasyona** ayrı ayrı bölünür, dolayısıyla gereken toplam trafik yaklaşık olarak kombinasyon sayısı × tek bir A/B testinin gereksinimidir. Kombinasyon başına düşen trafiği `analyze_results.py samplesize` ile kendi baz oranınız ve MDE'niz üzerinden hesaplayın; çıkan sayı elinizdeki trafiğe uymuyorsa MVT'ye girişmeyin. Kullanıcı birden fazla öğeyi birden test etmek isterse, `ab-test-design` bunu ayrı tek-değişkenli testlere böler (methodology.md → Değişken izolasyonu) ve gerçekten MVT gerekiyorsa (çok yüksek trafik + öğeler arası etkileşim sorusu) bunun playbook'un kapsamı dışında olduğunu açıkça söyler.
+This playbook only produces and audits **single-variable A/B tests** — multivariate testing (MVT), where several elements (headline + image + button color) are tested together in different combinations, is out of scope. Reason: MVT needs very high traffic for a meaningful result, and as the number of combinations grows, telling which element drove the effect gets harder — our whole framework (single variable, three boxes, confound audit) is built around this. Determine fit by computing it, not from a fixed traffic number: in MVT the sample is split separately across each **combination**, so the total traffic needed is roughly the number of combinations × the requirement of a single A/B test. Compute the traffic needed per combination with `analyze_results.py samplesize` using your own baseline rate and MDE; if the resulting number doesn't fit your actual traffic, don't attempt MVT. If the user wants to test multiple elements at once, `ab-test-design` splits this into separate single-variable tests (methodology.md → Variable isolation) and, if MVT is genuinely needed (very high traffic + a question about interaction between elements), states plainly that this is out of the playbook's scope.
 
-## Etik ve yasal sınırlar
+## Ethical and legal boundaries
 
-- Hiç uygulanmamış bir fiyatı "eski fiyat" diye göstermek yasal risktir (referans fiyat düzenlemeleri).
-- Aylık taksit tutarını öne çıkarırken toplam tutarı gizlemek şeffaflık ihlalidir.
-- Dark pattern üreten varyant önermeyin: kapatılamayan modal, gizlenen iptal koşulu, yanlış stok bilgisi.
+- Showing a price that was never actually charged as the "old price" is a legal risk (reference-price regulation).
+- Highlighting the monthly installment amount while hiding the total amount is a transparency violation.
+- Don't suggest a variant that produces a dark pattern: an unclosable modal, a hidden cancellation condition, false stock information.
 
-**Kanıt/güven sinyali sıralaması.** Bir varyant güven artırmayı hedefliyorsa (referans, rozet, istatistik, vaka örneği) hepsi eşit ağırlıkta değildir — bağlam ve gerçek sayı içeren kanıt, jenerik olandan daha güçlüdür (ör. isimli/somut sonuçlu bir referans, sade bir logo şeridinden daha ikna edicidir). Somut sayı yuvarlanmış sayıdan daha güvenilir görünür ve genelde gerçektir de ("2.500 kullanıcı" yerine elde varsa "2.487 kullanıcı"). Kanıt, en çok tereddüt edilen noktaya (ör. ödeme formunun yanına) yerleştirilir — SSS'ye gömülmez. Kural 6 zaten geçerlidir: sahip olunmayan sertifika, uydurma istatistik veya sahte referans önerilmez; bu madde yalnızca gerçek kanıtın nasıl sıralanacağını anlatır.
+**Ranking evidence/trust signals.** If a variant aims to increase trust (a reference, a badge, a statistic, a case example), they aren't all equally weighted — evidence with context and a real number is stronger than a generic one (e.g. a named reference with a concrete result is more persuasive than a plain logo strip). A concrete number looks more credible than a rounded one, and it usually is more real too ("2,487 users" instead of "2,500 users," when the real figure is available). Evidence is placed at the point of most hesitation (e.g. next to the payment form) — not buried in an FAQ. Rule 6 already applies: a certification you don't hold, a made-up statistic, or a fake reference isn't suggested; this item only describes how to rank real evidence.
 
-**Manipülatif varyant kontrolü.** Bir varyantın dark pattern olup olmadığından şüphe varsa 5 soru sırayla sorulur: (1) Kullanıcıya sunulan seçenekler arasında bilerek eşitsiz bir yük mü koyuyor (asymmetric)? (2) Etkisi kullanıcıdan gizli mi (covert)? (3) Yanlış bir inanç mı üretiyor — abartılı iddia, eksik bilgi ya da yanıltıcı ifade yoluyla (deceptive)? (4) Gerekli bilgiyi geciktiriyor ya da gizliyor mu (hides information)? (5) Kullanıcının seçim kümesini daraltıyor mu (restrictive)? İkisi ya da fazlası "evet" ise varyant revize edilmeden önerilmez. Bağımsız araştırmalar, countdown timer'ların ve "az stok kaldı" mesajlarının önemli bir kısmının gerçek veriye değil zamanlanmış/rastgele üretime dayandığını gösteriyor — bkz. CLAUDE.md kural 6.
+**Manipulative-variant check.** When there's doubt about whether a variant is a dark pattern, 5 questions are asked in order: (1) Does it put a deliberately unequal burden between the options presented to the user (asymmetric)? (2) Is its effect hidden from the user (covert)? (3) Does it create a false belief — through an exaggerated claim, missing information, or misleading wording (deceptive)? (4) Does it delay or hide necessary information (hides information)? (5) Does it narrow the user's set of choices (restrictive)? If two or more come back "yes," the variant isn't suggested without revision. Independent research shows a significant share of countdown timers and "low stock" messages rest on scheduled/random generation rather than real data — see CLAUDE.md rule 6.
