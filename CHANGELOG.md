@@ -5,6 +5,9 @@ All notable changes to this project are documented here. Format loosely follows 
 ## Unreleased
 
 ### Added
+- `README.tr.md` — full Turkish translation of the README, plus a `Language: English · Türkçe` switcher at the top of both. The archive itself is Turkish-native and most of the current audience reads Turkish; the README was the last English-only surface.
+- A `[!NOTE]` in both READMEs naming the one official source (this repo + `npx skills add ali-demirbas/ab-test-playbook`) after noticing an unrelated skills.sh listing using a similarly named skill.
+- A `Jump to install ↓` anchor near the top of both READMEs.
 - `scripts/build_card.py` + tests: deterministic card rendering from a JSON scenario — fills the template, HTML-escapes text fields, drops the template's developer comment, and self-verifies that no fixed skeleton line drifted. `CLAUDE.md` rule 9 now names it as the mechanism; hand-filling the template is the fallback.
 - `agents/scenario-critic` and `agents/mockup-reviewer`: adversarial review before delivery, bound by new rule 17. The critic runs a methodology checklist over every generated scenario; the reviewer compares the two rendered mockups for a second difference — the failure that silently invalidates the test a card illustrates.
 - `scripts/validate_input.py` + rule 18: anything pasted in (page text, results tables, `.abtest-history.md`) is scanned for instruction-shaped content and script payloads. Findings are quoted back, never obeyed. The markup case is not theoretical — mockup bodies are raw HTML by design, so a payload that survives into a variant renders in whatever browser opens the card.
