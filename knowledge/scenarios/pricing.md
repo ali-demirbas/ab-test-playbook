@@ -246,3 +246,57 @@ Fiyatın yanında “içindekilerin toplam değeri” göstermek alınan şeyin 
 - Çekici-alternatif planı gerçek maliyetinin altında fiyatlandırıp asıl planları yapay biçimde pahalı göstermeyin.
 - Orta planın içeriğini test sırasında zenginleştirmeyin; tek değişken üçüncü seçeneğin varlığıdır.
 - Kurumsal fiyat sayfası gizliyse bu senaryoyu `saas-b2b.md`’deki plan-varsayılanı senaryosuyla karıştırmayın — ikisi ayrı testtir.
+
+---
+
+## Fiyat planlarını ucuzdan pahalıya mı, pahalıdan ucuza mı sıralamalı?
+
+Planların soldan sağa hangi sırayla dizildiği, karşılaştırma sırasında hangi planın çapa görevi göreceğini belirler. Pahalı plan önce görünürse sonraki planlar daha uygun hissettirebilir; ucuz plan önce görünürse ziyaretçi bütçe eksenli düşünmeye başlar. Bu, plan sayısından ve tablo/kart biçiminden ayrı bir değişkendir — sıralama, ne gösterildiğini değil hangi sırayla görüldüğünü test eder.
+
+**Test edilmesi gerekenler**
+- Yön: Ucuzdan pahalıya mı, pahalıdan ucuza mı toplam geliri artırıyor?
+- Çapa etkisi: İlk görülen plan sonraki planların algılanan değerini nasıl değiştiriyor?
+- Öne çıkan plan: Sıra değişince “önerilen” plan etiketi hâlâ doğru planda mı duruyor?
+- Kaydırma: Mobilde ilk görülen plan, kaydırmadan görünen tek plan oluyor mu?
+- Segment: Kurumsal ve bireysel ziyaretçi farklı bir sıradan mı etkileniyor?
+
+**Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): Sıralama geliri artırıyor mu?
+- Önerilen Plan Seçim Oranı: Öne çıkarılan planın seçilme oranı değişiyor mu?
+- En Ucuz Plan Seçim Oranı: Aşağı kayma artmamalı.
+- Karar Süresi: Sayfada karar verme süresi kabul edilemez ölçüde uzamamalı.
+- Destek Talebi: “Hangi planı seçmeliyim” soruları artmamalı.
+
+**Yapılmaması gerekenler**
+- Aynı testte plan sırasını ve hangi planın “önerilen” olarak etiketlendiğini birlikte değiştirmeyin.
+- Sıralamayı, plan içeriklerini veya fiyatlarını aynı anda değiştirerek test etmeyin.
+- Pahalı planı önce göstererek ucuz planı yapay biçimde küçük veya eksik göstermeyin.
+- Sıralamayı mobil ve masaüstünde farklı test ediyorsanız bunu ayrı bulgu olarak raporlayın, tek sonuca indirmeyin.
+- Enterprise/kurumsal planı bu sıralamaya dahil ediyorsanız `saas-b2b.md`’deki fiyat gizleme senaryosuyla çelişmeyin.
+
+---
+
+## Fiyatın küsuratını üst simge olarak yazmak algılanan tutarı küçültür mü?
+
+“₺199,90” yerine “₺199⁹⁰” gibi küsuratı küçük ve üst simge yazmak, gözün ana sayıya (199) odaklanmasını sağlayıp fiyatı daha küçük hissettirebilir. Riski, küçük yazılan kısmın bazı kullanıcılar tarafından hiç fark edilmemesi veya okunaksız bulunmasıdır.
+
+**Test edilmesi gerekenler**
+- Biçim: Üst simge küsurat mı, standart aynı boyut küsurat mı satın almayı artırıyor?
+- Okunabilirlik: Küçük yazılan küsurat mobilde net okunuyor mu?
+- Tutar büyüklüğü: Etki küçük tutarlarda mı, büyük tutarlarda mı daha belirgin?
+- Yuvarlama algısı: Kullanıcı gerçek tutarı doğru mu tahmin ediyor, yoksa yuvarlıyor mu?
+- Segment: Fiyata duyarlı ve duyarlı olmayan ziyaretçi farklı mı tepki veriyor?
+
+**Takip edilecek ana KPI’lar**
+- Dönüşüm Oranı (CR): Fiyat formatı satın alma oranını artırıyor mu?
+- Ortalama Sepet veya Plan Tutarı: Format, ortalama tutar algısını bozup gerçek harcamayı düşürmemeli.
+- Fiyat Okuma Netliği (oturum kaydı): Küsuratı fark etmeyen kullanıcı oranı yüksek mi?
+- İade veya İtiraz Sayısı: “Beklediğimden pahalı çıktı” itirazları artmamalı.
+- Sayfada Kalma Süresi: Format karar süresini kabul edilemez ölçüde uzatmamalı.
+
+**Yapılmaması gerekenler**
+- Toplam ödenecek tutarı, yalnızca ana rakamı büyük göstererek gizlemeyin — küsurat küçük olsa da her zaman okunabilir kalmalı.
+- Aynı testte fiyat formatını ve fiyat seviyesini birlikte değiştirmeyin.
+- Farklı ürünlerde tutarsız bir format kullanıp karşılaştırmayı zorlaştırmayın.
+- Vergi veya ek ücretin küsuratını ana tutarla karıştırıp toplam tutarı belirsizleştirmeyin.
+- Fiyat gösteriminin yasal olarak düzenlendiği pazarlarda kuralı doğrulamadan format değiştirmeyin (kural 11).

@@ -439,3 +439,30 @@ Tablo satır ve sütun mantığıyla doğrudan karşılaştırma kurar; çok say
 - Tek bir içerik türünde ölçüp sonucu tüm karşılaştırmalara genellemeyin.
 
 > **Not:** Fiyat planlarının tablo/kart karşılaştırması `pricing.md` → “Planları karşılaştırma tablosunda mı, ayrı kartlarda mı sunmalı?” senaryosunun konusudur; fiyat sayfası için bu senaryoyu değil onu kullanın.
+
+---
+
+## Dış bağlantıları yeni sekmede açmak sayfada kalma oranını artırır mı?
+
+Bir sayfadaki dış bağlantı (ör. blog yazısındaki kaynak, ortak site linki) aynı sekmede açılırsa kullanıcı asıl siteden tamamen ayrılır; yeni sekmede açılırsa asıl sekme açık kalır. Riski, beklenmedik bir yeni sekmenin bazı kullanıcılarda kafa karışıklığı yaratması ve erişilebilirlik araçlarıyla kullanımı zorlaştırmasıdır.
+
+**Test edilmesi gerekenler**
+- Davranış: Yeni sekmede açmak sayfaya geri dönüş oranını artırıyor mu?
+- Bağlantı türü: İç bağlantılarda da aynı davranış mı uygulanmalı, yoksa yalnızca dış bağlantılarda mı?
+- Farkındalık: Kullanıcı yeni sekme açıldığını fark edip kafası mı karışıyor?
+- Cihaz: Mobilde yeni sekme davranışı masaüstünden farklı bir deneyim mi yaratıyor?
+- Erişilebilirlik: Ekran okuyucu kullanıcısı yeni sekme açılacağını önceden anlayabiliyor mu?
+
+**Takip edilecek ana KPI’lar**
+- Sayfada Kalma/Geri Dönüş Oranı: Yeni sekme davranışı asıl siteye dönüşü artırıyor mu?
+- Dış Bağlantı Tıklama Oranı: Davranış değişikliği tıklama oranını etkiliyor mu?
+- Oturum Süresi: Toplam site kullanım süresi düşmemeli.
+- Kafa Karışıklığı (anket): Kullanıcı beklenmedik bir sekme açıldığını fark edip rahatsız olmamalı.
+- Geri Tuşu Kullanımı: Tarayıcı geri tuşuna basma sıklığı artmamalı — artıyorsa davranış kafa karıştırıyordur.
+
+**Yapılmaması gerekenler**
+- Ekran okuyucu kullanıcısını önceden uyarmadan yeni sekme açan bağlantı kurmayın (erişilebilirlik guardrail’i, kural 3).
+- Aynı testte iç ve dış bağlantıların davranışını birlikte değiştirmeyin.
+- Ödeme veya form gönderimi gibi kritik bir aksiyonu yeni sekmede açıp kullanıcıyı akıştan koparmayın.
+- Yeni sekme davranışını yalnızca bazı tarayıcılarda tutarsız çalışacak şekilde kurmayın.
+- Kullanıcının linke sağ tıklayıp kendi tercihiyle sekme açma imkânını elinden almayın.

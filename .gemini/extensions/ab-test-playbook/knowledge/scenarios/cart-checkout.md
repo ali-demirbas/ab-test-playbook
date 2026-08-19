@@ -579,3 +579,30 @@ Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve 
 - Aynı testte yükleme ekranı biçimi ile ödeme akışının adım sayısını birlikte değiştirmeyin.
 - Hata durumunda kullanıcıyı adımlı ekranda takılı bırakmayın; başarısızlık anında net bir hata mesajına geçin.
 - Yükleme ekranını güvenlik doğrulamasını (3D Secure, OTP vb.) atlatma veya gizleme amacıyla kullanmayın.
+
+---
+
+## Ödeme yöntemi ikonlarını checkout’tan önce görünür yapmak güveni artırır mı?
+
+Kullanıcı ödeme adımına gelmeden önce hangi kartların veya yöntemlerin kabul edildiğini bilmek ister; bu bilgi genelde yalnızca ödeme sayfasında ortaya çıkar. İkonları daha erken (ürün sayfası veya sepette) göstermek, desteklenmeyen bir yöntemi kullanan ziyaretçinin akışı erkenden terk etmesini önleyebilir — ama fazla ikon görsel gürültü yaratabilir.
+
+**Test edilmesi gerekenler**
+- Konum: İkonlar ürün sayfasında mı, sepette mi, ikisinde birden mi daha etkili?
+- Sayı: Tüm yöntemler mi, yalnızca en çok kullanılan 3-4’ü mü daha iyi çalışıyor?
+- Boyut: İkonların göze çarpma derecesi güven algısını değiştiriyor mu?
+- Tıklanabilirlik: İkonlar tıklanabilir olup ödeme koşullarını mı açmalı, yoksa salt bilgi mi olmalı?
+- Cihaz: Mobilde ikon şeridi ekran alanını gereğinden fazla mı kaplıyor?
+
+**Takip edilecek ana KPI’lar**
+- Ödeme Adımına Ulaşma Oranı: İkonları gören ziyaretçilerin ödeme adımına geçme oranı artıyor mu?
+- Ödeme Adımı Terk Oranı: Desteklenmeyen yöntem yüzünden son adımda terk azalıyor mu?
+- Sepete Ekleme Oranı: İkonlar erken adımı olumsuz etkilememeli.
+- Sayfa Yüklenme Süresi: Ek görsel sayfayı yavaşlatmamalı.
+- Destek Talebi: “Hangi kartları kabul ediyorsunuz” soruları azalıyor mu?
+
+**Yapılmaması gerekenler**
+- Gerçekte kabul etmediğiniz bir ödeme yöntemini ikon olarak göstermeyin.
+- Aynı testte ikonların konumunu ve sayısını birlikte değiştirmeyin.
+- İkon şeridini asıl ürün bilgisi veya CTA’nın önüne geçirip hiyerarşiyi bozmayın.
+- Ödeme sağlayıcı marka kurallarına uymayan boyutta veya biçimde logo kullanmayın.
+- Mobilde ikonları okunmaz derecede küçültüp yalnızca dekoratif hâle getirmeyin.

@@ -730,3 +730,57 @@ Kaydırıcı çok sayıda referansı az yerde barındırır ve sayfayı kısalt�
 - Kaydırılabilir olduğunu gösteren işareti kaldırmayın.
 - Görülme oranı düştüğü hâlde aksiyon arttı diye nedenini araştırmadan kabul etmeyin.
 - Hareket azaltma tercihini yok sayan bir geçiş animasyonu kullanmayın.
+
+---
+
+## Sosyal medya takipçi veya beğeni sayısını göstermek güveni artırır mı?
+
+Bir marka sayfasının yanında görünen takipçi veya beğeni sayısı, ürünün başkaları tarafından da tercih edildiğini gösteren dolaylı bir sosyal kanıttır. Risk, sayının küçük veya büyümekte olduğu bir markada beklenenin tersi bir etki yaratmasıdır — düşük bir sayı, kanıt yerine şüphe uyandırabilir.
+
+**Test edilmesi gerekenler**
+- Eşik: Sayı belirli bir büyüklüğün altındaysa (ör. 500’ün altı) göstermek zarar mı veriyor?
+- Biçim: Ham sayı mı, yuvarlanmış kısaltma (ör. “12 bin+”) mı daha güvenilir bulunuyor?
+- Konum: Sayaç başlığın yanında mı, sayfanın altında mı daha etkili?
+- Platform: Hangi platformun sayacı (takipçi, üye, indirme) en güçlü sinyali veriyor?
+- Cihaz: Mobilde sayaç dikkat dağıtıp asıl CTA’dan uzaklaştırıyor mu?
+
+**Takip edilecek ana KPI’lar**
+- Dönüşüm Oranı (CR): Sayaç göstermek satın alma veya kayıt oranını artırıyor mu?
+- Sayfa Terk Oranı: Düşük bir sayı terk oranını artırmamalı.
+- Güven Algısı (anket): Sayaç güveni artırdığını hissettiriyor mu?
+- Tıklama Oranı: Sayaç kendisi tıklanıp dış platforma gidiş yaratıyor mu — gidiyorsa bu bir kayıp noktasıdır.
+- Sayfada Kalma Süresi: Sayaç dikkat dağıtıp asıl aksiyonu geciktirmemeli.
+
+**Yapılmaması gerekenler**
+- Gerçek olmayan veya şişirilmiş bir sayıyı göstermeyin (kural 6).
+- Aynı testte sayacın biçimini ve konumunu birlikte değiştirmeyin.
+- Sayı küçükken büyük bir görsel ağırlıkla öne çıkarmayın; ağırlığı sayının gerçek gücüne göre ayarlayın.
+- Farklı platformlardan gelen sayıları tek bir toplam gibi birleştirip yanıltıcı bir büyüklük izlenimi yaratmayın.
+- Sayacı otomatik güncellemiyorsanız güncel olmayan bir tarihte donmuş hâlde bırakmayın.
+
+---
+
+## Sayfa açılışında içeriği kısmen kaplayan büyük bir karşılama ekranı ilgiyi artırır mı?
+
+Küçük bir pop-up’tan farklı olarak, kısmi karşılama ekranı sayfanın büyük bir kısmını (genelde ilk ekranın tamamına yakınını) tek bir mesaj veya teklifle kaplar, altındaki içeriğin bir kısmı kenarlarda görünür kalır. Amaç dikkati tek bir noktaya toplamaktır; risk, ziyaretçinin asıl sayfaya hiç ulaşmadan ayrılmasıdır.
+
+**Test edilmesi gerekenler**
+- Kapsam: Ekranın ne kadarını kaplamalı — tamamı mı, büyük bir kısmı mı?
+- İçerik: Tek bir teklif mi, kısa bir değer önermesi mi daha çok ilerletiyor?
+- Kapatma: Kapatma işareti yeterince görünür mü, yoksa yanlışlıkla mı atlanıyor?
+- Zamanlama: Sayfa açılır açılmaz mı, kısa bir gecikmeyle mi daha az rahatsız ediyor?
+- Segment: İlk kez gelen ile daha önce siteyi ziyaret etmiş kullanıcıya aynı ekran mı gösterilmeli?
+
+**Takip edilecek ana KPI’lar**
+- Devam Etme Oranı: Karşılama ekranını geçip asıl sayfaya ilerleyen ziyaretçi oranı nedir?
+- Hemen Çıkma Oranı: Karşılama ekranı kaynaklı hemen çıkma artmamalı.
+- Teklif Kabul Oranı: Ekrandaki teklifi kabul eden ziyaretçi oranı nedir?
+- Sayfa Yüklenme Algısı (anket): Ekran, sayfanın yavaş açıldığı hissini vermemeli.
+- Geri Dönüş Oranı: Ekranı geçen ziyaretçilerin siteye tekrar dönüş oranı düşmemeli.
+
+**Yapılmaması gerekenler**
+- Kapatma işaretini gizleyip ziyaretçiyi teklifi kabul etmeye zorlamayın (kural 6).
+- Aynı testte ekranın kapsamını ve içeriğini birlikte değiştirmeyin.
+- Ekranı, arama motoru botlarının asıl içeriği görmesini engelleyecek şekilde kurmayın.
+- Mobilde ekranı kapatma alanını dokunma hedefi için çok küçük bırakmayın.
+- Ziyaretçi bir kez kapattıysa aynı oturumda tekrar göstermeyin.

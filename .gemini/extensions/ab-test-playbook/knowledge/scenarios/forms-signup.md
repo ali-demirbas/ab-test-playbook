@@ -541,3 +541,30 @@ Formun üstüne kimin için uygun olduğunu yazmak (asgari bütçe, hizmet bölg
 - Gerçekte esnek olan bir koşulu kesin kuralmış gibi yazmayın.
 - Hacim düştü diye niteliğe bakmadan kaybetti demeyin; birincil metrik nitelikli taleptir.
 - Ayrımcılık doğuracak bir eleme kriterini uygunluk açıklaması olarak kullanmayın.
+
+---
+
+## Asıl formdan önce küçük bir ısındırma sorusu sormak tamamlama oranını artırır mı?
+
+Kullanıcıyı doğrudan çok alanlı bir formla karşılaştırmak yerine, önce tek ve kolay bir soruyla (“Hangisi size en yakın?”) başlamak küçük bir taahhüt yaratır — bu taahhüdün ardından gelen asıl formu tamamlama isteği güçlenebilir. Bu, alanları kademeli açmaktan farklıdır: orada aynı formun alanları sırayla açılır, burada asıl formdan önce ayrı, ilgisiz görünmeyen bir soru sorulur.
+
+**Test edilmesi gerekenler**
+- Soru türü: Kategori seçimi mi, evet/hayır sorusu mu daha çok ilerletiyor?
+- İlgi: Isındırma sorusu asıl formun konusuyla doğrudan ilişkili mi olmalı?
+- Görsel geçiş: Isındırma sorusundan asıl forma geçiş tek ekranda mı, ayrı bir adımda mı daha akıcı?
+- Atlanabilirlik: Soruyu atlama seçeneği sunmak tamamlama oranını düşürüyor mu?
+- Segment: Mobil ve masaüstünde ısındırma adımının etkisi farklı mı?
+
+**Takip edilecek ana KPI’lar**
+- Form Tamamlama Oranı: Isındırma sorusuyla başlayan akış, doğrudan forma göre daha çok tamamlanıyor mu?
+- Isındırma Sorusu Yanıtlama Oranı: Soruyu yanıtlayıp devam eden ziyaretçi oranı nedir?
+- Toplam Süre: Isındırma adımı toplam tamamlama süresini kabul edilemez ölçüde uzatmamalı.
+- Talep Niteliği: Isındırma sorusu talebin niteliğini düşürmemeli.
+- Terk Oranı: Isındırma adımının kendisinde terk artmamalı.
+
+**Yapılmaması gerekenler**
+- Isındırma sorusunu asıl formla ilgisiz, dikkat dağıtıcı bir konu yapmayın.
+- Aynı testte ısındırma sorusunun içeriğini ve asıl formun alan sayısını birlikte değiştirmeyin.
+- Soruyu zorunlu hâle getirip atlama seçeneği sunmadan ilerlemeyi engellemeyin.
+- Isındırma sorusunun cevabını, kullanıcıya söylemeden başka bir amaç (ör. segmentleme) için kullanmayın.
+- Isındırma adımını, asıl formun alan sayısını azaltmanın yerine geçen bir çözüm gibi sunmayın — ikisi ayrı testtir.
