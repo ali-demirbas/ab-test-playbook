@@ -438,6 +438,8 @@ metadata:
    - Category/listing page → `knowledge/scenarios/category-listing.md`
    - Product detail → `knowledge/scenarios/product-detail.md`
    - Cart, coupon, checkout, address → `knowledge/scenarios/cart-checkout.md`
+   - Order confirmation / thank-you page (post-purchase, post-signup) → `knowledge/scenarios/thank-you.md`
+   - Logged-in, recurring-use home screen (not first-open, not the marketing homepage) → `knowledge/scenarios/dashboard.md`
    - Form, signup, login → `knowledge/scenarios/forms-signup.md`
    - Pricing page, price display, plan comparison → `knowledge/scenarios/pricing.md`
    - App onboarding/permissions/home → `knowledge/scenarios/mobile-app.md`

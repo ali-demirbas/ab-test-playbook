@@ -883,3 +883,30 @@ Açıklamanın tamamen açık gelmesi bilgiyi erişilebilir kılar ama sayfayı 
 - Aynı testte önerinin tonu ile önerilen seçeneği birlikte değiştirmeyin.
 - Diğer seçeneklere erişimi zorlaştırmayın.
 - Dönüşüm arttı diye iade tarafına bakmadan kazandı demeyin.
+
+---
+
+## Stokta olmayan bir ürünün satın alma butonunu kaldırmak mı, haber ver seçeneği mi daha iyi çalışıyor?
+
+Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal kırıklığı yaratır. İki yaygın alternatif vardır: butonu tamamen kaldırıp “stokta yok” yazmak, ya da “stok geldiğinde haber ver” seçeneğiyle değiştirmek. İkincisi terk eden kullanıcıyı bildirim listesine dönüştürme fırsatı sunar ama ek bir form alanı gerektirir.
+
+**Test edilmesi gerekenler**
+- Biçim: Satın alma butonunun yerini “haber ver” seçeneği mi almalı, yoksa buton tamamen mi kaldırılmalı?
+- Kanal: Haber verme e-posta mı, push bildirimi mi, ikisi birden mi daha çok tercih ediliyor?
+- Alternatif ürün: Stokta olan benzer bir ürünü aynı ekranda önermek mi, yalnızca haber ver seçeneği mi daha iyi çalışıyor?
+- Tahmini tarih: Stok geliş tarihini tahmini olarak göstermek beklentiyi mi yönetiyor, güven mi kırıyor?
+- Segment: Mobil ve masaüstünde haber ver formunun tamamlanma oranı farklı mı?
+
+**Takip edilecek ana KPI’lar**
+- Haber Ver Kayıt Oranı: Ürünü görüp haber ver seçeneğine kaydolan ziyaretçi oranı nedir?
+- Stok Geldiğinde Dönüşüm Oranı: Haber verilen kullanıcıların gerçekten satın alma oranı nedir?
+- Sayfa Terk Oranı: Stokta olmayan ürün sayfası genel terk oranını artırmamalı.
+- Alternatif Ürün Tıklama Oranı: Önerilen benzer ürüne geçiş var mı?
+- Bildirim Şikâyeti: Gereksiz veya sık bildirim şikâyeti artmamalı.
+
+**Yapılmaması gerekenler**
+- Gerçekte belirsiz olan bir stok geliş tarihini kesinmiş gibi göstermeyin (kural 10) — tahminse tahmin olduğu belirtilir.
+- Aynı testte haber ver biçimini ve alternatif ürün önerisinin varlığını birlikte değiştirmeyin.
+- Kullanıcıdan yalnızca haber ver kaydı için gereğinden fazla bilgi istemeyin.
+- Stokta olmayan ürünü, aslında satılabilir bir ürünmüş gibi arama sonuçlarında öne çıkarmayın.
+- Haber ver listesine kaydolan kullanıcıya izni olmayan başka pazarlama iletişimi göndermeyin.

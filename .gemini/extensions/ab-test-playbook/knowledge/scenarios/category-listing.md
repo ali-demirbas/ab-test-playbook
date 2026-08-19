@@ -601,3 +601,30 @@ Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edi
 - Yalnızca yeni kullanıcıya özel olduğunu açıkça belirtin.
 - Aynı testte hem indirimi hem kampanya alanını değiştirmeyin.
 - Metni ürün görselinin üzerine taşırmayın.
+
+---
+
+## Stokta olmayan ürünleri listede gri gösterip bırakmak mı, tamamen gizlemek mi daha iyi çalışıyor?
+
+Bir kategori listesinde stokta olmayan ürünleri tamamen gizlemek sayfayı yalnızca satın alınabilir ürünlerle sınırlar ama toplam ürün çeşitliliği algısını daraltabilir. Gri gösterip listede bırakmak çeşitlilik hissini korur ama tıklanamayan öğelerle dolu bir liste de hayal kırıklığı yaratabilir.
+
+**Test edilmesi gerekenler**
+- Görünürlük: Gri/soluk gösterim mi, listeden tamamen kaldırma mı tamamlanan satın alma sayısını artırıyor?
+- Sıralama: Stokta olmayan ürünler listenin sonuna mı itilmeli, yoksa doğal sırasında mı kalmalı?
+- Etiket: “Stokta yok” etiketi ürün görseline mi, ürün adının yanına mı konduğunda daha net anlaşılıyor?
+- Filtre: “Yalnızca stokta olanları göster” filtresi varsayılan olarak açık mı gelmeli?
+- Cihaz: Mobilde gri ürünlerin kapladığı alan kaydırma süresini ciddi biçimde uzatıyor mu?
+
+**Takip edilecek ana KPI’lar**
+- Kategori Sayfasından Satın Alma Oranı: Genel dönüşüm oranı düşmemeli.
+- Ürün Detayına Tıklama Oranı: Stokta olan ürünlere tıklama oranı artıyor mu?
+- Sayfa Terk Oranı: Gri ürünlerin varlığı terk oranını artırmamalı.
+- Haber Ver Kayıt Oranı: Gri gösterimden haber ver akışına geçiş var mı?
+- Sayfa Yüklenme Süresi: Ek etiket/durum mantığı sayfayı yavaşlatmamalı.
+
+**Yapılmaması gerekenler**
+- Aynı testte gri gösterim biçimini ve sıralama mantığını birlikte değiştirmeyin.
+- Stokta olmayan bir ürünü, sanki satın alınabilirmiş gibi fiyat ve “sepete ekle” butonuyla göstermeyin.
+- Gizleme seçeneğini SEO veya iç bağlantı etkisini ölçmeden kalıcı hâle getirmeyin.
+- Gri ürün sayısı listenin çoğunluğunu oluşturduğunda bunu bulgu olarak görmeden teste devam etmeyin — bu envanter sorunudur, tasarım sorunu değil.
+- Filtre varsayılanını kullanıcı onayı olmadan “yalnızca stokta olanlar” yapıp diğer ürünleri tamamen erişilemez kılmayın.
