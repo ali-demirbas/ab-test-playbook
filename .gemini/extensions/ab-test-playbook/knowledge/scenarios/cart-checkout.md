@@ -552,3 +552,30 @@ Bir kutunun önceden işaretli gelmesi kullanıcıyı hızlandırabilir, ama bu 
 - Varsayılanı fark edilmeyecek kadar silik göstermeyin.
 - Aynı testte varsayılan ile seçeneklerin sırasını birlikte değiştirmeyin.
 - Hedef pazarın izin kurallarını doğrulamadan varyant kurmayın (kural 11).
+
+---
+
+## Ödeme işlenirken adımları gösteren bir yükleme ekranı güveni artırıyor mu?
+
+Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve bekleme süresini belirsiz hissettirir. “Kart doğrulanıyor”, “banka onayı bekleniyor”, “sipariş oluşturuluyor” gibi gerçek adımları sırayla göstermek, işlemin özenle yapıldığını hissettirip aynı bekleme süresini daha kısa algılatabilir — görünür emek, güven inşa eder. Risk, adımların gerçek işlem sırasını yansıtmaması veya süreyi yapay olarak uzatmak için kullanılmasıdır.
+
+**Test edilmesi gerekenler**
+- Biçim: Adım adım ilerleyen bir yükleme ekranı tek bir dönen ikona göre terk oranını düşürüyor mu?
+- Süre algısı: Adımlı ekran, gerçek süre değişmeden bekleme süresini daha kısa hissettiriyor mu?
+- Doğruluk: Gösterilen adımlar gerçek işlem sırasına mı uyuyor?
+- Hata anı: İşlem başarısız olursa adımlı ekran hatayı daha mı anlaşılır kılıyor?
+- Cihaz: Mobilde yavaş bağlantıda adımlı ekranın etkisi masaüstünden farklı mı?
+
+**Takip edilecek ana KPI’lar**
+- Ödeme Adımı Terk Oranı: Adımlı ekran bekleme sırasında ayrılan kullanıcı oranını düşürüyor mu?
+- Algılanan Süre (anket): Kullanıcı bekleme süresini kısa mı buluyor?
+- Gerçek İşlem Süresi: Adımlı ekran gerçek işlem süresini uzatmamalı.
+- Hata Sonrası Destek Talebi: Başarısız işlemlerde destek talebi artmamalı.
+- Ödeme Başarı Oranı: Genel ödeme tamamlama oranı düşmemeli.
+
+**Yapılmaması gerekenler**
+- Gerçek işlemi yapay olarak yavaşlatıp adımları uzatmayın — gösterilen süre gerçek işlem süresini aşarsa bu manipülasyondur (kural 6).
+- Gerçekleşmeyen bir adımı (ör. çalışmayan bir “dolandırıcılık taraması”) ekrana koymayın.
+- Aynı testte yükleme ekranı biçimi ile ödeme akışının adım sayısını birlikte değiştirmeyin.
+- Hata durumunda kullanıcıyı adımlı ekranda takılı bırakmayın; başarısızlık anında net bir hata mesajına geçin.
+- Yükleme ekranını güvenlik doğrulamasını (3D Secure, OTP vb.) atlatma veya gizleme amacıyla kullanmayın.

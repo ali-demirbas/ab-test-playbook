@@ -298,3 +298,30 @@ Herkese aynı “sonraki adım” yerine kullanıcının nerede kaldığına gö
 - Aynı testte öneri mantığı ile önerinin sunum biçimini birlikte değiştirmeyin.
 - Kullanıcının kendi seçtiği yolu öneriyle ezmeyin.
 - Öneri tamamlandı diye asıl değere ulaşmaya bakmadan kazandı demeyin.
+
+---
+
+## Profil tamamlama yüzdesi göstermek eksik alanları doldurtuyor mu?
+
+Görünürde biten ama tam dolu olmayan bir gösterge (“Profiliniz %70 tamamlandı”) bitmemiş bir işi akılda tutar ve kapatma isteği yaratır — bu, ilk kayıt formunun kendisindeki adım-adım ilerleme çubuğundan (bkz. `cart-checkout.md`) farklı bir mekanizmadır: orada amaç akışta nerede olunduğunu göstermek, burada amaç kayıttan sonra kalan, isteğe bağlı alanlara geri döndürmektir.
+
+**Test edilmesi gerekenler**
+- Biçim: Yüzde/daire gösterimi mi, kalan alan sayısı (“3 alan kaldı”) mı daha çok tamamlatıyor?
+- Eşik: Tamamlanma oranı belirli bir yüzdenin (ör. %80) üzerine çıkınca “bitirmeye yakın” hissi motivasyonu artırıyor mu?
+- Konum: Gösterge anasayfada mı, profil sayfasında mı daha etkili?
+- Zamanlama: Gösterge ilk oturumda mı, ikinci ziyarette mi daha güçlü çalışıyor?
+- Cihaz: Mobilde küçük ekranda dairesel gösterge mi, çubuk mu daha anlaşılır?
+
+**Takip edilecek ana KPI’lar**
+- Profil Tamamlama Oranı: Eksik alanları dolduran kullanıcı oranı artıyor mu?
+- Geri Dönüş Oranı: Gösterge kullanıcıyı tekrar uygulamaya döndürüyor mu?
+- Doldurulan Ortalama Alan Sayısı: Bir oturumda tamamlanan alan sayısı artıyor mu?
+- Gösterge Kapatma Oranı: Gösterge rahatsız edici bulunup kapatılmamalı.
+- Genel Oturum Süresi: Göstergeyi kapatan kullanıcının genel kullanımı düşmemeli.
+
+**Yapılmaması gerekenler**
+- Kullanıcının doldurmadığı hassas bir alanı (kural 14) yalnızca yüzdeyi yükseltmek için zorunlu göstermeyin; opsiyonel kalmalı.
+- Yüzdeyi gerçek doluluktan farklı hesaplayıp yapay biçimde yüksek göstermeyin.
+- Aynı testte gösterge biçimi ile hangi alanların “profilde” sayıldığını birlikte değiştirmeyin.
+- Göstergeyi kapatılamaz veya ertelenemez hâle getirmeyin; kullanıcı “sonra” diyebilmeli.
+- Tamamlama hatırlatmasını e-posta veya push bildirimiyle günde birden fazla tekrarlamayın; sıklık ayrı bir test konusudur.

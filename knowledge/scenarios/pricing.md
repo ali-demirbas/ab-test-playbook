@@ -219,3 +219,30 @@ Fiyatın yanında “içindekilerin toplam değeri” göstermek alınan şeyin 
 - Aynı testte değer gösterimi ile paket içeriğini birlikte değiştirmeyin.
 - Referans fiyat gösteriminin düzenlendiği pazarlarda kuralı doğrulamadan yayınlamayın.
 - Dönüşüm arttı diye iade tarafına bakmadan kazandı demeyin.
+
+---
+
+## Üçüncü bir çekici-alternatif plan eklemek orta planın seçilme oranını artırıyor mu?
+
+İki plan arasında seçim yapmak zordur çünkü karşılaştırılacak ortak bir ölçüt yoktur. Orta plana yakın fiyatlı ama daha az içerikli üçüncü bir plan eklemek, orta planı “açık ara daha iyi seçenek” gibi gösterebilir — üçüncü planın kendisi neredeyse hiç seçilmez, işlevi karşılaştırma çıpası olmaktır. Bu, yeni bir avantaj eklemez; var olan iki planın algısını üçüncüsüne göre değiştirir.
+
+**Test edilmesi gerekenler**
+- Konum: Çekici-alternatif plan orta planın hemen yanında mı, en pahalı sırada mı daha güçlü çalışıyor?
+- Fiyat farkı: Çekici-alternatif ile orta plan arasındaki fark küçüldükçe etki güçleniyor mu?
+- Gerçek talep: Çekici-alternatif planın kendisi ciddi bir oranda seçiliyor mu, yoksa beklendiği gibi arka planda mı kalıyor?
+- Algı: Üç seçenek göstermek genel fiyat algısını pahalı mı gösteriyor?
+- Segment: Kurumsal ve bireysel alıcı üç seçenekli yapıya farklı mı tepki veriyor?
+
+**Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): Çekici-alternatif eklemek geliri artırıyor mu?
+- Orta Plan Seçim Oranı: Orta planı seçen ziyaretçi oranı yükseliyor mu?
+- Çekici-Alternatif Seçilme Oranı: Bu planın kendisi ciddi talep almamalı — aldıysa yapı yanlış kurulmuş demektir.
+- En Pahalı Plan Satışı: Gerçek en pahalı planın satışı düşmemeli.
+- Destek Talebi: “Hangi planı seçmeliyim” soruları artmamalı.
+
+**Yapılmaması gerekenler**
+- Çekici-alternatif planı satın alınamaz hâle getirmeyin veya içeriğini gerçek dışı bırakmayın — gerçek, kullanılabilir bir plan olmalı, yalnızca konumlandırması zayıf kurulur.
+- Aynı testte plan sayısı ile plan fiyatlarını birlikte değiştirmeyin.
+- Çekici-alternatif planı gerçek maliyetinin altında fiyatlandırıp asıl planları yapay biçimde pahalı göstermeyin.
+- Orta planın içeriğini test sırasında zenginleştirmeyin; tek değişken üçüncü seçeneğin varlığıdır.
+- Kurumsal fiyat sayfası gizliyse bu senaryoyu `saas-b2b.md`’deki plan-varsayılanı senaryosuyla karıştırmayın — ikisi ayrı testtir.
