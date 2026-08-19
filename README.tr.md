@@ -1,8 +1,8 @@
-# ab-test-playbook — 205 deney senaryolu A/B test ve CRO rehberi
+# ab-test-playbook — 211 deney senaryolu A/B test ve CRO rehberi
 
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
-![Scenarios](https://img.shields.io/badge/scenarios-205-blue)
+![Scenarios](https://img.shields.io/badge/scenarios-211-blue)
 ![Tests](https://img.shields.io/badge/tests-121_passing-brightgreen)
 
 **Dil:** [English](README.md) · [Türkçe](README.tr.md)
@@ -14,7 +14,7 @@
 
 E-ticaret, mobil uygulama, SaaS ve dijital ürünler için pratik bir A/B test ve CRO (dönüşüm oranı optimizasyonu) rehberi — Claude Code üzerinde çalışır. Yolculuk aşamasına göre kanıtlanmış deney fikirleri önerir, disiplinli tek-değişkenli bir çerçevede yenilerini tasarlar, mevcut test planlarını metodolojik hatalara karşı denetler (confound, eksik guardrail, p-hacking riski) ve her senaryoyu doğrudan sunum kalitesinde bir HTML karta çevirir — ayrıca istemek gerekmez.
 
-Gerçek e-ticaret, mobil uygulama ve SaaS büyüme çalışmalarında kullanılan bir A/B test senaryosu ve hipotez üretim deseni arşivinden inşa edildi — 205 senaryo, metodoloji ve metin içeriği, hazır bir görsel deste değil. Deney tasarımı, test önceliklendirme (ICE puanlaması), istatistiksel anlamlılık ve örneklem hesabı, guardrail metrikleri, checkout/ürün sayfası/fiyatlandırma optimizasyonunu kapsar. Her senaryo aynı üç-kutu disiplinini izler:
+Gerçek e-ticaret, mobil uygulama ve SaaS büyüme çalışmalarında kullanılan bir A/B test senaryosu ve hipotez üretim deseni arşivinden inşa edildi — 211 senaryo, metodoloji ve metin içeriği, hazır bir görsel deste değil. Deney tasarımı, test önceliklendirme (ICE puanlaması), istatistiksel anlamlılık ve örneklem hesabı, guardrail metrikleri, checkout/ürün sayfası/fiyatlandırma optimizasyonunu kapsar. Her senaryo aynı üç-kutu disiplinini izler:
 
 - **Test edilmesi gerekenler** — deneyin hangi soruları yanıtlaması gerektiği
 - **Takip edilecek ana KPI'lar** — bir birincil metrik + bozulmaması gereken guardrail'ler
@@ -26,7 +26,7 @@ Gerçek e-ticaret, mobil uygulama ve SaaS büyüme çalışmalarında kullanıla
 
 | Rehber olmadan | ab-test-playbook ile |
 |---|---|
-| Test fikirleri hafızadan ya da o gün akla gelenden gelir | 205 senaryoluk arşivden ICE'a göre sıralı, ya da belirtilmiş bir mekanizmayla üretilir — "daha dikkat çekici olur" kabul edilen bir gerekçe değildir |
+| Test fikirleri hafızadan ya da o gün akla gelenden gelir | 211 senaryoluk arşivden ICE'a göre sıralı, ya da belirtilmiş bir mekanizmayla üretilir — "daha dikkat çekici olur" kabul edilen bir gerekçe değildir |
 | "Anlamlı görünüyor" iki yüzdeye bakıp verilen bir izlenimdir | Gerçek bir iki-oranlı z-testi, güven aralığı, örneklem ve SRM kontrolü — script ile hesaplanır, asla gözle kestirilmez |
 | Beş metrik izlenir, hiçbiri kararı vermez | Adı konmuş tek bir birincil metrik, zorunlu bir guardrail — p-hacking riski işaretlenir, yayınlanmaz |
 | Senaryoyu yazan model kendi ödevini kendi notlandırır | Kart render edilmeden önce metodolojiyi bir adversarial denetçi kontrol eder; ikinci bir denetçi görseldeki gizli ikinci farkı arar |

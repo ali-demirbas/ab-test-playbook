@@ -300,3 +300,57 @@ Aynı bilgi iki farklı çerçeveyle verilebilir: “Yükseltmezsen 3 gün sonra
 - Kayıp çerçevesini, kullanıcıyı gerçek düşünme süresi olmadan anlık karara zorlayacak bir aciliyetle birleştirmeyin.
 - Aynı mesajı kısa aralıklarla tekrar tekrar göndererek baskıyı artırmayın; sıklığı ayrıca test edin.
 - Ücretsiz plana dönüşte kullanıcının verilerini kaybedeceği izlenimi yaratmayın, veriler gerçekte silinmiyorsa.
+
+---
+
+## Alanın yanına “neden soruyoruz” açıklaması eklemek, amacı belirsiz görünen bir alanı doldurtur mu?
+
+Bir lead formundaki “şirket büyüklüğü” veya “yıllık bütçe” gibi bir alan, kullanıcıya neden sorulduğu açık değilse doldurmayı geciktirir veya alanın boş bırakılmasına yol açar. Bu, `forms-signup.md`’deki gizlilik güvencesinden farklı bir tereddüttür: orada endişe “bu bilgi paylaşılır mı”, burada “bu bilgi neden isteniyor”dur. Alanın hemen yanına kısa bir gerekçe eklemek (“Şirket büyüklüğünüzü size doğru planı önerebilmek için soruyoruz”) bu belirsizliği giderebilir, ama her alana gerekçe eklemek formu ağırlaştırır ve gerçekten önemli bir gerekçenin fark edilmesini zorlaştırır.
+
+**Test edilmesi gerekenler**
+- Varlık: Gerekçe eklemek alanın doldurulma oranını artırıyor mu?
+- Kapsam: Gerekçe yalnızca amacı belirsiz alanlara mı, tüm alanlara mı eklenmeli?
+- Ton: Kısa bir gerekçe mi, somut bir kullanım örneği mi daha ikna edici?
+- Konum: Gerekçe alanın hemen altında mı, bir ipucu simgesinin arkasında mı daha etkili?
+- Segment: Farklı sektörlerden gelen kullanıcı aynı gerekçeye aynı tepkiyi mi veriyor?
+
+**Takip edilecek ana KPI’lar**
+- Alan Doldurma Oranı: Gerekçe eklenen alanın doldurulma oranı artıyor mu?
+- Form Tamamlama Oranı: Genel gönderim oranı düşmemeli.
+- Nitelikli Fırsat Sayısı (SQL): Toplanan ek bilginin satış ekibine gerçek faydası var mı?
+- Ortalama Doldurma Süresi: Gerekçe okuma yükü süreyi kabul edilemez ölçüde uzatmamalı.
+- Alan Bazlı Terk Oranı: Gerekçe eklenen alanda bırakma artmamalı.
+
+**Yapılmaması gerekenler**
+- Aynı testte gerekçe metni ile alanın zorunlu/isteğe bağlı durumunu birlikte değiştirmeyin.
+- Gerekçeyi, alanın gerçek kullanım amacını gizleyen yanıltıcı bir cümleyle yazmayın (kural 10).
+- Her alana gerekçe ekleyip hangisinin fark yarattığını ölçemez hâle gelmeyin.
+- Hassas bir alan (kimlik no, doğum tarihi vb.) için yalnızca gerekçe eklemeyi tek çözüm gibi sunmayın — kural 14’teki diğer yöntemler de değerlendirilmeli.
+- Gerekçe metnini alanın kendisinden daha büyük veya dikkat çekici yapıp formu ağırlaştırmayın.
+
+---
+
+## Satış sayfasını tek sütunlu mu, ikinci bir sütunla (yan bağlantılar/ek bilgi) mi kurmalı?
+
+Bu senaryo `forms-signup.md`’deki form alanı sütun düzeninden farklıdır — orası formun içindeki alanların yerleşimini, bu senaryo sayfanın genel iskeletini (ana içerik + varsa yan sütun) ele alır. İkinci bir sütun (ilgili bağlantılar, ek sosyal kanıt, site içi arama) sayfaya ek bilgi katar ama gözü ana anlatıdan uzaklaştırıp dikkati bölebilir. Tek sütuna indirmek doğrusal, kesintisiz bir okuma akışı kurar; riski, yan sütunda duran bilgiye erişimin kaybolmasıdır.
+
+**Test edilmesi gerekenler**
+- Yapı: Tek sütunlu sayfa toplam dönüşümü ikinci sütunlu sayfaya göre artırıyor mu?
+- Kayıp içerik: Yan sütundaki bilgi (ilgili bağlantı, arama) kaldırılınca aranıyor mu?
+- Uzunluk: Tek sütuna geçince sayfa dikeyde ne kadar uzuyor, bu kaydırmayı etkiliyor mu?
+- Odak: İkinci sütun ana CTA’dan dikkat mi çekiyor?
+- Segment: Bilinçli araştıran ziyaretçi ile hazır karar veren ziyaretçi yapıya farklı mı tepki veriyor?
+
+**Takip edilecek ana KPI’lar**
+- Dönüşüm Oranı (CR): Sayfa yapısı ana aksiyonu artırıyor mu?
+- Kaydırma Derinliği: Tek sütunda sayfanın sonuna ulaşma oranı düşmemeli.
+- Site İçi Arama Kullanımı: Yan sütundaki gezinme kaldırılınca artmamalı — artıyorsa kaybolan erişimin belirtisidir.
+- Sayfada Kalma Süresi: Yapı değişikliği süreyi aşırı kısaltmamalı.
+- Yan İçerik Kaynaklı Aksiyon Oranı: İkinci sütunun beslediği ek aksiyonlar (ör. ilgili kaynak indirme, referans okuma) kaybolmamalı.
+
+**Yapılmaması gerekenler**
+- Aynı testte sütun yapısıyla birlikte sayfanın metnini de değiştirmeyin.
+- Yan sütunu kaldırırken oradaki bilgiye başka hiçbir yerden erişim bırakmayın.
+- Mobilde zaten tek sütuna düşen bir sayfayı ikinci sütunlu varyantla karşılaştırmaya çalışmayın; orada fark yoktur.
+- Tek bir sayfa tipinde ölçüp sonucu tüm sayfa tiplerine genellemeyin.
+- İkinci sütunu kaldırırken erişilebilirlik için önemli bir gezinme unsurunu sessizce yok etmeyin.

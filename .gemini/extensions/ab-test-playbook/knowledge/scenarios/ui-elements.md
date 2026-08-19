@@ -493,3 +493,57 @@ Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağz
 - Marka sesi ile tutarsız bir kip seçip sayfanın geri kalanıyla çelişen bir ton yaratmayın.
 - Farklı butonlarda farklı kipler kullanıp sayfa içi tutarlılığı bozmayın.
 - Sonucu tek bir CTA’dan genelleyip sitedeki tüm butonları aynı anda değiştirmeyin; kademeli uygulayın.
+
+---
+
+## İç promosyon banner’ı tek bir motivasyona mı, birden fazla seçeneğe mi odaklanmalı?
+
+Bir sitenin herhangi bir noktasındaki tanıtım banner’ı genellikle birden fazla fayda veya seçeneği aynı anda listeler (“Ücretsiz kargo, yeni koleksiyon, üyelik avantajları”). Banner’ı tek bir net motivasyona kilitlemek (yalnızca “Bugüne özel: ilk siparişte %15”) mesajı netleştirebilir ama diğer tekliflerin görünürlüğünü tamamen kaybettirebilir. Bu, “Süreli kampanya duyurusunu site genelinde göstermek işe yarar mı?” senaryosundan farklıdır: o senaryo banner’ın var olup olmamasını ve zamanlamasını, bu senaryo banner içeriğinin tek mi çok mu odaklı olacağını test eder.
+
+**Test edilmesi gerekenler**
+- Odak: Tek motivasyona kilitli banner çok seçenekli olana göre daha mı çok tıklanıyor?
+- İçerik kaybı: Banner’dan çıkarılan diğer teklifler başka bir yerde fark ediliyor mu?
+- Görsel hizalama: Banner’ın görseli ve metni aynı tek motivasyonu mu anlatıyor?
+- Seçim: Hangi motivasyon (fiyat, yenilik, ayrıcalık) en çok tıklama getiriyor?
+- Segment: Yeni ziyaretçi ile mevcut müşteri aynı motivasyona mı tepki veriyor?
+
+**Takip edilecek ana KPI’lar**
+- Banner Tıklama Oranı: Tek odaklı banner tıklamayı artırıyor mu?
+- Genel Dönüşüm Oranı (CR): Banner odağı sitenin ana dönüşümünü düşürmemeli.
+- Kaybolan Teklif Farkındalığı (anket): Banner’dan çıkarılan diğer tekliflerin bilinirliği kabul edilemez ölçüde düşmemeli.
+- Sayfa Terk Oranı: Tek mesaj kaynaklı çıkış artmamalı.
+- Tıklama Sonrası Tamamlama Oranı: Banner’a tıklayanların hedef aksiyonu tamamlama oranı düşmemeli.
+
+**Yapılmaması gerekenler**
+- Aynı testte banner’ın odağı ile konumunu/boyutunu birlikte değiştirmeyin.
+- Gerçekte sınırlı olmayan bir teklifi “bugüne özel” gibi göstermeyin (kural 6).
+- Çıkarılan diğer teklifleri sitenin hiçbir yerinde göstermeyip tamamen kaybettirmeyin; en azından ilgili sayfada bulunabilir olmalılar.
+- Tıklama arttı diye tıklama sonrası tamamlamaya bakmadan kazandı demeyin.
+- Tek motivasyonu, aslında farklı ziyaretçi segmentlerine göre değişmesi gereken bir mesajı zorla tekleştirmek için kullanmayın.
+
+---
+
+## Birden fazla seçenek arasından birini görsel ağırlıkla öne çıkarmak seçimi hızlandırır mı?
+
+Kullanıcıya birden fazla eşdeğer seçenek (ör. ürün varyantı, özellik kartı, indirilecek kaynak) sunulduğunda hepsini aynı görsel ağırlıkta göstermek nötr durur ama karar yükünü tamamen kullanıcıya bırakır. Seçeneklerden birini boyut, renk veya konumla diğerlerinden görünür biçimde ağır göstermek seçimi hızlandırabilir; riski, öne çıkarılan seçeneğin gerçekten çoğunluğun ihtiyacına uymamasıdır — bu durumda ağırlık seçimi değil yalnızca tıklamayı yönlendirmiş olur. Bu, `pricing.md`’deki plan sırası veya “en popüler” rozeti senaryolarından farklıdır: onlar fiyat planlarına özgüdür, bu senaryo fiyat içermeyen herhangi bir çoklu seçenek sunumuna uygulanır.
+
+**Test edilmesi gerekenler**
+- Ağırlık: Bir seçeneği görsel olarak öne çıkarmak toplam seçim hızını artırıyor mu?
+- Doğruluk: Öne çıkarılan seçenek gerçekten çoğunluğun tercih ettiği mi?
+- Yöntem: Boyut mu, renk mi, konum mu en güçlü ağırlık sinyalini veriyor?
+- Pişmanlık: Öne çıkarılanı seçenlerin sonradan değiştirme oranı yükseliyor mu?
+- Segment: Deneyimli kullanıcı ile ilk kez gelen ziyaretçi ağırlığa aynı tepkiyi mi veriyor?
+
+**Takip edilecek ana KPI’lar**
+- Seçim Tamamlama Süresi: Görsel ağırlık karar süresini kısaltıyor mu?
+- Seçim Sonrası Değiştirme/İptal Oranı: Öne çıkarılan seçeneği alanların vazgeçme oranı artmamalı.
+- Diğer Seçeneklerin Görülme Oranı: Öne çıkarılmayan seçenekler tamamen gözden kaçmamalı.
+- Genel Dönüşüm Oranı (CR): Toplam tamamlama düşmemeli.
+- Memnuniyet (anket): Seçim sonrası memnuniyet öne çıkarma nedeniyle düşmemeli.
+
+**Yapılmaması gerekenler**
+- Gerçek veriye dayanmayan bir seçeneği “en çok tercih edilen” gibi göstermeyin (kural 6).
+- Aynı testte ağırlık yöntemini (boyut/renk/konum) ve seçeneklerin içeriğini birlikte değiştirmeyin.
+- Diğer seçenekleri tıklanamayacak veya bulunamayacak kadar küçültmeyin.
+- Öne çıkarma ağırlığını kullanıcıyı gerçek ihtiyacından farklı bir seçeneğe yönlendirmek için kullanmayın.
+- Mobilde öne çıkarılan seçeneği büyütürken diğerlerini ekran dışına taşırmayın.

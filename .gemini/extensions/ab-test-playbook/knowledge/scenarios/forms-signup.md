@@ -595,3 +595,30 @@ E-posta veya telefon isteyen bir form, kullanıcıda “bu bilgi spam’e mi dö
 - Metni, gerçek bir gizlilik politikası bağlantısının yerine geçecek şekilde sunmayın — ayrıntılı politika hâlâ erişilebilir olmalı.
 - Güvence metnini o kadar büyük veya göze batan yapmayın ki asıl formu gölgelesin.
 - Hedef pazarın veri koruma mevzuatının gerektirdiği açık rıza metnini bu güvence cümlesiyle karıştırıp eksik bırakmayın (kural 11).
+
+---
+
+## Tek seçimlik bir alanda radio button mu, açılır liste (dropdown) mu daha çok tamamlatıyor?
+
+Radio button tüm seçenekleri aynı anda görünür kılar, kullanıcı tıklamadan karşılaştırma yapabilir ama seçenek sayısı arttıkça dikey yer kaplar. Dropdown yer kazandırır ve çok seçenekli durumlarda formu kısa gösterir, buna karşılık seçenekleri görmek için bir ek tıklama gerektirir ve mobilde platformun kendi bileşenine bağlı bir davranışa geçer — kullanıcı neyle karşılaşacağını göremeden tıklar.
+
+**Test edilmesi gerekenler**
+- Biçim: Radio button mu, dropdown mu ilgili alanın doldurulma oranını artırıyor?
+- Seçenek sayısı: Kaç seçenekten sonra dropdown radio button’dan daha avantajlı hâle geliyor?
+- Varsayılan: Dropdown’da hiçbir seçeneğin önceden seçili gelmemesi doğru seçime mi yönlendiriyor, yoksa atlanmasına mı yol açıyor?
+- Hata: Yanlış seçim oranı biçime göre değişiyor mu?
+- Cihaz: Mobilde platformun kendi dropdown bileşeni radio button’a göre nasıl bir fark yaratıyor?
+
+**Takip edilecek ana KPI’lar**
+- Form Tamamlama Oranı: Biçim gönderimi artırıyor mu?
+- Alan Bazlı Hata Oranı: Yanlış veya eksik seçim artmamalı.
+- Ortalama Doldurma Süresi: İlgili alanı doldurma süresi uzamamalı.
+- Alan Terk Oranı: İlgili alanda bırakma artmamalı.
+- Erişilebilirlik: Klavye ile gezinme ve ekran okuyucu davranışı biçime göre bozulmamalı.
+
+**Yapılmaması gerekenler**
+- Aynı testte biçimle birlikte seçenek sayısını veya sırasını değiştirmeyin.
+- Dropdown’da bir seçeneği önceden seçili getirip kullanıcının fark etmeden onu onaylamasına yol açmayın.
+- Çok az seçenek için dropdown, çok fazla seçenek için radio button önermeyin; ikisi de yanlış bağlamda dezavantajlıdır.
+- Mobil platformun kendi dropdown bileşenini özel bir bileşenle değiştirip erişilebilirlik davranışını bozmayın.
+- Tek bir alan tipinde ölçüp sonucu tüm tek seçimlik alanlara genellemeyin.

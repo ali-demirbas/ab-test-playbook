@@ -1,8 +1,8 @@
-# ab-test-playbook — A/B testing & CRO playbook with 205 experiment scenarios
+# ab-test-playbook — A/B testing & CRO playbook with 211 experiment scenarios
 
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
-![Scenarios](https://img.shields.io/badge/scenarios-205-blue)
+![Scenarios](https://img.shields.io/badge/scenarios-211-blue)
 ![Tests](https://img.shields.io/badge/tests-121_passing-brightgreen)
 
 **Language:** [English](README.md) · [Türkçe](README.tr.md)
@@ -14,7 +14,7 @@
 
 A practical A/B testing and CRO (conversion rate optimization) playbook for e-commerce, mobile apps, SaaS and digital products — powered by Claude Code. Suggests proven experiment ideas by journey stage, designs new ones in a disciplined single-variable framework, audits existing test plans for methodological flaws (confounds, missing guardrails, p-hacking risk), and renders every scenario straight to a deck-style HTML card — no extra ask needed.
 
-Built from an archive of A/B test scenarios and hypothesis-generation patterns used in real e-commerce, mobile app and SaaS growth work — 205 scenarios, methodology and text content, not a shipped visual deck. Covers experiment design, test prioritization (ICE scoring), statistical significance and sample-size math, guardrail metrics, and checkout/product-page/pricing optimization. Every scenario follows the same three-box discipline:
+Built from an archive of A/B test scenarios and hypothesis-generation patterns used in real e-commerce, mobile app and SaaS growth work — 211 scenarios, methodology and text content, not a shipped visual deck. Covers experiment design, test prioritization (ICE scoring), statistical significance and sample-size math, guardrail metrics, and checkout/product-page/pricing optimization. Every scenario follows the same three-box discipline:
 
 - **Test edilmesi gerekenler** — what questions the experiment must answer
 - **Takip edilecek ana KPI’lar** — one primary metric + guardrails that must not degrade
@@ -26,7 +26,7 @@ Built from an archive of A/B test scenarios and hypothesis-generation patterns u
 
 | Without a system | With ab-test-playbook |
 |---|---|
-| Test ideas come from memory or whatever feels right today | Ranked by ICE from a 205-scenario archive, or generated with a stated mechanism — "more eye-catching" isn't an accepted reason |
+| Test ideas come from memory or whatever feels right today | Ranked by ICE from a 211-scenario archive, or generated with a stated mechanism — "more eye-catching" isn't an accepted reason |
 | "Looks significant" is a judgment call from staring at two percentages | A real two-proportion z-test, confidence interval, sample size, and an SRM check — computed by script, never eyeballed |
 | Five metrics get watched, none of them decides anything | One named primary metric, one mandatory guardrail — p-hacking risk gets flagged, not shipped |
 | The model that wrote the scenario also grades its own homework | An adversarial critic checks methodology before a card renders; a second reviewer checks the visual for a hidden second difference |

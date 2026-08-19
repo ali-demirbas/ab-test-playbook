@@ -784,3 +784,30 @@ Küçük bir pop-up’tan farklı olarak, kısmi karşılama ekranı sayfanın b
 - Ekranı, arama motoru botlarının asıl içeriği görmesini engelleyecek şekilde kurmayın.
 - Mobilde ekranı kapatma alanını dokunma hedefi için çok küçük bırakmayın.
 - Ziyaretçi bir kez kapattıysa aynı oturumda tekrar göstermeyin.
+
+---
+
+## Anasayfayı tek bir anlatı yerine ziyaretçi tipine göre ayrı bloklara bölmek ilerlemeyi artırır mı?
+
+Çoğu anasayfa tek bir ziyaretçi profilini varsayıp doğrusal bir anlatı kurar (başlık → fayda → sosyal kanıt → CTA). Farklı ziyaretçi tipleri (ör. bireysel kullanıcı / kurumsal alıcı, yeni müşteri / mevcut müşteri) farklı sorularla geldiğinde bu tek anlatı hiçbirine tam oturmaz. Sayfayı bir yönlendirme sayfası gibi kurup her tipe ayrı bir blok sunmak (ör. “Bireysel kullanım için” / “Ekibiniz için” iki ayrı kart) ilgili ziyaretçiyi daha hızlı doğru içeriğe taşıyabilir; riski, tek bir net mesaj yerine sayfanın başında birden fazla seçenek sunmanın kararsızlık yaratmasıdır. Bu, “Ziyaretçinin geldiği kaynağa göre başlığı değiştirmek işe yarar mı?” senaryosundan farklıdır: orada tek başlık ziyaretçiye göre değişir, burada ekranda aynı anda birden fazla yol görünür durur.
+
+**Test edilmesi gerekenler**
+- Yapı: Ziyaretçi tipine göre ayrı bloklar sunmak toplam ilerlemeyi artırıyor mu?
+- Kararsızlık: Birden fazla yol sunmak, hangisini seçeceğini bilemeyen ziyaretçi yaratıyor mu?
+- Sıra: Hangi ziyaretçi tipi bloğu üstte durmalı?
+- Denge: Bloklar görsel olarak eşit ağırlıkta mı sunulmalı, biri öne mi çıkarılmalı?
+- Segment: Reklamdan gelen ile organik gelen ziyaretçi doğru bloğu aynı oranda mı buluyor?
+
+**Takip edilecek ana KPI’lar**
+- İlgili Bloğa Tıklama Oranı: Ziyaretçi kendi profiline uyan bloğu buluyor mu?
+- Genel İlk Aksiyon Oranı: Toplam ilerleme düşmemeli.
+- Yanlış Blok Oranı: Yanlış bloğa girip geri dönen ziyaretçi oranı artmamalı.
+- Hemen Çıkma Oranı: Kararsızlık kaynaklı çıkış artmamalı.
+- Sayfada Karar Süresi: İlk tıklamaya kadar geçen süre kabul edilemez ölçüde uzamamalı.
+
+**Yapılmaması gerekenler**
+- Aynı testte blok sayısını ve sayfanın geri kalanındaki mesajı birlikte değiştirmeyin.
+- İkiden fazla ziyaretçi tipi bloğunu aynı ekranda sıkıştırıp seçim felcine yol açmayın.
+- Bloklardan birini gerçek trafik dağılımıyla orantısız büyüklükte öne çıkarmayın.
+- Mobilde blokları küçültüp aralarındaki dokunma alanını daraltmayın.
+- Yanlış bloğa giren ziyaretçinin doğru bloğa geçişini zorlaştıran bir yapı kurmayın.
