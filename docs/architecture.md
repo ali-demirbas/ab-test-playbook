@@ -53,7 +53,7 @@ requested work and findings are reported directly rather than silently fixed
 | Text escaping, template fill, drift check | `scripts/build_card.py` | Deterministic — a model rewriting ~180 lines of CSS per card is both the slowest step and the drift risk |
 | Statistics | `scripts/analyze_results.py` | Same reason: arithmetic is not a judgement call |
 | Structural rules on a test definition | `templates/scenario.schema.json` + `scripts/validate_scenario_json.py` | Rules 2 and 3 become shape, not prose: a scenario with two primary KPIs fails validation |
-| Archive format | `scripts/validate_scenarios.py` | Guards the 197 shipped scenarios against silent format rot |
+| Archive format | `scripts/validate_scenarios.py` | Guards the 199 shipped scenarios against silent format rot |
 
 ## Why two review agents rather than one
 

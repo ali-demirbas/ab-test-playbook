@@ -568,3 +568,30 @@ Kullanıcıyı doğrudan çok alanlı bir formla karşılaştırmak yerine, önc
 - Soruyu zorunlu hâle getirip atlama seçeneği sunmadan ilerlemeyi engellemeyin.
 - Isındırma sorusunun cevabını, kullanıcıya söylemeden başka bir amaç (ör. segmentleme) için kullanmayın.
 - Isındırma adımını, asıl formun alan sayısını azaltmanın yerine geçen bir çözüm gibi sunmayın — ikisi ayrı testtir.
+
+---
+
+## Form alanının yanına veri gizliliği güvencesi eklemek kayıt oranını artırır mı?
+
+E-posta veya telefon isteyen bir form, kullanıcıda “bu bilgi spam’e mi dönüşecek” tereddüdü yaratabilir. Alanın hemen yanına kısa bir güvence metni (“E-postanızı kimseyle paylaşmayız”) koymak bu tereddüdü giderebilir, ama gereksiz yere hatırlatma da tam tersi bir etki yaratıp “neden bunu söylemeleri gerekti” şüphesi doğurabilir.
+
+**Test edilmesi gerekenler**
+- Varlık: Güvence metni eklemek kayıt oranını artırıyor mu, yoksa şüphe mi uyandırıyor?
+- Konum: Metin alanın hemen altında mı, gönder butonunun yanında mı daha etkili?
+- İkon: Kilit veya kalkan ikonu eklemek metnin etkisini güçlendiriyor mu?
+- Somutluk: Genel bir ifade mi (“gizliliğinize önem veriyoruz”), spesifik bir taahhüt mü (“asla üçüncü taraflarla paylaşmayız”) daha ikna edici?
+- Segment: Hassas sayılabilecek bir bilgi (ör. telefon) istenen formlarda etki, yalnızca e-posta isteyen formdan farklı mı?
+
+**Takip edilecek ana KPI’lar**
+- Form Tamamlama Oranı: Güvence metni kayıt oranını artırıyor mu?
+- Alan Terk Oranı: Kullanıcı ilgili alanı doldurmadan formu bırakmıyor mu?
+- Güven Algısı (anket): Metin güveni artırdığını hissettiriyor mu, yoksa şüphe mi uyandırıyor?
+- Sayfada Kalma Süresi: Ek metin okuma süresini kabul edilemez ölçüde uzatmamalı.
+- Kayıt Sonrası Şikâyet: Verilen sözle kayıt sonrası gönderim davranışı tutarsızsa bu artmamalı — artıyorsa ayrı, engelleyici bir bulgudur (kural 6).
+
+**Yapılmaması gerekenler**
+- Vermediğiniz bir sözü yazmayın — “asla paylaşmayız” derken üçüncü taraf pazarlama ortaklarıyla paylaşıyorsanız bu kural 6 ihlalidir.
+- Aynı testte güvence metnini ve form alan sayısını birlikte değiştirmeyin.
+- Metni, gerçek bir gizlilik politikası bağlantısının yerine geçecek şekilde sunmayın — ayrıntılı politika hâlâ erişilebilir olmalı.
+- Güvence metnini o kadar büyük veya göze batan yapmayın ki asıl formu gölgelesin.
+- Hedef pazarın veri koruma mevzuatının gerektirdiği açık rıza metnini bu güvence cümlesiyle karıştırıp eksik bırakmayın (kural 11).

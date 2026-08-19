@@ -466,3 +466,30 @@ Bir sayfadaki dış bağlantı (ör. blog yazısındaki kaynak, ortak site linki
 - Ödeme veya form gönderimi gibi kritik bir aksiyonu yeni sekmede açıp kullanıcıyı akıştan koparmayın.
 - Yeni sekme davranışını yalnızca bazı tarayıcılarda tutarsız çalışacak şekilde kurmayın.
 - Kullanıcının linke sağ tıklayıp kendi tercihiyle sekme açma imkânını elinden almayın.
+
+---
+
+## Buton metnini komut kipiyle mi (“Başlat”), birinci şahıs bildirimiyle mi (“Başlıyorum”) yazmalı?
+
+Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağzından söylediği birinci şahıs bildirimiyle mi (“Başlıyorum”) yazıldığı, kararı kimin verdiği hissini değiştirebilir — emir kipi siteden gelen bir talimat gibi okunurken, birinci şahıs ifade kullanıcının kendi kararını onayladığı bir cümle gibi okunur. Etkisi küçük ama tutarlı bir mikro-copy farkıdır; markanın genel ses tonuyla uyumlu olmayan bir kalıp tuhaf durabilir.
+
+**Test edilmesi gerekenler**
+- Kip: Emir kipi mi, birinci şahıs bildirimi mi tıklama oranını artırıyor?
+- Bağlam: Etki ücretsiz/düşük riskli aksiyonlarda mı, ücretli/yüksek riskli aksiyonlarda mı daha güçlü?
+- Ton tutarlılığı: Marka sesi resmi olduğunda birinci şahıs ifade garip mi duruyor?
+- Uzunluk: Birinci şahıs ifade buton genişliğini büyütüp mobilde sıkışıklık mı yaratıyor?
+- Segment: Yeni ziyaretçi ile daha önce siteyi kullanmış kullanıcı farklı mı tepki veriyor?
+
+**Takip edilecek ana KPI’lar**
+- Tıklama Oranı (CTR): Buton metni tıklamayı artırıyor mu?
+- Dönüşüm Oranı (CR): Tıklamadan sonraki tamamlama oranı düşmemeli.
+- Marka Algısı (anket): İfade markayı samimiyetsiz veya tuhaf hissettirmemeli.
+- Sayfa Terk Oranı: Değişiklik terk oranını artırmamalı.
+- Tekrar Ziyaret Oranı: Kısa vadeli tıklama artışı uğruna marka algısı zedelenmemeli.
+
+**Yapılmaması gerekenler**
+- Aynı testte buton metninin kipini ve rengini veya boyutunu birlikte değiştirmeyin.
+- Birinci şahıs ifadeyi, kullanıcının henüz vermediği bir kararı vermiş gibi göstermek için kullanmayın — ücretli bir işlemde onay adımı hâlâ ayrıca gösterilmeli.
+- Marka sesi ile tutarsız bir kip seçip sayfanın geri kalanıyla çelişen bir ton yaratmayın.
+- Farklı butonlarda farklı kipler kullanıp sayfa içi tutarlılığı bozmayın.
+- Sonucu tek bir CTA’dan genelleyip sitedeki tüm butonları aynı anda değiştirmeyin; kademeli uygulayın.
