@@ -300,3 +300,30 @@ Planların soldan sağa hangi sırayla dizildiği, karşılaştırma sırasında
 - Farklı ürünlerde tutarsız bir format kullanıp karşılaştırmayı zorlaştırmayın.
 - Vergi veya ek ücretin küsuratını ana tutarla karıştırıp toplam tutarı belirsizleştirmeyin.
 - Fiyat gösteriminin yasal olarak düzenlendiği pazarlarda kuralı doğrulamadan format değiştirmeyin (kural 11).
+
+---
+
+## Fiyattan önce yüksek bir referans sayı göstermek algılanan değeri artırır mı?
+
+Bir fiyat, yanında yüksek bir referans sayı (“piyasa ortalaması ₺X”, “benzer hizmetler ₺Y’ye kadar”) olmadan gösterildiğinde ziyaretçi değeri tek başına yargılar; referans sayı önce görüldüğünde asıl fiyat ona göre daha uygun hissedilebilir. Bu, üstü çizili “eski fiyat” göstermekten farklıdır — burada referans sizin geçmiş fiyatınız değil, dış bir karşılaştırma noktasıdır ve doğruluğu ayrıca doğrulanmalıdır.
+
+**Test edilmesi gerekenler**
+- Varlık: Referans sayı göstermek satın alma oranını artırıyor mu?
+- Kaynak: Referansın nereden geldiği (piyasa ortalaması, rakip, bağımsız kaynak) belirtilince inandırıcılık değişiyor mu?
+- Fark büyüklüğü: Referans ile asıl fiyat arasındaki fark büyüdükçe etki güçleniyor mu, yoksa güven mi düşüyor?
+- Konum: Referans fiyatın hemen üstünde mi, ayrı bir notta mı daha etkili?
+- Segment: Fiyata duyarlı ve duyarlı olmayan ziyaretçi farklı mı tepki veriyor?
+
+**Takip edilecek ana KPI’lar**
+- Dönüşüm Oranı (CR): Referans sayı satın alma oranını artırıyor mu?
+- Güven Algısı (anket): Referans sayı inandırıcı bulunuyor mu, yoksa şüphe mi uyandırıyor?
+- İade veya İtiraz Sayısı: “Yanıltıcı karşılaştırma” şikâyeti artmamalı.
+- Ortalama Sepet veya Plan Tutarı: Referans sayı ortalama tutarı düşürmemeli.
+- Sayfada Kalma Süresi: Ek bilgi karar süresini kabul edilemez ölçüde uzatmamalı.
+
+**Yapılmaması gerekenler**
+- Doğrulanamayan veya uydurma bir referans sayı göstermeyin (kural 6) — piyasa ortalaması veya rakip fiyatı iddiası gerçek, güncel bir kaynağa dayanmalı.
+- Aynı testte referans sayının varlığını ve asıl fiyat seviyesini birlikte değiştirmeyin.
+- Referans sayıyı gerçekçi olmayacak kadar büyük seçip asıl fiyatı yapay biçimde ucuz göstermeyin.
+- Rakip fiyatını isim vererek gösteriyorsanız haksız rekabet veya karşılaştırmalı reklam kurallarını hedef pazarda doğrulamadan yayınlamayın (kural 11).
+- Referans sayıyı güncellemiyorsanız eski veya geçersiz bir rakamda donmuş bırakmayın.

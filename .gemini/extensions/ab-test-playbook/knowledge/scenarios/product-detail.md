@@ -910,3 +910,84 @@ Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal k�
 - Kullanıcıdan yalnızca haber ver kaydı için gereğinden fazla bilgi istemeyin.
 - Haber ver akışına gerçek stok verisiyle doğrulanmamış bir aciliyet mesajı (ör. “sadece birkaç adet kalacak”) eklemeyin (kural 6).
 - Butonu kaldırırken sayfanın geri kalanını (fiyat, görsel, açıklama) aynı anda yeniden düzenlemeyin — tek değişken haber ver mekanizmasının kendisidir.
+
+---
+
+## Satın almadan önce ürünü özelleştirme imkânı sunmak satın alma niyetini artırır mı?
+
+Kullanıcıya rengi, gravürü veya kombinasyonu kendi seçtirmek, ürünü kendi emeğiyle şekillendirdiği bir şey hâline getirir — bu sahiplenme hissi, hazır bir üründen daha yüksek bir değer algısı yaratabilir. Riski, özelleştirme adımının karmaşık gelip asıl satın alma kararını geciktirmesi veya terke yol açmasıdır.
+
+**Test edilmesi gerekenler**
+- Varlık: Özelleştirme seçeneği sunmak satın alma niyetini artırıyor mu?
+- Adım sayısı: Kaç özelleştirme adımı ilgiyi artırıp kaçında yorucu hâle geliyor?
+- Önizleme: Seçimin ürün görseline anında yansıması etkiyi güçlendiriyor mu?
+- Varsayılan: Özelleştirme adımı varsayılan bir kombinasyonla mı başlamalı, boş mu?
+- Cihaz: Mobilde özelleştirme arayüzü masaüstünden farklı bir tamamlama oranı mı üretiyor?
+
+**Takip edilecek ana KPI’lar**
+- Sepete Ekleme Oranı: Özelleştirilmiş ürünün sepete eklenme oranı hazır üründen yüksek mi?
+- Özelleştirme Tamamlama Oranı: Adımı başlatıp bitiren ziyaretçi oranı nedir?
+- İade Oranı: Özelleştirilmiş ürünlerin iade oranı standart üründen yüksek olmamalı.
+- Sayfa Terk Oranı: Özelleştirme adımı terk oranını artırmamalı.
+- Teslimat Süresi Algısı (anket): Özelleştirmenin teslimatı uzatabileceği net anlaşılmalı.
+
+**Yapılmaması gerekenler**
+- Özelleştirme seçeneklerinin gerçek üretim veya stok kısıtlarını aşan bir kombinasyonu sunmayın.
+- Aynı testte özelleştirme adımlarının sayısını ve varsayılan başlangıç kombinasyonunu birlikte değiştirmeyin.
+- Özelleştirilmiş ürünün iade edilemeyeceğini kullanıcıya satın almadan önce net biçimde belirtmeden bırakmayın.
+- Özelleştirmeyi zorunlu hâle getirip standart veya hazır ürünü satın alma seçeneğini ortadan kaldırmayın.
+- Önizlemede gösterilen sonucu gerçek üretilecek ürünle tutarsız bırakmayın.
+
+---
+
+## Ürünün üretildiği veya tasarlandığı ülkeyi göstermek satın alma kararını etkiler mi?
+
+“İtalya’da üretildi” veya “Almanya’da tasarlandı” gibi bir köken bilgisi, bazı kategorilerde (deri, elektronik, otomotiv) algılanan kaliteyi yükseltebilir. Riski, köken bilgisinin kategoriyle veya hedef pazarla uyumsuz olduğunda hiçbir etki yaratmaması, hatta beklenmedik bir soru işareti doğurmasıdır.
+
+**Test edilmesi gerekenler**
+- Varlık: Köken bilgisi eklemek satın alma oranını artırıyor mu?
+- Konum: Bilgi ürün başlığının yanında mı, ayrı bir rozet olarak mı daha etkili?
+- Kategori: Etki hangi ürün kategorilerinde güçlü, hangilerinde önemsiz?
+- Belirginlik: Bayrak ikonu mu, yazılı ülke adı mı daha güvenilir bulunuyor?
+- Segment: Hedef pazara göre (yerel üretim ile ithal algısı) etki değişiyor mu?
+
+**Takip edilecek ana KPI’lar**
+- Dönüşüm Oranı (CR): Köken bilgisi satın alma oranını artırıyor mu?
+- Ortalama Sepet Tutarı: Algılanan kalite artışı ortalama tutara yansıyor mu?
+- İade Oranı: Beklenti-gerçeklik uyumsuzluğundan doğan iade artmamalı.
+- Ürün Detay Görüntüleme Süresi: Bilgi ek okuma süresini kabul edilemez ölçüde uzatmamalı.
+- Destek Talebi: Köken bilgisiyle ilgili doğrulama talebi artmamalı.
+
+**Yapılmaması gerekenler**
+- Gerçek üretim veya tasarım yerinden farklı bir köken iddia etmeyin (kural 6, kural 10) — bu hem etik hem yasal bir ihlaldir.
+- Aynı testte köken bilgisinin varlığını ve ürün fiyatını birlikte değiştirmeyin.
+- Köken bilgisini yalnızca algı yüksek olan ülkelerde gösterip düşük olanlarda gizleyerek seçici bir yanıltma kurmayın.
+- Hedef pazarın köken veya menşei etiketleme mevzuatını doğrulamadan format değiştirmeyin (kural 11).
+- Köken rozetini gerçek boyutundan büyük göstererek asıl ürün görselinin önüne geçirmeyin.
+
+---
+
+## Paket içeriğini benzer fiyat aralığındaki ürünlerden mi, farklı fiyat aralığındaki ürünlerden mi oluşturmalı?
+
+Bir paket ucuz ve pahalı ürünleri bir araya getirdiğinde, ucuz ürün pahalı ürünün algılanan değerini sulandırabilir — ziyaretçi paketin ortalama değerini pahalı üründen değil ucuz üründen referans alabilir. Benzer fiyat aralığındaki ürünleri bir araya getirmek bu riski azaltır ama paketin toplam faydasını daraltabilir.
+
+**Test edilmesi gerekenler**
+- Kompozisyon: Benzer fiyatlı ürünlerden oluşan paket mi, karışık fiyatlı paket mi geliri artırıyor?
+- Algılanan değer: Pahalı ürünün paket içinde değer kaybettiği hissi oluşuyor mu?
+- Sunum: Paket içindeki her ürünün ayrı fiyatı gösterilince mi, yalnızca toplam fiyat gösterilince mi daha iyi çalışıyor?
+- Zorunluluk: Kullanıcı paketten tek bir ürünü çıkarabiliyor mu, bu seçenek dönüşümü etkiliyor mu?
+- Segment: Fiyata duyarlı ve duyarlı olmayan ziyaretçi farklı bir kompozisyona mı tepki veriyor?
+
+**Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): Paket kompozisyonu geliri artırıyor mu?
+- Paket Seçim Oranı: Tekli üründen pakete geçiş oranı nedir?
+- Pahalı Ürün Algısı (anket): Pahalı ürünün değeri paket içinde düşük hissedilmemeli.
+- İade Oranı: Paket içindeki istenmeyen ürün yüzünden iade artmamalı.
+- Ortalama Sepet Tutarı: Kompozisyon değişikliği ortalama tutarı düşürmemeli.
+
+**Yapılmaması gerekenler**
+- Aynı testte paket kompozisyonunu ve paketin toplam fiyatını birlikte değiştirmeyin.
+- Pakete stokta olmayan veya düşük kaliteli bir ürünü yalnızca dolgu malzemesi olarak eklemeyin.
+- Paketin toplam değerini gerçek ayrı satış fiyatlarının toplamından farklı hesaplayıp yanıltıcı bir tasarruf iddiası kurmayın (kural 6).
+- Kullanıcıyı paketin tamamını almaya zorlayıp tekli ürün seçeneğini gizlemeyin.
+- Tamamen ilgisiz kategorilerdeki ürünleri yalnızca fiyatı doldurmak için bir araya getirmeyin.

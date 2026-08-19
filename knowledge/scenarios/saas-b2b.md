@@ -273,3 +273,30 @@ Kurumsal e-posta zorunluluğu spam ve kişisel hesapları eler, satış ekibine 
 - Aynı testte hem e-posta kuralını hem diğer alanları değiştirmeyin.
 - Kişisel e-postayı kabul edip sonradan sessizce elemeyin.
 - Doğrulama kuralını yalnızca dönüşüme bakıp gevşetmeyin; kaliteyi izleyin.
+
+---
+
+## Deneme süresi bitmeden gönderilen mesajı kayıp çerçevesiyle mi, kazanım çerçevesiyle mi yazmalı?
+
+Aynı bilgi iki farklı çerçeveyle verilebilir: “Yükseltmezsen 3 gün sonra [X özelliğine] erişimini kaybedeceksin” (kayıp) ya da “Şimdi yükselt, [X özelliğini] kullanmaya devam et” (kazanım). Kayıp çerçevesi genelde kazanım çerçevesinden daha güçlü bir davranışsal tepki yaratır, çünkü insanlar eşdeğer bir kaybı bir kazançtan daha ağır hisseder — ama sürekli kayıp diliyle konuşmak markayı baskıcı hissettirebilir.
+
+**Test edilmesi gerekenler**
+- Çerçeve: Kayıp diliyle mi, kazanım diliyle mi yazılan mesaj yükseltme oranını artırıyor?
+- Somutluk: Hangi özelliğin kaybedileceğini isimlendirmek mi, genel bir uyarı mı daha etkili?
+- Zamanlama: Mesaj deneme bitmeden kaç gün önce gönderilmeli?
+- Ton: Kayıp çerçevesi marka algısını baskıcı mı hissettiriyor?
+- Segment: Aktif kullanan ile deneme boyunca az kullanan kullanıcıya aynı çerçeve mi uygulanmalı?
+
+**Takip edilecek ana KPI’lar**
+- Yükseltme Oranı: Deneme sonunda ücretli plana geçen kullanıcı oranı artıyor mu?
+- Marka Algısı (anket): Mesaj baskıcı veya manipülatif hissettirmemeli.
+- Aboneliği İptal Etme Oranı: Yükseltenlerin ilk ay içinde iptal oranı artmamalı — baskıyla alınan karar kalıcı olmayabilir.
+- Bildirim Kapatma Oranı: Mesaj kaynaklı bildirim iptali artmamalı.
+- Destek Talebi: Çerçeveyle ilgili şikâyet veya soru artmamalı.
+
+**Yapılmaması gerekenler**
+- Gerçekte kaybedilmeyecek bir özelliği kaybedilecekmiş gibi göstermeyin (kural 6).
+- Aynı testte mesajın çerçevesini ve gönderim zamanlamasını birlikte değiştirmeyin.
+- Kayıp çerçevesini, kullanıcıyı gerçek düşünme süresi olmadan anlık karara zorlayacak bir aciliyetle birleştirmeyin.
+- Aynı mesajı kısa aralıklarla tekrar tekrar göndererek baskıyı artırmayın; sıklığı ayrıca test edin.
+- Ücretsiz plana dönüşte kullanıcının verilerini kaybedeceği izlenimi yaratmayın, veriler gerçekte silinmiyorsa.

@@ -82,3 +82,30 @@ Kullanıcı memnuniyetinin tepe noktası satın alma anının hemen sonrasıdır
 - Daveti kapatılamaz hâle getirmeyin; kullanıcı sipariş bilgisine daveti görmeden de ulaşabilmeli.
 - Kullanıcının rızası olmadan davet linkini otomatik olarak sosyal medyada paylaşmayın.
 - Ödül tutarını gerçek maliyeti karşılamayacak kadar düşük tutup büyük vaat gibi sunmayın.
+
+---
+
+## Sipariş onayını rutin bir bilgi ekranı yerine akılda kalıcı bir an olarak tasarlamak sadakati artırır mı?
+
+Bir deneyim büyük ölçüde en yoğun anına ve nasıl bittiğine göre hatırlanır — sürecin geri kalanı ortalama olsa bile güçlü bir bitiş, deneyimin genel algısını yükseltebilir. Standart bir “siparişiniz alındı” ekranı yerine kısa bir kutlama animasyonu, kişiselleştirilmiş bir teşekkür mesajı veya beklenmedik küçük bir jest, satın alma sürecinin son izlenimini güçlendirebilir.
+
+**Test edilmesi gerekenler**
+- Biçim: Kısa bir animasyon mu, kişiselleştirilmiş metin mi daha akılda kalıcı bulunuyor?
+- Beklenmedik jest: Küçük, beklenmedik bir sürpriz (ör. el yazısı hissi veren not) sadakati etkiliyor mu?
+- Süre: Anın uzunluğu bir noktadan sonra sıkıcı mı geliyor?
+- Kişiselleştirme: Sipariş içeriğine özel bir detay eklemek jenerik bir mesajdan daha mı etkili?
+- Segment: İlk kez alışveriş yapan ile sadık müşteriye aynı an mı sunulmalı?
+
+**Takip edilecek ana KPI’lar**
+- Marka Algısı (anket): Deneyimin genel algısı standart ekrana göre daha olumlu mu?
+- Tekrar Satın Alma Oranı: 30/60/90 gün içinde tekrar alışveriş oranı artıyor mu?
+- Sosyal Paylaşım Oranı: Kullanıcı deneyimi kendiliğinden paylaşıyor mu?
+- Sipariş Bilgisi Görünürlüğü: Kutlama anı asıl sipariş veya teslimat bilgisinin görünürlüğünü azaltmamalı.
+- Sayfa Yüklenme Süresi: Animasyon veya ek görsel sayfayı yavaşlatmamalı.
+
+**Yapılmaması gerekenler**
+- Kutlama anını, asıl sipariş bilgisini bulmayı zorlaştıracak şekilde tasarlamayın.
+- Aynı testte anın biçimini (animasyon/metin) ve kişiselleştirme derecesini birlikte değiştirmeyin.
+- Erişilebilirlik araçlarıyla uyumsuz, durdurulamayan bir animasyon kurmayın; hareket azaltma tercihini yok saymayın.
+- Her siparişte aynı sürpriz jesti tekrarlayıp sürprizi öngörülebilir hâle getirmeyin.
+- Kutlama anını, gerçekleşmemiş bir başarıyı (ör. sahte bir rozet veya ödül) ima edecek şekilde kurmayın.
