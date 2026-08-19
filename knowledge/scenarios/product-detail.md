@@ -908,5 +908,5 @@ Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal k�
 - Gerçekte belirsiz olan bir stok geliş tarihini kesinmiş gibi göstermeyin (kural 10) — tahminse tahmin olduğu belirtilir.
 - Aynı testte haber ver biçimini ve alternatif ürün önerisinin varlığını birlikte değiştirmeyin.
 - Kullanıcıdan yalnızca haber ver kaydı için gereğinden fazla bilgi istemeyin.
-- Stokta olmayan ürünü, aslında satılabilir bir ürünmüş gibi arama sonuçlarında öne çıkarmayın.
-- Haber ver listesine kaydolan kullanıcıya izni olmayan başka pazarlama iletişimi göndermeyin.
+- Haber ver akışına gerçek stok verisiyle doğrulanmamış bir aciliyet mesajı (ör. “sadece birkaç adet kalacak”) eklemeyin (kural 6).
+- Butonu kaldırırken sayfanın geri kalanını (fiyat, görsel, açıklama) aynı anda yeniden düzenlemeyin — tek değişken haber ver mekanizmasının kendisidir.
