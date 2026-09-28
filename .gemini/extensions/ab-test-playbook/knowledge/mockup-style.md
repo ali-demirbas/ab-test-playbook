@@ -4,27 +4,27 @@
 
 ## Neutral palette
 
-Without a brand guide (rule 12c), the card is produced with these colors: the three boxes' identity colors are teal `#08616b`, amber `#6b3804`, navy `#17086b` (header strips); the primary CTA inside the mockup is the template's default orange (`#ff6a00`); the changed-element ring is red (`#e62d37`). This palette is deliberately brand-neutral.
+The card's own chrome (the plate the mockups sit on, the variant pills, the three boxes, the ring) speaks Lab UI, the same visual language as the other tools in this family: the kit is inlined between `/* lab-ui:begin */` and `/* lab-ui:end */` in `templates/scenario-card.html`, so the card stays one offline file. Without a brand guide (rule 12c), the colors are: ink `#1F1C1B` and brand blue `#2F6BFF` for the two pills; brand, emerald and rose tints for the three box icons; a rose ring (`#FFA2AE` border, `#E70044` label) on the changed element. Inside the mockup itself, the primary CTA stays the template's default orange (`#ff6a00`), because that's the page being tested, not the card. This palette is deliberately brand-neutral.
 
 ## Card layout
 
 - A horizontal card, two regions: **the mockup pair on the left**, **the text column on the right**.
-- The mockup pair: `Variant A` (control) on the left, `Variant B` (test) on the right. Both carry a green pill label above them (`Variant A` / `Variant B`).
+- The mockup pair: `Variant A` (control) on the left, `Variant B` (test) on the right. Both carry a pill label above them (`Variant A` / `Variant B`): ink for A, brand blue for B. The pair sits on a light dot-grid plate.
 - The right column: a question-form title at the top (bold, ~2 lines), a 2-3 sentence description below it, the three boxes below that.
 
 ## The three boxes' style
 
-Each box: a colored gradient header strip + a white body card.
+Each box: a white Lab UI tile (hairline ring, radius 24) with a small tinted icon square before the header.
 
-| Box | Header strip | Header text color |
+| Box | Icon | Tint |
 |---|---|---|
-| Test edilmesi gerekenler ("What to test") | Cyan/turquoise gradient | Dark teal `#08616b` |
-| Takip edilecek ana KPI'lar ("Primary KPIs to track") | Yellow/amber gradient | Dark brown `#6b3804` |
-| Yapılmaması gerekenler ("Never do") | Purple/lilac gradient | Dark navy `#17086b` |
+| Test edilmesi gerekenler ("What to test") | Clipboard | Brand blue |
+| Takip edilecek ana KPI'lar ("Primary KPIs to track") | Target | Emerald |
+| Yapılmaması gerekenler ("Never do") | Ban sign | Rose |
 
-- Header: bold, ~20px equivalent.
-- Body: a bulleted list, each item's `Label:` part **bold**, the rest normal; text color black at ~60% opacity.
-- Boxes carry a light shadow, rounded corners (radius ~17), a soft/dashed-edge feel.
+- Header: semibold, 16px, strong ink.
+- Body: a list with a small dot in the box's tint, each item's `Label:` part **bold** in strong ink, the rest in muted ink.
+- The icons are inline SVG data URIs, so the card needs no network and no icon font.
 
 ## Realism level
 
@@ -48,7 +48,7 @@ The `.r-*` components inside `templates/scenario-card.html` (a product row, a fo
 ## Mockup rules
 
 - **Only the tested element** differs between the two variants. Product name, price, rating, badge — all of it stays exactly the same.
-- The tested difference is highlighted with a **red rounded-corner outline** (thickness ~3px, radius ~12, a slight glow). The outline is drawn only around the changed element, it doesn't cover the whole screen.
+- The tested difference is highlighted with a **rose rounded-corner outline** (thickness ~3px, radius ~12, a soft halo). The outline is drawn only around the changed element, it doesn't cover the whole screen.
 - **The outline carries a label.** A short label above the ring states what changed (`.hl[data-note]`, e.g. "coupon field collapsed," "delivery date added"). An unlabeled ring forces the reader to compare the two screens and find the difference themselves; the card's job is to state that difference. The label doesn't exceed two or three words.
 - If a new element is being added (present in B, absent in A), the outline is drawn on the new element in B; no outline is placed on A.
 - **If an element is being removed (present in A, absent in B), the outline is drawn on the element in A, and that area is genuinely left empty in B.** A dashed placeholder saying "this element isn't shown" or "removed" isn't put there — a placeholder both reads like a permanent rule and misrepresents the variant: in the real B, that area doesn't exist, and the content below it shifts up naturally. This shift is preserved in the mockup, because it's often part of the test's benefit (the real content moves higher on the screen). To make the shift noticeable, a one-line note is dropped **below** the mockup (`.shift-note`, e.g. "coupon field removed, the content below shifted up"); this note isn't written inside the screen itself.
