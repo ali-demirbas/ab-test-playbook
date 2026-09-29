@@ -167,6 +167,63 @@
       }
     },
 
+    "preregistration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hypothesis", "variable", "primary_kpi", "guardrails", "alpha", "alternative", "allocation", "decision_rule"],
+      "description": "Optional. Decisions fixed before launch (ab-test-design's pre-registration block). The fields map onto the experiment-configuration fields common experimentation platforms ask for. Unknown numbers are null, never guessed (rule 5).",
+      "properties": {
+        "hypothesis": { "type": "string", "minLength": 1 },
+        "variable": { "type": "string", "minLength": 1 },
+        "primary_kpi": {
+          "type": "object",
+          "required": ["name", "direction"],
+          "additionalProperties": false,
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "direction": { "type": "string", "enum": ["increase", "decrease"] }
+          }
+        },
+        "guardrails": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Rule 3 with numbers: every guardrail carries a tolerated-degradation (non-inferiority) margin.",
+          "items": {
+            "type": "object",
+            "required": ["name", "direction", "margin_relative"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "direction": { "type": "string", "enum": ["must_not_increase", "must_not_decrease"] },
+              "margin_relative": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 }
+            }
+          }
+        },
+        "mde": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "alpha": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+        "power": { "type": ["number", "null"], "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+        "alternative": { "type": "string", "enum": ["two-sided", "greater", "less"] },
+        "allocation": {
+          "type": "object",
+          "required": ["A", "B"],
+          "additionalProperties": false,
+          "description": "Share of traffic per arm; must sum to 1 (checked by the validator).",
+          "properties": {
+            "A": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+            "B": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 }
+          }
+        },
+        "planned_n_per_arm": { "type": ["integer", "null"], "minimum": 1 },
+        "duration_days": { "type": ["integer", "null"], "minimum": 1 },
+        "decision_rule": { "type": "string", "minLength": 1 },
+        "segments": {
+          "type": "array",
+          "description": "Segments declared before launch — the only ones read as more than exploratory.",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+
     "card": {
       "type": "object",
       "additionalProperties": false,

@@ -5,14 +5,14 @@ Yolculuk aşaması: kullanıcı tek bir ürünü değerlendiriyor; görseller, s
 ---
 ## Stüdyo çekimi mi, gerçek kullanıcı fotoğrafı mı daha çok satıyor?
 
-Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. İzinli, gerçekten o kullanıcıdan alınmış bir kullanıcı fotoğrafı ürünün gerçek hayattaki halini gösterip güveni artırabilir — ama markanın algılanan kalitesini de düşürebilir. Gerçek olmayan bir fotoğrafı “kullanıcı fotoğrafı” gibi sunmak bu testin kapsamı dışındadır (CLAUDE.md kural 6).
+Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. İzinli, gerçekten o kullanıcıdan alınmış bir kullanıcı fotoğrafı ürünün gerçek hayattaki halini gösterip güveni artırabilir — ama markanın algılanan kalitesini de düşürebilir. Gerçek olmayan bir fotoğrafı “kullanıcı fotoğrafı” gibi sunmak bu testin kapsamı dışındadır (CLAUDE.md kural 6). “Ürünü kullanım ortamında göstermek düz stüdyo çekiminden daha mı etkili?” senaryosundan farkı: orada iki profesyonel çekim tarzı karşılaştırılır, burada değişken fotoğrafın kaynağıdır (marka mı, müşteri mi).
 
 **Test edilmesi gerekenler**
 - Güven: Kullanıcı fotoğrafı satın alma güvenini artırıyor mu, yoksa “amatör” algısı mı yaratıyor?
 - Konum: Ana görsel mi, galerideki ek görsellerden biri mi olmalı?
 - Kategori farkı: Modada etkisi teknoloji ürününe göre farklı mı?
 - Karışım: İkisini bir arada göstermek (stüdyo ana görsel + kullanıcı fotoğrafı galeri altı) tek başına kullanıcı fotoğrafından daha mı iyi çalışıyor?
-- Fiyat bandı: Yüksek fiyatlı üründe stüdyo çekimi güveni daha mı çok koruyor?
+- Cihaz: Mobilin küçük ekranında kullanıcı fotoğrafının etkisi masaüstünden farklı mı?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Fotoğraf türü satın almayı nasıl etkiliyor?
@@ -40,7 +40,7 @@ Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. 
 - Sıra: İlk görselde ön, detay veya lifestyle hangisi olmalı?
 - Etkileşim: Küçük önizleme (thumbnail) mi, swipe mi kontrol hissini artırıyor?
 - Yakınlaştırma: Zoom veya video/360° imkânı kararı hızlandırıyor mu?
-- Kategori: Modada teknolojiye göre etki daha mı yüksek?
+- Cihaz: Mobilde swipe ile gezilen çoklu görsel masaüstündeki kadar inceleniyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Görsel sayısı satın almayı nasıl etkiliyor?
@@ -65,7 +65,7 @@ Modelin boyu ve giydiği beden, kullanıcının kendi bedenini seçmesini hızla
 **Test edilmesi gerekenler**
 - Bilgi: “Model 1,75 m, S beden giyiyor” karar süresini kısaltıyor mu?
 - Eksiklik: Model bilgisi yokken sepetten dönüş artıyor mu?
-- Biçim: Boy + beden mi, sadece beden mi daha etkili?
+- Cihaz: Mobilde görsel üzerindeki model bilgisi masaüstündeki kadar fark ediliyor mu?
 - Konum: Görsel üzerinde mi, açıklama altında mı daha etkili?
 - Kategori farkı: Elbise ile pantolonda etki aynı mı?
 
@@ -80,7 +80,7 @@ Modelin boyu ve giydiği beden, kullanıcının kendi bedenini seçmesini hızla
 - Gerçek dışı veya tutarsız beden bilgisi vermeyin.
 - Model bilgisini teknik terimlerle yazmayın; sade ve anlaşılır olsun.
 - Yazıların görsel üzerinde taşmasına veya okunmaz hale gelmesine izin vermeyin.
-- Test sırasında beden tablosunu veya stok bilgisini değiştirmeyin.
+- Model bilgisini yalnızca ürünü iyi gösteren modellerde paylaşıp diğerlerinde gizlemeyin; seçici bilgi beden algısını yanıltır.
 - Tek üründe çıkan sonucu tüm kataloğa genellemeyin.
 
 ---
@@ -94,7 +94,7 @@ Yıldız ve yorum sayısının fiyatın hemen altında mı, sayfanın alt kısm�
 - Format: Sadece yıldız mı, yıldız + yorum sayısı + tavsiye oranı mı daha güçlü sinyal veriyor?
 - Eşik: 10’un altında yorumu olan üründe özet göstermek güveni düşürüyor mu?
 - Tıklanabilirlik: Özete tıklayınca yorum bölümüne atlamak inceleme oranını artırıyor mu?
-- Kategori farkı: Teknoloji ile modada aynı etkiyi yaratıyor mu?
+- Cihaz: Mobilde fiyat altındaki özet ilk ekranda CTA ile yarışıyor mu, masaüstünde fark var mı?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Yorum özeti yukarı taşındığında satın alma artıyor mu?
@@ -104,7 +104,7 @@ Yıldız ve yorum sayısının fiyatın hemen altında mı, sayfanın alt kısm�
 - Sayfa Yüklenme Süresi: Ek bileşen LCP’yi bozmamalı.
 
 **Yapılmaması gerekenler**
-- Yorum sayısı eşiğini testin ortasında değiştirmeyin; eşik sorusunun cevabı testin kendisidir.
+- Özete tıklayanı olumsuz yorumları atlayan filtreli bir listeye götürmeyin.
 - Aynı testte hem konumu hem formatı değiştirmeyin.
 - Puanı yukarı yuvarlayıp olduğundan yüksek göstermeyin.
 - Negatif yorumları gizlemeyin; sahtelik algısı yaratır.
@@ -114,7 +114,7 @@ Yıldız ve yorum sayısının fiyatın hemen altında mı, sayfanın alt kısm�
 
 ## Stokta olmayan ürünü gizlemek mi, “haber ver” demek mi?
 
-Tükenen ürünü listeden kaldırmak temiz bir deneyim sunar ama arama/SEO trafiğini boşa harcar. “Gelince haber ver” seçeneği o trafiği e-posta listesine çevirebilir ama sayfada ölü bir CTA bırakma riski taşır.
+Tükenen ürünü listeden kaldırmak temiz bir deneyim sunar ama arama/SEO trafiğini boşa harcar. “Gelince haber ver” seçeneği o trafiği e-posta listesine çevirebilir ama sayfada ölü bir CTA bırakma riski taşır. “Stokta olmayan bir ürünün satın alma butonunu kaldırmak mı, haber ver seçeneği mi daha iyi çalışıyor?” senaryosundan farkı: burada değişken ürün sayfasının görünür kalıp kalmamasıdır; oradaki değişken sayfa açıkken butonun yerine ne konduğudur. Liste kartındaki gri gösterim ise “Stokta olmayan ürünleri listede gri gösterip bırakmak mı, tamamen gizlemek mi daha iyi çalışıyor?” (`category-listing.md`) senaryosunun konusudur.
 
 **Test edilmesi gerekenler**
 - Görünürlük: Ürünü tamamen gizlemek mi, sayfada tutup pasif göstermek mi daha iyi?
@@ -141,7 +141,7 @@ Tükenen ürünü listeden kaldırmak temiz bir deneyim sunar ama arama/SEO traf
 
 ## Aylık taksit tutarını ana fiyat gibi göstermek işe yarar mı?
 
-Yüksek fiyatlı üründe “aylık 2.000 TL” ifadesi, toplam tutardan daha erişilebilir algılanır. Ancak şeffaflık algısını zedeleyebilir ve iptal/iade oranını yükseltebilir.
+Yüksek fiyatlı üründe “aylık 2.000 TL” ifadesi, toplam tutardan daha erişilebilir algılanır. Ancak şeffaflık algısını zedeleyebilir ve iptal/iade oranını yükseltebilir. “Taksit bilgisi satın almayı etkiliyor mu?” senaryosundan farkı: orada taksit bilgisinin görünürlüğü, burada fiyatın aylık tutar olarak çerçevelenmesi test edilir; liste kartındaki rozet “‘Peşin fiyatına taksit’ rozeti dönüşümü artırıyor mu?” (`category-listing.md`) senaryosudur.
 
 **Test edilmesi gerekenler**
 - Etki: Aylık tutarı öne almak dönüşümü artırıyor mu?
@@ -199,28 +199,28 @@ Referans fiyat (çıpa) indirimin büyüklüğünü algılatır ama sürekli kul
 
 ## Ürünü kullanım ortamında göstermek düz stüdyo çekiminden daha mı etkili?
 
-Düz zeminli stüdyo çekimi ürünün kendisine odaklanır, ayrıntıyı net gösterir ve katalog bütünlüğü sağlar. Kullanım ortamında çekilmiş görsel ise ürünün ölçeğini ve nerede işe yarayacağını anlatır, buna karşılık ayrıntıyı gizleyebilir ve sahne ürünün önüne geçebilir. Bu senaryo profesyonel çekimin iki tarzını karşılaştırır; müşterinin kendi çektiği fotoğrafla karşılaştırma ayrı bir senaryodur.
+Düz zeminli stüdyo çekimi ürünün kendisine odaklanır, ayrıntıyı net gösterir ve katalog bütünlüğü sağlar. Kullanım ortamında çekilmiş görsel ise ürünün ölçeğini ve nerede işe yarayacağını anlatır, buna karşılık ayrıntıyı gizleyebilir ve sahne ürünün önüne geçebilir. Bu senaryo profesyonel çekimin iki tarzını karşılaştırır; müşterinin kendi çektiği fotoğrafla karşılaştırma ayrı bir senaryodur. “Stüdyo çekimi mi, gerçek kullanıcı fotoğrafı mı daha çok satıyor?” senaryosundan farkı: burada fotoğrafın kaynağı sabittir (marka), değişen yalnızca sahnedir.
 
 **Test edilmesi gerekenler**
 - Güven: Hangi çekim tarzı daha fazla güven veriyor?
 - Kategori farkı: Çekim tarzı farklı kategorilerde farklı mı çalışıyor?
 - İnceleme: Lifestyle fotoğraf daha fazla scroll ve ürün incelemesi getiriyor mu?
-- Karışık düzen: İki tarzı birlikte sunmak performansı artırıyor mu?
+- Cihaz: Mobilin küçük ekranında sahne ürünü okunmaz hale getiriyor mu?
 - Sıra: İlk fotoğrafın tarzı sonucu ne kadar belirliyor?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Hangi çekim tarzı daha yüksek satış getiriyor?
-- Tıklama Oranı (CTR): Listede hangi tarz daha çok tıklanıyor?
+- Galeri Etkileşim Oranı: Kullanıcı ilk görselden sonra galeride ilerliyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
 - İade Oranı: Yanlış beklenti yaratıp artmamalı.
 - Sayfa Yüklenme Süresi: Ağır görseller yavaşlatmamalı.
 
 **Yapılmaması gerekenler**
-- Testte başlık, fiyat, CTA ve rozetleri değiştirmeyin; veri bozulur.
+- Sahnede ürünü gerçek ölçeğinden büyük veya küçük gösteren kadraj kullanmayın; beklenti bozulup iade artar.
 - Aşırı filtreli veya yapay görünen lifestyle çekim kullanmayın.
 - Farklı ışık ve açıdaki tutarsız fotoğrafları kıyaslamayın.
 - Sahneyi ürünle yarışacak kadar kalabalıklaştırmayın; ürünün kendisi görünür kalmalı.
-- Lifestyle fotoğrafta arka planı dikkat dağıtacak kadar kalabalık yapmayın.
+- Aynı testte çekim tarzı ile görsel sayısını birlikte değiştirmeyin.
 
 ---
 
@@ -232,7 +232,7 @@ Kullanıcıların “kalıbı dar/normal/bol geldi” oyları, beden tablosundan
 - Konum: Geri bildirim beden tablosunun üstünde mi altında mı daha etkili?
 - Format: Yüzde dağılımı mı, tek cümlelik özet mi daha net?
 - Eşik: Kaç oydan sonra göstermek güvenilir algılanıyor?
-- Tekrar: Beden seçim ekranında yeniden göstermek iadeyi daha da düşürüyor mu?
+- Segment: İlk kez alan ile markadan daha önce alışveriş yapmış kullanıcıda etki farklı mı?
 - Kategori farkı: Elbise ile pantolonda etki aynı mı?
 
 **Takip edilecek ana KPI’lar**
@@ -247,7 +247,7 @@ Kullanıcıların “kalıbı dar/normal/bol geldi” oyları, beden tablosundan
 - Geri bildirimi beden seçimi zorunluluğuna dönüştürmeyin.
 - Aynı testte hem geri bildirimi hem beden tablosunu değiştirmeyin.
 - Sonucu ürün lehine yuvarlamayın.
-- İade politikası metnini test süresince değiştirmeyin.
+- Oy yokken kutuyu “kalıp normal” gibi varsayılan bir değerle doldurmayın; yalnızca gerçek oylar gösterilmeli.
 
 ---
 
@@ -286,7 +286,7 @@ Bottom sheet kullanıcıyı sayfadan koparmadan seçim yaptırır ve tek elle er
 - Format: Ham ölçü tablosu mu, “sana önerimiz” kutusu mu daha çok tıklanıyor?
 - Güven: Sosyal kanıt (“kullanıcıların %82’si”) öneriyi daha ikna edici yapıyor mu?
 - Girdi: Boy/kilo istemek eklenen sürtünme kararı ne kadar geciktiriyor?
-- Hata payı: Yanlış öneri iade oranını tablo formatına göre artırıyor mu?
+- Cihaz: Mobilde boy/kilo girişi masaüstüne göre daha çok terk ediliyor mu?
 - Kategori: Elbise ile ayakkabıda hangi format daha iyi çalışıyor?
 
 **Takip edilecek ana KPI’lar**
@@ -313,7 +313,7 @@ Müşteri fotoğrafları ürünün gerçek hayattaki halini gösterir ve stüdyo
 - Sıra: Fotoğraflı yorumları en üste almak yorum bölümünde kalma süresini artırıyor mu?
 - Format: Fotoğraf şeridi mi, yorum içinde küçük görsel mi daha çok tıklanıyor?
 - Çağrı: “Sen de paylaş” daveti yorum sayısını artırıyor mu?
-- Eşik: Kaç fotoğraftan sonra etki doyuma ulaşıyor?
+- Cihaz: Mobilde fotoğraf şeridi masaüstündeki kadar açılıyor mu?
 - Kategori farkı: Modada teknolojiye göre etki daha mı yüksek?
 
 **Takip edilecek ana KPI’lar**
@@ -327,7 +327,7 @@ Müşteri fotoğrafları ürünün gerçek hayattaki halini gösterir ve stüdyo
 - Fotoğrafları ürün görselleriyle karışacak şekilde sunmayın.
 - Sadece olumlu fotoğrafları seçip filtrelemeyin; güven kaybı yaratır.
 - Düşük çözünürlüklü fotoğrafları büyütmeyin.
-- Test sırasında yorum sıralama algoritmasını değiştirmeyin.
+- Fotoğraf yüklemeyi yorum yazmanın ön koşulu yapmayın; metin yorum sayısı düşer.
 - Fotoğraf şeridi CTA’yı aşağı itmemeli.
 
 ---
@@ -353,7 +353,7 @@ Varsayılan yorum sıralaması, kullanıcının ilk okuduğu üç yorumu belirle
 **Yapılmaması gerekenler**
 - Olumsuz yorumları sıralamadan tamamen dışlamayın.
 - “Faydalı” oylarını manipüle edilebilir bırakmayın.
-- Test sırasında yorum toplama akışını değiştirmeyin.
+- “En faydalı” sıralamada ürünün eski sürümüne ait yorumları güncelmiş gibi üste çıkarmayın.
 - Aynı anda hem sıralamayı hem yorum kartı tasarımını değiştirmeyin.
 - Sıralama etiketlerini belirsiz isimlendirmeyin.
 
@@ -361,12 +361,12 @@ Varsayılan yorum sıralaması, kullanıcının ilk okuduğu üç yorumu belirle
 
 ## Stok bilgisi aciliyet hissi oluşturur mu?
 
-“Son 3 ürün kaldı” gibi mesajlar bazı kullanıcıyı tetikler, bazısında baskı yaratıp kaçırır. Satın alma davranışına net etkisi ölçülmelidir.
+“Son 3 ürün kaldı” gibi mesajlar bazı kullanıcıyı tetikler, bazısında baskı yaratıp kaçırır. Satın alma davranışına net etkisi ölçülmelidir. Uyarı yalnızca gerçek envanterden beslenebiliyorsa test edilir (kural 6).
 
 **Test edilmesi gerekenler**
 - Mesaj Türü: “Son 3 ürün kaldı” mı, “Stoklar tükeniyor” mu daha etkili?
 - Konum: Görselin üzerinde mi, fiyatın altında mı daha iyi çalışıyor?
-- Renk: Kırmızı mı, nötr ton mu daha çok dikkat çekiyor?
+- Cihaz: Aciliyet mesajının etkisi mobil ve masaüstünde aynı mı?
 - Eşik: 3 ürün mü, 5 ürün mü davranışı daha çok değiştiriyor?
 - Kategori: Hangi kategoride etki daha yüksek?
 
@@ -374,21 +374,21 @@ Varsayılan yorum sıralaması, kullanıcının ilk okuduğu üç yorumu belirle
 - Dönüşüm Oranı (CR): Aciliyet mesajı satın almayı hızlandırıyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
 - Sepet Terk Oranı: Yükselmemeli; baskı hissi kullanıcıyı kaçırmamalı.
-- İade Oranı: Aceleyle alınan ürün geri dönüyor mu?
-- Sayfa Görüntüleme Süresi: Karar süresi kısalıyor mu?
+- İade Oranı: Yükselmemeli; aceleyle alınan ürün geri dönmemeli.
+- Karar Süresi: Ürün sayfasında geçen süre (tanı metriği).
 
 **Yapılmaması gerekenler**
-- Gerçek olmayan stok uyarısı kullanmayın; güven kaybı yaratır.
+- Gerçek envantere dayanmayan stok uyarısı kullanmayın (kural 6); güven kaybı ve yasal risk yaratır.
 - Aynı mesajı her üründe tekrar etmeyin; aciliyet algısı ölür.
 - Mesajı kırmızıya boğmayın; korku veya spam hissi verir.
 - Aciliyet mesajını fiyat ve CTA’nın önüne geçirmeyin.
-- Stok sayısını gerçek envanterden kopuk göstermeyin.
+- Stok yenilendiğinde uyarıyı kaldırmadan eski “son 3 ürün” sayısını göstermeye devam etmeyin.
 
 ---
 
 ## Canlı aktivite bildirimi mi, stok uyarısı mı daha az rahatsız edici?
 
-“Son 24 saatte 37 kişi satın aldı” sosyal kanıt üretirken, “son 3 ürün kaldı” baskı yaratır. İkisi de aciliyet kurar ama güven üzerindeki etkileri farklı olabilir.
+“Son 24 saatte 37 kişi satın aldı” sosyal kanıt üretirken, “son 3 ürün kaldı” baskı yaratır. İkisi de aciliyet kurar ama güven üzerindeki etkileri farklı olabilir. “Stok bilgisi aciliyet hissi oluşturur mu?” senaryosundan farkı: orada stok uyarısının varlığı ve biçimi, burada iki aciliyet mesajı tipinin birbirine karşı etkisi test edilir. Her iki sayı da gerçek veriden gelmelidir (kural 6).
 
 **Test edilmesi gerekenler**
 - Tip: Hangi mesaj tipi daha yüksek dönüşüm getiriyor?
@@ -400,12 +400,12 @@ Varsayılan yorum sıralaması, kullanıcının ilk okuduğu üç yorumu belirle
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): İki mesaj tipi arasındaki fark.
 - Sepete Ekleme Oranı: Aciliyet ilk aksiyona yansıyor mu?
-- Karar Süresi: Ürün sayfasında geçen süre kısalıyor mu?
-- İade Oranı: Baskıyla alınan ürün geri dönüyor mu?
+- Karar Süresi: Ürün sayfasında geçen süre (tanı metriği).
+- İade Oranı: Yükselmemeli; baskıyla alınan ürün geri dönmemeli.
 - Marka Güven Skoru: NPS düşmemeli.
 
 **Yapılmaması gerekenler**
-- Gerçek olmayan sayı göstermeyin; en hızlı güven kaybı buradan gelir.
+- Gerçek satış veya stok verisine dayanmayan sayı göstermeyin (kural 6); en hızlı güven kaybı buradan gelir.
 - Her üründe aynı mesajı tekrar etmeyin.
 - İki mesajı aynı anda test etmeyin; tek değişken bırakın.
 - Sayıyı sürekli artan sahte sayaca bağlamayın.
@@ -415,7 +415,7 @@ Varsayılan yorum sıralaması, kullanıcının ilk okuduğu üç yorumu belirle
 
 ## Taksit bilgisi satın almayı etkiliyor mu?
 
-Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve satın alma motivasyonunu değiştirebilir.
+Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve satın alma motivasyonunu değiştirebilir. “Aylık taksit tutarını ana fiyat gibi göstermek işe yarar mı?” senaryosundan farkı: burada ana fiyat aynı kalır, yalnızca taksit bilgisinin görünürlüğü değişir.
 
 **Test edilmesi gerekenler**
 - Algı: Taksit bilgisi erişilebilirlik algısını artırıyor mu?
@@ -434,8 +434,8 @@ Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve s
 **Yapılmaması gerekenler**
 - Ürün için geçerli olmayan taksit bilgisi göstermeyin.
 - Mesajı fiyat alanını boğacak kadar büyütmeyin.
-- Test sırasında fiyat ve indirimi değiştirmeyin.
-- Mobilde yerleşimi kontrol edin; tasarım kayması olmamalı.
+- Yalnızca belirli kartlarda geçerli taksiti tüm kartlarda geçerliymiş gibi göstermeyin.
+- Taksit bilgisini peşin fiyattan büyük yazmayın; bu “Aylık taksit tutarını ana fiyat gibi göstermek” senaryosunun değişkenidir.
 - Vade farkı varsa belirtmeden taksit tutarı yazmayın.
 
 > **Pazar notu:** Kart taksitinin yaygın olduğu pazarlara özgüdür. Taksitin bulunmadığı pazarlarda benzer soru ancak “sonra öde” (BNPL) seçenekleri için sorulabilir ve sonuç doğrudan karşılaştırılamaz.
@@ -449,7 +449,7 @@ Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve s
 299,99 TL ile 300 TL arasındaki tek kuruşluk fark, algılanan fiyatı farklı kırar. Küsurat ucuzluk sinyali verirken, tam sayı premium ve sade durur. Kategoriye göre kazanan değişir.
 
 **Test edilmesi gerekenler**
-- Tıklama: Küsuratlı fiyat tıklama oranını artırıyor mu?
+- Cihaz: Mobilin dar fiyat alanında küsurat algısı masaüstünden farklı mı?
 - Premium: Üst segment kategoride tam sayı daha mı iyi çalışıyor?
 - Konum: Etki liste sayfasında mı, ürün sayfasında mı daha güçlü?
 - Tipografi: Kuruş kısmını küçük punto yazmak algıyı değiştiriyor mu?
@@ -464,7 +464,7 @@ Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve s
 
 **Yapılmaması gerekenler**
 - Fiyat farkını 1 TL’den fazla açıp iki değişken yaratmayın.
-- Kampanya dönemlerinde test etmeyin; gürültü çok yüksek.
+- Kuruş kısmını okunamayacak kadar küçültüp fiyatı olduğundan düşük okutmayın.
 - Aynı testte format ile indirim rozetini birlikte değiştirmeyin.
 - Kategori genelinde tutarsız format bırakmayın.
 - Sadece dönüşüme bakıp toplam geliri atlamayın.
@@ -494,7 +494,7 @@ Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve s
 **Yapılmaması gerekenler**
 - Sürekli aktif indirim göstererek kullanıcıyı yanıltmayın.
 - Aynı anda birden fazla indirim mesajı göstermeyin.
-- Yalnızca mobile veya yalnızca web’e özel gösterim yapmayın.
+- İndirim sepette koşula bağlıysa “Anında” yazmayın; metin gerçekte uygulanan indirimle aynı olmalı (kural 6).
 - Çok büyük ve agresif etiketle tasarım hiyerarşisini bozmayın.
 - Hiç uygulanmamış fiyatı eski fiyat diye göstermeyin.
 
@@ -504,7 +504,7 @@ Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve s
 
 ## Kargo ve iade bilgisini öne çıkarmak satışı artırır mı?
 
-Kargo ve iade avantajlarını görünür sunmak kullanıcı güvenini artırarak satın alma motivasyonunu güçlendirebilir.
+Kargo ve iade koşullarını fiyatın yakınında görünür sunmak, “ya beğenmezsem” kaygısını azaltarak satın alma motivasyonunu güçlendirebilir. “Avantaj bilgilerini net sunmak satın almayı etkiler mi?” senaryosundan farkı: burada yalnızca kargo ve iade bilgisinin görünürlüğü değişir; “Teslimat bilgisi satın almayı etkiliyor mu?” senaryosundan farkı: burada teslimat tarihi değil, kargo ücreti ve iade koşulu anlatılır.
 
 **Test edilmesi gerekenler**
 - Format: İkon ve kısa metinle sunmak satın alma oranını artırıyor mu?
@@ -525,7 +525,7 @@ Kargo ve iade avantajlarını görünür sunmak kullanıcı güvenini artırarak
 - Koşulları (minimum sepet tutarı vb.) gizlemeyin.
 - Aynı bölüme aşırı bilgi yığmayın; dağınık görünür.
 - Mobilde bilgiyi aşağı atarak görünürlüğü azaltmayın.
-- Test sırasında gerçek kargo politikasını değiştirmeyin.
+- Öne çıkarılan “ücretsiz iade” ifadesini iade kargo ücreti veya süre koşulu varken koşulsuzmuş gibi yazmayın.
 
 > **Pazar notu:** İade beklentisi pazara göre çok değişir: ücretsiz ve sorusuz iadenin standart sayıldığı pazarlarda bu bilgi bir ayrıştırıcı değil, eksikliği cezalandıran bir asgari şarttır; iade kültürünün zayıf olduğu pazarlarda ise güçlü bir güven sinyali olabilir.
 
@@ -533,7 +533,7 @@ Kargo ve iade avantajlarını görünür sunmak kullanıcı güvenini artırarak
 
 ## Avantaj bilgilerini net sunmak satın almayı etkiler mi?
 
-Taksit, ücretsiz kargo ve kolay iade gibi avantajların net sunulması kullanıcı güvenini ve satın alma motivasyonunu güçlendirebilir.
+Taksit, ücretsiz kargo ve kolay iade gibi avantajlar zaten sayfadayken bunların tek bir düzenli kutuda, net hiyerarşiyle sunulması kullanıcı güvenini güçlendirebilir. “Kargo ve iade bilgisini öne çıkarmak satışı artırır mı?” senaryosundan farkı: burada bilgi içeriği sabittir, değişen avantaj kutusunun sunum biçimidir; “Teslimat bilgisi satın almayı etkiliyor mu?” senaryosundan farkı: teslimat tarihi vaadi bu kutunun konusu değildir.
 
 **Test edilmesi gerekenler**
 - Format: İkon, kısa başlık ve sade açıklama anlaşılırlığı artırıyor mu?
@@ -555,8 +555,6 @@ Taksit, ücretsiz kargo ve kolay iade gibi avantajların net sunulması kullanı
 - Aynı sayfada çok fazla avantaj mesajı göstermeyin.
 - Mobilde konum değişikliğiyle akışı bozmayın.
 - Sahip olmadığınız avantajı listelemeyin.
-
-> Not: Bu senaryo, “Kargo ve iade bilgisini öne çıkarmak” ve “Avantaj bilgilerini net sunmak” senaryolarıyla aynı mekanizmaya (avantaj/güven mesajını karar anında görünür kılmak) dayanır. Ayrım şudur: bu senaryo mesajın VARLIĞINI, “Kargo ve iade” yalnızca o iki bilgiyi, “Avantaj bilgileri” ise sunum BİÇİMİNİ (liste/rozet/konum) test eder. Aynı sayfada aynı anda yalnızca birini koşun.
 
 ---
 
@@ -582,7 +580,7 @@ Taksit, iade, garanti ve teslimat gibi sık sorulan bilgilerin ürün sayfasınd
 - SSS bölümünü uzun ve karmaşık yapmayın; yanıtlar kısa olmalı.
 - Ürüne özel olmayan genel sorular eklemeyin.
 - SSS alanına kampanya ve satış mesajı koymayın.
-- Test sırasında fiyat, görsel ve butonu değiştirmeyin.
+- SSS’de iade veya garanti koşulunu gerçek politikadan farklı yazmayın.
 - SSS’yi sayfanın en altına gömüp görünmez yapmayın.
 
 ---
@@ -596,7 +594,7 @@ Ek fayda mesajları güven yaratabilir ama fark edilmeyebilir. Satın alma karar
 - Konum: Ürün adının altında mı, fiyatın üstünde mi daha etkili?
 - İkon: Sadece metin mi, ikonla birlikte mi daha çok etkileşim alıyor?
 - Sayı: Tek güçlü fayda mı, 2-3 küçük fayda mı daha iyi?
-- Kategori: Teknolojide mi, modada mı daha fazla fark yaratıyor?
+- Cihaz: Mobilde fayda satırı CTA’yı ilk ekranın dışına itiyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Fayda mesajı satın almayı artırıyor mu?
@@ -643,14 +641,12 @@ Header’da telefon veya e-posta bilgisinin görünmesi markanın ulaşılabilir
 
 ## CTA’yı başparmak bölgesine almak tıklamayı artırır mı?
 
-> **Not:** Bu senaryo butonun ekrandaki ergonomik konumunu (başparmak erişimi) test eder; sabit barın görünme zamanlaması “Sticky ‘Satın Al’ butonu” senaryosunun konusudur — ikisini aynı testte birleştirmeyin.
-
-Mobilde ekranın üst yarısı tek elle zor erişilir. CTA’yı alt sabit bara taşımak tıklama maliyetini düşürebilir ama içeriği kapatabilir ve reklam gibi algılanabilir.
+Mobilde ekranın üst yarısı tek elle zor erişilir. Birincil CTA’yı ilk ekranın alt kısmına, başparmağın rahat eriştiği bölgeye yerleştirmek tıklama maliyetini düşürebilir ama görsel ve fiyatla yer yarışına girebilir. “Sticky ‘Satın Al’ butonu dönüşümü artırıyor mu?” senaryosundan farkı: burada butonun sayfadaki sabit konumu değişir, kaydırırken ekranda kalıp kalmaması değil; ikisini aynı testte birleştirmeyin.
 
 **Test edilmesi gerekenler**
-- Tıklama: Sabit alt CTA tıklama oranını artırıyor mu?
-- İçerik: CTA’da fiyat göstermek tıklamayı etkiliyor mu?
-- Tetikleyici: Bar hangi scroll noktasından sonra görünmeli?
+- Konum: CTA ilk ekranın alt bölgesinde mi, üst yarısında mı daha çok kullanılıyor?
+- Erişim: Alt bölgedeki CTA’da yanlış dokunma azalıyor mu?
+- Ekran boyu: Büyük ekranlı telefonda etki küçük ekrana göre daha mı güçlü?
 - Platform: iOS ve Android’de aynı mı?
 - Sayfa uzunluğu: Uzun ve kısa sayfada etki farklı mı?
 
@@ -658,27 +654,27 @@ Mobilde ekranın üst yarısı tek elle zor erişilir. CTA’yı alt sabit bara 
 - Sepete Ekleme Oranı: Doğrudan hedef davranış.
 - CTA Tıklama Oranı: Ham tıklama farkı.
 - Dönüşüm Oranı (CR): Satışa yansıyor mu?
-- Kaydırma Derinliği: Bar okumayı engellememeli.
+- Kaydırma Derinliği: Aşağı inen CTA görseli itip okumayı engellememeli.
 - Sayfa Terk Oranı: Artmamalı.
 
 **Yapılmaması gerekenler**
-- Barı ekranın üçte birinden fazla yer kaplayacak yapmayın.
-- Klavye açıkken barı CTA’nın üstüne bindirmeyin.
+- CTA’yı alta taşırken ana görseli veya fiyatı ilk ekranın dışına itmeyin.
+- CTA’yı alt navigasyonla aynı hizaya koyup yanlış dokunmaya açık bırakmayın.
 - Aynı testte CTA metnini de değiştirmeyin.
-- Barı kapatılamaz yapıp kullanıcıyı sıkıştırmayın.
-- Alt navigasyonla çakıştırmayın.
+- Butonu alta taşırken dokunma alanını küçültmeyin.
+- CTA’yı sabitleyip bu testi sticky testine dönüştürmeyin; tek değişken konumdur.
 
 ---
 
 ## Sticky “Satın Al” butonu dönüşümü artırıyor mu?
 
-“Satın Al” butonunun sabit kalması, uzun ürün sayfalarında kullanıcıyı yukarı çıkma zorunluluğundan kurtarıp satın alma adımına geçişi hızlandırabilir.
+“Satın Al” butonunun kaydırma sırasında ekranda sabit kalması, uzun ürün sayfalarında kullanıcıyı yukarı çıkma zorunluluğundan kurtarıp satın alma adımına geçişi hızlandırabilir. “CTA’yı başparmak bölgesine almak tıklamayı artırır mı?” senaryosundan farkı: burada butonun konumu değil, kaydırırken görünür kalması test edilir.
 
 **Test edilmesi gerekenler**
 - Hız: Sticky buton ödeme adımına geçişi hızlandırıyor mu?
 - Görünürlük: Buton sabit görününce sepete ekleme artıyor mu?
 - Kullanıcı tipi: Yeni ve dönen kullanıcıda davranış farklı mı?
-- Tasarım: Konum, boyut ve metin satın alma niyetini etkiliyor mu?
+- Cihaz: Sticky bar masaüstünde de etkili mi, yoksa yalnızca mobilde mi fark yaratıyor?
 - Tetikleyici: Bar hangi scroll noktasından sonra görünmeli?
 
 **Takip edilecek ana KPI’lar**
@@ -717,7 +713,7 @@ Renk, boyut ve konum küçük görünen ama davranışı ciddi etkileyen değiş
 
 **Yapılmaması gerekenler**
 - Renk değiştirirken marka kimliğinden uzaklaşmayın.
-- CTA metnini sık sık değiştirmeyin; kullanıcı alışkanlığını bozar.
+- Renk varyantında metin ile buton arasındaki kontrastı okunabilirlik eşiğinin altına düşürmeyin.
 - Aynı testte renk, metin ve boyutu birlikte değiştirmeyin.
 - Kazanan CTA stilini ikincil butonlara da uygulayıp birincil/ikincil ayrımını silmeyin.
 - CTA’yı sayfada birden fazla farklı tasarımla tekrarlamayın.
@@ -753,7 +749,7 @@ Renk, boyut ve konum küçük görünen ama davranışı ciddi etkileyen değiş
 
 ## Teslimat bilgisi satın almayı etkiliyor mu?
 
-“Bugün sipariş ver, yarın kargoda” gibi net teslimat bilgisi belirsizliği azaltır ve satın alma hızını etkileyebilir.
+“Bugün sipariş ver, yarın kargoda” gibi net teslimat bilgisi belirsizliği azaltır ve satın alma hızını etkileyebilir. “Kargo ve iade bilgisini öne çıkarmak satışı artırır mı?” senaryosundan farkı: burada kargo ücreti veya iade değil, ürünün ne zaman elde olacağı vaadi test edilir.
 
 **Test edilmesi gerekenler**
 - Cihaz: Mobilde ve masaüstünde etki aynı mı?
@@ -773,7 +769,7 @@ Renk, boyut ve konum küçük görünen ama davranışı ciddi etkileyen değiş
 - Gerçek teslimat süresiyle uyuşmayan mesaj göstermeyin.
 - “Teslimat garantisi” ifadesini koşulları belirtmeden kullanmayın.
 - Tüm ürünlere aynı mesajı uygulamayın; stok ve lojistiğe göre gösterin.
-- Test sırasında kargo firmasını veya kesim saatini değiştirmeyin.
+- “Yarın kargoda” mesajını kesim saati geçtikten sonra da göstermeyin; söz tutulmaz.
 - Gecikme olasılığını gizlemeyin; güven kaybı yaratır.
 
 ---
@@ -814,7 +810,7 @@ Küçük görsellerin (thumbnail) solda dikey dizilmesi ana görsele daha çok y
 - Biçim: Bilinen bir nesne mi, ölçü çizgisi mi, insan referansı mı daha net?
 - Konum: Referans ana görselde mi, ek görselde mi olmalı?
 - Estetik: Referans ürünün görsel sunumunu bozuyor mu?
-- Kategori: Ölçek belirsizliği hangi kategorilerde daha büyük sorun?
+- Cihaz: Mobilin küçük ekranında referans ölçeği masaüstündeki kadar net anlatıyor mu?
 
 **Takip edilecek ana KPI’lar**
 - İade Oranı: Ölçek kaynaklı iade azalıyor mu?
@@ -841,7 +837,7 @@ Açıklamanın tamamen açık gelmesi bilgiyi erişilebilir kılar ama sayfayı 
 - Açılma oranı: Katlanmış bölümleri kaç kullanıcı açıyor?
 - Seçim: Hangi bölüm açık, hangisi katlanmış olmalı?
 - Uzunluk: Açık açıklama satın alma butonunu ne kadar aşağı itiyor?
-- Kategori: Bilgi ihtiyacı kategoriden kategoriye değişiyor mu?
+- Cihaz: Mobilde açık açıklamanın CTA’yı itme etkisi masaüstünden büyük mü?
 
 **Takip edilecek ana KPI’lar**
 - Sepete Ekleme Oranı: Varsayılan durum satın alma niyetini artırıyor mu?
@@ -888,7 +884,7 @@ Açıklamanın tamamen açık gelmesi bilgiyi erişilebilir kılar ama sayfayı 
 
 ## Stokta olmayan bir ürünün satın alma butonunu kaldırmak mı, haber ver seçeneği mi daha iyi çalışıyor?
 
-Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal kırıklığı yaratır. İki yaygın alternatif vardır: butonu tamamen kaldırıp “stokta yok” yazmak, ya da “stok geldiğinde haber ver” seçeneğiyle değiştirmek. İkincisi terk eden kullanıcıyı bildirim listesine dönüştürme fırsatı sunar ama ek bir form alanı gerektirir.
+Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal kırıklığı yaratır. İki yaygın alternatif vardır: butonu tamamen kaldırıp “stokta yok” yazmak, ya da “stok geldiğinde haber ver” seçeneğiyle değiştirmek. İkincisi terk eden kullanıcıyı bildirim listesine dönüştürme fırsatı sunar ama ek bir form alanı gerektirir. “Stokta olmayan ürünü gizlemek mi, “haber ver” demek mi?” senaryosundan farkı: burada ürün sayfası açık kalır, değişen yalnızca satın alma butonunun yerine ne konduğudur.
 
 **Test edilmesi gerekenler**
 - Biçim: Satın alma butonunun yerini “haber ver” seçeneği mi almalı, yoksa buton tamamen mi kaldırılmalı?

@@ -123,7 +123,7 @@ Birim başına fiyat (kilogram, adet, kullanıcı, ay) farklı boyuttaki paketle
 - Yönlenme: Ziyaretçi daha büyük pakete mi kayıyor?
 - Okunabilirlik: İki fiyatın yan yana durması asıl tutarı gölgeliyor mu?
 - Birim seçimi: Hangi birim (adet, ağırlık, kullanıcı, ay) daha anlaşılır?
-- Kategori: Birim fiyatın etkisi tüm kategorilerde aynı mı?
+- Cihaz: Mobilde birim fiyat satırı asıl fiyatın altına kaydığında etkisi değişiyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Birim fiyat geliri artırıyor mu?
@@ -271,7 +271,7 @@ Planların soldan sağa hangi sırayla dizildiği, karşılaştırma sırasında
 - Aynı testte plan sırasını ve hangi planın “önerilen” olarak etiketlendiğini birlikte değiştirmeyin.
 - Sıralamayı, plan içeriklerini veya fiyatlarını aynı anda değiştirerek test etmeyin.
 - Pahalı planı önce göstererek ucuz planı yapay biçimde küçük veya eksik göstermeyin.
-- Sıralamayı mobil ve masaüstünde farklı test ediyorsanız bunu ayrı bulgu olarak raporlayın, tek sonuca indirmeyin.
+- Pahalıdan ucuza sıralamada mobilde yalnızca en pahalı planın görüneceği bir düzeni, diğer planlara geçiş ipucu vermeden yayınlamayın.
 - Enterprise/kurumsal planı bu sıralamaya dahil ediyorsanız `saas-b2b.md`’deki fiyat gizleme senaryosuyla çelişmeyin.
 
 ---
@@ -288,11 +288,11 @@ Planların soldan sağa hangi sırayla dizildiği, karşılaştırma sırasında
 - Segment: Fiyata duyarlı ve duyarlı olmayan ziyaretçi farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): Fiyat formatı geliri artırıyor mu?
 - Dönüşüm Oranı (CR): Fiyat formatı satın alma oranını artırıyor mu?
 - Ortalama Sepet veya Plan Tutarı: Format, ortalama tutar algısını bozup gerçek harcamayı düşürmemeli.
 - Fiyat Okuma Netliği (oturum kaydı): Küsuratı fark etmeyen kullanıcı oranı yüksek mi?
 - İade veya İtiraz Sayısı: “Beklediğimden pahalı çıktı” itirazları artmamalı.
-- Sayfada Kalma Süresi: Format karar süresini kabul edilemez ölçüde uzatmamalı.
 
 **Yapılmaması gerekenler**
 - Toplam ödenecek tutarı, yalnızca ana rakamı büyük göstererek gizlemeyin — küsurat küçük olsa da her zaman okunabilir kalmalı.
@@ -315,11 +315,11 @@ Bir fiyat, yanında yüksek bir referans sayı (“piyasa ortalaması ₺X”, �
 - Segment: Fiyata duyarlı ve duyarlı olmayan ziyaretçi farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): Referans sayı geliri artırıyor mu?
 - Dönüşüm Oranı (CR): Referans sayı satın alma oranını artırıyor mu?
 - Güven Algısı (anket): Referans sayı inandırıcı bulunuyor mu, yoksa şüphe mi uyandırıyor?
 - İade veya İtiraz Sayısı: “Yanıltıcı karşılaştırma” şikâyeti artmamalı.
 - Ortalama Sepet veya Plan Tutarı: Referans sayı ortalama tutarı düşürmemeli.
-- Sayfada Kalma Süresi: Ek bilgi karar süresini kabul edilemez ölçüde uzatmamalı.
 
 **Yapılmaması gerekenler**
 - Doğrulanamayan veya uydurma bir referans sayı göstermeyin (kural 6) — piyasa ortalaması veya rakip fiyatı iddiası gerçek, güncel bir kaynağa dayanmalı.

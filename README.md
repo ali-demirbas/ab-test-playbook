@@ -27,7 +27,7 @@ Built from an archive of A/B test scenarios and hypothesis-generation patterns u
 | Without a system | With ab-test-playbook |
 |---|---|
 | Test ideas come from memory or whatever feels right today | Ranked by ICE from a 211-scenario archive, or generated with a stated mechanism — "more eye-catching" isn't an accepted reason |
-| "Looks significant" is a judgment call from staring at two percentages | A real two-proportion z-test, confidence interval, sample size, and an SRM check — computed by script, never eyeballed |
+| "Looks significant" is a judgment call from staring at two percentages | A real two-proportion z-test (exact test when counts are small), confidence intervals, sample size, A/B/n correction and an SRM check — computed by script, never eyeballed |
 | Five metrics get watched, none of them decides anything | One named primary metric, one mandatory guardrail — p-hacking risk gets flagged, not shipped |
 | The model that wrote the scenario also grades its own homework | An adversarial critic checks methodology before a card renders; a second reviewer checks the visual for a hidden second difference |
 | A price or discount test reads conversion rate alone | Revenue and margin check runs automatically — conversion up while revenue per visitor drops is the finding, not a footnote |
@@ -134,13 +134,13 @@ agents/          scenario-critic — adversarial methodology review before a sce
                  mockup-reviewer — checks the two mockups differ in exactly one thing
 knowledge/       methodology.md · mockup-style.md
                  scenarios/ — curated scenarios by journey stage (TR)
-scripts/         analyze_results.py — z-test, sample size, revenue/margin check, sample-ratio-mismatch check (stdlib-only)
+scripts/         analyze_results.py — z-test (Fisher exact fallback), A/B/n with Holm, sample size, SRM, continuous metrics (Welch, bootstrap, CUPED), Bayesian view (stdlib-only)
                  validate_scenarios.py — format check for the scenario archive
                  build_card.py — deterministic card render: fills the template, escapes text, self-verifies against drift
                  validate_scenario_json.py — checks a scenario against the schema (one primary KPI, a guardrail, two variants)
                  validate_input.py — flags instruction-shaped text and script payloads in anything you paste in
                  validate.sh — repo consistency: frontmatter, internal links, plugin-root refs, rule citations
-templates/       scenario-card.html · abtest-history.md — test memory template
+templates/       scenario-card.html · abtest-history.md · abtest-backlog.md — test memory and backlog
                  scenario.schema.json — tool-agnostic test definition, portable to any experimentation platform
 tests/           unit tests for the stats engine, the validators and the card builder
 evals/           manual acceptance tests for the four core flows (suggest / design / audit / results)
@@ -174,7 +174,7 @@ Scenario content is Turkish (the archive's native language). The skills answer i
 
 ## Scope
 
-What this is: a scenario archive, a disciplined design/audit methodology, and a real stats engine (`scripts/analyze_results.py` — z-test, confidence interval, sample size, sample-ratio-mismatch check) for interpreting numbers you paste in.
+What this is: a scenario archive, a disciplined design/audit methodology, and a real stats engine (`scripts/analyze_results.py` — z-test with exact fallback, A/B/n, sample size, SRM, continuous metrics with CUPED, Bayesian view) for interpreting numbers you paste in.
 
 What this isn't: it doesn't connect to a data warehouse or analytics tool (GA4, Mixpanel, PostHog, BigQuery) to pull live numbers on its own, and it doesn't monitor a running test in real time — you bring the numbers when you have them.
 

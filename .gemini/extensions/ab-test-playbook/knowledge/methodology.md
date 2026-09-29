@@ -8,7 +8,7 @@ Every scenario is made of three blocks, all three mandatory, each with exactly 5
 
 1. **Test edilmesi gerekenler ("What to test")** — which questions the hypothesis has to answer. Each item is in `Label: question?` form (e.g. `Position: in the header, or inside the menu?`). At least one item asks a device/segment breakdown.
 2. **Takip edilecek ana KPI'lar ("Primary KPIs to track")** — the measurement set. Rules below. (The apostrophe in the box name is curly — U+2019; the validator doesn't recognize a straight-apostrophe version of the heading.)
-3. **Yapılmaması gerekenler ("Never do")** — the mistakes that invalidate the test or harm the user. At least one item protects variable isolation, in the form "don't change X and Y together in the same test."
+3. **Yapılmaması gerekenler ("Never do")** — the mistakes that invalidate the test or harm the user. At least one item protects variable isolation, in the form "don't change X and Y together in the same test." Items stay scoped to this variant; the generic freeze/hygiene rules live once in **Test hygiene (applies to every scenario)** and aren't repeated per scenario.
 
 ## KPI rules
 
@@ -97,7 +97,7 @@ These four filters don't replace prioritization, they run before it: the lens an
   - **External validity (business-cycle coverage):** The at-least-two-full-weeks rule isn't a statistical-power requirement — it's an experiment-hygiene rule for covering days of the week (weekday/weekend behavior difference), payday effects, and operational cycles. Even if the sample target is reached in 3 days, the test stays open for at least two weeks.
 - **Regression to the mean:** In a test's first days, one variant can appear far ahead, then reverse by the third week. The first week's "winner" isn't declared; the wait continues until the curve flattens.
 - **Novelty effect:** A change that looks new draws extra attention in the first days purely because it's new; this excess fades over time. The lift of a test that ran briefly and was then closed is most likely a novelty effect, not a lasting behavior change. `ab-test-audit` flags this as a separate finding (see `skills/ab-test-audit/SKILL.md` → audit checklist, novelty-effect item).
-- Don't make a campaign, price, algorithm, or design change during the test — it contaminates the data. If a technical bug (a script error, a measurement gap, a wrong segment assignment) is noticed during the test, fix it and restart the test from zero — this is the most common cause of SRM, don't continue with dirty data.
+- Freeze and restart rules for every test are collected in **Test hygiene** below.
 - **The same user shouldn't be in more than one test at the same time.** If two tests touch the same page or flow (e.g. one tests the price card, the other tests the checkout button), the variations mix and it becomes impossible to tell which test produced which result. Tests are either sequenced, or the user pool is fully separated (mutually exclusive traffic). The "Exclusions" field in the setup spec exists for exactly this.
 - **Selective attrition check.** If the measurement/data-loss rate is asymmetric between control and variant (e.g. a variant can't collect data from some users for a technical reason — a slow-connection user is more likely to "vanish" from a heavy visual variant), the result is invalid. This differs from SRM: SRM catches a sampling-ratio deviation, selective attrition catches equal sampling with unequal data loss across the two arms. `ab-test-audit` asks about this as a separate check.
 - **Exception — early stopping for a guardrail:** the "don't look early" rule is for the primary metric. If a guardrail metric (margin, error rate, support tickets) meaningfully degrades during the test, it's correct to stop the test before the sample fills — here the decision rests on "is there harm," not "who won," a different threshold.
@@ -106,6 +106,55 @@ These four filters don't replace prioritization, they run before it: the lens an
   - Don't declare the tool trustworthy from a single A/A; repeat it a few times.
   - **A lighter alternative:** setting up a separate A/A test costs time. Splitting the control in two and running a three-arm test alongside the real variant (A₁ / A₂ / B) provides an embedded A/A diagnostic, not the full equivalent of a dedicated A/A test — if A₁ and A₂ come out significantly different, the tool/segmentation is suspect, with no need to set up a separate test. It isn't operationally identical, though: splitting traffic three ways reduces the sample each arm gets (which can cost the primary A-vs-B comparison some power), and it adds a third comparison to keep track of. Use it as a cheap early-warning check, not a substitute for a dedicated A/A when the stakes are high enough to want a clean answer.
 - If traffic is **known** to be low (the user said so, or it's obvious from the page's nature, e.g. a return form), move to the alternatives in the Fit table instead of suggesting a classic A/B. Don't ask a question at the front door to learn traffic (rule 5): producing a scenario doesn't depend on traffic, only duration and sample-size math does.
+
+## Test hygiene (applies to every scenario)
+
+These rules hold for every test, so scenario "Never do" boxes don't repeat them — a scenario's Never-do box stays scoped to its own variant (what not to change alongside *this* variable).
+
+- **Freeze everything else during the run.** No price, campaign, promotion, algorithm, copy or design change on the tested page or flow while the test runs — including "small" edits like CTA wording or a banner swap. A mid-test change contaminates both arms unequally in time.
+- **Don't iterate the variant mid-test.** Editing Variant B after launch starts a new test; restart the count from zero.
+- **A bug fix restarts the test.** A script error, measurement gap or wrong assignment found mid-test is fixed and the test restarts with fresh data (the most common SRM cause).
+- **Log assignment and outcome as separate events**, and keep exposure identical in timing across arms (no extra redirect or delayed load in one arm only).
+- **Keep one user in one arm** for the whole run (sticky assignment); don't reshuffle between sessions or devices you can link.
+- **Don't change copy or CTAs frequently between tests on the same page** without letting each result settle; back-to-back changes make every subsequent baseline a moving target.
+- **Exclusions are fixed in advance:** employees, bots, users in a conflicting concurrent test (see Concurrent tests below).
+
+## Guardrails with numbers — non-inferiority margins
+
+*Evidence: established statistical practice.* "Must not degrade" is only decidable with a number. Every guardrail carries a **tolerated-degradation margin** (a non-inferiority margin) declared before the test: e.g. "return rate must not rise more than 2% relative", "LCP must not rise more than 100 ms".
+
+- The guardrail is tested **one-sided**, in the harmful direction: the question is "is the harm larger than the margin?", not "is there any difference?". A two-sided test on a guardrail wastes power on the direction nobody worries about.
+- **Clean** = the confidence bound on the harmful side stays inside the margin. **Degraded** = the harm is significantly beyond the margin. Anything in between is **inconclusive on the guardrail**, which is not the same as clean.
+- A margin of zero is not a margin: with enough traffic any tiny harm becomes significant. Pick the smallest degradation that would actually change the ship decision.
+- Margins are recorded in the setup spec and the pre-registration block (`ab-test-design`) and read back by `ab-test-results`.
+
+## Variance reduction (CUPED) for low traffic
+
+*Evidence: established statistical practice.* When the same users (or accounts) were observed before the test, their pre-period value of the metric is a covariate that explains part of the in-test variance. Adjusting for it (CUPED) shrinks the confidence interval without biasing the effect, so the same MDE needs less sample — often a meaningful reduction when the pre-period metric correlates well with the in-test one. It helps most for returning users and continuous metrics; it does nothing for first-time visitors with no history. The covariate must be measured **before** assignment; an in-test covariate can absorb the treatment effect. `analyze_results.py continuous` supports it with a pre-period covariate column.
+
+## Sequential testing, peeking and the planned-n guard
+
+*Evidence: established statistical practice.* A fixed-horizon test is valid only when read once, at the planned sample. Reading repeatedly and stopping on the first significant look inflates the false-positive rate (Statistical hygiene above). Two valid options: (1) **fixed horizon** — compute `planned_n_per_arm` with `samplesize`, record it in the pre-registration, and decide only once it's reached; `significance --planned-n` flags any look before that point as an early look (decision = Wait); (2) **sequential design** — decision boundaries set before launch for each planned interim look. The playbook computes (1); it doesn't compute sequential boundaries, so early looks without them aren't decision-grade. The guardrail early-stop exception still applies.
+
+## Bayesian framing as an alternative view
+
+*Evidence: established statistical practice.* The `bayes` subcommand reports the probability that B beats A and the expected loss of choosing B. It answers the question stakeholders usually ask ("how likely is B better?") more directly than a p-value. It isn't a loophole: a Bayesian readout checked continuously and stopped when it looks good has the same optional-stopping problem, and results depend on the prior. Use it as a second lens alongside the pre-registered decision rule, not as a replacement for it.
+
+## A/B/n and multiple comparisons (Holm)
+
+*Evidence: established statistical practice.* With k variants against one control, there are k comparisons; at alpha 0.05 each, the chance of at least one false winner grows with k. `significance` with several variants applies the **Holm** step-down correction (uniformly more powerful than Bonferroni, same family-wise guarantee), and only Holm-adjusted results count as significant. Each extra arm also splits traffic further — size it with `samplesize --arms`. Unequal allocation (e.g. 90/10 for risky changes) costs power; size it with `samplesize --ratio`. A three-arm test is still single-variable per arm: each variant differs from control in one thing.
+
+## Concurrent tests — layering, mutual exclusion, interaction
+
+*Evidence: established experimentation practice.* Running several tests at once is normal and usually safe when they touch **different** pages or independent elements: randomization is independent, so each test's other-test exposure averages out across its arms (**layering**, overlapping traffic). Use **mutual exclusion** (disjoint user pools) when two tests touch the same page, flow or decision — e.g. a price-card test and a checkout-button test on the same funnel — because their effects can **interact** (B1 only works when combined with B2). If overlap already happened, check the interaction by breaking one test's result down by the other test's arm; a large difference is a finding. Record concurrent tests under "Exclusions" in the setup spec.
+
+## Novelty and primacy effects
+
+*Evidence: established experimentation practice.* **Novelty:** returning users click a new element because it's new; the lift fades. **Primacy:** returning users are slowed by a change to something they learned; the variant looks worse early and recovers. Both show up as a **trend in the daily effect** and as a gap between **new vs. returning users**. Remedies: (1) split the result by new vs. returning — new users have no prior habit, so their effect is the closer estimate of the long-run one; (2) run long enough for the daily effect to flatten (the two-week rule is the floor, not the target, for habit-forming surfaces); (3) for a shipped winner, keep a small **long-term holdback** (e.g. 5% on the old experience for several weeks) and confirm the lift persists.
+
+## Continuous metrics — heavy-tailed revenue
+
+*Evidence: established statistical practice.* Revenue per visitor, order value and time-on-task are continuous and usually heavy-tailed: a few large orders dominate the mean and the variance. Use `analyze_results.py continuous`: **Welch's t-test** (no equal-variance assumption) as the default; **winsorize** extreme values at a pre-declared percentile (e.g. 99th) so one whale doesn't decide the test; or a **bootstrap** confidence interval when the distribution is far from normal. The winsorization cap is declared before the test, never tuned after. `revenue` remains a directional check; `continuous` is the significance test for these metrics.
 
 ## Interpreting results — overall no-difference doesn't mean segment no-difference
 

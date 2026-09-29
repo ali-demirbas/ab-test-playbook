@@ -15,24 +15,24 @@ Geri sayım sayacı “şimdi karar ver” baskısı yaratır ve kısa vadede t�
 - Süre formatı: Gün bazlı mı, saat/dakika bazlı mı daha çok tıklanıyor?
 
 **Takip edilecek ana KPI’lar**
-- Kampanya Tıklama Oranı: Sayaç tıklamayı artırıyor mu?
-- Dönüşüm Oranı (CR): Tıklama artışı satışa yansıyor mu?
-- Sayfa Terk Oranı: Sahte aciliyet hissi kullanıcıyı kaçırıyor mu?
-- Tekrar Ziyaret Oranı: Sayaç güvenilirliğini kaybettiyse düşer.
+- Ziyaretçi Başına Gelir (RPV): Sayaç kampanya gelirini artırıyor mu? Birincil karar bu metrikle verilir.
+- Dönüşüm Oranı (CR): Sayaç satın alma oranını değiştiriyor mu?
+- Kampanya Tıklama Oranı: Tanı metriği; tıklama artışı tek başına kazanım sayılmaz.
+- Sayfa Terk Oranı: Aciliyet baskısı kullanıcıyı kaçırmamalı; artmamalı.
 - Şikâyet/Destek Talebi: “Süre bitmedi ama kampanya durdu” gibi şikâyetler artmamalı.
 
 **Yapılmaması gerekenler**
-- Sahte veya sürekli sıfırlanan sayaç kullanmayın; fark edilirse güven kalıcı zarar görür.
+- Sahte veya sürekli sıfırlanan sayaç kullanmayın; sayaç gerçek kampanya bitişine bağlı olmalı ve sıfırda teklif gerçekten bitmeli (kural 6).
 - Aynı testte sayaç ile indirim oranını birlikte değiştirmeyin.
 - Sayacı kapatma imkânı olmadan zorunlu göstermeyin.
-- Test süresince kampanyanın gerçek bitiş tarihini değiştirmeyin.
+- Sayacı kampanyaya dahil olmayan ürünlerin bulunduğu listede göstermeyin; aciliyet yalnızca kampanyalı ürüne ait olmalı.
 - Sayacı sayfanın ana içeriğini kaplayacak kadar büyütmeyin.
 
 ---
 
-## Kategori sıralaması dönüşümü nasıl etkiler?
+## Liste sayfasındaki kategori bloklarının sırası dönüşümü nasıl etkiler?
 
-Kategori sırasındaki küçük bir değişiklik bile gezinme yönünü ve keşif davranışını etkileyebilir. Hangi sıralamanın daha çok dönüşüm getirdiği ölçülmelidir.
+Liste veya kategori açılış sayfasındaki kategori bloklarının (vitrin kutuları, alt kategori şeritleri) sırasındaki küçük bir değişiklik bile keşif yönünü değiştirebilir. Hangi sıranın daha çok dönüşüm getirdiği ölçülmelidir. “Kategori sırası menüde önceliği nasıl etkiler?” senaryosundan farkı: burada sayfa içindeki bloklar yer değiştirir, menü navigasyonu sabit kalır.
 
 **Test edilmesi gerekenler**
 - Popülerlik: Popüler kategorileri üste almak tıklamayı artırıyor mu?
@@ -49,11 +49,11 @@ Kategori sırasındaki küçük bir değişiklik bile gezinme yönünü ve keşi
 - Çıkış Oranı: Yanlış sıralama kullanıcıyı kaçırmamalı.
 
 **Yapılmaması gerekenler**
-- Kategori sırasını sık değiştirmeyin; kullanıcı alışkanlığı bozulur.
+- Üste alınan bloğu stok derinliği zayıf bir kategoriden seçmeyin; ilk tıklama boş veya dar bir listeye çıkar.
 - Mobilde kategorileri sıkıştırmayın; scroll yükü yaratır.
 - “Outlet”, “Yeni Gelenler” gibi kritik kategorileri geriye atmayın.
 - Aynı testte sıra ile kategori etiketini birlikte değiştirmeyin.
-- Sıralamayı tahmine göre değil veriye göre kurun.
+- Varyantta üste alınan bloğu sponsorlu yerleşimle doldurup organik sıra gibi sunmayın.
 
 ---
 
@@ -93,7 +93,7 @@ Daha dar kolon ekranda daha fazla ürün gösterir ama görsel detayı küçült
 - Görsel: Görsel küçülünce sepete ekleme oranı düşüyor mu?
 - Kategori farkı: Modada 2’li, aksesuarda 3’lü mü kazanıyor?
 - Scroll: Scroll derinliği ile dönüşüm arasında ilişki var mı?
-- Kart içeriği: Bilgiyi sadeleştirmek 3’lüde etkiyi düzeltiyor mu?
+- Cihaz: Dar ekranlı telefonlarda 3’lü grid geniş ekranlı telefonlara göre daha mı çok kaybettiriyor?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Liste sayfasından gelen satış.
@@ -107,7 +107,7 @@ Daha dar kolon ekranda daha fazla ürün gösterir ama görsel detayı küçült
 - Aynı testte kart içeriğini de sadeleştirmeyin.
 - Görsel kırpma oranını varyantlar arasında değiştirmeyin.
 - Fiyat ve indirim etiketini okunamaz hale getirmeyin.
-- Test süresince ürün sıralamasını değiştirmeyin.
+- 3’lü gridde fiyatı iki satıra bölüp ürün adının altında kaybolmasına izin vermeyin.
 
 ---
 
@@ -145,7 +145,7 @@ Liste sayfasındaki hızlı ekleme butonu, kullanıcının ürünü incelemeden 
 **Test edilmesi gerekenler**
 - Fark edilme: Kullanıcılar hızlı ekleme butonunu fark edip kullanıyor mu?
 - Kısayol: Detaya gitmeden eklemek süreci kısaltıyor mu?
-- Dönüşüm: Hızlı ekleme dönüşüm oranını artırıyor mu?
+- Cihaz: Mobilde karttaki hızlı ekleme butonu yanlış dokunmaya yol açıyor mu?
 - Varyant: Varyant seçimi adımı akışı yavaşlatıyor mu?
 - Kategori farkı: Standart üründe modaya göre daha mı iyi çalışıyor?
 
@@ -159,7 +159,7 @@ Liste sayfasındaki hızlı ekleme butonu, kullanıcının ürünü incelemeden 
 **Yapılmaması gerekenler**
 - Varyant seçmeden sepete eklemeye zorlamayın; yanlış sipariş doğar.
 - Butonun konumu ve boyutu liste düzenini bozmamalı.
-- Test sırasında stok bilgisi veya varyant yapısını değiştirmeyin.
+- Hızlı ekleme butonunu stokta olmayan üründe aktif göstermeyin.
 - Hızlı eklemeyi detay sayfasındaki CTA’nın yerine geçirmeyin.
 - Eklendi geri bildirimini atlamayın; kullanıcı emin olamaz.
 
@@ -173,7 +173,7 @@ Liste sayfasında teknik özellik yerine kısa ve duygusal mesaj kullanmak, ür�
 - Değer algısı: Hikaye mesajı algılanan değeri artırıyor mu?
 - İçerik: Teknik bilgi yerine hikaye inceleme oranını yükseltiyor mu?
 - Konum: Hikaye kutusunun yeri etkileşimi değiştiriyor mu?
-- Tıklanabilirlik: Kutuyu tıklanabilir yapmak keşfi artırıyor mu?
+- Segment: Yeni ziyaretçi mi, dönen müşteri mi hikaye mesajına daha çok tepki veriyor?
 - Kategori farkı: Modada teknolojiye göre daha mı etkili?
 
 **Takip edilecek ana KPI’lar**
@@ -200,7 +200,7 @@ Karşılaştırma tablosunda tüm özellikler yerine sadece farkları göstermek
 - Varsayılan: “Yalnızca farkları göster” varsayılan olduğunda karar hızı artıyor mu?
 - Sadelik: Sade tablo gereksiz bilgi yükünü engelliyor mu?
 - Ayrışma: Farkların net ayrıştırılması sepete ekleme oranını artırıyor mu?
-- Düğme: Düğmenin rengi, ikonu ve konumu kullanım oranını etkiliyor mu?
+- Düğme konumu: “Farkları göster” düğmesi tablonun üstünde mi, yanında mı daha çok kullanılıyor?
 - Cihaz: Mobilde daralan tabloda etki masaüstüyle aynı mı?
 
 **Takip edilecek ana KPI’lar**
@@ -213,15 +213,15 @@ Karşılaştırma tablosunda tüm özellikler yerine sadece farkları göstermek
 **Yapılmaması gerekenler**
 - Ortak ve kritik özellikleri tamamen gizlemeyin; kullanıcı yanlış yönlendirilebilir.
 - “Farkları Göster” butonunun görünürlüğünü düşük bırakmayın; kolay fark edilmeli.
-- Kazananı ilk anlamlı sonuçta ilan etmeyin; en az iki tam hafta koşturun.
-- Test sırasında ürün sayısını değiştirmeyin; yalnızca görünüm şekli test edilmeli.
+- Farkları gösterirken aynı olan değeri “fark yok” diye işaretlemeden satırı tamamen silmeyin; kullanıcı eksik veri sanar.
+- Aynı testte farklar görünümü ile karşılaştırılabilecek ürün sayısını birlikte değiştirmeyin.
 - Mobilde tablo düzeninin bozulmasına izin vermeyin; okunabilirlik korunmalı.
 
 ---
 
 ## Kategori sırası menüde önceliği nasıl etkiler?
 
-Menüdeki kategorilerin sırası, hangisinin öncelikli/popüler kabul edildiği algısını kurar. Üste alınan kategori daha fazla tıklama alabilir ama bu etkinin gerçek dönüşüme yansıyıp yansımadığı ölçülmelidir.
+Menüdeki kategorilerin sırası, hangisinin öncelikli/popüler kabul edildiği algısını kurar. Üste alınan kategori daha fazla tıklama alabilir ama bu etkinin gerçek dönüşüme yansıyıp yansımadığı ölçülmelidir. “Liste sayfasındaki kategori bloklarının sırası dönüşümü nasıl etkiler?” senaryosundan farkı: burada yalnızca site menüsündeki sıra değişir, liste sayfasının içeriği sabit kalır.
 
 **Test edilmesi gerekenler**
 - Öncelik: Üste alınan kategori daha çok tıklanıyor mu?
@@ -239,7 +239,7 @@ Menüdeki kategorilerin sırası, hangisinin öncelikli/popüler kabul edildiği
 
 **Yapılmaması gerekenler**
 - Menü sırasını kampanya dönemlerinde haftalık oynatmayın; navigasyon ezberi liste sayfasından daha kırılgandır.
-- Test sırasında kategori adlarını veya ikonlarını değiştirmeyin.
+- Varyantta üste alınan kategoriyi yeni bir adla sunmayın; kullanıcı onu menüde tanıyamaz.
 - Menüde gelir taşıyan bir kategoriyi görünmez derinliğe itmeyin; menü ana seviyesi vitrin işlevi görür.
 - Mobilde menüyü sıkıştıracak kadar çok kategori üste almayın.
 - Menü sırasını yalnızca tıklama sayısına göre kurmayın; gelir katkısını da hesaba katın.
@@ -268,19 +268,19 @@ Kısa mı, uzun ve açıklayıcı mı başlık daha çok dikkat çekiyor? Başl�
 - Başlıkla birlikte alt metni veya CTA metnini değiştirmeyin.
 - Mobilde kesilip anlam kaybına yol açacak uzunlukta başlık yazmayın.
 - Kısa başlıkta ürünü veya teklifi belirsiz bırakmayın.
-- Tüm sayfalarda aynı anda farklı format test etmeyin.
+- Uzun varyantı anahtar kelime dolgusuyla uzatmayın; eklenen her kelime bilgi taşımalı.
 - Başlıkta tıklama tuzağı (clickbait) kullanmayın.
 
 ---
 
 ## Pop-up ne zaman gösterilmeli?
 
-Çok erken çıkan pop-up kullanıcıyı kaçırır, çok geç çıkan fark edilmez. Doğru zamanlamanın ölçülmesi gerekir.
+Çok erken çıkan pop-up kullanıcıyı kaçırır, çok geç çıkan fark edilmez. Doğru zamanlamanın ölçülmesi gerekir. “Çıkış niyetine bağlı pop-up kaçan mobil kullanıcıyı kurtarır mı?” (mobile-app.md) senaryosundan farkı: burada gösterim anı süreye veya kaydırmaya bağlıdır ve gezinmeye devam eden herkese çıkar; çıkış niyeti tetikleyicisi kapsam dışıdır.
 
 **Test edilmesi gerekenler**
 - Zamanlama: Hangi anda gösterildiğinde en yüksek performans alınıyor?
 - Frekans: Aynı kullanıcıya kaç kez göstermek ideal?
-- Tasarım: Boyut ve ekrandaki konum etkileşimi artırıyor mu?
+- Tetikleyici: Süreye bağlı gösterim mi, kaydırma derinliğine bağlı gösterim mi daha çok yanıt alıyor?
 - Teklif: İndirim, ücretsiz kargo veya üyelik hangisi daha çok yanıt alıyor?
 - Segment: Yeni mi, dönen kullanıcı mı daha iyi tepki veriyor?
 
@@ -312,15 +312,15 @@ Sayfa başına daha çok ürün göstermek sayfalar arası geçiş sayısını a
 - Cihaz: Mobilde ve masaüstünde aynı sayı mı kazanıyor?
 
 **Takip edilecek ana KPI’lar**
-- Liste → Ürün Tıklama Oranı: Ürüne geçiş artıyor mu?
 - Dönüşüm Oranı (CR): Satın almaya kadar giden oran artıyor mu?
+- Liste → Ürün Tıklama Oranı: Tanı metriği; ürüne geçiş artıyor mu?
 - Sayfa Yüklenme Süresi: Liste hızı bozulmamalı.
 - Sayfa Terk Oranı: Ağırlaşan sayfa çıkışı artırmamalı.
 - Görülen Ürün Sayısı: Kullanıcının gördüğü toplam ürün sayısı düşmemeli.
 
 **Yapılmaması gerekenler**
 - Aynı testte ürün sayısı ile kart tasarımını birlikte değiştirmeyin.
-- Görsel yükleme davranışını (kademeli yükleme) testin ortasında değiştirmeyin.
+- Artan ürün sayısını kademeli yükleme olmadan tek seferde yükleyip mobilde listeyi kilitlemeyin.
 - Yüklenme süresi bozulmuşken dönüşüm sonucunu tek başına yorumlamayın.
 - Masaüstünde kazanan sayıyı mobile doğrudan taşımayın.
 - Sayfa başına ürün sayısını değiştirirken sıralama algoritmasına dokunmayın.
@@ -334,13 +334,13 @@ Izgara görünümü aynı anda çok ürün gösterir ve görselin öne çıktı�
 **Test edilmesi gerekenler**
 - Görünüm: Izgara mı, liste mi daha yüksek dönüşüm veriyor?
 - Bilgi ihtiyacı: Kararı görsel mi, yazılı özellik mi belirliyor?
-- Varsayılan: Kullanıcıya seçim sunulduğunda hangisini seçiyor?
+- Cihaz: Mobilde liste görünümünün etkisi masaüstündekiyle aynı yönde mi?
 - Yoğunluk: Liste görünümünde ekranda daha az ürün olması kayıp yaratıyor mu?
 - Kategori: Etki tüm kategorilerde aynı yönde mi?
 
 **Takip edilecek ana KPI’lar**
-- Liste → Ürün Tıklama Oranı: Ürüne geçiş artıyor mu?
 - Dönüşüm Oranı (CR): Satın alma oranı artıyor mu?
+- Liste → Ürün Tıklama Oranı: Tanı metriği; ürüne geçiş artıyor mu?
 - Görülen Ürün Sayısı: Kullanıcının gördüğü ürün sayısı kabul edilemez ölçüde düşmemeli.
 - Sayfa Yüklenme Süresi: Görünüm değişikliği hızı bozmamalı.
 - Geri Dönüş Oranı: Ürün sayfasından listeye geri dönüş artmamalı.
@@ -414,7 +414,7 @@ Kartta yer sınırlıdır; öne çıkarılan bilgi (fiyat, teslimat, puan, kampa
 
 **Test edilmesi gerekenler**
 - Öncelik: Hangi bilgi öne alındığında ürüne geçiş artıyor?
-- Sayı: Kartta kaç bilgi satırı okunabilirliği bozmadan durabiliyor?
+- Cihaz: Mobilde dar kartta öne çıkan bilgi okunur kalıyor mu?
 - Ayırt edicilik: Öne çıkan bilgi ürünler arasında gerçekten farklılaşıyor mu?
 - Boş kalma: Bilgisi olmayan üründe alan nasıl davranıyor?
 - Kategori: Belirleyici bilgi kategoriden kategoriye değişiyor mu?
@@ -447,8 +447,8 @@ Kategori adının yanına görsel eklemek taramayı hızlandırır ve ne satıld
 - Cihaz: Mobilde görseller yer kaplayıp kategori sayısını mı azaltıyor?
 
 **Takip edilecek ana KPI’lar**
-- Kategori Tıklama Oranı: Kategoriye geçiş artıyor mu?
 - Dönüşüm Oranı (CR): Doğru kategoriye yönlenme satışa dönüyor mu?
+- Kategori Tıklama Oranı: Tanı metriği; kategoriye geçiş artıyor mu?
 - Kategori Geri Dönüş Oranı: Yanlış kategoriye girip geri dönme artmamalı.
 - Sayfa Yüklenme Süresi: Görseller hızı bozmamalı.
 - Görülen Kategori Sayısı: Kullanıcının gördüğü kategori sayısı düşmemeli.
@@ -471,7 +471,7 @@ Kategori adının yanına görsel eklemek taramayı hızlandırır ve ne satıld
 - Eleme: Geç teslimatlı ürünler baştan mı eleniyor?
 - Doğruluk: Gösterilen tarih gerçek teslimatla ne kadar örtüşüyor?
 - Biçim: Tarih mi, gün sayısı mı daha anlaşılır?
-- Kategori: Hızlı teslimat beklentisi kategoriye göre değişiyor mu?
+- Segment: Hızlı teslimat bölgesindeki kullanıcı ile diğer bölgelerdeki kullanıcı farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Teslimat bilgisi satışa dönüyor mu?
@@ -519,12 +519,12 @@ Konumun karar için belirleyici olduğu listelerde (emlak, mekân, mağaza, ilan
 
 ## “Peşin fiyatına taksit” rozeti dönüşümü artırıyor mu?
 
-Ürün kartında taksit avantajını küçük bir rozetle göstermek, fiyat algısını ve satın alma eğilimini değiştirebilir.
+Liste sayfasında, ürün kartında taksit avantajını küçük bir rozetle göstermek, ürüne tıklanmadan önce fiyat algısını ve satın alma eğilimini değiştirebilir. “Taksit bilgisi satın almayı etkiliyor mu?” ve “Aylık taksit tutarını ana fiyat gibi göstermek işe yarar mı?” (product-detail.md) senaryolarından farkı: burada ürün sayfası sabit kalır; test edilen yalnızca listedeki karttaki rozetin varlığıdır.
 
 **Test edilmesi gerekenler**
 - Görünürlük: Rozet görselin üzerinde olunca daha hızlı fark ediliyor mu?
 - Fiyat Algısı: Rozet ürünü daha uygun algılatıyor mu?
-- Tıklama: Rozetli ürünler daha çok tıklanıyor mu?
+- Cihaz: Mobilde küçülen kartta rozet fark ediliyor mu, yoksa görselin içinde kayboluyor mu?
 - Konum: Üst sağ, üst sol veya görsel içi hangisi daha etkili?
 - Kategori: Hangi kategoride rozet daha iyi çalışıyor?
 
@@ -538,7 +538,7 @@ Konumun karar için belirleyici olduğu listelerde (emlak, mekân, mağaza, ilan
 **Yapılmaması gerekenler**
 - Rozeti her üründe kullanmayın; etkisi sulanır.
 - Rozeti ürün görselini gölgeleyecek kadar büyütmeyin.
-- Rozet, kart içindeki metin ve CTA hiyerarşisini bozmasın.
+- Rozeti gerçekten vade farksız taksit sunulmayan üründe göstermeyin; koşulu karşılamayan rozet yanıltıcıdır (kural 6).
 - Rozet indirim etiketiyle çakışmasın.
 - Mobilde rozet kartı sıkıştırmasın veya görseli kapatmasın.
 
@@ -560,18 +560,18 @@ Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edi
 - Kapsam: Sadece bazı ürünlerde olması bilgi eksikliği yaratıyor mu?
 
 **Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): Rozet toplam geliri artırıyor mu? Birincil karar bu metrikle verilir.
 - Dönüşüm Oranı (CR): Rozet satın almaya yönlendiriyor mu?
-- Tıklama Oranı (CTR): Rozetli ürünler daha çok tıklanıyor mu?
+- Tıklama Oranı (CTR): Tanı metriği; rozetli ürünler daha çok tıklanıyor mu?
 - Sepete Ekleme Oranı: Rozetli ürün daha sık ekleniyor mu?
 - Çıkış Oranı: Yükselmemeli; rozet karmaşası kullanıcıyı kaçırmamalı.
-- Ziyaretçi Başına Gelir (RPV): Toplam gelir artıyor mu?
 
 **Yapılmaması gerekenler**
 - Çok fazla rozet kullanmayın; görsel karmaşa yaratır.
 - Fiyat rozetiyle kampanya rozetini aynı renkte yapmayın.
-- Gerçek kampanyaya uymayan rozet kullanmayın.
+- Gerçekte kampanyada olmayan veya indirimi uydurma referans fiyata dayanan üründe rozet göstermeyin (kural 6).
 - Rozeti ürün fotoğrafını kapatacak kadar büyütmeyin.
-- Test sırasında rozetin rengini veya yerini değiştirmeyin.
+- Kampanyası biten ürünün rozetini kartta bırakmayın; rozet kampanya bitişiyle birlikte kalkmalı.
 
 
 > **Pazar notu:** İndirim ve referans fiyat gösterimi yasal olarak düzenlenen bir alandır (kural 11). Rozet bir indirim iması taşıyorsa hedef pazarın kuralını doğrulamadan varyantı yayınlamayın; AB'de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatına bağlıdır.
@@ -597,7 +597,7 @@ Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edi
 
 **Yapılmaması gerekenler**
 - İndirimi aşırı büyük ve agresif tasarlamayın; güven azaltır.
-- Fiyatı manipüle ediyormuş gibi göstermeyin.
+- Ödeme adımında gerçekten düşülmeyen bir indirimi kartta göstermeyin (kural 6).
 - Yalnızca yeni kullanıcıya özel olduğunu açıkça belirtin.
 - Aynı testte hem indirimi hem kampanya alanını değiştirmeyin.
 - Metni ürün görselinin üzerine taşırmayın.
@@ -606,7 +606,7 @@ Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edi
 
 ## Stokta olmayan ürünleri listede gri gösterip bırakmak mı, tamamen gizlemek mi daha iyi çalışıyor?
 
-Bir kategori listesinde stokta olmayan ürünleri tamamen gizlemek sayfayı yalnızca satın alınabilir ürünlerle sınırlar ama toplam ürün çeşitliliği algısını daraltabilir. Gri gösterip listede bırakmak çeşitlilik hissini korur ama tıklanamayan öğelerle dolu bir liste de hayal kırıklığı yaratabilir.
+Bir kategori listesinde stokta olmayan ürünleri tamamen gizlemek sayfayı yalnızca satın alınabilir ürünlerle sınırlar ama toplam ürün çeşitliliği algısını daraltabilir. Gri gösterip listede bırakmak çeşitlilik hissini korur ama tıklanamayan öğelerle dolu bir liste de hayal kırıklığı yaratabilir. “Stokta olmayan ürünü gizlemek mi, “haber ver” demek mi?” ve “Stokta olmayan bir ürünün satın alma butonunu kaldırmak mı, haber ver seçeneği mi daha iyi çalışıyor?” (product-detail.md) senaryolarından farkı: burada ürün sayfası değişmez; test edilen yalnızca ürünün liste içinde görünür olup olmadığıdır.
 
 **Test edilmesi gerekenler**
 - Görünürlük: Gri/soluk gösterim mi, listeden tamamen kaldırma mı tamamlanan satın alma sayısını artırıyor?

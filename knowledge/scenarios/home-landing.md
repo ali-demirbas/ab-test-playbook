@@ -12,7 +12,7 @@ CTA’yı kaydırmadan görünen alana almak aksiyonu erken sunar ve kararı ver
 - Konum: CTA kaydırmadan görünen alanda mı, açıklamadan sonra mı daha çok tıklanıyor?
 - Erken tıklama: Erken tıklayanlar sonraki adımı da tamamlıyor mu?
 - Yer baskısı: CTA yukarı alınınca başlık ve değer önerisi kısalıyor mu?
-- Tekrar: CTA hem yukarıda hem aşağıda olduğunda toplam tıklama artıyor mu?
+- Referans noktası: CTA başlığın hemen altında mı, değer önerisi maddelerinin hemen ardında mı daha çok tamamlatıyor?
 - Cihaz: Mobilde görünen alan çok daha dar; kazanan konum masaüstüyle aynı mı?
 
 **Takip edilecek ana KPI’lar**
@@ -39,7 +39,7 @@ Problemi adlandıran başlık ziyaretçinin kendini tanımasını sağlar ve “
 - Çerçeve: Problemi adlandırmak mı, çözümü söylemek mi daha çok aksiyon getiriyor?
 - Farkındalık: Ziyaretçi problemin farkında mı, yoksa önce ikna mı gerekiyor?
 - Uzunluk: Problem çerçevesi başlığı uzatıyor mu, uzayan başlık okunuyor mu?
-- Alt başlık: İkisini birleştirmek (başlıkta problem, alt başlıkta çözüm) farkı büyütüyor mu?
+- Ton: Problem çerçevesi soru cümlesiyle mi, düz bir tespitle mi daha çok aksiyon getiriyor?
 - Segment: Reklamdan gelen ile organik gelen ziyaretçi farklı çerçeveye mi tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
@@ -67,7 +67,7 @@ Soyut fayda (“daha verimli çalışın”) geniş kitleye hitap eder ama kimse
 - Kapsam: Somut ifade kendini o senaryoda görmeyeni dışarıda bırakıyor mu?
 - İnandırıcılık: Somut iddia kanıtsız sunulduğunda güven düşüyor mu?
 - Sayı kullanımı: Rakam vermek mi, durum tarif etmek mi daha etkili?
-- Segment: Farklı kullanıcı tipleri farklı somutluk seviyesine mi tepki veriyor?
+- Segment: Benzer bir çözümü daha önce kullanmış ziyaretçi ile ilk kez çözüm arayan ziyaretçi somut ifadeye farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
 - Ana Aksiyon Tamamlama Oranı: Fayda ifadesi aksiyonu artırıyor mu?
@@ -118,7 +118,7 @@ Video karmaşık bir ürünü metinden hızlı anlatabilir. Otomatik oynatma dik
 
 **Test edilmesi gerekenler**
 - Oynatma: Video otomatik mi başlamalı, tıklayınca mı?
-- Ses: Sessiz otomatik oynatma ile kullanıcının tıklayıp sesli başlattığı oynatma arasında fark var mı?
+- Kapak karesi: Tıklayınca oynayan videoda kapak olarak ürün ekranı mı, konuşan kişi mi daha çok başlatılıyor?
 - Konum: Video hero’da mı, açıklamanın içinde mi daha çok izleniyor?
 - İzleme derinliği: İzlemeyi yarıda bırakanlar aksiyonu alıyor mu?
 - Cihaz: Mobilde veri tüketimi ve yükleme süresi sonucu değiştiriyor mu?
@@ -173,7 +173,7 @@ Arkasında gerçek bir insan olduğunu göstermek (kurucu fotoğrafı ve imzası
 **Test edilmesi gerekenler**
 - Varlık: Gerçek bir kişiyi göstermek aksiyonu artırıyor mu?
 - Rol: Kurucu mu, alan uzmanı mı daha çok güven veriyor?
-- Biçim: Fotoğraf mı, kısa bir açıklama metni mi, ikisi birlikte mi?
+- Biçim: Fotoğraf mı, kısa bir açıklama metni mi daha çok güven veriyor?
 - Ölçek algısı: Kişi vurgusu markayı küçük gösterip kurumsal alıcıyı caydırıyor mu?
 - Segment: Bireysel ve kurumsal ziyaretçi farklı mı tepki veriyor?
 
@@ -187,7 +187,7 @@ Arkasında gerçek bir insan olduğunu göstermek (kurucu fotoğrafı ve imzası
 **Yapılmaması gerekenler**
 - Stok fotoğrafı gerçek kurucu veya uzman gibi sunmayın.
 - Sahip olunmayan unvan veya yetkinlik atfetmeyin.
-- Aynı testte kişi görselini ve metnini ayrı ayrı değil, birlikte tek değişken sayarak kurgulayın; ikisini bağımsız değiştirmeyin.
+- Kişinin onaylamadığı bir sözü ondan alıntıymış gibi yazmayın.
 - Uzman görüşünü ürün iddiasının yerine geçirip doğrulanamaz bir vaat üretmeyin.
 - Düzenlemeye tabi alanlarda (sağlık, finans, hukuk) uzman ifadesini hedef pazarın kuralını doğrulamadan yayınlamayın.
 
@@ -209,7 +209,7 @@ Uzun sayfa itirazları tek tek karşılar ve karmaşık ürünü anlatmaya yer b
 - Kaydırma Derinliği: Ziyaretçi sayfanın neresine kadar iniyor?
 - Destek Talebi Sayısı: Cevapsız kalan soru yükü artmamalı.
 - Nitelikli Talep Oranı: Az bilgiyle gelen taleplerde uygun olanların payı düşmemeli.
-- Sayfada Kalma Süresi: Karar için gereken süre kısalıyor mu?
+- Sayfada Kalma Süresi: Karar süresi belirgin şekilde uzamamalı.
 
 **Yapılmaması gerekenler**
 - Bölüm çıkarırken kalan bölümlerin sırasını da değiştirmeyin.
@@ -376,7 +376,7 @@ Bir teklifin yanına açık bir “şimdi değil” seçeneği koymak kullanıc�
 **Yapılmaması gerekenler**
 - Reddetme seçeneğini okunmaz derecede soluk veya küçük yapan bir varyant kurmayın (kural 6).
 - Reddedeni aynı oturumda tekrar tekrar aynı teklifle karşılamayın.
-- Anlık kabul düştü diye testi hemen kesmeyin; toplam ve sonraki davranışa bakın.
+- Reddetme seçeneğine basanı suçlayıcı veya utandırıcı bir metinle (“Hayır, tasarruf istemiyorum”) karşılamayın (kural 6).
 - Yasal izin gerektiren alanlarda (iletişim izni, çerez) reddetme seçeneğini zorlaştırmayı test konusu yapmayın.
 - Aynı testte hem reddetme seçeneğini hem teklifin içeriğini değiştirmeyin.
 
@@ -553,7 +553,7 @@ Ziyaretçiyle aynı sektörden veya aynı kanaldan gelen bir müşterinin refera
 - Kapsam: Kaç kaynak için ayrı referans sürdürülebilir?
 - Yedek: Tanınmayan kaynaktan gelene hangi referans gösteriliyor?
 - Yakınlık: Sektör benzerliği mi, ölçek benzerliği mi daha çok etkiliyor?
-- Segment: Farklı kullanıcı tipleri eşleştirmeden farklı mı fayda görüyor?
+- Cihaz: Mobilde eşleştirilen referans ilk ekranda görünüyor mu, yoksa kaydırmanın altında mı kalıyor?
 
 **Takip edilecek ana KPI’lar**
 - Ana Aksiyon Tamamlama Oranı: Eşleştirme aksiyonu artırıyor mu?
@@ -621,7 +621,7 @@ Soyut veya kavramsal görseller estetik bir bütünlük kurar ve ürün henüz o
 - Ekran görüntüsündeki verileri gerçek müşteri verisiymiş gibi sunmayın.
 - Aynı testte görsel türü ile görsel sayısını birlikte değiştirmeyin.
 - Okunmayacak kadar küçültülmüş ekran görüntüsünü “gerçek ürün gösterildi” saymayın.
-- Görselleri değiştirirken sayfa yükünü ölçmeden bırakmayın.
+- Eskimiş bir ekran görüntüsünü ürünün güncel hâli gibi göstermeyin.
 
 ---
 
@@ -799,8 +799,8 @@ Küçük bir pop-up’tan farklı olarak, kısmi karşılama ekranı sayfanın b
 - Segment: Reklamdan gelen ile organik gelen ziyaretçi doğru bloğu aynı oranda mı buluyor?
 
 **Takip edilecek ana KPI’lar**
-- İlgili Bloğa Tıklama Oranı: Ziyaretçi kendi profiline uyan bloğu buluyor mu?
-- Genel İlk Aksiyon Oranı: Toplam ilerleme düşmemeli.
+- Ana Aksiyon Tamamlama Oranı: Blok yapısı toplam ilerlemeyi artırıyor mu?
+- İlgili Bloğa Tıklama Oranı (tanısal): Ziyaretçi kendi profiline uyan bloğu buluyor mu?
 - Yanlış Blok Oranı: Yanlış bloğa girip geri dönen ziyaretçi oranı artmamalı.
 - Hemen Çıkma Oranı: Kararsızlık kaynaklı çıkış artmamalı.
 - Sayfada Karar Süresi: İlk tıklamaya kadar geçen süre kabul edilemez ölçüde uzamamalı.

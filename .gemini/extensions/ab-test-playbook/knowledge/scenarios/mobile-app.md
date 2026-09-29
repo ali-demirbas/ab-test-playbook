@@ -10,7 +10,7 @@ Tüm servisleri eşit boyutta göstermek nötr bir deneyim yaratır. Öncelikli 
 
 **Test edilmesi gerekenler**
 - Vurgu: Öncelikli servisin ikonunu büyütmek tıklamayı artırıyor mu?
-- Yönlendirme: Büyük ikon hedef kategoriye daha hızlı ulaştırıyor mu?
+- Segment: Öncelikli servisi daha önce kullanmış kullanıcı ile hiç kullanmamış kullanıcı büyük ikona farklı mı tepki veriyor?
 - Yan etki: Diğer servislerin tıklanması azalıyor mu?
 - Konum: Mobilde ilk sıra mı, sol bölge mi daha etkili?
 - Sayı: Kaç servisi öne çıkarmak optimum? (1 / 2 / 3)
@@ -58,19 +58,19 @@ Uygulamayı açar açmaz üye olmayı zorunlu tutmak (sert duvar), kullanıcın�
 
 ---
 
-## Push izni ne zaman istenmeli?
+## Push izni hangi anda istenmeli: açılışta mı, ilk değerden sonra mı?
 
-İzin isteğini açılışta göstermek çoğu kullanıcıdan “İzin Verme” yanıtı alır ve o izni bir daha kolay isteyemezsiniz. İlk değeri gördükten sonra sormak kabul oranını yükseltebilir.
+İzin isteğini açılışta göstermek çoğu kullanıcıdan “İzin Verme” yanıtı alır ve o izni bir daha kolay isteyemezsiniz. İlk değeri gördükten sonra sormak kabul oranını yükseltebilir. Bu testte değişen tek şey iznin istendiği andır; akışın geri kalanı iki kolda aynıdır. “İzin istemeden önce nedenini anlatan bir ekran göstermek işe yarar mı?” senaryosundan farkı: orada zamanlama sabit tutulup sistem penceresinden önce açıklama ekranı eklenip eklenmemesi test edilir, burada ise ekran yapısı sabit, yalnızca iznin istendiği an değişir.
 
 **Test edilmesi gerekenler**
 - Zamanlama: Açılışta mı, ilk değerden sonra mı kabul oranı daha yüksek?
-- Ön ekran: Sistem izni öncesi açıklama ekranı kabulü artırıyor mu?
+- Tetikleyici olay: İzni ilk siparişten sonra mı, ilk içerik kaydından sonra mı istemek daha çok izin getiriyor?
 - Bağlam: “Antrenman hatırlatması” gibi somut fayda belirtmek etkiliyor mu?
 - Tekrar sorma: Reddeden kullanıcıya uygulama içinden tekrar önerilmeli mi?
 - Platform: iOS ve Android’de kabul oranı farklı mı?
 
 **Takip edilecek ana KPI’lar**
-- İzin Kabul Oranı: “İzin Ver” seçilme oranı.
+- Net Bildirim İzni Oranı: İzin veren / tüm yeni kullanıcı; iznin istendiği an bu oranı artırıyor mu?
 - Yedi Gün Elde Tutma: Bildirim alan kullanıcı daha çok mu geri dönüyor?
 - Bildirim Tıklama Oranı: Gönderilen bildirimler açılıyor mu?
 - İlk Oturum Tamamlama: İzin isteği akışı kesmemeli.
@@ -93,12 +93,12 @@ Yükleme ekranları çoğunlukla boş geçer. Bu anlarda kampanya veya avantaj b
 - Kampanya: Yükleme ekranında kampanya göstermek isteği artırıyor mu?
 - Sabır: Mesaj uzun beklemede terk oranını düşürüyor mu?
 - Fayda: “%70’e varan indirim” devam oranını yükseltiyor mu?
-- Keşif: Mesaj yeni kategori keşfine yönlendiriyor mu?
+- Platform: iOS ve Android’de yükleme süresi farklıyken mesajın etkisi aynı mı?
 - Süre: Kısa yüklemede mesaj algılanıyor mu?
 
 **Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): Kampanya mesajı geliri artırıyor mu?
 - Dönüşüm Oranı (CR): Kampanya mesajı satın almayı artırıyor mu?
-- Tıklama Oranı (CTR): Yükleme sonrası tıklama artıyor mu?
 - Kampanya Etkileşimi: Kampanyalı ürünlere trafik artıyor mu?
 - Terk Oranı: Bekleme sırasında çıkış artmamalı.
 - Sayfa Geçiş Hızı: Kullanıcı yüklemeden sonra daha hızlı mı ilerliyor?
@@ -106,7 +106,7 @@ Yükleme ekranları çoğunlukla boş geçer. Bu anlarda kampanya veya avantaj b
 **Yapılmaması gerekenler**
 - Yükleme ekranında uzun metin kullanmayın; okunmaz.
 - Ağır görsel koymayın; yükleme süresini uzatır.
-- Yanlış yönlendiren kampanya mesajı göstermeyin.
+- Gerçekte olmayan veya süresi bitmiş bir indirimi (“%70’e varan”) yükleme ekranında göstermeyin; gerçek olmayan indirim/teklif göstermeyin (kural 6).
 - Aynı testte indirim, tasarım ve metni birlikte değiştirmeyin.
 - Kampanya görseli yükleme animasyonunu gizlemesin.
 
@@ -131,7 +131,7 @@ Yeni ziyaretçinin marka bilgisine, dönen ziyaretçinin ise hızlı devam yolun
 - Sayfa Yüklenme Süresi: Kişiselleştirme LCP’yi bozmamalı.
 
 **Yapılmaması gerekenler**
-- Segment tanımını test ortasında değiştirmeyin.
+- Dönen kullanıcıya “kaldığın yerden devam” bloğunda artık satışta olmayan bir ürünü göstermeyin.
 - Kişisel veriyi anasayfada açıkça göstermeyin (isim, adres).
 - Yanlış segmentte varsayılan deneyimi bozmayın.
 - Aynı testte hem segmenti hem içerik bloklarını değiştirmeyin.
@@ -166,9 +166,9 @@ Kullanıcının kendi gezinme geçmişi, algoritmik öneriden daha alakalıdır 
 
 ---
 
-## Çıkış niyeti pop-up’ı kaçan kullanıcıyı kurtarır mı?
+## Çıkış niyetine bağlı pop-up kaçan mobil kullanıcıyı kurtarır mı?
 
-Zamana bağlı pop-up herkesi keser; çıkış niyetine bağlı pop-up sadece zaten gitmekte olan kullanıcıyı yakalar. Teorik olarak maliyeti düşüktür ama mobilde çıkış niyeti sinyali güvenilir değildir.
+Zamana bağlı pop-up herkesi keser; çıkış niyetine bağlı pop-up sadece zaten gitmekte olan kullanıcıyı yakalar. Teorik olarak maliyeti düşüktür ama mobilde çıkış niyeti sinyali güvenilir değildir. “Pop-up ne zaman gösterilmeli?” senaryosundan (`category-listing.md`) farkı: orada pop-up herkese gösterilir ve değişken gösterim anıdır, burada tetik yalnızca ayrılma sinyalidir ve hedef sadece gitmekte olan kullanıcıdır.
 
 **Test edilmesi gerekenler**
 - Tetikleyici: Çıkış niyeti zamana bağlı pop-up’tan daha mı verimli?
@@ -187,7 +187,7 @@ Zamana bağlı pop-up herkesi keser; çıkış niyetine bağlı pop-up sadece za
 **Yapılmaması gerekenler**
 - Mobilde güvenilmez sinyalle pop-up tetiklemeyin.
 - Kapatma butonunu gizlemeyin veya küçültmeyin.
-- Ödeme akışında göstermeyin.
+- Pop-up’taki indirim teklifini, sepette gerçekten uygulanmayan bir oran veya süreyle yazmayın (kural 6).
 - Aynı oturumda birden fazla pop-up açmayın.
 - Aynı testte hem tetikleyiciyi hem teklifi değiştirmeyin.
 
@@ -249,7 +249,7 @@ Uygulamanın üstüne yerleşen kısa baloncuklar, bulunması zor işlevleri ilk
 
 ## İzin istemeden önce nedenini anlatan bir ekran göstermek işe yarar mı?
 
-Sistem izin penceresi tek seferliktir ve reddedildiğinde geri dönmek zordur. Öncesinde neden gerektiğini anlatan bir ekran göstermek, izni yalnızca ikna olan kullanıcıya sordurur ve sistem penceresini boşa harcamamayı sağlar. Karşı tarafta: fazladan bir adım eklenir ve bazı kullanıcı bu ekranda da düşer.
+Sistem izin penceresi tek seferliktir ve reddedildiğinde geri dönmek zordur. Öncesinde neden gerektiğini anlatan bir ekran göstermek, izni yalnızca ikna olan kullanıcıya sordurur ve sistem penceresini boşa harcamamayı sağlar. Karşı tarafta: fazladan bir adım eklenir ve bazı kullanıcı bu ekranda da düşer. “Push izni hangi anda istenmeli: açılışta mı, ilk değerden sonra mı?” senaryosundan farkı: orada yalnızca iznin istendiği an değişir, burada an sabit tutulup sistem penceresinden önce açıklama ekranının varlığı test edilir.
 
 **Test edilmesi gerekenler**
 - Hazırlık ekranı: Ön açıklama izin kabul oranını artırıyor mu?
@@ -259,7 +259,7 @@ Sistem izin penceresi tek seferliktir ve reddedildiğinde geri dönmek zordur. �
 - Segment: Yeni kullanıcı ile deneyimli kullanıcı farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
-- Net İzin Kabul Oranı: Tüm kullanıcılar içindeki nihai kabul oranı artıyor mu?
+- Net Bildirim İzni Oranı: İzin veren / tüm yeni kullanıcı; hazırlık ekranı bu oranı artırıyor mu?
 - Sistem Penceresi Kabul Oranı: Pencereye ulaşanların kabulü artıyor mu?
 - Hazırlık Ekranı Geçiş Oranı: Bu adımdaki kayıp kabul edilemez seviyeye çıkmamalı.
 - Kalıcı Reddetme Oranı: Geri dönülemez reddetme azalıyor mu?

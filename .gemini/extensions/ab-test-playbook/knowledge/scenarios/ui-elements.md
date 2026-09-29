@@ -64,7 +64,7 @@ Dolu buton görsel ağırlığıyla öne çıkar ve birincil aksiyonu işaret ed
 
 ## İkincil aksiyonu bağlantı mı, buton mu yapmalı?
 
-Butona benzeyen bir öğe tıklanabilirliğini açıkça duyurur; bağlantı ise daha hafif durur ve birincil aksiyonla rekabet etmez. İkincil aksiyonu buton yapmak onu görünür kılar ama asıl istenen aksiyonun payını azaltabilir. Bağlantı yapmak ise onu tamamen görünmez kılabilir.
+Butona benzeyen bir öğe tıklanabilirliğini açıkça duyurur; bağlantı ise daha hafif durur ve birincil aksiyonla rekabet etmez. İkincil aksiyonu buton yapmak onu görünür kılar ama asıl istenen aksiyonun payını azaltabilir. Bağlantı yapmak ise onu tamamen görünmez kılabilir. “Sepet ve ödeme adımlarında tekrarlayan CTA’ları azaltmak dönüşümü artırır mı?” senaryosundan (`cart-checkout.md`) farkı: o senaryo aynı işlevdeki CTA’ların sayısını azaltır, bu senaryo farklı işlevdeki ikincil aksiyonun biçimini değiştirir.
 
 **Test edilmesi gerekenler**
 - Biçim: İkincil aksiyon buton olduğunda toplam ilerleme artıyor mu?
@@ -110,7 +110,7 @@ Tutarlı buton stili neyin tıklanabilir olduğunu öğretir ve kullanıcı bir 
 **Yapılmaması gerekenler**
 - Aynı testte stil tutarlılığı ile buton metinlerini birlikte değiştirmeyin.
 - Tutarlılık adına birincil ve ikincil ayrımını da silmeyin.
-- Site genelinde değişiklik yaparken yalnızca tek sayfada ölçüm kurmayın.
+- Tek stile geçerken yıkıcı işlem (sil, iptal) yapan butonu birincil butonla aynı görünüme sokmayın.
 - Eski stili kullanmaya devam eden bölümleri test dışında bırakıp sonucu genellemeyin.
 - Tutarlılığı, aslında farklı işlev gören öğeleri aynı göstermek için kullanmayın.
 
@@ -166,13 +166,13 @@ Tutarlı buton stili neyin tıklanabilir olduğunu öğretir ve kullanıcı bir 
 - Etiketi yalnızca üzerine gelince görünen bir ipucuna dönüştürüp “etiket eklendi” saymayın.
 - Etiket eklerken dokunma hedeflerini küçültmeyin.
 - Ekran okuyucu için tanımlı erişilebilir adı görsel etikete bağımlı hâle getirmeyin.
-- Tek dilde ölçüp sonucu etiketleri çok daha uzun olan dillere genellemeyin.
+- Etiketi ikonun gerçek işlevinden farklı bir şey vaat edecek biçimde yazmayın.
 
 ---
 
-## Bağlantıları yeni sekmede açmak işe yarar mı?
+## Form ve ödeme akışındaki yardım bağlantılarını yeni sekmede açmak tamamlamayı artırır mı?
 
-Yeni sekmede açmak kullanıcının bulunduğu sayfayı kaybetmemesini sağlar; ödeme veya form akışında yarım kalan işin korunması değerlidir. Karşı tarafta: kullanıcı denetimini elinden alır, geri tuşunu işlevsiz kılar, mobilde sekme yönetimi zordur ve beklenmedik davranış rahatsız eder.
+Akışın içindeki yardım, yasal metin veya koşul bağlantısını yeni sekmede açmak kullanıcının yarım kalan formu veya ödemeyi kaybetmemesini sağlar. Karşı tarafta: kullanıcı denetimini elinden alır, geri tuşunu işlevsiz kılar, mobilde sekme yönetimi zordur ve beklenmedik davranış rahatsız eder. “Dış bağlantıları yeni sekmede açmak sayfada kalma oranını artırır mı?” senaryosundan farkı: o senaryo içerik sayfasındaki dış bağlantılarla siteye geri dönüşü ölçer, bu senaryo akış içindeki bağlantılarla form/ödeme tamamlamayı ölçer.
 
 **Test edilmesi gerekenler**
 - Davranış: Yeni sekmede açmak asıl akışın tamamlanmasını artırıyor mu?
@@ -247,7 +247,7 @@ Tekrarlanan bir işlemi tek dokunuşa indirmek (tekrar sipariş, son aramayı y�
 - Aynı testte kısayol ile ana akışın adımlarını birlikte değiştirmeyin.
 - Kısayolun getirdiği varsayılanı kullanıcıya göstermeden uygulamayın.
 - Yeni kullanıcıya anlamsız gelen bir kısayolu ana akışın önüne koymayın.
-- Kullanım oranı düşük diye hemen kaldırmayın; küçük ama sadık bir grup için kritik olabilir.
+- Kısayolla tekrarlanan siparişte eski siparişin fiyatını veya stok durumunu güncel gibi göstermeyin.
 
 ---
 
@@ -436,7 +436,7 @@ Tablo satır ve sütun mantığıyla doğrudan karşılaştırma kurar; çok say
 - Düzen amaçlı tabloyu semantik tablo olarak işaretlemeyin veya tersini yapmayın.
 - Mobilde tabloyu okunmaz derecede küçültüp kutu düzeniyle karşılaştırmayın.
 - Kutu düzeninde farkları yalnızca sıralamayla ima edip yazılı olarak vermemezlik etmeyin.
-- Tek bir içerik türünde ölçüp sonucu tüm karşılaştırmalara genellemeyin.
+- Tabloda bir seçeneğin olumsuz satırını (ör. ek ücret) silik biçimlendirip gizlemeyin.
 
 > **Not:** Fiyat planlarının tablo/kart karşılaştırması `pricing.md` → “Planları karşılaştırma tablosunda mı, ayrı kartlarda mı sunmalı?” senaryosunun konusudur; fiyat sayfası için bu senaryoyu değil onu kullanın.
 
@@ -444,7 +444,7 @@ Tablo satır ve sütun mantığıyla doğrudan karşılaştırma kurar; çok say
 
 ## Dış bağlantıları yeni sekmede açmak sayfada kalma oranını artırır mı?
 
-Bir sayfadaki dış bağlantı (ör. blog yazısındaki kaynak, ortak site linki) aynı sekmede açılırsa kullanıcı asıl siteden tamamen ayrılır; yeni sekmede açılırsa asıl sekme açık kalır. Riski, beklenmedik bir yeni sekmenin bazı kullanıcılarda kafa karışıklığı yaratması ve erişilebilirlik araçlarıyla kullanımı zorlaştırmasıdır.
+Bir sayfadaki dış bağlantı (ör. blog yazısındaki kaynak, ortak site linki) aynı sekmede açılırsa kullanıcı asıl siteden tamamen ayrılır; yeni sekmede açılırsa asıl sekme açık kalır. Riski, beklenmedik bir yeni sekmenin bazı kullanıcılarda kafa karışıklığı yaratması ve erişilebilirlik araçlarıyla kullanımı zorlaştırmasıdır. “Form ve ödeme akışındaki yardım bağlantılarını yeni sekmede açmak tamamlamayı artırır mı?” senaryosundan farkı: o senaryo akış içindeki bağlantılarla tamamlamayı ölçer, bu senaryo içerik sayfasındaki dış bağlantılarla siteye geri dönüşü ölçer.
 
 **Test edilmesi gerekenler**
 - Davranış: Yeni sekmede açmak sayfaya geri dönüş oranını artırıyor mu?
@@ -471,7 +471,7 @@ Bir sayfadaki dış bağlantı (ör. blog yazısındaki kaynak, ortak site linki
 
 ## Buton metnini komut kipiyle mi (“Başlat”), birinci şahıs bildirimiyle mi (“Başlıyorum”) yazmalı?
 
-Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağzından söylediği birinci şahıs bildirimiyle mi (“Başlıyorum”) yazıldığı, kararı kimin verdiği hissini değiştirebilir — emir kipi siteden gelen bir talimat gibi okunurken, birinci şahıs ifade kullanıcının kendi kararını onayladığı bir cümle gibi okunur. Etkisi küçük ama tutarlı bir mikro-copy farkıdır; markanın genel ses tonuyla uyumlu olmayan bir kalıp tuhaf durabilir.
+Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağzından söylediği birinci şahıs bildirimiyle mi (“Başlıyorum”) yazıldığı, kararı kimin verdiği hissini değiştirebilir — emir kipi siteden gelen bir talimat gibi okunurken, birinci şahıs ifade kullanıcının kendi kararını onayladığı bir cümle gibi okunur. Etkisi küçük ama tutarlı bir mikro-copy farkıdır; markanın genel ses tonuyla uyumlu olmayan bir kalıp tuhaf durabilir. “Buton metni eylemi mi, kazanılan şeyi mi söylemeli?” senaryosundan farkı: o senaryo metnin içeriğini (eylem mi kazanç mı), bu senaryo aynı içeriğin dilbilgisel kipini değiştirir.
 
 **Test edilmesi gerekenler**
 - Kip: Emir kipi mi, birinci şahıs bildirimi mi tıklama oranını artırıyor?
@@ -481,8 +481,8 @@ Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağz
 - Segment: Yeni ziyaretçi ile daha önce siteyi kullanmış kullanıcı farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
-- Tıklama Oranı (CTR): Buton metni tıklamayı artırıyor mu?
-- Dönüşüm Oranı (CR): Tıklamadan sonraki tamamlama oranı düşmemeli.
+- Dönüşüm Oranı (CR): Buton metni, tıklamadan sonraki adımın tamamlanmasını artırıyor mu?
+- Tıklama Oranı (CTR): Tanı metriği; buton metni tıklamayı artırıyor mu?
 - Marka Algısı (anket): İfade markayı samimiyetsiz veya tuhaf hissettirmemeli.
 - Sayfa Terk Oranı: Değişiklik terk oranını artırmamalı.
 - Tekrar Ziyaret Oranı: Kısa vadeli tıklama artışı uğruna marka algısı zedelenmemeli.
@@ -492,7 +492,7 @@ Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağz
 - Birinci şahıs ifadeyi, kullanıcının henüz vermediği bir kararı vermiş gibi göstermek için kullanmayın — ücretli bir işlemde onay adımı hâlâ ayrıca gösterilmeli.
 - Marka sesi ile tutarsız bir kip seçip sayfanın geri kalanıyla çelişen bir ton yaratmayın.
 - Farklı butonlarda farklı kipler kullanıp sayfa içi tutarlılığı bozmayın.
-- Sonucu tek bir CTA’dan genelleyip sitedeki tüm butonları aynı anda değiştirmeyin; kademeli uygulayın.
+- Birinci şahıs kipi reddetme butonunda (“Hayır, indirim istemiyorum”) kullanıcıyı suçlayan bir ifadeye çevirmeyin.
 
 ---
 
@@ -508,11 +508,11 @@ Bir sitenin herhangi bir noktasındaki tanıtım banner’ı genellikle birden f
 - Segment: Yeni ziyaretçi ile mevcut müşteri aynı motivasyona mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
-- Banner Tıklama Oranı: Tek odaklı banner tıklamayı artırıyor mu?
+- Banner Kaynaklı Dönüşüm Oranı: Banner’a tıklayıp hedef aksiyonu tamamlayan ziyaretçi oranı artıyor mu?
+- Banner Tıklama Oranı: Tanı metriği; tek odaklı banner tıklamayı artırıyor mu?
 - Genel Dönüşüm Oranı (CR): Banner odağı sitenin ana dönüşümünü düşürmemeli.
 - Kaybolan Teklif Farkındalığı (anket): Banner’dan çıkarılan diğer tekliflerin bilinirliği kabul edilemez ölçüde düşmemeli.
 - Sayfa Terk Oranı: Tek mesaj kaynaklı çıkış artmamalı.
-- Tıklama Sonrası Tamamlama Oranı: Banner’a tıklayanların hedef aksiyonu tamamlama oranı düşmemeli.
 
 **Yapılmaması gerekenler**
 - Aynı testte banner’ın odağı ile konumunu/boyutunu birlikte değiştirmeyin.

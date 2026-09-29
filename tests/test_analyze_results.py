@@ -109,9 +109,10 @@ class TestSampleSize(unittest.TestCase):
         with self.assertRaises(ValueError):
             ar.sample_size(0.05, 0.0)
 
-    def test_negative_mde_raises(self):
-        with self.assertRaises(ValueError):
-            ar.sample_size(0.05, -0.2)
+    def test_negative_mde_uses_abs_with_note(self):
+        r = ar.sample_size(0.05, -0.20)
+        self.assertEqual(r["required_n_per_variant"], ar.sample_size(0.05, 0.20)["required_n_per_variant"])
+        self.assertIn("Negatif MDE", r["note"])
 
     def test_baseline_zero_raises(self):
         with self.assertRaises(ValueError):

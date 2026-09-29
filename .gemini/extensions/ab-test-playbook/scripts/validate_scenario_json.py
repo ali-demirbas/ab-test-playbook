@@ -11,6 +11,9 @@ whole point of having a schema here:
   * exactly one KPI with role "primary"   (CLAUDE.md rule 2)
   * at least one KPI with role "guardrail" (CLAUDE.md rule 3)
 
+and, for the optional `preregistration` block, that allocation shares sum to 1
+and its primary KPI is the scenario's primary KPI.
+
 What this tool deliberately does NOT check: whether `variable` really names a
 single variable, whether the mechanism is causal, whether the primary KPI is
 sensitive to the change. Those are judgement calls and belong to
@@ -158,10 +161,40 @@ def check_kpi_roles(scenario, errors):
         errors.append("kpis: no KPI with role 'guardrail' (rule 3)")
 
 
+def check_preregistration(scenario, errors):
+    """Cross-field rules of the optional pre-registration block.
+
+    A schema can't say "these shares add up to 1" or "the pre-registered
+    primary KPI is the same metric the scenario marks primary"; both are
+    checked here. A mismatch means the plan fixed before launch and the
+    scenario that was reviewed describe two different tests.
+    """
+    pre = scenario.get("preregistration")
+    if not isinstance(pre, dict):
+        return
+    alloc = pre.get("allocation")
+    if isinstance(alloc, dict):
+        shares = [v for v in alloc.values()
+                  if isinstance(v, (int, float)) and not isinstance(v, bool)]
+        if shares and abs(sum(shares) - 1.0) > 1e-6:
+            errors.append("preregistration.allocation: shares sum to %g, expected 1" % sum(shares))
+    pkpi = pre.get("primary_kpi")
+    kpis = scenario.get("kpis")
+    if isinstance(pkpi, dict) and isinstance(kpis, list):
+        primaries = [k.get("name") for k in kpis
+                     if isinstance(k, dict) and k.get("role") == "primary"]
+        if len(primaries) == 1 and pkpi.get("name") != primaries[0]:
+            errors.append(
+                "preregistration.primary_kpi: %r differs from the scenario's primary KPI %r"
+                % (pkpi.get("name"), primaries[0])
+            )
+
+
 def validate(scenario, schema):
     errors = []
     walk(scenario, schema, "", errors, schema)
     check_kpi_roles(scenario, errors)
+    check_preregistration(scenario, errors)
     return errors
 
 

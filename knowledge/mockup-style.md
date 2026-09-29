@@ -4,7 +4,7 @@
 
 ## Neutral palette
 
-Without a brand guide (rule 12c), the card is produced with these colors: the three boxes' identity colors are teal `#08616b`, amber `#6b3804`, navy `#17086b` (header strips); the primary CTA inside the mockup is the template's default orange (`#ff6a00`); the changed-element ring is red (`#e62d37`). This palette is deliberately brand-neutral.
+Without a brand guide (rule 12b), the card is produced with these colors: the three boxes' identity colors are teal `#08616b`, amber `#6b3804`, navy `#17086b` (header strips); the primary CTA inside the mockup is the template's default orange (`#ff6a00`); the changed-element ring is red (`#e62d37`). This palette is deliberately brand-neutral.
 
 ## Card layout
 

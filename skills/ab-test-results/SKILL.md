@@ -1,10 +1,10 @@
 ---
 name: ab-test-results
-description: Interpret A/B test results and run the statistics on real numbers. Use when the user pastes visitor and conversion counts per variant, or asks "is this significant", "interpret these results", "did my test win", "which variant won", "calculate statistical significance", "what is the p-value", "confidence interval", "how many visitors do I need", "what sample size do I need", "how long should I run this test", "minimum detectable effect", "is my traffic split off", "sample ratio mismatch", "SRM", "sonuçları yorumla", "test bitti ne çıktı", "anlamlı mı", "kaç ziyaretçi lazım", "örneklem hesapla". Runs a real two-proportion z-test, confidence interval, required sample size, revenue and margin check, and an SRM check through scripts/analyze_results.py — the math is computed, never estimated — then states the decision and what happens next. To check whether the test was set up correctly in the first place, see ab-test-audit.
+description: Interpret A/B test results and run the statistics on real numbers. Use when the user pastes visitor and conversion counts per variant, or asks "is this significant", "interpret these results", "did my test win", "which variant won", "calculate statistical significance", "what is the p-value", "confidence interval", "how many visitors do I need", "what sample size do I need", "how long should I run this test", "minimum detectable effect", "is my traffic split off", "sample ratio mismatch", "SRM", "sonuçları yorumla", "test bitti ne çıktı", "anlamlı mı", "kaç ziyaretçi lazım", "örneklem hesapla". Runs an SRM check first, then a two-proportion z-test (Fisher exact fallback for rare events, Holm correction for A/B/n), continuous-metric tests (Welch, winsorize, bootstrap, CUPED), a Bayesian view, required sample size, and a revenue and margin check through scripts/analyze_results.py — the math is computed, never estimated — then states the decision and what happens next. To check whether the test was set up correctly in the first place, see ab-test-audit.
 metadata:
-  version: 0.1.0
+  version: 2.0.0
   category: analyze
-  updated: 2026-08-17
+  updated: 2026-09-29
 ---
 
 # ab-test-results — Result Interpretation and Sample-Size Math
@@ -17,18 +17,28 @@ metadata:
 
 ### A) Interpreting results (test finished or still running)
 
+0. **SRM first — before any interpretation.** Run
+   ```
+   python3 ${CLAUDE_PLUGIN_ROOT}/scripts/analyze_results.py srm \
+     --control-visitors <n> --variant-visitors <n> --expected-split <planned control share>
+   ```
+   (for A/B/n, pass every arm's count — the command handles k arms; see `--help`). If `srm_detected: true`, **stop**: the result is **Invalid**, don't interpret significance, lift or segments. Report the likely causes (assignment vs. exposure logged as one event, bot filtering applied to one arm, redirect loss, a mid-test bug fix) and record the test as `invalid`.
 1. Get the control and variant's visitor + conversion counts. Ask if missing; if a rate was given without visitor counts (e.g. "5% in control, 6% in variant"), ask for the absolute numbers too — a confidence interval can't be computed from a rate alone.
 2. Run:
    ```
    python3 ${CLAUDE_PLUGIN_ROOT}/scripts/analyze_results.py significance \
      --control-visitors <n> --control-conversions <n> \
-     --variant-visitors <n> --variant-conversions <n>
+     --variant-visitors <n> --variant-conversions <n> \
+     [--alternative two-sided|greater|less] [--planned-n <per-arm target>]
    ```
+   Options (check `--help` for exact flag spelling): `--alternative` must match the direction pre-registered in the design (`ab-test-design` → pre-registration block), never chosen after seeing the data; `--planned-n` enables the peeking guard — if the current sample is below plan, the output flags an early look and the decision is **Wait**, not a verdict. With three or more arms, pass every variant: each is compared to control with a Holm correction, and only Holm-adjusted results are reported as significant (`methodology.md` → A/B/n).
+   - **Continuous primary metric** (revenue per visitor, order value, time): use the `continuous` subcommand instead (Welch t-test; winsorize or bootstrap for heavy-tailed revenue; CUPED with a pre-period covariate when available to cut variance). `methodology.md` → Continuous metrics.
+   - **Bayesian view** (`bayes` subcommand): offer it as an alternative framing (probability B beats A, expected loss) when the user asks "how likely is B better" — it doesn't replace the pre-registered frequentist decision rule and doesn't remove the peeking problem (`methodology.md` → Bayesian framing).
 3. Don't show the raw JSON output; interpret it through the `methodology.md` lens:
-   - If `normal_approx_valid: false` comes back, **don't interpret anything else**: the z-test doesn't apply to this test (a rare-event case), the p-value and confidence interval aren't reliable. Don't declare a winner/loser; say more data needs to be collected, or a method suited to rare events should be used. This holds even if the sample is large.
+   - Read the `method` field. If it is **fisher-exact**, say so in the output: "counts were too small for the normal approximation, so an exact test was used" — the p-value is valid, but the confidence interval is wider and the effect estimate fragile; treat a significant result as **Needs confirmation**. If the output still reports `normal_approx_valid: false` with no exact fallback, don't interpret anything else — no winner/loser; more data is needed.
    - If `is_significant: false` comes back, **don't just say "lost" on its own**. Check for a `low_sample_warning`, ask how many days/weeks the test has been running. Separate whether the sample fell short or the change is simply weak (methodology.md → "No difference" diagnosis).
    - If `is_significant: true` comes back, confirm the test has run for **at least two full weeks**. If it hasn't, warn: "statistically significant, but minimum temporal coverage hasn't been reached — weekday/weekend behavior, payday effects and the business cycle aren't yet represented in this result, and it may also be an early novelty-driven lift" (methodology.md → external validity, and separately, novelty effect) — don't declare a definitive winner. This is a different reason from regression to the mean, which is about a lead reversing over time, not about the two-week rule itself; don't conflate the two when explaining why the wait matters.
-   - If the user also gave a guardrail number (returns, margin, error rate), evaluate it separately; if the guardrail has degraded, flag "should be stopped for the guardrail" even if the primary metric is significant (methodology.md → guardrail early-stop exception).
+   - If the user also gave a guardrail number (returns, margin, error rate), evaluate it against its **pre-declared tolerated-degradation margin** with a one-sided test (`--alternative` in the harmful direction; `methodology.md` → Guardrails with numbers). "Degraded" means the harm is significantly beyond the margin; "clean" means the confidence bound stays inside it; anything between is **inconclusive on the guardrail** — say so. If no margin was declared, ask for one before calling the guardrail clean. If it degraded, flag "should be stopped for the guardrail" even if the primary metric is significant.
    - If the user also gave a segment breakdown (mobile/desktop, new/returning), run each segment separately and compare to the overall result; if they didn't give one and the overall result is "no difference," ask for the segment breakdown. **Report this as exploratory, not as a per-segment winner** (methodology.md → a second pitfall): one segment coming back significant and another not isn't itself evidence the true effect differs between them — that would need a formal interaction test, which isn't what two separate `significance` runs compute. State it as a hypothesis worth a dedicated follow-up test, not as "B won on mobile."
 4. The result sentence must be clear: "significant, ship it" / "significant but duration/sample risk, wait" / "not significant, because X" — don't leave it in between. The decision follows this table (if rows conflict, prioritize the one above):
 
@@ -40,7 +50,8 @@ metadata:
 
    | Significant | Sample (vs. MDE target) | Duration | Guardrail | Decision |
    |---|---|---|---|---|
-   | — | — | — | Degraded | **Stop** — whatever the primary metric shows |
+   | SRM detected (step 0) | — | — | — | **Invalid — stop, don't interpret** anything else; fix assignment and restart |
+   | — | — | — | Degraded beyond margin | **Stop** — whatever the primary metric shows |
    | No | Target not reached | — | Clean | **Continue or declare underpowered** — say how far from the target; if it can't be reached, close the test as "inconclusive," don't say "no difference" |
    | No | Target reached | < 2 weeks | Clean | **Wait** — sample is filled but the duration rule isn't; don't declare "no difference" before the business cycle completes |
    | No | Target reached | ≥ 2 weeks | Clean | **No significant difference** — no effect of the targeted size exists; a smaller effect may still be possible, say so |
@@ -71,13 +82,13 @@ metadata:
    - **If no significant difference:** what's the learning? Was the change weak (a bolder variant), or is the problem elsewhere (a different variable on the same page)? Suggest the next test.
    - **If it lost:** write a one-sentence learning about why the existing experience worked better — a losing test is information too, don't close it silently.
    - **If stopped for a guardrail:** the rollback step + a hypothesis for why the guardrail degraded.
-6. **Write the record to test memory (CLAUDE.md rule 16).** After the result interpretation and next step are given, produce this test's `.abtest-history.md` row and present it to the user:
+6. **Offer the record for test memory (CLAUDE.md rule 16 — write only on confirmation).** After the result interpretation and next step are given, produce this test's `.abtest-history.md` row and present it to the user:
 
    ```
    | <YYYY-MM> | <page/flow> | <the single variable tested> | <won/lost/no difference/inconclusive/stopped/invalid> | <primary metric impact> | <guardrail status> | <generalizable pattern — fill only if it won, otherwise "—"> | <one-sentence note> |
    ```
 
-   - If `.abtest-history.md` exists in the working directory, offer to add the row to the top of the table; add it if the user confirms.
+   - If `.abtest-history.md` exists in the working directory, offer to add the row to the top of the table; write it only if the user confirms in chat, otherwise leave it for them to paste.
    - If the file doesn't exist, offer to create it from the `${CLAUDE_PLUGIN_ROOT}/templates/abtest-history.md` template — offer once, don't push it.
    - Pick the result value consistent with the decision matrix: if closed before the sample/duration target was reached, it's **inconclusive**, not "lost"; if there was an SRM or measurement error, it's **invalid**; if stopped for a guardrail, it's **stopped**.
    - **Generalizable pattern** is only filled in on a "won" result — write the abstract mechanism behind the test itself (e.g. not "the shipping bar won," but "a progress indicator strengthens spending behavior"). This makes it visible that the same mechanism is worth trying on other pages (`templates/abtest-history.md` → Generalizable pattern column).
@@ -107,6 +118,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/analyze_results.py revenue \
    python3 ${CLAUDE_PLUGIN_ROOT}/scripts/analyze_results.py samplesize \
      --baseline-rate <decimal> --mde <decimal>
    ```
+   For unequal allocation (e.g. 90/10) add `--ratio`; for A/B/n add `--arms` (the per-arm requirement grows with the Holm-adjusted alpha). Record the result as `planned_n_per_arm` in the pre-registration block so the `--planned-n` peeking guard can use it later.
 3. Once `required_n_per_variant` comes back, compute how many days it'll take given the user's daily/weekly traffic (`required_n_total / daily_traffic`). Even if it comes out under two full weeks, still recommend at least two weeks (the methodology rule — a short duration carries an external-validity risk even if the sample is sufficient).
 4. If no traffic was given at all, don't compute duration — just give the required sample and ask for traffic.
 

@@ -80,5 +80,5 @@ Bir ürünün değerli ama az bilinen bir özelliği, arayüzde durduğu hâlde 
 - Aynı testte ipucunun içeriğini ve gösterim zamanlamasını birlikte değiştirmeyin.
 - Kullanıcı ipucunu kapattıktan sonra aynı oturumda tekrar göstermeyin.
 - İpucunu, kullanıcının o an yapmakta olduğu asıl görevi engelleyecek şekilde kurmayın.
-- Birden fazla ipucunu aynı anda üst üste yığmayın; sırayla ve tek tek gösterin.
+- İpucunda özelliğin gerçekte sağlamadığı bir sonucu vaat etmeyin.
 - Kullanım verisine dayanmayan bir varsayımla ipucu hedefleme mantığı kurmayın; gerçek kullanım geçmişine dayanmalı.

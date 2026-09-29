@@ -2,9 +2,9 @@
 name: ab-test-card
 description: Render an A/B test scenario as a single-file HTML card in the archive's visual style — a Variant A/B mockup pair with the tested element boxed, plus the three coloured boxes. Use when the user says "make a card for this test", "turn this into a card", "visualise this test", "render this scenario", "make a slide out of this", "show me the two variants side by side", "kart yap", "görselleştir", "slayt formatına çevir", "bunu karta bas". Runs automatically for every scenario produced by ab-test-suggest and ab-test-design (CLAUDE.md rule 9), so it rarely needs to be invoked directly. Output is self-contained HTML with no external assets, built deterministically by scripts/build_card.py.
 metadata:
-  version: 0.1.0
+  version: 2.0.0
   category: render
-  updated: 2026-08-17
+  updated: 2026-09-29
 ---
 
 # ab-test-card — Scenario Card Rendering
@@ -13,16 +13,15 @@ metadata:
 
 The visual language is defined in `${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md` — read it before producing anything. Template: `${CLAUDE_PLUGIN_ROOT}/templates/scenario-card.html`.
 
-This skill runs automatically for EVERY scenario that `ab-test-suggest` or `ab-test-design` produces in a turn (CLAUDE.md rule 9) — the user doesn't need to ask separately. The full content of the three boxes ("What to test" / "Primary KPIs to track" / "Never do") lives only in this card; the same content isn't also written to chat as text — chat only keeps the title, source tag and a one-sentence summary. 2-5 scenarios in a turn become cards directly; if there are more than 5 strong candidates, they aren't all produced without asking (rule 9). The same flow runs if the user directly says "make a card."
+This skill runs automatically for EVERY scenario that `ab-test-suggest` or `ab-test-design` produces in a turn (CLAUDE.md rule 9) — the user doesn't need to ask separately. The full content of the three boxes ("What to test" / "Primary KPIs to track" / "Never do") lives only in this card; the same content isn't also written to chat as text — chat only keeps the title, source tag and a one-sentence summary. 1-5 scenarios in a turn become cards directly; if there are more than 5 strong candidates, the top 5 are produced and the rest offered (rule 9). The same flow runs if the user directly says "make a card."
 
 ## Flow
 
-0. **Brand source (once per session).**
+0. **Brand source (never blocks — CLAUDE.md rule 12).**
    - **Don't ask if the user shared a screenshot/page:** pull the brand color, logo text and button style straight from the image and use them. Add a one-line note under the card: "I took the colors from the screenshot; send me the official guide and I'll update it." Don't stop the flow and wait for an answer.
-   - **Ask if there's no visual source:** "Should I prepare the card to your brand guide (logo, color palette), or use a neutral style?" Wait at this step until an answer comes. If the user gave a URL, that also counts as a page share (rule 12a): if a browser tool is available, visit the site and pull the colors from there without asking; if not, fall back to the question above.
+   - **No visual source:** use the neutral palette and add a one-line note under the card: "Neutral style used; send your brand guide (logo, colors) and I'll rebrand the card." Don't ask and don't wait. If the user gave a URL and a browser tool is available, visit it and pull the colors (rule 12a); otherwise use the neutral palette with the same note.
    - **If a guide is given:** extract the colors (primary/secondary, CTA color), the logo/brand name and any typography preference; use these instead of the neutral palette in `mockup-style.md`. Instead of embedding the logo as a real file, write the brand name/abbreviation from the guide as text in the header (so the "no external asset links" rule isn't broken).
-   - **If not given / the answer is "no":** use the neutral palette (teal/amber/navy) from `mockup-style.md`.
-   - The choice is remembered for the rest of the session (CLAUDE.md rule 12), not asked again on later cards — unless the user wants to change it.
+   - A guide sent later replaces the palette for the rest of the session; the rebrand note isn't repeated on later cards.
 1. Get the scenario to render: this session's `ab-test-suggest`/`ab-test-design` output, or text the user gives directly. If the three boxes are missing, complete them first (route to `ab-test-design`). Use the content in the text verbatim; don't rewrite or shorten the items while rendering the card.
 2. Write the scenario to a JSON file; don't fill the template by hand (CLAUDE.md rule 9 → Mechanism). Fields:
    - `title`, `desc` and the three boxes' items (`test_items`, `kpi_items`, `dont_items`): **give plain text, don't escape it yourself** — the script applies `html.escape`. An item that wants a bold label is given as `{"label": "Primary KPI", "text": "cart → checkout"}`; don't write `<b>` by hand, it breaks the ordering.
@@ -43,7 +42,7 @@ This skill runs automatically for EVERY scenario that `ab-test-suggest` or `ab-t
    ```
 
    The script produces a single self-contained HTML file (inline CSS, no external source) and verifies after writing that the fixed skeleton wasn't disturbed. If it errors, no file is written: fix the error, don't fall back to building the card by hand.  The output is written to the user's working directory.
-4. **Review (CLAUDE.md rule 17).** After the card is produced, run `agents/mockup-reviewer`: it looks for whether there's a second difference between the two mockups beyond the tested element. If it returns `FIX`, fix it and re-render the card. Don't write the review report to chat; only state a constraint the user needs to know, in one sentence, if there is one.
+4. **Review (CLAUDE.md rule 17).** After the card is produced, run `agents/mockup-reviewer`: it looks for whether there's a second difference between the two mockups beyond the tested element. If it returns `FIX`, fix only the mockup markup (`variant_a`/`variant_b`, highlight, skeleton) and re-render the card — **never change the three boxes, title or description in this step**. If the fix would require changing the scenario's content (e.g. the tested variable itself was drawn differently from the scenario), send the scenario back through `agents/scenario-critic` first, then re-render. Don't write the review report to chat; only state a constraint the user needs to know, in one sentence, if there is one.
 5. Deliver directly to the user (file delivery). If you have a way to view it (a browser tool), open it and verify: text overflow, character rendering, box alignment, whether brand colors were applied correctly.
 
 ## Never do
@@ -57,5 +56,5 @@ This skill runs automatically for EVERY scenario that `ab-test-suggest` or `ab-t
 - Put a placeholder saying "hidden / removed" where a removed element used to be (`mockup-style.md`); in B, don't write that block at all — let the content below it naturally shift up. To make the shift visible, add a one-line note **below** the mockup: `<div class="shift-note">…</div>` — this note doesn't go inside the screen itself.
 - Add an external font/CDN link; the card must open offline (system font: falls back to -apple-system/Segoe UI if Inter isn't available).
 - Render the card in a different language from the user's (rule 7); curly quotes, full Turkish character support on a Turkish card.
-- Ask the brand-guide question and stall the flow when a screenshot exists; take the colors from the image. Also don't silently default to the neutral palette when there's no visual source at all — ask in that case.
+- Ask a brand-guide question or wait for one; take colors from the screenshot if there is one, otherwise use the neutral palette with the one-line rebrand note.
 - Try to pull the brand logo from an external URL; use only what the user has given (a color code, a brand name).

@@ -25,9 +25,9 @@ Aynı işlevi yapan CTA’nın kelime seçimi (kısa/soyut vs. somut/süre belir
 **Yapılmaması gerekenler**
 - Aynı testte CTA metni ile buton rengini/boyutunu birlikte değiştirmeyin.
 - Süre belirtiyorsanız (14 gün) gerçek deneme süresiyle tutarlı olsun; yanlış süre yazmayın.
-- Header ve hero’daki CTA metnini testin ortasında birbirinden bağımsız değiştirmeyin — hangisinin etkilediği karışır.
+- Süreyi belirten varyantta deneme bitince otomatik ücretlendirme olacaksa bunu CTA’nın yakınında gizlemeyin.
 - “Ücretsiz” kelimesini gerçekte kredi kartı istenen bir akışta kullanmayın.
-- Tek bir dilde test edip sonucu çok dilli tüm pazara genellemeyin.
+- “Başla” fiiliyle tek adımda kullanıma geçileceği izlenimi verip kullanıcıyı uzun bir kurulum akışına göndermeyin.
 
 ---
 
@@ -54,7 +54,7 @@ Tek CTA basit ve nettir ama farklı alım hazırlığındaki ziyaretçiyi tek ka
 - Demo seçeneğini self-servis kullanıcıyı ertelemek için kullanmayın.
 - Aynı testte hero başlığını da değiştirmeyin.
 - Mobilde iki butonu alt alta sıkıştırmayın.
-- Demo talebine yanıt süresini test boyunca değiştirmeyin.
+- “Demo iste” butonunu, gerçekte günler sonra yanıtlanacak bir talebi “hemen görüşelim” vaadiyle sunmak için kullanmayın.
 
 ---
 
@@ -64,7 +64,7 @@ Yıllık planın seçili gelmesi indirim algısını öne çıkarır ama kullan�
 
 **Test edilmesi gerekenler**
 - Varsayılan: Yıllık seçili gelmek abonelik oranını artırıyor mu?
-- İndirim vurgusu: “2 ay bedava” yıllığa geçişi hızlandırıyor mu?
+- Cihaz: Mobilde yıllık seçili anahtar fark edilmeden abonelik başlatılıyor mu?
 - Şeffaflık: Aylık karşılığını göstermek güveni koruyor mu?
 - Konum: Aylık/yıllık anahtarı fark ediliyor mu?
 - Segment: Küçük ekip ile kurumsal aynı tepkiyi mi veriyor?
@@ -151,9 +151,9 @@ Fiyatlandırma sayfasında bir planı öne çıkarmak seçim davranışını yö
 - Rozetsiz: Hiç rozet olmaması karar süresini uzatıyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Dönüşüm Oranı (CR): Fiyat sayfasından başlayan abonelik artıyor mu?
+- Kullanıcı Başına Gelir (ARPU): Rozet ortalama geliri artırıyor mu?
+- Dönüşüm Oranı (CR): Fiyat sayfasından başlayan abonelik düşmemeli.
 - Plan Seçim Dağılımı: Kullanıcılar hangi plana kayıyor?
-- Kullanıcı Başına Gelir (ARPU): Ortalama gelir yükseliyor mu?
 - Plan Düşürme Oranı: İlk ay alt plana geçiş artmamalı.
 - İptal Oranı: Yanlış plana yönlenme iptali artırmamalı.
 
@@ -162,7 +162,7 @@ Fiyatlandırma sayfasında bir planı öne çıkarmak seçim davranışını yö
 - Aynı testte rozetle birlikte fiyatı değiştirmeyin.
 - Rozeti birden fazla plana koymayın; anlamı kaybolur.
 - Rozeti plan adını okunmaz hale getirecek kadar büyütmeyin.
-- Mobilde plan sırası değişince rozetin yerini kontrol edin.
+- Mobilde kartlar alt alta dizildiğinde rozetli planı kaydırma dışında bırakmayın.
 
 ---
 
@@ -189,7 +189,7 @@ Kurumsal planın fiyatını gizlemek satış ekibine görüşme kazandırır ama
 - Aynı testte hem fiyatı hem form alanlarını değiştirmeyin.
 - Sadece talep sayısına bakıp kapanış oranını atlamayın.
 - Rakip fiyatını referans göstererek yanıltmayın.
-- Talep sonrası dönüş süresini test boyunca değiştirmeyin.
+- “X TL’den başlayan” aralığını gerçek sözleşmelerin altında kalan bir tabanla yazmayın.
 
 > **Pazar notu:** Kurumsal satın alma kültürü pazara göre değişir: fiyat şeffaflığının beklenti hâline geldiği pazarlarda gizli fiyat eleyici olabilirken, teklif ve pazarlık kültürünün baskın olduğu pazarlarda açık fiyat satış görüşmesini erken kapatabilir.
 
@@ -214,7 +214,7 @@ Kısa deneme aciliyet yaratır ama kullanıcı değeri görmeden biter. Uzun den
 - Üçüncü Ay Devam Oranı: Kısa deneme kalıcılığı düşürmemeli.
 
 **Yapılmaması gerekenler**
-- Deneme süresini test ortasında değiştirmeyin.
+- Kısa deneme varyantında, kullanıcı ilk değere ulaşamadan süre bitince verisine erişimini kesmeyin.
 - Süre sonunda uyarı vermeden hesabı kapatmayın.
 - Aynı testte hem süreyi hem kart zorunluluğunu değiştirmeyin.
 - Deneme kapsamını planlar arasında farklılaştırmayın.
@@ -352,5 +352,5 @@ Bu senaryo `forms-signup.md`’deki form alanı sütun düzeninden farklıdır �
 - Aynı testte sütun yapısıyla birlikte sayfanın metnini de değiştirmeyin.
 - Yan sütunu kaldırırken oradaki bilgiye başka hiçbir yerden erişim bırakmayın.
 - Mobilde zaten tek sütuna düşen bir sayfayı ikinci sütunlu varyantla karşılaştırmaya çalışmayın; orada fark yoktur.
-- Tek bir sayfa tipinde ölçüp sonucu tüm sayfa tiplerine genellemeyin.
+- Tek sütunlu varyantta ana CTA’yı yalnızca uzun kaydırmayla ulaşılacak kadar aşağı itmeyin.
 - İkinci sütunu kaldırırken erişilebilirlik için önemli bir gezinme unsurunu sessizce yok etmeyin.

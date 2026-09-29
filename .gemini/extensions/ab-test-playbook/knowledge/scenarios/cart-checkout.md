@@ -16,11 +16,11 @@ Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmız�
 - Erişilebilirlik: Seçilen renk kontrast oranı (WCAG) eşiğini geçiyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Tıklama Oranı (CTR): Buton tıklaması artıyor mu?
-- Dönüşüm Oranı (CR): Tıklama artışı satışa yansıyor mu?
+- Dönüşüm Oranı (CR): Renk değişikliği tamamlanan siparişe yansıyor mu?
+- Tıklama Oranı (CTR): Tanı metriği; buton daha çok fark edilip tıklanıyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon değişiyor mu?
 - Sayfa Terk Oranı: Yükselmemeli.
-- Marka Algısı: Ölçülüyorsa düşmemeli.
+- Marka Algısı (anket): Ölçülüyorsa düşmemeli.
 
 **Yapılmaması gerekenler**
 - Aynı testte renk ile buton metnini birlikte değiştirmeyin.
@@ -31,9 +31,9 @@ Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmız�
 
 ---
 
-## Fazla CTA dönüşümü azaltır mı?
+## Sepet ve ödeme adımlarında tekrarlayan CTA’ları azaltmak dönüşümü artırır mı?
 
-Birden fazla CTA kullanıcı odağını bölerek karar süresini uzatabilir. Sadeleşmenin dönüşüme etkisi ölçülmelidir.
+Aynı adımda aynı işi yapan birden fazla CTA kullanıcı odağını bölerek karar süresini uzatabilir. Burada test edilen CTA sayısıdır: tekrarlayan butonları kaldırmanın dönüşüme etkisi ölçülür. “İkincil aksiyonu bağlantı mı, buton mu yapmalı?” senaryosundan (`ui-elements.md`) farkı: o senaryo farklı işlevdeki ikincil aksiyonun biçimini değiştirir, bu senaryo aynı işlevdeki CTA’ların sayısını azaltır.
 
 **Test edilmesi gerekenler**
 - Sayı: Tek CTA mı, birden fazla CTA mı daha çok dönüştürüyor?
@@ -47,12 +47,12 @@ Birden fazla CTA kullanıcı odağını bölerek karar süresini uzatabilir. Sad
 - Tıklama Oranı (CTR): Tek net CTA tıklamayı artırıyor mu?
 - Adım Tamamlama Oranı: Bir sonraki adıma geçiş kolaylaşıyor mu?
 - Terk Oranı: Yükselmemeli.
-- Karar Süresi: Tek CTA ile karar süresi kısalıyor mu?
+- Karar Süresi: Belirgin şekilde uzamamalı.
 
 **Yapılmaması gerekenler**
 - Tüm CTA’ları birden kaldırmayın; kullanıcı yönsüz kalır.
 - Yalnızca tekrarlayan ve işlevsiz CTA’ları çıkarın.
-- CTA metinlerini sık değiştirmeyin; sonuçları kirletir.
+- Aynı testte CTA sayısı ile kalan CTA’nın metnini birlikte değiştirmeyin.
 - Mobilde kritik CTA’nın ekran dışına itilmesine izin vermeyin.
 - İkincil aksiyonu birincil CTA ile aynı görsel ağırlıkta yapmayın.
 
@@ -64,21 +64,21 @@ Birden fazla CTA kullanıcı odağını bölerek karar süresini uzatabilir. Sad
 
 **Test edilmesi gerekenler**
 - Motivasyon: Çubuk “ücretsiz kargoya ulaşmak için ürün ekle” davranışını artırıyor mu?
-- Tasarım: Çubuğun rengi ve doluluk gösterimi davranışı etkiliyor mu?
+- Renk: Çubuğun rengi fark edilme oranını değiştiriyor mu?
 - Konum: Sepet, mini sepet ve ürün sayfasında performans değişiyor mu?
 - Doluluk: “X TL kaldı” metni mi, görsel ilerleme çubuğu mu daha çok tamamlatıyor?
 - Cihaz: Mobil ve masaüstünde karar süresi farklı mı?
 
 **Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): Çubuk, dönüşümü düşürmeden toplam geliri artırıyor mu?
 - Ortalama Sepet Tutarı (AOV): Çubuk sepet toplamını artırıyor mu?
 - Sepete Ekleme Oranı: Daha fazla ürün ekleniyor mu?
-- Ödeme Adımına Geçiş: Ödemeye geçiş artıyor mu?
+- Ödeme Adımına Geçiş: Ödemeye geçiş düşmemeli.
 - Sepet Terk Oranı: Yükselmemeli.
-- Ziyaretçi Başına Gelir (RPV): Düşmemeli.
 
 **Yapılmaması gerekenler**
 - İlerleme çubuğunu CTA’nın önüne geçecek şekilde yerleştirmeyin.
-- Ücretsiz kargo eşiğini test sırasında değiştirmeyin.
+- Eşiğe kalan tutarı gerçek sepet hesabından farklı göstermeyin (kural 6).
 - Mobilde çubuğu görünmeyecek kadar aşağı koymayın.
 - Aynı testte renk, eşik ve metni birlikte değiştirmeyin.
 - Eşiğe ulaşıldığında geri bildirim vermeyi atlamayın.
@@ -108,7 +108,7 @@ Görünür bir kupon kutusu, kodu olmayan kullanıcıyı “indirim arayayım”
 **Yapılmaması gerekenler**
 - Kupon alanını tamamen kaldırmayın; kodu olan kullanıcı öfkelenir.
 - Geçersiz kod hatasını belirsiz bırakmayın.
-- Test sırasında aktif kampanya kurmayın veya kaldırmayın.
+- Kodu olan kullanıcının alanı bulamayıp indirimsiz ödemesini gelir kazancı saymayın.
 - Kupon alanını CTA altına gizleyip fark edilmez yapmayın.
 - Aynı testte hem konumu hem metni değiştirmeyin.
 
@@ -121,7 +121,7 @@ Zorunlu üyelik satın alma sürecini uzatır ve terk oranını yükseltebilir. 
 **Test edilmesi gerekenler**
 - Buton görünümü: Misafir ödeme butonu daha görünür olunca tıklama artıyor mu?
 - Alan sayısı: Misafir ödemede alan sayısını azaltmak dönüşümü yükseltiyor mu?
-- Kayıt daveti: Satın alma sonrası “Hesap oluştur” çağrısı kayıt oranını artırıyor mu?
+- Cihaz: Mobilde misafir ödeme seçeneği masaüstüne göre daha mı çok tercih ediliyor?
 - Kategori: Moda ve hızlı tüketimde misafir ödeme daha mı çok tercih ediliyor?
 - Kampanya: Yoğun dönemlerde etki değişiyor mu?
 
@@ -160,7 +160,7 @@ Tek sayfa akışı toplam tıklamayı azaltır ama ilk bakışta yoğun görün�
 - Destek Talebi: Sipariş sorunları yükselmemeli.
 
 **Yapılmaması gerekenler**
-- Test sırasında ödeme yöntemi setini değiştirmeyin.
+- Aynı testte adım yapısı ile ödeme yöntemi setini birlikte değiştirmeyin.
 - Tek sayfada tüm alanları aynı anda açıp kullanıcıyı boğmayın.
 - Adım göstergesini kaldırıp kullanıcıyı yönsüz bırakmayın.
 - Klavye açılınca özet alanı CTA’yı kapatmamalı.
@@ -191,7 +191,7 @@ Her ek form alanı bir sürtünme noktasıdır. Posta koduyla otomatik il/ilçe 
 - Kargo için gerçekten gereken alanı kaldırmayın; hassas alanlarda önce kural 14’teki ara yöntemleri değerlendirin.
 - Aynı testte hem alan sayısını hem validasyon kurallarını değiştirmeyin.
 - Hata mesajlarını alan altından kaldırmayın.
-- Test süresince kargo entegrasyonunu değiştirmeyin.
+- Posta kodundan doldurulan il/ilçeyi kullanıcıya göstermeden siparişe yazmayın.
 
 ---
 
@@ -207,11 +207,11 @@ Sepette adet seçimini daha net sunmak, kullanıcıların adedi artırma davran�
 - Hata: Net adet alanı yanlışlıkla ürün silmeyi azaltıyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Ortalama Sepet Tutarı: Adet artırımı sepet değerini yükseltiyor mu?
+- Ziyaretçi Başına Gelir (RPV): Adet görünürlüğü dönüşümü düşürmeden toplam geliri artırıyor mu?
+- Ortalama Sepet Tutarı (AOV): Adet artırımı sepet değerini yükseltiyor mu?
 - Adet Değişim Oranı: Adet daha sık mı değiştiriliyor?
-- Adet Alanı Etkileşimi: Alan görünür olunca tıklama artıyor mu?
 - Sepetten Silme Oranı: Yanlışlıkla silme artmamalı.
-- Ziyaretçi Başına Gelir: Düşmemeli.
+- Sipariş Tamamlama Oranı: Düşmemeli.
 
 **Yapılmaması gerekenler**
 - Adet butonlarını CTA’yı gölgede bırakacak kadar büyütmeyin.
@@ -229,22 +229,22 @@ Sepet adımında tamamlayıcı ürün göstermek ortalama sepet tutarını yüks
 **Test edilmesi gerekenler**
 - Cihaz: Mobil dar ekranda öneri alanı sipariş özetini ve CTA’yı aşağı itiyor mu?
 - Etkileşim: Kullanıcılar öneri alanına tıklayıp inceliyor mu?
-- Uyum: Kategori ve fiyat uyumu dönüşümü etkiliyor mu?
+- Uyum: Sepetteki ürünle aynı kategoriden öneri eklemeyi artırıyor mu?
 - Sayı: Öneri sayısı kaç olmalı? (2 / 4 / 6)
 - Konum: Özetin üstünde mi, altında mı daha iyi çalışıyor?
 
 **Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): Öneriler dönüşümü düşürmeden toplam geliri artırıyor mu?
 - Ortalama Sepet Tutarı (AOV): Öneriler sepet değerini yükseltiyor mu?
-- Öneri Tıklama Oranı: Kullanıcılar önerilere tıklıyor mu?
-- Sepete Ekleme Oranı: Önerilerden ekleme yapılıyor mu?
+- Öneriden Sepete Ekleme Oranı: Önerilerden ekleme yapılıyor mu?
 - Sipariş Tamamlama Oranı: Öneri alanı akışı bozup tamamlamayı düşürmemeli.
-- Ziyaretçi Başına Gelir: Toplam gelir artıyor mu?
+- Öneri Tıklama Oranı: Tanı metriği; kullanıcılar önerilere tıklıyor mu?
 
 **Yapılmaması gerekenler**
 - Sepet alanını kalabalıklaştırmayın; asıl akıştan uzaklaştırır.
 - Alakasız veya stokta olmayan ürün önermeyin.
 - Fiyat ve indirim tutarsızlığı bırakmayın.
-- Test süresince ödeme akışını veya fiyat yapısını değiştirmeyin.
+- Öneri kartında, eklenince değişecek toplam tutarı veya kargo ücretini gizlemeyin.
 - Önerileri “Siparişi Tamamla” butonunun üstüne koymayın.
 
 ---
@@ -268,10 +268,10 @@ Sepet adımında tamamlayıcı ürün göstermek ortalama sepet tutarını yüks
 - Kargo Maliyeti: Birim başına kargo gideri marjı eritmemeli.
 
 **Yapılmaması gerekenler**
-- Eşiği sık değiştirmeyin; güveni zedeler.
+- Eşik yükselişini, sepetteki ürünlerin kargo durumunu habersizce değiştirecek şekilde uygulamayın.
 - “Ücretsiz kargo” mesajını yanlış beklenti yaratacak şekilde kurmayın.
 - Eşiği aşırı yükseltmeyin; kullanıcıyı kaçırır.
-- Test sırasında fiyat veya kampanya değiştirmeyin.
+- Aynı testte eşik tutarı ile kalan tutar mesajını birlikte değiştirmeyin.
 - Sadece sepet tutarına bakıp kargo maliyetini atlamayın.
 
 > Not: Bu senaryo, “Ücretsiz kargo çubuğu sepet tutarını artırıyor mu?” senaryosuyla ilişkilidir — o çubuğun varlığını, bu ise doğru eşik değerini test eder. İkisini aynı anda değiştirmeyin.
@@ -328,7 +328,7 @@ Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci h
 **Yapılmaması gerekenler**
 - Hızlı ödemeyi zorunlu kılmayın; manuel giriş seçeneği kalmalı.
 - Görünürlüğü bozacak büyük uyarı kutuları eklemeyin.
-- Test sırasında kart giriş alanlarının tasarımını değiştirmeyin.
+- Aynı testte hızlı ödeme ile kart giriş alanlarının tasarımını birlikte değiştirmeyin.
 - Mobilde hızlı ödeme kutusunu ekranı sıkıştıracak kadar büyütmeyin.
 - Kayıtlı kartı kullanıcı onayı olmadan varsayılan yapmayın.
 
@@ -356,7 +356,7 @@ Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci h
 - Gereğinden fazla adım göstermeyin; süreç uzun hissettirir.
 - Adım isimlerini teknik veya anlaşılmaz yazmayın.
 - Mobilde çubuğa çok fazla ekran alanı ayırmayın.
-- Test boyunca funnel adımlarını değiştirmeyin.
+- Aynı testte çubuğu eklerken funnel adımlarının sayısını birlikte değiştirmeyin.
 - Aşırı animasyonlu veya yavaş yüklenen çubuk kullanmayın.
 
 > **Ölçüm notu:** Bu senaryoda ilk adımın tamamlanma oranı neredeyse her zaman yükselir; asıl soru yükselen adımın siparişe dönüp dönmediğidir. Adım metriği testin fotoğrafını çeker, sonucunu değil — birincil metrik huninin sonunda kalır.
@@ -384,7 +384,7 @@ Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci h
 - Kafa karıştırıcı indirim mesajı göstererek kullanıcıyı şüphelendirmeyin.
 - Aynı ekranda birden fazla indirim kodu alanı göstermeyin.
 - Kod uygulandı mesajını geciktirmeyin; güveni azaltır.
-- Test süresince kampanya koşullarını değiştirmeyin.
+- Otomatik uygulandı denen indirimi gerçek tutarından farklı göstermeyin veya ödemede sessizce düşürmeyin (kural 6).
 - Manuel kod girme yolunu tamamen kapatmayın.
 
 ---
@@ -411,7 +411,7 @@ Kart bilgisi girilen ekran, terk oranının en yüksek olduğu andır. Güvenli 
 - Gerçekte sahip olmadığınız sertifika rozetlerini göstermeyin.
 - Rozetleri CTA’nın önüne geçecek boyutta kullanmayın.
 - Çok fazla rozet koyup “fazla ısrarcı” algısı yaratmayın.
-- Test sırasında ödeme sağlayıcısını değiştirmeyin.
+- Aynı testte rozetlerin konumu ile sayısını birlikte değiştirmeyin.
 - Klavye açılınca rozet şeridi CTA’yı kapatmamalı.
 
 > **Pazar notu:** Hangi sinyalin güven verdiği pazara bağlıdır: bazı pazarlarda banka ve kart doğrulama logoları tanıdık ve rahatlatıcıyken, bazılarında ödeme sağlayıcısı veya bağımsız güvenlik mührü daha güçlü sinyaldir. Rozet setini kendi pazarınızın tanıdığı kurumlardan seçin.
@@ -441,7 +441,7 @@ Formdaki hangi alanın zorunlu, hangisinin isteğe bağlı olduğu genelde belir
 - İsteğe bağlı bir alanı arka planda zorunlu tutup öyle işaretlemeyin.
 - Etiketi form tasarımının geri kalanıyla tutarsız bir stilde göstermeyin.
 - Mobilde etiketi alan metnini kesecek kadar uzun yazmayın.
-- Test sırasında alan sırasını veya sayısını değiştirmeyin.
+- Zorunlu bir alanı “isteğe bağlı” diye etiketleyip gönderimde hata vermeyin.
 
 > **Not:** Büyük ölçekli bağımsız checkout kullanılabilirliği araştırmaları, bu işaretlemenin sitelerin yalnızca küçük bir kısmında (ve mobilde daha da az) uygulandığını, buna rağmen düşük maliyetli ve uzun süredir çözülmemiş bir sorun olduğunu gösteriyor.
 

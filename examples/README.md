@@ -6,7 +6,7 @@ looks like while that happens.
 
 | File | What it is |
 |---|---|
-| `scenario.json` | The portable test definition, valid against [`templates/scenario.schema.json`](../templates/scenario.schema.json). This is the machine-facing artifact: one variable, two variants, one primary KPI, two guardrails, a stated evidence level. |
+| `scenario.json` | The portable test definition, valid against [`templates/scenario.schema.json`](../templates/scenario.schema.json). This is the machine-facing artifact: one variable, two variants, one primary KPI, two guardrails, a stated evidence level. It also carries the optional `preregistration` block — the decisions fixed before launch (primary KPI and direction, guardrail margins, alpha, power, alternative, allocation, planned sample, decision rule, pre-declared segments), shaped to map onto the experiment-configuration fields common testing platforms ask for. |
 | `scenario-card-input.json` | The card-rendering input for the same scenario — the three boxes plus the two mockup bodies. Consumed by `scripts/build_card.py`. |
 | [`../docs/demo/scenario-card.html`](../docs/demo/scenario-card.html) | The rendered card, built from that input. Also served as the zero-install demo. |
 

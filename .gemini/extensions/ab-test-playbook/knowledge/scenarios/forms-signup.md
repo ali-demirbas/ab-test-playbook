@@ -52,7 +52,7 @@ Yüzen etiket (alanın içinde başlayıp yazmaya başlayınca üste kayan etike
 **Yapılmaması gerekenler**
 - Etiketi tamamen placeholder’a çevirip kaldırmayın; bu ayrı ve daha riskli bir değişikliktir.
 - Yüzen etiketi hem etiket hem yardım metni yerine kullanmayın.
-- Animasyon süresini testin ortasında değiştirmeyin.
+- Yüzen etiketi, alan boşken placeholder ile aynı renk ve boyutta bırakıp ikisini ayırt edilemez hâle getirmeyin.
 - Otomatik doldurma davranışını test aracıyla bastırmayın; gerçek kullanımda çalışan hâli ölçülmelidir.
 - Hareket azaltma tercihini yok sayan bir geçiş animasyonu koymayın.
 
@@ -105,7 +105,7 @@ Formu doldurmaya başlayan kullanıcının bitirme olasılığı artar. Bu neden
 
 **Yapılmaması gerekenler**
 - Sıra değiştirirken alan çıkarmayın veya eklemeyin.
-- Terk azaldı diye erken karar vermeyin; terkin sona kayıp kaymadığını alan bazında kontrol edin.
+- Zor alanı sona taşırken neden istendiğini açıklayan metni kaldırmayın.
 - Yasal olarak belirli bir sırada sunulması gereken alanları (onay metinleri) taşımayın.
 - Sıralamayı kullanıcıya mantıksız gelecek şekilde bozmayın (şehirden önce mahalle sormak gibi).
 - Tek bir form tipinde ölçüp sonucu tüm formlara kural diye yazmayın.
@@ -134,7 +134,7 @@ Tüm alanları baştan göstermek beklentiyi netleştirir ama form uzun görün�
 - Zorunlu bir alanı kademeli açmanın arkasına gizlemeyin; kullanıcı ne isteneceğini bilmeden başlamamalı.
 - Açılan alanı sayfayı zıplatarak göstermeyin; içerik kayması ayrı bir değişkendir.
 - Aynı testte hem kademeli açma hem alan sayısı azaltma yapmayın.
-- İsteğe bağlı alanların doldurulma oranı düştü diye testi hemen kesmeyin; tamamlama artışıyla birlikte değerlendirin.
+- Kademeli açılan alanın gönderim anında zorunlu çıktığı bir varyant kurmayın; kullanıcıya isteğe bağlı gibi gösterilen alan sonradan şart koşulmamalı.
 - Kademeli açmayı hassas alanı gizlemek için kullanmayın; hassas alan için kural 14’teki yöntemler geçerlidir.
 
 ---
@@ -213,7 +213,7 @@ Adres, şehir, şirket gibi alanlarda öneri listesi yazma yükünü azaltır ve
 
 **Yapılmaması gerekenler**
 - Serbest metin girişini tamamen kapatıp kullanıcıyı listeye hapsetmeyin.
-- Öneri kaynağının kapsamı düşükken testi başlatmayın; eksik veri kaynağı öneriyi değil altyapıyı ölçer.
+- Kullanıcının seçtiği öneriyi arka planda farklı bir değerle (ör. düzeltilmiş adres) sessizce değiştirmeyin.
 - Aynı testte otomatik tamamlama ile alan sayısını birlikte değiştirmeyin.
 - Tamamlama arttı diye veri doğruluğuna bakmadan kazandı demeyin.
 - Öneri listesini klavye ile gezilemez hâlde bırakmayın.
@@ -294,9 +294,9 @@ Sosyal giriş şifre oluşturma yükünü kaldırır ve kaydı hızlandırır. B
 
 **Yapılmaması gerekenler**
 - İki adımlı doğrulamayı veya kimlik doğrulamayı bu testin kapsamına almayın; bunlar koruma amaçlıdır (kural 6).
-- Kod teslim altyapısı kararsızken testi başlatmayın; altyapıyı ölçmüş olursunuz.
+- Kod ekranında kodun hangi adrese veya numaraya gönderildiğini gizlemeyin; kullanıcı yanlış kanalı düzeltebilmeli.
 - Şifreli girişi aynı anda kaldırıp geri dönüşü olmayan bir varyant kurmayın.
-- Kod geçerlilik süresini test ortasında değiştirmeyin.
+- Kodun gelmediği durumda yeniden gönderme seçeneğini kaldırmayın veya uzun bir bekleme süresinin arkasına saklamayın.
 - Yalnızca yeni kullanıcıda ölçüp sonucu mevcut kullanıcı tabanına genellemeyin.
 
 ---
@@ -351,7 +351,7 @@ Modal form dikkati toplar ve kullanıcıyı sayfadan koparmaz. Ancak küçük ek
 - Modalın arka planını karartma yoğunluğunu aynı testte değiştirmeyin; bu ayrı bir değişkendir.
 - Veri girilmiş bir modalı dışına tıklayınca uyarısız kapatan varyantı kazanan ilan etmeyin.
 - Mobilde modalı ekranın yarısına sıkıştırıp masaüstü sonucuyla karşılaştırmayın.
-- Modalı açılış anında değil kullanıcı davranışına göre tetikliyorsanız tetikleme kuralını test ortasında değiştirmeyin.
+- Modal formu, kullanıcı sayfada bir şey okurken ya da yazarken açılıp işini bölecek şekilde tetiklemeyin.
 
 ---
 
@@ -526,7 +526,7 @@ Formun üstüne kimin için uygun olduğunu yazmak (asgari bütçe, hizmet bölg
 - Hacim kaybı: Toplam talep ne kadar düşüyor?
 - Ton: Koşulu net söylemek mi, yumuşak ifade etmek mi daha iyi çalışıyor?
 - Yanlış eleme: Aslında uygun olan kullanıcılar da eleniyor mu?
-- Segment: Farklı kullanıcı tipleri açıklamaya farklı mı tepki veriyor?
+- Segment: Ücretli reklamdan gelen ile organik gelen ziyaretçi uygunluk açıklamasına farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
 - Nitelikli Talep Sayısı: Satışa uygun talep artıyor mu?
@@ -553,7 +553,7 @@ Kullanıcıyı doğrudan çok alanlı bir formla karşılaştırmak yerine, önc
 - İlgi: Isındırma sorusu asıl formun konusuyla doğrudan ilişkili mi olmalı?
 - Görsel geçiş: Isındırma sorusundan asıl forma geçiş tek ekranda mı, ayrı bir adımda mı daha akıcı?
 - Atlanabilirlik: Soruyu atlama seçeneği sunmak tamamlama oranını düşürüyor mu?
-- Segment: Mobil ve masaüstünde ısındırma adımının etkisi farklı mı?
+- Cihaz: Mobilde ısındırma adımı ayrı bir ekran gerektirdiğinde etkisi masaüstünden farklı mı?
 
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Isındırma sorusuyla başlayan akış, doğrudan forma göre daha çok tamamlanıyor mu?
@@ -584,7 +584,7 @@ E-posta veya telefon isteyen bir form, kullanıcıda “bu bilgi spam’e mi dö
 
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Güvence metni kayıt oranını artırıyor mu?
-- Alan Terk Oranı: Kullanıcı ilgili alanı doldurmadan formu bırakmıyor mu?
+- Alan Terk Oranı: İlgili alanda bırakma artmamalı.
 - Güven Algısı (anket): Metin güveni artırdığını hissettiriyor mu, yoksa şüphe mi uyandırıyor?
 - Sayfada Kalma Süresi: Ek metin okuma süresini kabul edilemez ölçüde uzatmamalı.
 - Kayıt Sonrası Şikâyet: Verilen sözle kayıt sonrası gönderim davranışı tutarsızsa bu artmamalı — artıyorsa ayrı, engelleyici bir bulgudur (kural 6).

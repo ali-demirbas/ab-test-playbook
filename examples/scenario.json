@@ -52,6 +52,25 @@
     "traffic_known": false
   },
 
+  "preregistration": {
+    "hypothesis": "Kupon alanını “İndirim kodum var” bağlantısının arkasına almak, kodu olmayan kullanıcının kod aramak için siteden çıkmasını azaltarak ziyaretçi başına geliri artırır.",
+    "variable": "Kupon kodu alanının görünürlüğü",
+    "primary_kpi": {"name": "Ziyaretçi Başına Gelir (RPV)", "direction": "increase"},
+    "guardrails": [
+      {"name": "Kupon Kullanım Oranı", "direction": "must_not_decrease", "margin_relative": 0.10},
+      {"name": "Kampanya Katılımı", "direction": "must_not_decrease", "margin_relative": 0.05}
+    ],
+    "mde": null,
+    "alpha": 0.05,
+    "power": 0.8,
+    "alternative": "two-sided",
+    "allocation": {"A": 0.5, "B": 0.5},
+    "planned_n_per_arm": null,
+    "duration_days": null,
+    "decision_rule": "RPV önceden belirlenen yönde anlamlı artarsa ve iki guardrail de marjı içinde kalırsa yayına al; aksi hâlde kontrolde kal.",
+    "segments": ["device", "new_vs_returning"]
+  },
+
   "history": {
     "tested_before": false
   }

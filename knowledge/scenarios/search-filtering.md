@@ -23,7 +23,7 @@ Anında filtreleme hızlı geri bildirim verir; toplu filtreleme daha kontrollü
 - Terk Oranı: Yükselmemeli.
 
 **Yapılmaması gerekenler**
-- Test sırasında tasarım, sıralama veya ürün listesini değiştirmeyin.
+- Anında filtrelemede her tıklamada sayfayı en üste kaydırıp kullanıcının yerini kaybettirmeyin.
 - Filtre sonrası gereksiz animasyon ve geçiş koymayın; performansı düşürür.
 - Seçili filtrelerin görünmediği veya kaybolduğu durumlar bırakmayın.
 - Aynı testte hem filtre modelini hem filtre setini değiştirmeyin.
@@ -52,7 +52,7 @@ Arama çubuğunun konumu ve görünürlüğü, kullanıcının ürün keşif dav
 **Yapılmaması gerekenler**
 - Arama kullanımı yüksek bir sitede menü-içi kolu teste hiç sokmayın; o kol ancak arama payı düşükse denenir.
 - Placeholder metnini uzun yazmayın; okunabilirlik düşer.
-- Test sırasında öneri algoritmasını değiştirmeyin.
+- İkon varyantında ikonu etiketsiz ve tanınmayan bir simgeyle göstermeyin.
 - Mobilde arama ikonunu tıklanamayacak kadar küçültmeyin.
 - Sonuçsuz aramada kullanıcıyı boş ekranda bırakmayın.
 
@@ -66,7 +66,7 @@ Arama alanının önceki aramaları otomatik doldurup doldurmaması, keşif sür
 - Hız: Varsayılan öneri varken aramaya daha hızlı başlanıyor mu?
 - Keşif: Otomatik doldurmamak yeni içerik keşfini artırıyor mu?
 - Boş kutu: Boş arama kutusu popüler kategorilere yönlendiriyor mu?
-- Süreç: Otomatik doldurmayı kapatmak süreci hızlandırıyor mu?
+- Cihaz: Mobilde klavye açıkken öneri listesi ekranın ne kadarını kaplıyor ve kullanımı değiştiriyor mu?
 - Geçmiş: Geçmişe erişimi kaldırmak şikâyet yaratıyor mu?
 
 **Takip edilecek ana KPI’lar**
@@ -78,10 +78,10 @@ Arama alanının önceki aramaları otomatik doldurup doldurmaması, keşif sür
 
 **Yapılmaması gerekenler**
 - Önceki aramaları tamamen kaldırmayın; kullanıcı geçmişe erişebilmeli.
-- Test boyunca placeholder metnini değiştirmeyin.
+- Otomatik doldurulan eski aramayı kullanıcı silmeden yeni aramaya eklemeyin.
 - Aynı testte kategori ve filtre isimlerini değiştirmeyin.
 - Otomatik önerileri tümden kapatıp kullanıcıyı yönsüz bırakmayın.
-- Öneri kaynağını (algoritma veya elle liste) test ortasında değiştirmeyin.
+- Başka kullanıcıların hassas aramalarını popüler öneri olarak göstermeyin.
 
 ---
 
@@ -97,8 +97,8 @@ Sonuç bulunamayan arama, terk oranı en yüksek ekranlardan biridir. Boş bir e
 - Cihaz: Mobilde ve masaüstünde davranış farklı mı?
 
 **Takip edilecek ana KPI’lar**
-- Sıfır Sonuç Kurtarma Oranı: Ürün sayfasına geçen kullanıcı oranı.
-- Yeniden Arama Oranı: İkinci bir arama yapılıyor mu?
+- Sıfır Sonuç Sonrası Satın Alma Oranı: Sıfır sonuç gören oturumların satışa dönme oranı.
+- Sıfır Sonuç Kurtarma Oranı: Tanı metriği; ürün sayfasına geçen kullanıcı oranı.
 - Oturum Devam Oranı: Siteden çıkılmıyor mu?
 - Genel Arama Dönüşümü: Toplam performans düşmemeli.
 - Sayfa Yüklenme Süresi: Öneri blokları yavaşlatmamalı.
@@ -107,7 +107,7 @@ Sonuç bulunamayan arama, terk oranı en yüksek ekranlardan biridir. Boş bir e
 - Alakasız ürün önerip kullanıcıyı yanıltmayın.
 - Arama kutusunu ekrandan kaldırmayın.
 - Sıfır sonuç sayfasını sadece kampanya alanına çevirmeyin.
-- Test sırasında arama eşleştirme kurallarını değiştirmeyin.
+- Öneri bloklarını arama kutusunun üstüne yerleştirip yeniden aramayı zorlaştırmayın.
 - Yazım önerisini otomatik uygulayıp kullanıcıyı şaşırtmayın.
 
 ---
@@ -161,7 +161,7 @@ Menünün sabit kalması sayfa içi gezinme hızını artırabilir, ancak ekran 
 - Sticky menüyü ekranın büyük bölümünü kaplayacak kadar yüksek yapmayın.
 - Mobilde menünün CTA ve filtreleri kapatmasına izin vermeyin.
 - Sayfa hızını düşüren animasyon ve gölge kullanmayın.
-- Test süresince menü yapısını ve içeriğini değiştirmeyin.
+- Sticky menüyü kaydırma yönüne göre sürekli gizleyip gösterip titremeye yol açmayın.
 - Menü sabitlenirken sayfa kaymasına yol açmayın.
 
 ---
@@ -178,14 +178,14 @@ Mega menü mü, sade yatay menü mü daha iyi gezinme sunuyor? Yapıdaki fark, i
 - Mobil: İki yapı arasındaki fark mobilde büyüyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Dönüşüm Oranı (CR): Sade menü satın almayı artırıyor mu?
-- İlk Tıklama Süresi: Doğru kategoriye ulaşma süresi kısalıyor mu?
-- Menü Tıklama Derinliği: Daha az adımda hedefe ulaşılıyor mu?
-- Hemen Çıkma Oranı: Yükselmemeli; karmaşık menü kullanıcıyı kaçırmamalı.
-- Kategori Sayfası Girişi: Kategoriye geçiş artıyor mu?
+- Dönüşüm Oranı (CR): Menü yapısı satın almaya giden gezinmeyi değiştiriyor mu?
+- Alt Kategoriye Doğrudan İniş Oranı: Menüden tek adımda alt kategoriye geçenlerin payı değişiyor mu?
+- Menüden Kategoriye Geçiş Oranı: Menüyü açanların kaçı bir kategoriye iniyor?
+- Seçimsiz Kapatılan Menü Oranı: Artmamalı; kullanıcı menüde kaybolmamalı.
+- Hemen Çıkma Oranı: Yükselmemeli; menü yapısı kullanıcıyı kaçırmamalı.
 
 **Yapılmaması gerekenler**
-- Test sırasında menü başlıklarının sırasını veya adını değiştirmeyin.
+- Yatay menü varyantında mega menüdeki alt kategorileri erişilemez bırakmayın; ikinci seviyeye bir yol kalmalı.
 - Mega menüde çok fazla kategori sunmayın; bilgi yükü yaratır.
 - Mobilde yatay menüde kaydırma sorununa izin vermeyin.
 - Mega menüde kolon sayısını taranamayacak kadar artırmayın.
@@ -200,7 +200,7 @@ Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir.
 **Test edilmesi gerekenler**
 - Sadelik: Alt başlık sayısını azaltmak odaklanmayı kolaylaştırıyor mu?
 - Hız: Sade menü aranan kategoriye daha hızlı ulaştırıyor mu?
-- Tıklama: Kullanıcılar daha az tıklamayla ilerliyor mu?
+- Cihaz: Mobil menüde sadeleştirmenin etkisi masaüstündekinden büyük mü?
 - Süre: Navigasyon süresi anlamlı kısalıyor mu?
 - Keşif: Sadeleşince keşfedilen kategori sayısı düşüyor mu?
 
@@ -214,7 +214,7 @@ Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir.
 **Yapılmaması gerekenler**
 - Ana kategorileri tamamen kaldırmayın; bilgi kaybı hissi yaratır.
 - Alt başlıkları aşırı azaltıp keşfi kısıtlamayın.
-- Test sırasında ikon ve tasarım dilini değiştirmeyin.
+- Kaldırılan alt başlıklara giden eski bağlantıları yönlendirmesiz bırakmayın.
 - Mobilde sticky menünün kritik alanları kapatmasına izin vermeyin.
 - Menü değişikliğiyle birlikte sayfa hızını etkileyen eklemeler yapmayın.
 
@@ -232,8 +232,8 @@ Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir.
 - Karar: Filtre kullanımı artınca karar süresi kısalıyor mu?
 
 **Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): İndirim filtresi geliri artırıyor mu? Birincil karar bu metrikle verilir.
 - Dönüşüm Oranı (CR): İndirim filtresi satın almayı artırıyor mu?
-- Filtre Kullanım Oranı: Filtre ne kadar kullanılıyor?
 - Sepete Ekleme Oranı: Filtreleyenler daha çok ekliyor mu?
 - Ortalama Sepet Tutarı: İndirime yönelim sepeti küçültüyor mu?
 - Brüt Marj: Düşmemeli; indirimli ürüne kayış kârı eritmemeli.
@@ -241,7 +241,7 @@ Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir.
 **Yapılmaması gerekenler**
 - Çok fazla filtre ekleyip kullanıcıyı kararsız bırakmayın.
 - Tutarsız sonuç veren indirim aralığı tasarlamayın.
-- Test süresince filtreyi değiştirmeyin; veri güvenilmez olur.
+- Uydurma referans fiyattan hesaplanan indirim oranını filtreye dahil etmeyin; filtre yalnızca gerçek indirimi göstermeli (kural 6).
 - Mobilde filtre alanını ekranı kaplayacak kadar büyütmeyin.
 - Yalnızca dönüşüme bakıp marj etkisini atlamayın.
 
@@ -313,8 +313,8 @@ Aranan kelimenin sonuç başlıklarında işaretlenmesi eşleşmenin nerede oldu
 - Cihaz: Mobilde kısalan başlıklarda vurgu hâlâ anlamlı mı?
 
 **Takip edilecek ana KPI’lar**
-- Arama Sonucu Tıklama Oranı: Sonuçlara tıklama artıyor mu?
 - Dönüşüm Oranı (CR): Aramadan satışa giden oran artıyor mu?
+- Arama Sonucu Tıklama Oranı: Tanı metriği; sonuçlara tıklama artıyor mu?
 - Arama Tekrarı Oranı: Aynı kullanıcının yeniden arama yapması artmamalı.
 - Sonuç Terk Oranı: Sonuç sayfasından çıkış artmamalı.
 - Erişilebilirlik: Vurgu yalnızca renge dayanmamalı, kontrast korunmalıdır.

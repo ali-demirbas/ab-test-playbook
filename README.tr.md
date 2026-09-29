@@ -27,7 +27,7 @@ Gerçek e-ticaret, mobil uygulama ve SaaS büyüme çalışmalarında kullanıla
 | Rehber olmadan | ab-test-playbook ile |
 |---|---|
 | Test fikirleri hafızadan ya da o gün akla gelenden gelir | 211 senaryoluk arşivden ICE'a göre sıralı, ya da belirtilmiş bir mekanizmayla üretilir — "daha dikkat çekici olur" kabul edilen bir gerekçe değildir |
-| "Anlamlı görünüyor" iki yüzdeye bakıp verilen bir izlenimdir | Gerçek bir iki-oranlı z-testi, güven aralığı, örneklem ve SRM kontrolü — script ile hesaplanır, asla gözle kestirilmez |
+| "Anlamlı görünüyor" iki yüzdeye bakıp verilen bir izlenimdir | Gerçek bir iki-oranlı z-testi (küçük sayılarda kesin test), güven aralıkları, örneklem, A/B/n düzeltmesi ve SRM kontrolü — script ile hesaplanır, asla gözle kestirilmez |
 | Beş metrik izlenir, hiçbiri kararı vermez | Adı konmuş tek bir birincil metrik, zorunlu bir guardrail — p-hacking riski işaretlenir, yayınlanmaz |
 | Senaryoyu yazan model kendi ödevini kendi notlandırır | Kart render edilmeden önce metodolojiyi bir adversarial denetçi kontrol eder; ikinci bir denetçi görseldeki gizli ikinci farkı arar |
 | Fiyat veya indirim testi yalnızca dönüşüm oranına bakar | Gelir ve marj kontrolü otomatik çalışır — dönüşüm artarken ziyaretçi başına gelirin düşmesi bir dipnot değil, asıl bulgudur |
@@ -134,7 +134,7 @@ agents/          scenario-critic — senaryo render edilmeden önce metodolojik 
                  mockup-reviewer — iki mockup'ın tam olarak tek bir şeyde farklılaştığını kontrol eder
 knowledge/       methodology.md · mockup-style.md
                  scenarios/ — yolculuk aşamasına göre derlenmiş senaryolar (TR)
-scripts/         analyze_results.py — z-testi, örneklem, gelir/marj kontrolü, örneklem-oranı-uyuşmazlığı kontrolü (yalnızca stdlib)
+scripts/         analyze_results.py — z-testi (küçük örneklemde Fisher kesin testi), Holm düzeltmeli A/B/n, örneklem, SRM, sürekli metrikler (Welch, bootstrap, CUPED), Bayes görünümü (yalnızca stdlib)
                  validate_scenarios.py — senaryo arşivi için format kontrolü
                  build_card.py — deterministik kart render'ı: şablonu doldurur, metni kaçırır, kendini drift'e karşı doğrular
                  validate_scenario_json.py — bir senaryoyu şemaya göre kontrol eder (bir birincil KPI, bir guardrail, iki varyant)
@@ -174,7 +174,7 @@ Senaryo içeriği Türkçedir (arşivin ana dili). Skill'ler sizin kullandığı
 
 ## Kapsam
 
-Bu ne: bir senaryo arşivi, disiplinli bir tasarım/denetim metodolojisi ve yapıştırdığınız rakamları yorumlamak için gerçek bir istatistik motoru (`scripts/analyze_results.py` — z-testi, güven aralığı, örneklem, örneklem-oranı-uyuşmazlığı kontrolü).
+Bu ne: bir senaryo arşivi, disiplinli bir tasarım/denetim metodolojisi ve yapıştırdığınız rakamları yorumlamak için gerçek bir istatistik motoru (`scripts/analyze_results.py` — kesin test yedekli z-testi, A/B/n, örneklem, SRM, CUPED’li sürekli metrikler, Bayes görünümü).
 
 Bu ne değil: bir veri ambarına veya analitik aracına (GA4, Mixpanel, PostHog, BigQuery) bağlanıp kendiliğinden canlı rakam çekmez, ve koşan bir testi gerçek zamanlı izlemez — rakamlar elinize geçtiğinde siz getirirsiniz.
 

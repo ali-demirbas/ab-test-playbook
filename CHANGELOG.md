@@ -2,7 +2,25 @@
 
 All notable changes to this project are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
-## Unreleased
+## 2.0.0 — 2026-09-29
+
+A full re-audit of the engine, rules and archive. Breaking for anyone relying on the old skill names: skills are `ab-test-*` (reinstall the plugin).
+
+### Fixed
+- **Stats:** `significance` no longer calls a result significant when the normal approximation is invalid; it switches to Fisher's exact test and reports `method`. Difference CI is now Newcombe (no more [0, 0] at 0% or 100%), plus a relative-lift CI.
+- **Results flow:** SRM is now step 0; a sample-ratio mismatch stops interpretation. A fisher-exact result is flagged as needing confirmation.
+- **Rules:** test memory read/write contradiction resolved (write only on user confirmation); brand source never blocks; at most one question per turn (new rule 19); 1–5 scenarios per turn, never padded; page shared → design, no page → suggest; A/A requests get a setup spec instead of a card; a mockup fix never changes the three boxes.
+- **Archive (211 scenarios):** wrong primary KPIs corrected (price, discount and free-shipping tests now revenue-led; click metrics moved to diagnostic), multi-variable test items removed, near-duplicate scenarios made explicitly distinct with cross-references, generic test-hygiene lines replaced with variant-specific harms, missing device/segment questions and real-data guards added.
+
+### Added
+- Stats: one-sided tests, unequal allocation, A/B/n with Holm correction, k-arm SRM, `--planned-n` peeking guard, achieved MDE, `continuous` (Welch, winsorize, bootstrap, CUPED) and `bayes` subcommands.
+- Guardrails carry a tolerated-degradation margin, tested one-sided.
+- Design emits a JSON pre-registration block (schema-validated) that maps onto common experimentation-platform config.
+- Optional `.abtest-backlog.md` for ranked candidates.
+- Methodology: test hygiene, variance reduction, sequential testing, Bayesian view, multiple comparisons, concurrent tests, novelty effects, continuous metrics.
+- Agents translated to English; rationale moved to `docs/design-notes.md` to cut per-turn context.
+
+## 0.1.0
 
 ### Added
 - 6 more scenarios (205 → 211), each checked against the existing archive first — none duplicate an existing mechanism: **field-purpose transparency** (`saas-b2b.md` — a short "why we ask" line next to a lead-form field whose relevance isn't obvious, distinct from the existing privacy-reassurance scenario, which addresses spam/sharing fear rather than perceived irrelevance), **single- vs. two-column page skeleton** (`saas-b2b.md` — the page's overall layout, not a form's field columns, which is a separate existing scenario), **visitor-type homepage segmentation** (`home-landing.md` — presenting the homepage as parallel blocks for distinct visitor types at once, distinct from the existing referrer-based single-headline swap), **single-motivation promo banner focus** (`ui-elements.md` — one clear motivation vs. several competing offers in a promo widget, distinct from the existing sitewide-announcement presence/timing scenario), **visual-weight highlighting among non-price options** (`ui-elements.md` — giving one of several equivalent choices more visual weight, generalized beyond the existing pricing-plan-specific badge/order scenarios), and **radio buttons vs. dropdown** (`forms-signup.md` — a plain single-choice-input comparison the archive had no scenario for at all). All pass `validate_scenarios.py` unchanged; scenario-count references updated across both READMEs, `docs/architecture.md` and `docs/index.html`.

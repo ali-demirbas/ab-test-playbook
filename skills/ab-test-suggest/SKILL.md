@@ -1,10 +1,10 @@
 ---
 name: ab-test-suggest
-description: Suggest proven A/B test scenarios for a given page or journey stage, ranked by ICE. Use when the user asks "what should I test", "what should I A/B test on my checkout / cart / product page / pricing page / homepage", "give me A/B test ideas", "experiment ideas", "split test ideas", "CRO ideas", "which tests should I run first", "what tests are worth running", "test öner", "hangi testleri yapmalıyım", "checkout için hangi testler", "anasayfam için test fikirleri", "ne test edeyim". Picks matching scenarios from the curated archive in knowledge/scenarios/ (e-commerce, mobile app, SaaS/B2B, search and filtering, forms, pricing) and delivers each as an HTML card via ab-test-card. For a test designed specifically for a page or screenshot you share, see ab-test-design. To review a plan you already have, see ab-test-audit.
+description: Suggest proven A/B test scenarios for a given page or journey stage, ranked by ICE. Use when the user asks "what should I test", "what should I A/B test on my checkout / cart / product page / pricing page / homepage", "give me A/B test ideas", "experiment ideas", "split test ideas", "CRO ideas", "which tests should I run first", "what tests are worth running", "test öner", "hangi testleri yapmalıyım", "checkout için hangi testler", "anasayfam için test fikirleri", "ne test edeyim". Picks matching scenarios from the curated archive in knowledge/scenarios/ (e-commerce, mobile app, SaaS/B2B, search and filtering, forms, pricing) and delivers each as an HTML card via ab-test-card. Routing — when NO page, URL or screenshot is shared, use this skill; when one is shared, use ab-test-design instead. To review a plan you already have, see ab-test-audit.
 metadata:
-  version: 0.1.0
+  version: 2.0.0
   category: recommend
-  updated: 2026-08-17
+  updated: 2026-09-29
 ---
 
 # ab-test-suggest — Archive Test Suggestions
@@ -16,7 +16,7 @@ metadata:
 ## Flow
 
 1. Take the context from the router (sector, page). **Traffic, test tool and setup info are not asked** (CLAUDE.md rules 5 and 13): they aren't required to produce a scenario, and aren't put in front of the output as "missing." They're only requested when the user asks about duration, sample size or significance. If sector or page is still unclear, pick the closest stage and state the assumption in one sentence — don't ask a question and stall the flow.
-   - **Read the test memory (CLAUDE.md rule 16).** Check whether `.abtest-history.md` exists in the user's working directory. If it does, read it and pull the records for the target page. If not, don't narrate that a search happened, just continue silently; at the end of the output, suggest once: "If you keep test history as `.abtest-history.md`, I can filter suggestions against past results."
+   - **Read the test memory (CLAUDE.md rule 16).** Check whether `.abtest-history.md` and `.abtest-backlog.md` exist in the user's working directory. If they do, read them and pull the records for the target page; a backlog row already queued for this page is surfaced instead of re-suggested as new. If not, don't narrate that a search happened, just continue silently; at the end of the output, suggest once: "If you keep test history as `.abtest-history.md`, I can filter suggestions against past results."
 2. Map the page/flow to a journey stage and read the matching file:
    - Homepage, landing, campaign page → `knowledge/scenarios/home-landing.md`
    - Search, filter, results page → `knowledge/scenarios/search-filtering.md`
@@ -33,7 +33,7 @@ metadata:
    - Page-independent elements like buttons, links, icons → `knowledge/scenarios/ui-elements.md` (a lower tier: it isn't put first while a stronger candidate from a higher tier exists, but a scenario with a strong mechanism resting on an observable page obstacle is still suggested — `methodology.md` → impact ranking. Don't suggest from this file if traffic is known to be low; don't assume it if unknown.)
    - If multiple stages are requested, read all the relevant files. **On any page with a form, also read `forms-signup.md`**: the checkout address form, a lead form and a signup screen live in the context file, but scenarios about the form's own design (label position, field order, input method) live only there.
    - **Diagnose the funnel.** If the user has said where the loss is happening (rule 13's problem question answers this), first separate two things: a **clogged vein** — a high-traffic, low-conversion step (even a small improvement here affects many users, so it's the priority) and a **missing link** — a step the funnel should have but doesn't at all (e.g. no delivery date shown at all in cart). They carry different priority: for a clogged vein, improve the existing step; for a missing link, add a new element (methodology.md → variable isolation, the "addition" axis).
-3. Pick 2-5 scenarios that fit the user's context. Drop any that don't fit, with the reason (e.g. don't suggest a return-rate-primary test on a low-traffic page). If there are more than 5 strong candidates, don't produce them all without asking — step 6's rule applies.
+3. Pick 1-5 **strong candidates** that fit the user's context (strong = passes the mechanism gate in `methodology.md` → idea-generation lens **and** ICE ≥ Medium). Never pad the set with a weak candidate to reach a count — one strong scenario is a complete answer. Drop any that don't fit, with the reason (e.g. don't suggest a return-rate-primary test on a low-traffic page). If there are more than 5 strong candidates, produce the top 5 and offer the rest (Output format).
    - **Compare against history.** If a scenario has already tested the same variable on the same page before:
      - **won** → don't suggest it again; instead suggest the next step to build on the winning change.
      - **lost / no difference** → no automatic elimination (rule 16: history isn't a veto). First look for a reason that justifies retrying: has the page changed since that test, is a different segment/market being asked about, has a long time passed, was the earlier run underpowered. If there's a reason, suggest it with the reason: "This lost in March, but the card design changed after that test." If there's no reason, choose not to include it this round and say so in one sentence — don't drop it silently.
@@ -44,7 +44,8 @@ metadata:
 4. **Pass it through the lens, then rank with ICE (`methodology.md` → idea-generation lens).** Candidates picked from the archive go through two filters before ICE: (a) **mechanism duplication** — don't present two scenarios in the same page area resting on the same behavioral mechanism as separate suggestions; merge them or pick the stronger one; (b) **impact ranking** — among candidates that pass the gate, offer/flow/decision-moment information or information architecture comes first, then hierarchy and objection-answering copy, then color and generic CTA wording comes last. This isn't a ban: a third-tier candidate with a strong mechanism is still suggested. Test memory only overrides this ranking for the **same component or same mechanism**, not the whole tier.
 5. Rank with ICE: Impact × Confidence × Ease. The scoring scale and tie-break order are in `knowledge/methodology.md` → Prioritization (ICE); produce the same ranking for the same input. Write a one-sentence ICE rationale next to each suggestion.
 6. **Review (CLAUDE.md rule 17).** Before rendering the selected scenarios as cards, hand them to `agents/scenario-critic`. Fix any item that comes back `FIX` and re-review; don't produce a scenario that comes back `RET`, and tell the user the reason for the drop in one sentence. Don't dump the review report into the chat (rule 9). Archive scenarios are reviewed too — being in the archive doesn't prove it's valid for this page (market dependency, staleness, test memory).
-7. If the brand-guide question hasn't been asked this session, ask it first (rule 12). Then turn every scenario that passed review (2-5 of them) directly into HTML via `ab-test-card` (CLAUDE.md rule 9) — the full content of the three boxes lives only in the card, it isn't also written to chat as text.
+7. Turn every scenario that passed review (1-5 of them) directly into HTML via `ab-test-card` (CLAUDE.md rule 9) — the full content of the three boxes lives only in the card. The brand source never blocks (rule 12): no screenshot → neutral palette plus a one-line rebrand offer.
+8. **Backlog (optional, CLAUDE.md rule 16).** After the cards, offer once to append the ranked candidates — including strong ones beyond the top 5 — to `.abtest-backlog.md` (format: `${CLAUDE_PLUGIN_ROOT}/templates/abtest-backlog.md`). Append only if the user confirms; otherwise show the rows for them to paste. This offer counts as the turn's one question (rule 19) — skip it if another question is already being asked.
 
 ## Output format
 
@@ -55,7 +56,7 @@ Only a short header per scenario stays in the chat (not the three boxes — thos
 <one-sentence mechanism> → `abtest-card-<slug>.html`
 ```
 
-If there are more than 5 strong candidates, don't produce them all without asking: say how many there are and ask whether to continue — this is rule 13's one exception (CLAUDE.md rule 9).
+If there are more than 5 strong candidates (mechanism gate passed + ICE ≥ Medium), produce the top 5 and say: "N more strong candidates — continue, or add them to the backlog?" This is the turn's one question (CLAUDE.md rules 9 and 19).
 
 At the end of the list, if the confidence of the suggestion set is weak, say so in one sentence — don't present it as strong silently. Sources of weakness: the user shared no data at all, there's no close archive precedent for this context, the sector/page info stayed coarse, traffic is unknown. Example: "These suggestions are based on page type alone; your own funnel data could change the ranking."
 
@@ -64,6 +65,7 @@ At the end of the list, if the confidence of the suggestion set is weak, say so 
 - Suggest a market-dependent scenario (ones with a "Market note" underneath) without passing that note along; if the user's target market is unknown, ask first (CLAUDE.md rule 11).
 - Silently suggest a scenario whose validity has expired: if a platform rule, regulation or standardization shifted the scenario's ground, say so or don't suggest it at all (`knowledge/methodology.md` → Archive staleness).
 - Copy archive text without adapting it to the user's context — localize the examples to the sector/product (e.g. a clothing example, not "Wireless Headphones," on a fashion site).
-- Produce more than five scenarios without asking; state the count and ask the user (rule 9).
+- Produce more than five scenarios without asking; state the count and offer the rest (rule 9).
+- Pad the set with a weak candidate (fails the mechanism gate or ICE below Medium) to reach a count.
 - Write the full content of the three boxes as chat text in addition to the card (rule 9) — only if the user explicitly asks for a text version, write it separately.
 - List scenario titles and ask "which one should I expand" (CLAUDE.md rule 13); give the selected ones directly as cards.

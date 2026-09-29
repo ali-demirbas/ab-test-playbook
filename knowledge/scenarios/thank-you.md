@@ -97,8 +97,8 @@ Bir deneyim büyük ölçüde en yoğun anına ve nasıl bittiğine göre hatır
 - Segment: İlk kez alışveriş yapan ile sadık müşteriye aynı an mı sunulmalı?
 
 **Takip edilecek ana KPI’lar**
-- Marka Algısı (anket): Deneyimin genel algısı standart ekrana göre daha olumlu mu?
-- Tekrar Satın Alma Oranı: 30/60/90 gün içinde tekrar alışveriş oranı artıyor mu?
+- Tekrar Satın Alma Oranı: 30/60/90 gün içinde tekrar alışveriş veya geri dönüş oranı artıyor mu?
+- Marka Algısı (anket): İkincil sinyal; deneyimin genel algısı standart ekrana göre daha olumlu mu?
 - Sosyal Paylaşım Oranı: Kullanıcı deneyimi kendiliğinden paylaşıyor mu?
 - Sipariş Bilgisi Görünürlüğü: Kutlama anı asıl sipariş veya teslimat bilgisinin görünürlüğünü azaltmamalı.
 - Sayfa Yüklenme Süresi: Animasyon veya ek görsel sayfayı yavaşlatmamalı.

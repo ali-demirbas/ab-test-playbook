@@ -160,6 +160,72 @@ class TestSample(unittest.TestCase):
         self.assertEqual(errors_for(sample={"traffic_known": True, "estimated_days": 14}), [])
 
 
+def base_prereg():
+    return {
+        "hypothesis": "Kupon alanını gizlemek RPV'yi artırır.",
+        "variable": "Kupon alanının görünürlüğü",
+        "primary_kpi": {"name": "RPV", "direction": "increase"},
+        "guardrails": [{"name": "Kupon kullanımı", "direction": "must_not_decrease",
+                        "margin_relative": 0.05}],
+        "mde": None,
+        "alpha": 0.05,
+        "power": 0.8,
+        "alternative": "two-sided",
+        "allocation": {"A": 0.5, "B": 0.5},
+        "planned_n_per_arm": None,
+        "duration_days": None,
+        "decision_rule": "RPV anlamlı artar ve guardrail marj içinde kalırsa yayına al.",
+        "segments": ["device"],
+    }
+
+
+def prereg_errors(**changes):
+    pre = base_prereg()
+    pre.update(changes)
+    return errors_for(preregistration=pre)
+
+
+class TestPreregistration(unittest.TestCase):
+    def test_valid_block_is_accepted(self):
+        self.assertEqual(prereg_errors(), [])
+
+    def test_block_is_optional(self):
+        self.assertEqual(errors_for(), [])
+
+    def test_unknown_numbers_may_be_null(self):
+        self.assertEqual(prereg_errors(mde=None, planned_n_per_arm=None, duration_days=None), [])
+
+    def test_guardrail_without_margin_is_rejected(self):
+        errs = prereg_errors(guardrails=[{"name": "Kupon kullanımı", "direction": "must_not_decrease"}])
+        self.assertTrue(any("margin_relative" in e for e in errs), errs)
+
+    def test_empty_guardrails_is_rejected(self):
+        self.assertTrue(prereg_errors(guardrails=[]))
+
+    def test_allocation_must_sum_to_one(self):
+        errs = prereg_errors(allocation={"A": 0.5, "B": 0.4})
+        self.assertTrue(any("sum" in e for e in errs), errs)
+
+    def test_uneven_allocation_summing_to_one_is_accepted(self):
+        self.assertEqual(prereg_errors(allocation={"A": 0.9, "B": 0.1}), [])
+
+    def test_bad_alternative_is_rejected(self):
+        self.assertTrue(prereg_errors(alternative="one-sided"))
+
+    def test_alpha_out_of_range_is_rejected(self):
+        self.assertTrue(prereg_errors(alpha=1.5))
+
+    def test_primary_kpi_must_match_scenario(self):
+        errs = prereg_errors(primary_kpi={"name": "CR", "direction": "increase"})
+        self.assertTrue(any("primary KPI" in e for e in errs), errs)
+
+    def test_missing_decision_rule_is_rejected(self):
+        pre = base_prereg()
+        del pre["decision_rule"]
+        errs = errors_for(preregistration=pre)
+        self.assertTrue(any("decision_rule" in e for e in errs), errs)
+
+
 class TestExampleFile(unittest.TestCase):
     def test_shipped_example_validates(self):
         if not os.path.isfile(EXAMPLE):
