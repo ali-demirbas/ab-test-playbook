@@ -19,6 +19,15 @@ sys.path.insert(0, os.path.join(HERE, "..", "scripts"))
 import analyze_results as ar
 
 
+def setUpModule():
+    # Bu dosyadaki testler Türkçe mesaj metinlerini doğrular; CLI varsayılanı İngilizcedir (--lang en).
+    ar.set_lang("tr")
+
+
+def tearDownModule():
+    ar.set_lang("en")
+
+
 def run_cli(*args):
     out = subprocess.run([sys.executable, SCRIPT, *args], capture_output=True, text=True)
     return out.returncode, out.stdout, out.stderr

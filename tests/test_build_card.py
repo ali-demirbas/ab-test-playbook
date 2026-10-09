@@ -12,6 +12,7 @@ import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "scripts"))
 from build_card import build, render_item, render_list, self_verify, fixed_lines  # noqa: E402
+import json  # noqa: E402
 
 REPO_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 REAL_TEMPLATE = os.path.join(REPO_ROOT, "templates", "scenario-card.html")
@@ -104,7 +105,7 @@ class TestEscaping(unittest.TestCase):
         # kötüsü, etiket içeriği tag olarak sızar.
         item = {"label": "<img src=x>", "text": "açıklama"}
         rendered = render_item(item)
-        self.assertTrue(rendered.startswith("<li><b>&lt;img src=x&gt;</b>"))
+        self.assertTrue(rendered.startswith("<li><b>&lt;img src=x&gt;:</b>"))
         self.assertNotIn("<img", rendered)
 
 
@@ -181,6 +182,33 @@ class TestDeviceSkeleton(unittest.TestCase):
     def test_unknown_device_exits(self):
         with self.assertRaises(SystemExit):
             build(FAKE_TEMPLATE, make_scenario(device="tablet"))
+
+
+class TestBottomNav(unittest.TestCase):
+    """The phone tab bar is drawn only when the page really has one."""
+
+    def test_missing_bottom_nav_drops_the_bar(self):
+        out = build(FAKE_TEMPLATE, make_scenario())
+        self.assertNotIn('class="bottomnav"', out)
+        self.assertIn('class="statusbar"', out)
+
+    def test_empty_list_drops_the_bar(self):
+        out = build(FAKE_TEMPLATE, make_scenario(bottom_nav=[]))
+        self.assertNotIn('class="bottomnav"', out)
+
+    def test_given_labels_are_rendered_in_both_variants(self):
+        out = build(FAKE_TEMPLATE, make_scenario(bottom_nav=["Ana Sayfa", "Poliçelerim", "Hesabım"]))
+        self.assertEqual(out.count('<span>Poliçelerim</span>'), 2)
+        self.assertNotIn("<span>Anasayfa</span>", out)
+
+    def test_labels_are_escaped(self):
+        out = build(FAKE_TEMPLATE, make_scenario(bottom_nav=["<b>x</b>"]))
+        self.assertIn("&lt;b&gt;x&lt;/b&gt;", out)
+        self.assertNotIn("<span><b>x</b></span>", out)
+
+    def test_web_card_ignores_bottom_nav(self):
+        out = build(FAKE_TEMPLATE, make_scenario(device="web", bottom_nav=["A"]))
+        self.assertNotIn('class="bottomnav"', out)
 
 
 class TestLeftoverPlaceholders(unittest.TestCase):
@@ -266,6 +294,11 @@ class TestRealTemplate(unittest.TestCase):
         self.assertIn("Kupon alanı katlanınca", built)
         self.assertIn("Test Edilmesi Gerekenler", built)
 
+    def test_builds_and_self_verifies_phone_web(self):
+        built = build(self.template, make_scenario(device="phone-web", url="https://www.magaza.example/sepet"))
+        self_verify(built, self.template, "phone-web")
+        self.assertEqual(built.count('class="m-addr"'), 2)
+
     def test_builds_and_self_verifies_web(self):
         built = build(self.template, make_scenario(device="web", url="site.com/sepet"))
         self_verify(built, self.template, "web")
@@ -283,7 +316,7 @@ class TestRenderList(unittest.TestCase):
     def test_plain_and_labelled_items_mix(self):
         out = render_list(["düz madde", {"label": "Etiket", "text": "açıklama"}])
         self.assertIn("<li>düz madde</li>", out)
-        self.assertIn("<li><b>Etiket</b> açıklama</li>", out)
+        self.assertIn("<li><b>Etiket:</b> açıklama</li>", out)
 
 
 if __name__ == "__main__":

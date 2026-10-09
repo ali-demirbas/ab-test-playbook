@@ -3,12 +3,9 @@
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 ![Scenarios](https://img.shields.io/badge/scenarios-211-blue)
-![Tests](https://img.shields.io/badge/tests-121_passing-brightgreen)
+![Python](https://img.shields.io/badge/python-3.9%2B_%C2%B7_stdlib_only-blue)
 
 **Language:** [English](README.md) · [Türkçe](README.tr.md)
-
-> [!NOTE]
-> Official source: this repository, [ali-demirbas/ab-test-playbook](https://github.com/ali-demirbas/ab-test-playbook), and `npx skills add ali-demirbas/ab-test-playbook`. A couple of unrelated repos on skills.sh happen to use a similarly named skill — they aren't this project.
 
 [Jump to install ↓](#install)
 
@@ -21,6 +18,9 @@ Built from an archive of A/B test scenarios and hypothesis-generation patterns u
 - **Yapılmaması gerekenler** — the mistakes that invalidate the test
 
 **Zero-install demo:** see a real scenario card — two mockups differing in exactly one thing, the tested element boxed, and the three boxes filled — at [ali-demirbas.github.io/ab-test-playbook](https://ali-demirbas.github.io/ab-test-playbook/). It is the actual output of `scripts/build_card.py`, not a picture of one.
+
+> [!NOTE]
+> Official source: this repository, [ali-demirbas/ab-test-playbook](https://github.com/ali-demirbas/ab-test-playbook). A couple of unrelated repos in public skill directories happen to use a similarly named skill; they aren't this project.
 
 ## Why a playbook instead of ad-hoc testing
 
@@ -65,6 +65,8 @@ flowchart LR
 
 ## Install
 
+**Requirements:** Claude Code, and `python3` 3.9 or newer on your PATH. The scripts use the Python standard library only; there is nothing to `pip install`.
+
 In Claude Code:
 
 ```
@@ -79,13 +81,13 @@ git clone https://github.com/ali-demirbas/ab-test-playbook.git
 claude --plugin-dir ./ab-test-playbook
 ```
 
-Or install individual skills with the [skills CLI](https://skills.sh):
+**Skills only, limited.** The skills CLI can copy the six skill instructions on their own:
 
 ```bash
 npx skills add ali-demirbas/ab-test-playbook --all
 ```
 
-Already have [claude-lifecycle](https://github.com/ali-demirbas/claude-lifecycle) too? Add [claude-skills](https://github.com/ali-demirbas/claude-skills) once instead of each repo separately: `/plugin marketplace add ali-demirbas/claude-skills`.
+That route ships each skill's `SKILL.md` and nothing else: no binding rules (`CLAUDE.md`), no scenario archive, no scripts, no review agents. Every skill resolves those through the plugin root, so archive suggestions, the statistics engine and card rendering won't work. Use the plugin install above for the full engine.
 
 Using [Gemini CLI](https://github.com/google-gemini/gemini-cli) instead? `.gemini/extensions/ab-test-playbook/` ships the same skills, rules and review agents, generated from the same source files by `scripts/build_gemini.py`:
 
@@ -101,10 +103,11 @@ cd ab-test-playbook/.gemini/extensions/ab-test-playbook && gemini extensions lin
 | `/ab-test suggest` — "suggest tests for my checkout page" | Picks matching scenarios from the archive, ranks by ICE, ships each as an HTML card |
 | `/ab-test design` — "design a test for this" (+ screenshot/URL) | Designs a new single-variable scenario for your page in the same framework |
 | `/ab-test audit` — "is this test set up correctly?" | Audits a plan or variant pair: confounds, missing guardrails, p-hacking risk, unrealistic duration |
-| `/ab-test results` — "interpret these results" / "how many visitors do I need" | Runs a real two-proportion z-test on your numbers (significance, CI, lift) or calculates required sample size — math via script, never eyeballed — then states the decision and what happens next (staged rollout, guardrail watch, or the follow-up experiment) |
+| `/ab-test results` — "interpret these results" / "how many visitors do I need" | Checks the traffic split for SRM first, then runs the statistics on your numbers: significance (z-test, Fisher exact for rare events, Holm correction for A/B/n), continuous metrics like revenue per visitor (Welch, bootstrap, CUPED), an optional Bayesian view, or the required sample size. Math via script, never eyeballed; then it states the decision and what happens next (staged rollout, guardrail watch, or the follow-up experiment) |
 | `/ab-test card` — "turn this into a card" | Renders the scenario as a single-file HTML card (Variant A/B wireframes + three boxes) |
+| `/ab-test` on its own | Shows a five-line menu with one example prompt per subcommand, and asks nothing |
 
-When you share a page, the router asks exactly one multiple-choice question — which problem you're solving — and nothing else up front; no traffic, tool, or setup questions before it produces a scenario. Sample-size or duration numbers appear only when real traffic data exists — volunteered by you, or asked for when you request them. If you shared a screenshot or page, brand colors are taken straight from it with no question; otherwise it asks once, before the first card, whether to upload a brand guide — say no and it uses a neutral palette. Every scenario a run produces (2-5 of them, whether from `suggest` or `design`) becomes its own HTML card immediately — the three boxes live in the card, not as duplicate chat text. More than 5 strong candidates in one run gets flagged and confirmed before generating the rest.
+When you share a page, the router asks exactly one multiple-choice question — which problem you're solving — and nothing else up front; no traffic, tool, or setup questions before it produces a scenario. Sample-size or duration numbers appear only when real traffic data exists — volunteered by you, or asked for when you request them. The brand source never blocks: if you shared a screenshot or page, brand colors are taken straight from it; otherwise a neutral palette is used, with a one-line note under the card offering a rebrand if you send a brand guide. No question, no waiting. Every scenario a run produces (1-5 of them, whether from `suggest` or `design`) becomes its own HTML card immediately; the three boxes live in the card, not as duplicate chat text. The set is never padded: one strong scenario is a complete answer, and a weak candidate is not added to reach a count. With more than 5 strong candidates, the top 5 are produced and the rest offered in one line. A turn asks at most one question; anything else it needs is stated as an assumption and asked later.
 
 ## What a session looks like
 
@@ -114,7 +117,7 @@ A product-page example, end to end:
 
 **It asks once:** a single multiple-choice question — which problem you're trying to solve (users start the flow but don't finish / never start / arrive but convert poorly / no specific problem, just look). No traffic, tool, or setup questions up front; those aren't needed to produce a scenario and only get asked if you later ask about sample size or duration.
 
-**It returns** 2-5 full scenarios directly — no "which one should I expand" round-trip — each rendered straight to a self-contained HTML card (Variant A/B mockup + the three boxes, primary KPI marked, guardrails in "must not degrade" form) so the chat itself only carries a title and a one-line summary with the evidence label — `Kanıt: arşiv emsali` when it is a known pattern, `Kanıt: sezgi` when it is a hunch, said out loud rather than dressed up. Variant A is the page exactly as shown, never redesigned. More than 5 strong candidates? It says so and asks before generating the rest.
+**It returns** 1-5 full scenarios directly — no "which one should I expand" round-trip — each rendered straight to a self-contained HTML card (Variant A/B mockup + the three boxes, primary KPI marked, guardrails in "must not degrade" form) so the chat itself only carries a title and a one-line summary with the evidence label — `Kanıt: arşiv emsali` when it is a known pattern, `Kanıt: sezgi` when it is a hunch, said out loud rather than dressed up. Variant A is the page exactly as shown, never redesigned. One strong scenario is a complete answer; weak candidates aren't added to fill a quota. More than 5 strong candidates? It produces the top 5 and offers the rest.
 
 <p align="center">
   <img src="assets/example-card.png" alt="Example scenario card: does an open coupon-code field increase cart abandonment? Variant A/B mockups on the left, the three-box breakdown on the right." width="900">
@@ -122,9 +125,9 @@ A product-page example, end to end:
 
 <p align="center"><sub>A card generated from an archived scenario — fictional product and store, neutral palette (no brand guide was supplied). This is what `ab-test card` renders for every scenario, not a hand-built mockup. <a href="https://ali-demirbas.github.io/ab-test-playbook/">Live, zero-install version →</a> · source in <a href="examples/">examples/</a></sub></p>
 
-**Each scenario ships with** the single-variable hypothesis, Variant A/B definitions, and a tool-agnostic setup spec (audience, split, exposure event, guardrail events, attribution window, decision rule) — named in your tool's vocabulary if you mention one, kept as chat text — plus the card itself (brand colors pulled from your screenshot when you shared one; otherwise a one-time brand-guide question, with a neutral palette as the fallback).
+**Each scenario ships with** the single-variable hypothesis, Variant A/B definitions, and a tool-agnostic setup spec (audience, split, exposure event, guardrail events, attribution window, decision rule) — named in your tool's vocabulary if you mention one, kept as chat text — a JSON pre-registration block that fixes the primary metric, guardrail margins, alpha, allocation and decision rule before launch, and the card itself (brand colors pulled from your screenshot when you shared one; otherwise the neutral palette, with a one-line rebrand offer under the card).
 
-**Test finishes, you paste the numbers** → a real two-proportion z-test runs (never eyeballed), and because this was a price test it also runs the revenue check: conversion up 12% while revenue per visitor drops 4.8% is the finding, not a footnote. Then it states the decision and what happens next — staged rollout with a guardrail watch, or the follow-up experiment if there was no difference.
+**Test finishes, you paste the numbers** → the traffic split is checked for SRM first (a broken split stops the analysis there), then a real significance test runs (never eyeballed), and because this was a price test it also runs the revenue check: conversion up 12% while revenue per visitor drops 4.8% is the finding, not a footnote. Then it states the decision and what happens next — staged rollout with a guardrail watch, or the follow-up experiment if there was no difference.
 
 ## What's inside
 
@@ -143,17 +146,17 @@ scripts/         analyze_results.py — z-test (Fisher exact fallback), A/B/n wi
 templates/       scenario-card.html · abtest-history.md · abtest-backlog.md — test memory and backlog
                  scenario.schema.json — tool-agnostic test definition, portable to any experimentation platform
 tests/           unit tests for the stats engine, the validators and the card builder
-evals/           manual acceptance tests for the four core flows (suggest / design / audit / results)
-examples/        a real end-to-end scenario → card render, with the matching chat-side output
+evals/           manual acceptance tests: the four core flows plus cross-cutting rules (one question per turn, refusals, injection) and card realism
+examples/        a real end-to-end scenario → card render, a results walkthrough with real script output, and an audit of a flawed plan
 docs/            architecture.md · the live zero-install demo (GitHub Pages)
 ```
 
 See [FAQ.md](FAQ.md) for answers to common A/B testing and CRO questions, drawn from this playbook's own methodology.
 
-Contributing a scenario: follow the three-box format of the existing files, then run the validator — it enforces five items per box, a guardrail in the KPI list, a device/segment question, and typographic rules.
+Contributing a scenario: follow the three-box format of the existing files, then run the repo checks — the scenario validator inside them enforces five items per box, a guardrail in the KPI list, a device/segment question, and typographic rules. Details in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```bash
-python3 scripts/validate_scenarios.py
+bash scripts/validate.sh
 ```
 
 ## Test memory

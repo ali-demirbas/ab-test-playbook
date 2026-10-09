@@ -3,11 +3,14 @@
   "owner": {
     "name": "Ali Demirbaş"
   },
+  "metadata": {
+    "description": "A/B testing and CRO for Claude Code: 211 experiment scenarios, single-variable test design, plan audits and a stdlib-only statistics engine."
+  },
   "plugins": [
     {
       "name": "ab-test-playbook",
       "source": "./",
-      "description": "A/B test engine: suggests proven scenarios by journey stage, designs single-variable experiments, audits test plans, interprets results with a real z-test, renders deck-style scenario cards."
+      "description": "A/B test engine: suggests proven scenarios by journey stage, designs single-variable experiments, audits test plans, interprets results with real statistics (SRM, significance, sample size, CUPED, Bayesian view) and renders deck-style scenario cards."
     }
   ]
 }

@@ -6,6 +6,8 @@ Yolculuk aşaması: kullanıcı ne istediğini biliyor veya keşfediyor; arama k
 
 ## Filtreler anında mı, toplu mu uygulanmalı?
 
+Değişken: Filtre uygulama biçimi · Fark: değiştir
+
 Anında filtreleme hızlı geri bildirim verir; toplu filtreleme daha kontrollü bir deneyim sunar. Hangisinin keşif ve dönüşümde daha iyi çalıştığı ölçülmelidir.
 
 **Test edilmesi gerekenler**
@@ -13,7 +15,7 @@ Anında filtreleme hızlı geri bildirim verir; toplu filtreleme daha kontrollü
 - Kontrol hissi: Toplu filtreleme hatalı seçimleri azaltıyor mu?
 - Performans: Sık yenileme sayfa hızını düşürüyor mu?
 - Dönüşüm: Hangi model daha yüksek satın alma oranı sağlıyor?
-- Cihaz: Mobil ve masaüstünde kazanan farklı mı?
+- Cihaz: Filtrenin tam ekran panelde açıldığı mobilde toplu, sonuçların yanda canlı göründüğü masaüstünde ise anında uygulama mı kazanıyor?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Hangi filtre modeli daha çok satış getiriyor?
@@ -33,19 +35,21 @@ Anında filtreleme hızlı geri bildirim verir; toplu filtreleme daha kontrollü
 
 ## Arama çubuğu ne kadar görünür olmalı?
 
+Değişken: Arama alanının görünürlük düzeyi · Fark: değiştir
+
 Arama çubuğunun konumu ve görünürlüğü, kullanıcının ürün keşif davranışını değiştirebilir. Bunun dönüşüme yansıyıp yansımadığı ölçülmelidir.
 
 **Test edilmesi gerekenler**
 - Konum: Header’da mı, menü içinde mi, yalnızca ikon olarak mı?
 - Görünürlük: Açık arama alanı mı, sadece ikon mu daha çok tıklanıyor?
-- Placeholder: “Ürün ara…” mı, “Favori markanı yaz” mı daha etkili?
-- Öneriler: Otomatik öneri doğru ürüne ulaşmayı hızlandırıyor mu?
+- Sonraki test: Kazanan görünürlük sabitken placeholder metni (“Ürün ara…” / “Favori markanı yaz”) ayrı bir testte arama başlatmayı artırıyor mu?
+- Menü etkisi: Arama alanı öne çıkınca kategori menüsüyle gezinme azalıyor mu, yani arama menünün yerini mi alıyor?
 - Cihaz: Mobilde ve masaüstünde görünürlük ihtiyacı aynı mı?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Arama yapanların satın alma oranı artıyor mu?
 - Arama Kullanım Oranı: Görünürlük arama kullanımını artırıyor mu?
-- Arama → Ürün Tıklama: Doğru ürüne daha hızlı ulaşılıyor mu?
+- Arama Sonucu Tıklama Oranı: Doğru ürüne daha hızlı ulaşılıyor mu?
 - Arama Başarı Oranı: Düşmemeli; sonuçsuz arama artmamalı.
 - Sayfada Kalma Süresi: Keşif derinleşiyor mu?
 
@@ -60,6 +64,8 @@ Arama çubuğunun konumu ve görünürlüğü, kullanıcının ürün keşif dav
 
 ## Varsayılan arama önerileri dönüşümü etkiliyor mu?
 
+Değişken: Önceki arama önerileri · Fark: kaldır
+
 Arama alanının önceki aramaları otomatik doldurup doldurmaması, keşif sürecini ve karar hızını değiştirebilir.
 
 **Test edilmesi gerekenler**
@@ -71,9 +77,9 @@ Arama alanının önceki aramaları otomatik doldurup doldurmaması, keşif sür
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Arama sonrası satın alma nasıl değişiyor?
-- Arama Başlatma Oranı: Arama yapmaya başlama artıyor mu?
+- Arama Kullanım Oranı: Arama yapmaya başlama artıyor mu?
 - İlk Sonuca Ulaşma Süresi: Kullanıcı daha hızlı ulaşıyor mu?
-- Sıfır Sonuçlu Arama: Artmamalı.
+- Sıfır Sonuç Oranı: Artmamalı.
 - Keşif Derinliği: Yeni kategori görüntüleme artıyor mu?
 
 **Yapılmaması gerekenler**
@@ -87,20 +93,22 @@ Arama alanının önceki aramaları otomatik doldurup doldurmaması, keşif sür
 
 ## Sıfır sonuç sayfası kullanıcıyı elde tutuyor mu?
 
+Değişken: Sıfır sonuç ekranındaki öneri blokları · Fark: ekle
+
 Sonuç bulunamayan arama, terk oranı en yüksek ekranlardan biridir. Boş bir ekran yerine yazım önerisi, popüler kategoriler ve benzer ürünler sunmak bu trafiği kurtarabilir.
 
 **Test edilmesi gerekenler**
 - Öneri: Yazım önerisi kurtarma oranını ne kadar artırıyor?
-- İçerik: Popüler kategori mi, çok satan ürün mü daha çok tıklanıyor?
-- Arama kutusu: Ekranda tutmak yeniden arama oranını artırıyor mu?
-- Blok sırası: Hangi öneri bloğu en etkili?
+- Sonraki test: Öneri blokları kazanırsa, ürün bloğunda benzer ürün yerine çok satan ürün göstermek ayrı bir testte kurtarma oranını artırıyor mu?
+- Yeniden arama: Öneri blokları eklenince kullanıcı yeniden arama yapmak yerine önerilere mi yöneliyor?
+- Alaka: Öneri bloğundan tıklanan ürün sayfasında kullanıcı kalıyor mu, yoksa alakasız bulup hemen geri mi dönüyor?
 - Cihaz: Mobilde ve masaüstünde davranış farklı mı?
 
 **Takip edilecek ana KPI’lar**
-- Sıfır Sonuç Sonrası Satın Alma Oranı: Sıfır sonuç gören oturumların satışa dönme oranı.
+- Sıfır Sonuç Sonrası Satın Alma Oranı: Sıfır sonuçlu aramaya düşen oturumların (iki kolda aynı tetikleyici) satın almayla bitme oranı artıyor mu?
 - Sıfır Sonuç Kurtarma Oranı: Tanı metriği; ürün sayfasına geçen kullanıcı oranı.
 - Oturum Devam Oranı: Siteden çıkılmıyor mu?
-- Genel Arama Dönüşümü: Toplam performans düşmemeli.
+- Arama Dönüşüm Oranı (CR): Toplam performans düşmemeli.
 - Sayfa Yüklenme Süresi: Öneri blokları yavaşlatmamalı.
 
 **Yapılmaması gerekenler**
@@ -113,6 +121,8 @@ Sonuç bulunamayan arama, terk oranı en yüksek ekranlardan biridir. Boş bir e
 ---
 
 ## Arama sonuçlarında varsayılan sıralama ne olmalı?
+
+Değişken: Arama sonuçlarının varsayılan sıralaması · Fark: değiştir
 
 Varsayılan sıralama, kullanıcıların büyük çoğunluğunun gördüğü tek sıralamadır. İlgi düzeyi, çok satan ve fiyat sıralamaları farklı kullanıcı gruplarına hizmet eder ve marj üzerinde farklı etki yaratır.
 
@@ -127,7 +137,7 @@ Varsayılan sıralama, kullanıcıların büyük çoğunluğunun gördüğü tek
 - Arama Dönüşüm Oranı (CR): Arama yapanların satın alma oranı.
 - İlk Sonuca Tıklama Oranı: İlk 4 sonucun isabeti.
 - Sıralama Değiştirme Oranı: Varsayılan yeterli mi?
-- Ortalama Sepet Tutarı: Ucuza kayarsa AOV düşebilir.
+- Ortalama Sepet Tutarı (AOV): Ucuza kayarsa AOV düşebilir.
 - Sıfır Etkileşimli Arama: Artmamalı.
 
 **Yapılmaması gerekenler**
@@ -141,6 +151,8 @@ Varsayılan sıralama, kullanıcıların büyük çoğunluğunun gördüğü tek
 
 ## Sticky menü deneyimi iyileştiriyor mu?
 
+Değişken: Menünün kaydırmada sabit kalması · Fark: değiştir
+
 Menünün sabit kalması sayfa içi gezinme hızını artırabilir, ancak ekran alanı kaplayarak rahatsız da edebilir.
 
 **Test edilmesi gerekenler**
@@ -148,7 +160,7 @@ Menünün sabit kalması sayfa içi gezinme hızını artırabilir, ancak ekran 
 - Kaydırma: Yukarı çıkma zorunluluğunu ortadan kaldırıyor mu?
 - Mobil: Uzun sayfalarda gezinme performansını artırıyor mu?
 - Alan: Ekran alanını kaplaması rahatsız ediyor mu?
-- Konum: Üstte mi, altta mı daha iyi çalışıyor?
+- Sonraki test: Sabit menü kazanırsa, mobilde ekranın üstüne mi altına mı sabitlendiği ayrı bir testte menü kullanımını değiştiriyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Sticky menü satın almayı artırıyor mu?
@@ -167,6 +179,8 @@ Menünün sabit kalması sayfa içi gezinme hızını artırabilir, ancak ekran 
 ---
 
 ## Mega menü mü, yatay menü mü?
+
+Değişken: Ana menünün yapısı · Fark: değiştir
 
 Mega menü mü, sade yatay menü mü daha iyi gezinme sunuyor? Yapıdaki fark, içerik keşif davranışını ciddi biçimde değiştirebilir.
 
@@ -195,6 +209,8 @@ Mega menü mü, sade yatay menü mü daha iyi gezinme sunuyor? Yapıdaki fark, i
 
 ## Menü sadeleştirmesi deneyimi etkiler mi?
 
+Değişken: Menüdeki alt başlık sayısı · Fark: kaldır
+
 Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir. Daha az karmaşık menü odaklanmayı kolaylaştırabilir.
 
 **Test edilmesi gerekenler**
@@ -209,7 +225,7 @@ Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir.
 - İlk Tıklama Süresi: Doğru kategoriye ulaşma kısalıyor mu?
 - Menü Tıklama Derinliği: Daha az adımda hedefe varılıyor mu?
 - Kategori Kapsama Oranı: Düşmemeli; keşfedilen kategori sayısı daralmamalı.
-- Arama Kullanımı: Menü yetersiz kalıp aramaya mı itiyor?
+- Arama Kullanım Oranı: Menü yetersiz kalıp aramaya mı itiyor?
 
 **Yapılmaması gerekenler**
 - Ana kategorileri tamamen kaldırmayın; bilgi kaybı hissi yaratır.
@@ -222,12 +238,14 @@ Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir.
 
 ## İndirim filtresi davranışı nasıl etkiler?
 
+Değişken: İndirim oranı filtresi · Fark: ekle
+
 İndirim yüzdesine göre filtreleme sunmak ürün keşfini hızlandırabilir ve fiyat hassas kullanıcıyı hedefe daha çabuk ulaştırabilir.
 
 **Test edilmesi gerekenler**
 - Ekleme: İndirim filtresi sepete ekleme davranışını artırıyor mu?
 - Hız: Fiyat hassas kullanıcılar ürünü daha hızlı buluyor mu?
-- Konum: Filtrenin sayfa üstünde olması diğer filtreleri etkiliyor mu?
+- Komşu filtreler: İndirim filtresi eklenince fiyat aralığı filtresinin kullanımı azalıyor mu, biri diğerinin yerini mi alıyor?
 - Cihaz: Mobil ve masaüstünde kullanım nasıl farklılaşıyor?
 - Karar: Filtre kullanımı artınca karar süresi kısalıyor mu?
 
@@ -235,7 +253,7 @@ Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir.
 - Ziyaretçi Başına Gelir (RPV): İndirim filtresi geliri artırıyor mu? Birincil karar bu metrikle verilir.
 - Dönüşüm Oranı (CR): İndirim filtresi satın almayı artırıyor mu?
 - Sepete Ekleme Oranı: Filtreleyenler daha çok ekliyor mu?
-- Ortalama Sepet Tutarı: İndirime yönelim sepeti küçültüyor mu?
+- Ortalama Sepet Tutarı (AOV): İndirime yönelim sepeti küçültüyor mu?
 - Brüt Marj: Düşmemeli; indirimli ürüne kayış kârı eritmemeli.
 
 **Yapılmaması gerekenler**
@@ -249,14 +267,16 @@ Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir.
 
 ## Filtreler kaydırma boyunca görünür kalmalı mı?
 
+Değişken: Filtre panelinin kaydırmada sabit kalması · Fark: değiştir
+
 Filtre panelinin sayfa kaydırılırken ekranda kalması, listenin ortasında fikir değiştiren kullanıcının yukarı dönmesini gerektirmez. Bedeli: panel sürekli yer kaplar, ürünlere kalan alan daralır ve mobilde ekranın önemli bir kısmını yiyebilir.
 
 **Test edilmesi gerekenler**
 - Kalıcılık: Filtreler görünür kaldığında filtre kullanımı artıyor mu?
 - Alan: Daralan ürün alanı görülen ürün sayısını düşürüyor mu?
-- Biçim: Tam panel mi, sadece bir filtre düğmesi mi görünür kalmalı?
-- Zamanlama: Panel baştan mı sabit olmalı, kaydırma başlayınca mı belirmeli?
-- Cihaz: Mobilde sabit filtre yerine alta yerleşen bir düğme daha mı iyi çalışıyor?
+- Sonraki test: Sabit kalma kazanırsa, tam panel yerine yalnızca bir filtre düğmesinin sabit kalması ayrı bir testte ürün alanını geri kazandırıyor mu?
+- Liste ortası: Listenin ortasında filtre değiştiren kullanıcı oranı sabit panelde artıyor mu?
+- Cihaz: Sabit panelin filtre kullanımına etkisi masaüstünde mi, mobilde mi daha büyük?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Filtre erişimi satışa dönüyor mu?
@@ -268,7 +288,7 @@ Filtre panelinin sayfa kaydırılırken ekranda kalması, listenin ortasında fi
 **Yapılmaması gerekenler**
 - Aynı testte filtrenin kalıcılığı ile filtre seçeneklerini birlikte değiştirmeyin.
 - Sabit paneli ekranın yarısını kaplayacak boyutta kurmayın.
-- Filtre kullanımı arttı diye dönüşüme bakmadan kazandı demeyin.
+- Sabit panelde filtre kullanımı arttı diye, daralan ürün alanının ürüne tıklamayı düşürüp düşürmediğine bakmadan kazanan ilan etmeyin.
 - Sabit panelin altında kalan içeriği erişilemez bırakmayın.
 - Klavye ile gezinirken sabit panelin odak sırasını bozmayın.
 
@@ -276,12 +296,14 @@ Filtre panelinin sayfa kaydırılırken ekranda kalması, listenin ortasında fi
 
 ## Filtreleri açıkta göstermek mi, düğme arkasına almak mı daha iyi çalışıyor?
 
+Değişken: Filtrelerin görünürlüğü · Fark: değiştir
+
 Filtreleri doğrudan görünür kılmak varlıklarını hatırlatır ve kullanımı artırır. Düğme arkasına almak ise ürünlere daha çok yer bırakır ve sayfayı sadeleştirir; buna karşılık filtrenin varlığından habersiz kullanıcı hiç filtrelemeden gezinir ve doğru ürünü bulamaz.
 
 **Test edilmesi gerekenler**
 - Görünürlük: Açıktaki filtreler kullanımı artırıyor mu?
 - Farkındalık: Düğme arkasındaki filtreyi kaç kullanıcı açıyor?
-- Seçim: Hangi filtreler açıkta durmalı, hangileri gizlenebilir?
+- Sonraki test: Açık düzen kazanırsa, yalnızca en çok kullanılan filtreleri açıkta bırakıp gerisini düğme arkasına almak ayrı bir testte liste terkini azaltıyor mu?
 - Alan: Açıktaki filtreler ürün alanını ne kadar daraltıyor?
 - Cihaz: Masaüstünde açık, mobilde düğme arkası bir düzen daha mı iyi?
 
@@ -295,13 +317,15 @@ Filtreleri doğrudan görünür kılmak varlıklarını hatırlatır ve kullanı
 **Yapılmaması gerekenler**
 - Aynı testte filtre görünürlüğü ile filtre sayısını birlikte değiştirmeyin.
 - Açıkta gösterdiğiniz filtreleri kategoriye göre değiştirip testi karıştırmayın.
-- Filtre kullanımı arttı diye dönüşüme bakmadan kazandı demeyin.
+- Açıktaki filtrelerin kullanımı arttı diye, kalabalıklaşan sayfanın liste terkini artırıp artırmadığına bakmadan açık düzeni kazanan saymayın.
 - Düğme arkasındaki filtreye kaç filtre uygulandığını gösteren işareti kaldırmayın.
 - Tek kategoride ölçüp sonucu filtre yapısı çok farklı kategorilere taşımayın.
 
 ---
 
 ## Arama kelimesini sonuçlarda vurgulamak işe yarar mı?
+
+Değişken: Aranan kelimenin sonuçlarda vurgulanması · Fark: ekle
 
 Aranan kelimenin sonuç başlıklarında işaretlenmesi eşleşmenin nerede olduğunu gösterir ve doğru sonuca ulaşmayı hızlandırır. Riski: vurgu görsel gürültü yaratır, çok sayıda eşleşme olduğunda başlık okunmaz hâle gelir ve alakasız bir eşleşme vurgulandığında arama kalitesizmiş gibi görünür.
 
@@ -330,6 +354,8 @@ Aranan kelimenin sonuç başlıklarında işaretlenmesi eşleşmenin nerede oldu
 
 ## Filtreleri seçenek listesi yerine cümle hâlinde sormak işe yarar mı?
 
+Değişken: Filtrelerin sorulma biçimi · Fark: değiştir
+
 Filtreleri “kimin için, hangi bütçeyle” gibi bir soru akışına çevirmek, ne aradığını tam bilmeyen kullanıcıyı yönlendirir. Karşı tarafta: ne aradığını bilen kullanıcı için bu fazladan adımdır, akış onu yavaşlatır ve klasik filtreye göre daha az hassas sonuç verir.
 
 **Test edilmesi gerekenler**
@@ -337,7 +363,7 @@ Filtreleri “kimin için, hangi bütçeyle” gibi bir soru akışına çevirme
 - Kullanıcı tipi: Ne aradığını bilen kullanıcı akışı atlayabiliyor mu?
 - Uzunluk: Kaç soru sorulduğunda terk başlıyor?
 - Hassasiyet: Akışın ürettiği sonuç kümesi yeterince isabetli mi?
-- Segment: Yeni ziyaretçi ile geri dönen kullanıcı farklı mı tepki veriyor?
+- Segment: Kataloğu ilk kez gören yeni ziyaretçi, ürünleri tanıyan dönen kullanıcıya göre soru akışından daha mı isabetli sonuç buluyor?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Soru akışı satışa dönüyor mu?

@@ -1,7 +1,7 @@
 {
   "name": "ab-test-playbook",
-  "version": "2.0.0",
-  "description": "A/B test engine for Claude Code. Suggests proven test scenarios by journey stage, designs new ones in a disciplined test/KPI/guardrail framework, audits existing test plans for confounds, and renders deck-style scenario cards — text and visual together by default.",
+  "version": "2.1.0",
+  "description": "A/B testing and CRO engine for Claude Code: suggests proven test scenarios by journey stage, designs single-variable experiments with a pre-registration block, audits test plans for confounds, and interprets results with real statistics (SRM check, significance with Fisher exact and Holm for A/B/n, sample size and power analysis, CUPED and bootstrap for revenue metrics, a Bayesian view). Every scenario ships as a rendered HTML card.",
   "author": {
     "name": "Ali Demirbaş"
   },
@@ -10,9 +10,15 @@
   "license": "MIT",
   "keywords": [
     "ab-testing",
+    "split-testing",
     "cro",
     "conversion-rate-optimization",
     "experimentation",
+    "statistical-significance",
+    "sample-size",
+    "power-analysis",
+    "bayesian",
+    "cuped",
     "growth",
     "ecommerce",
     "product-growth",

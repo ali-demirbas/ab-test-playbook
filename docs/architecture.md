@@ -9,36 +9,46 @@ rule that holds only as long as it is remembered.
 ## The pipeline
 
 ```
-user asks (page / URL / screenshot / question)
+user asks (page / URL / screenshot / question / numbers)
         │
         ▼
-  ab-test (router)  ─────────────────────────────────┐
-        │                                            │
-        ├── suggest ──┐                              │
-        ├── design ───┤                              │
-        ├── audit ────┤ (user's own plan — no critic) │
-        └── results ──┘                              │
-                      │                              │
-                      ▼                              │
-        agents/scenario-critic  ◄────────────────────┘
-        methodology review, adversarial
-        FIX → fix and re-run · RET → not produced
-                      │
-                      ▼
-        scripts/build_card.py
-        deterministic render + escaping + drift self-check
-                      │
-                      ▼
-        agents/mockup-reviewer
-        one-difference check on the two mockups
-                      │
-                      ▼
-              single-file HTML card
+  ab-test (router)
+        │
+        ├── suggest ──┐
+        ├── design ───┤   (design also emits the setup spec and a
+        │             │    pre-registration block, schema-validated)
+        │             ▼
+        │   agents/scenario-critic
+        │   methodology review, adversarial
+        │   FIX → fix and re-run · RET → not produced
+        │             │
+        ├── card ─────┤   (a scenario you bring, rendered directly)
+        │             ▼
+        │   scripts/build_card.py
+        │   deterministic render + escaping + drift self-check
+        │             │
+        │             ▼
+        │   agents/mockup-reviewer
+        │   one-difference check, one run for all of a turn's cards
+        │             │
+        │             ▼
+        │   single-file HTML card(s)
+        │
+        ├── audit ───► findings by severity + "can this run as-is?"
+        │              (your own plan: the review is the work, no critic)
+        │
+        └── results ─► scripts/analyze_results.py
+                       SRM first → significance / continuous / bayes / samplesize
+                       → decision + next step + history row (written on confirm)
 ```
 
-`ab-test-audit` is the one branch that skips the critic: there, review *is* the
-requested work and findings are reported directly rather than silently fixed
-(CLAUDE.md rule 17).
+Only scenario-producing branches go through the critic and the card builder.
+`ab-test-audit` skips the critic because there the review *is* the requested
+work and findings are reported directly rather than silently fixed (CLAUDE.md
+rule 17). `ab-test-results` produces no scenario at all: it runs the stats
+engine, states a decision from its decision table, and offers a test-memory row.
+Any file a branch reads from the user (a plan, an export,
+`.abtest-history.md`) passes `scripts/validate_input.py` first (rule 18).
 
 ## Where each concern lives
 
@@ -53,9 +63,11 @@ requested work and findings are reported directly rather than silently fixed
 | Text escaping, template fill, drift check | `scripts/build_card.py` | Deterministic — a model rewriting ~180 lines of CSS per card is both the slowest step and the drift risk |
 | Statistics | `scripts/analyze_results.py` | Same reason: arithmetic is not a judgement call |
 | Structural rules on a test definition | `templates/scenario.schema.json` + `scripts/validate_scenario_json.py` | Rules 2 and 3 become shape, not prose: a scenario with two primary KPIs fails validation |
-| Pre-registration (decisions fixed before launch) | optional `preregistration` object in the same schema | Guardrails must carry a non-inferiority margin; allocation must sum to 1; the pre-registered primary KPI must be the scenario's primary |
+| Pre-registration (decisions fixed before launch) | optional `preregistration` object in the same schema | Guardrails must carry a non-inferiority margin; allocation must sum to 1; the pre-registered primary KPI must be the scenario's primary ; `ab-test-design` validates the block it shows with `validate_scenario_json.py --prereg-only` |
+| Untrusted input (pasted files, history, exports) | `scripts/validate_input.py` | Instruction-shaped lines and script payloads are reported with line numbers and quoted back, never followed |
 | Rationale behind the binding rules | [`design-notes.md`](design-notes.md) | Kept out of `CLAUDE.md` so the always-loaded rules stay short |
 | Archive format | `scripts/validate_scenarios.py` | Guards the 211 shipped scenarios against silent format rot |
+| Cross-file consistency | `scripts/validate.sh` | Frontmatter, links, plugin-root paths, rule citations, the scenario and rule counts the docs quote, description length, bundle freshness: the seams no single validator sees |
 
 ## Why two review agents rather than one
 
@@ -77,7 +89,7 @@ split is deliberate, not a gap waiting to be closed.
 
 ## Adding to the system
 
-- **A new scenario** → `knowledge/scenarios/<stage>.md`, then `python3 scripts/validate_scenarios.py`.
+- **A new scenario** → `knowledge/scenarios/<stage>.md`, then `bash scripts/validate.sh`: it runs the archive validator and fails until every doc that quotes the scenario total states the new number.
 - **A new rule that applies everywhere** → `CLAUDE.md`, numbered. If it can be checked mechanically, add the check to a script in the same change; a rule with no enforcement path degrades into a suggestion.
 - **A new skill** → `skills/ab-test-<name>/SKILL.md` with the `metadata` block (`version`, `category`, `updated`). Keep it thin: reference `CLAUDE.md` and `knowledge/` instead of restating them.
 - **A change to the card's look** → `templates/scenario-card.html`. `build_card.py` self-verifies against the template, so a structural edit will surface immediately as a drift error rather than as a quietly malformed card.

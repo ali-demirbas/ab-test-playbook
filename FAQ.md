@@ -18,6 +18,26 @@ Metrics that must not get worse while your primary metric improves — margin, r
 
 This isn't a rule-of-thumb number — it's computed from your actual baseline conversion rate and the minimum effect size you care about detecting (`analyze_results.py samplesize`). Without your real traffic, no duration or sample-size promise is made; asking for a guess and presenting it as a fact is exactly the failure mode this playbook avoids.
 
+## My traffic is low. Can I still run an A/B test?
+
+Often yes, but not with a subtle change read on a distant metric. Three levers, in the order to reach for them: (1) **a bigger minimum detectable effect**: test a bolder change, because the sample you need shrinks roughly with the square of the effect you are trying to detect; (2) **a metric closer to the change**: a step-level conversion moves more, and more often, than end-of-funnel revenue; (3) **variance reduction (CUPED)**: if the same users were measured before the test, their pre-period value explains part of the noise and shrinks the confidence interval without biasing the effect (`analyze_results.py continuous` with a pre-period column). Running longer helps too, but past a couple of months seasonality and returning-user effects start to muddy the comparison. If none of that gets the required sample within reach, the playbook says so and points to qualitative methods or a before/after comparison instead of a split that can't conclude.
+
+## Can I get a Bayesian answer ("probability B beats A")?
+
+Yes: `analyze_results.py bayes` reports the probability that the variant beats control and the expected loss of choosing it. It answers the question stakeholders usually ask more directly than a p-value. It is a second lens, not a loophole: checked continuously and stopped when it looks good, a Bayesian readout has the same optional-stopping problem, and the pre-registered decision rule still decides.
+
+## How do I analyze a test with more than one variant (A/B/n)?
+
+Pass every variant to `analyze_results.py significance`; each one is compared with control and a Holm correction is applied, so only adjusted results count as significant. Plan for it up front: each extra arm splits your traffic further, so size the test with `samplesize --arms`. Each arm must still differ from control in exactly one thing. A test that changes several elements at once in combinations (multivariate) is split into separate single-variable tests instead.
+
+## What is a pre-registration block, and why fix decisions before launch?
+
+A small JSON object `ab-test-design` emits next to the setup spec: the hypothesis, the one variable, the primary metric and its direction, each guardrail with its tolerated-degradation margin, alpha, power, one- or two-sided test, allocation, planned sample per arm, decision rule and the segments you will look at. Writing these down before the data exists is what keeps the analysis honest: the direction can't be chosen after seeing which way the result went, the planned sample feeds the early-look guard (`--planned-n`), and only the segments named here are read as more than exploratory. It is validated against `templates/scenario.schema.json` before it is shown.
+
+## The variant won on mobile but not on desktop. Is that a real segment difference?
+
+Not by itself. Two separate significance tests, one per segment, answer two separate questions; one coming back significant and the other not is exactly what chance produces even when the true effect is identical. A real claim that the effect differs by segment needs a formal interaction test, or a single segment declared as the decision segment before launch. Picking the best of several pre-named segments after the fact is the same multiple-comparisons problem in a different shape. Without that, report the segment split as a hypothesis for a follow-up test, not as "B won on mobile."
+
 ## What is sample ratio mismatch (SRM), and why does it matter?
 
 When your 50/50 (or other) traffic split comes out meaningfully skewed, something is wrong with the experiment's plumbing — not the product. Reading results from a test with SRM is reading noise. `analyze_results.py` checks for this before any result is interpreted.

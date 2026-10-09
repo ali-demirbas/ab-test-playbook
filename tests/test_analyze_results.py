@@ -11,6 +11,15 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 import analyze_results as ar
 
 
+def setUpModule():
+    # Bu dosyadaki testler Türkçe mesaj metinlerini doğrular; CLI varsayılanı İngilizcedir (--lang en).
+    ar.set_lang("tr")
+
+
+def tearDownModule():
+    ar.set_lang("en")
+
+
 class TestSignificance(unittest.TestCase):
     def test_known_values_not_significant(self):
         # evals/04-results.md Girdi A: p ~0.077, anlamlı değil
@@ -235,8 +244,10 @@ class TestNumericAnchors(unittest.TestCase):
 
 class TestSampleSizeValidity(unittest.TestCase):
     def test_huge_mde_flags_invalid_approx(self):
-        """Regresyon: dev MDE'de script uyarısız 12 kişilik plan veriyordu."""
-        r = ar.sample_size(0.05, 10.0)
+        """Regresyon: dev MDE'de script uyarısız minik bir plan veriyordu. v2.1'de 1'den büyük MDE
+        yüzde sayıldığı için (10 → 0.10) dev etki kesirle verilir: %45 baz, %100 lift → hedef %90,
+        kol başına ~16 kişi, varyantta beklenen dönüşmeme ~1.6 < 10."""
+        r = ar.sample_size(0.45, 1.0)
         self.assertFalse(r["normal_approx_valid"])
         self.assertIsNotNone(r["note"])
 

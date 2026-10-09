@@ -6,6 +6,8 @@ Yolculuk aşaması: ziyaretçinin siteye ilk düştüğü ekran. Amaç satış d
 
 ## Ana CTA ilk ekranda mı görünmeli?
 
+Değişken: Ana CTA’nın konumu · Fark: taşı
+
 CTA’yı kaydırmadan görünen alana almak aksiyonu erken sunar ve kararı vermiş ziyaretçiyi hemen ilerletir. Karşı argüman: henüz ikna olmamış ziyaretçiye erken sunulan CTA boşa gider, üstelik başlığın ve değer önerisinin yerini daraltır. Uzun ve karmaşık teklifi olan sayfalarda erken CTA tıklansa bile sonraki adımda dökülme yaratabilir.
 
 **Test edilmesi gerekenler**
@@ -33,13 +35,15 @@ CTA’yı kaydırmadan görünen alana almak aksiyonu erken sunar ve kararı ver
 
 ## Başlık problemi mi, çözümü mü anlatmalı?
 
+Değişken: Başlığın anlatı çerçevesi · Fark: değiştir
+
 Problemi adlandıran başlık ziyaretçinin kendini tanımasını sağlar ve “bu benim için” hissi yaratır. Çözümü anlatan başlık ise ne satıldığını hemen netleştirir ve zaman kaybettirmez. Problem odaklı çerçeveleme, ziyaretçi problemini zaten biliyorsa gereksiz bir adım; çözüm odaklı çerçeveleme, ziyaretçi problemin farkında değilse anlamsız gelir.
 
 **Test edilmesi gerekenler**
 - Çerçeve: Problemi adlandırmak mı, çözümü söylemek mi daha çok aksiyon getiriyor?
 - Farkındalık: Ziyaretçi problemin farkında mı, yoksa önce ikna mı gerekiyor?
 - Uzunluk: Problem çerçevesi başlığı uzatıyor mu, uzayan başlık okunuyor mu?
-- Ton: Problem çerçevesi soru cümlesiyle mi, düz bir tespitle mi daha çok aksiyon getiriyor?
+- Sonraki test: Kazanan çerçeve sabitken başlığı soru cümlesi yerine düz bir tespit olarak kurmak ayrı bir testte aksiyonu değiştiriyor mu?
 - Segment: Reklamdan gelen ile organik gelen ziyaretçi farklı çerçeveye mi tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
@@ -47,7 +51,7 @@ Problemi adlandıran başlık ziyaretçinin kendini tanımasını sağlar ve “
 - Hemen Çıkma Oranı: Yanlış çerçeve ziyaretçiyi kaçırmamalı.
 - Kaydırma Derinliği: Başlık okumaya devam ettiriyor mu?
 - Sayfada Kalma Süresi: İlgi süresi düşmemeli.
-- Nitelikli Talep Oranı: Gelen taleplerde satışa/hedefe uygun olanların payı düşmemeli.
+- Talep Başına Nitelik Oranı: Gelen taleplerde satışa ya da hedefe uygun olanların payı düşmemeli.
 
 **Yapılmaması gerekenler**
 - Aynı testte başlık ile hero görselini birlikte değiştirmeyin.
@@ -60,13 +64,15 @@ Problemi adlandıran başlık ziyaretçinin kendini tanımasını sağlar ve “
 
 ## Fayda ifadesi soyut mu, somut mu olmalı?
 
+Değişken: Fayda ifadesinin somutluk düzeyi · Fark: değiştir
+
 Soyut fayda (“daha verimli çalışın”) geniş kitleye hitap eder ama kimseye özel gelmez. Somut fayda (“rapor hazırlama süresi yarıya iner”) inandırıcıdır ama dar bir kullanım senaryosunu tarif eder ve diğer ziyaretçileri dışarıda bırakabilir. Somutluk aynı zamanda doğrulanabilir bir iddia yaratır; arkasında veri yoksa risklidir.
 
 **Test edilmesi gerekenler**
 - Somutluk: Sayısal veya durumsal somutluk aksiyonu artırıyor mu?
 - Kapsam: Somut ifade kendini o senaryoda görmeyeni dışarıda bırakıyor mu?
 - İnandırıcılık: Somut iddia kanıtsız sunulduğunda güven düşüyor mu?
-- Sayı kullanımı: Rakam vermek mi, durum tarif etmek mi daha etkili?
+- Sonraki test: Somut ifade kazanırsa, rakam veren sürüm ile durum tarif eden sürüm ayrı bir testte karşılaştırıldığında hangisi daha çok aksiyon getiriyor?
 - Segment: Benzer bir çözümü daha önce kullanmış ziyaretçi ile ilk kez çözüm arayan ziyaretçi somut ifadeye farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
@@ -87,12 +93,14 @@ Soyut fayda (“daha verimli çalışın”) geniş kitleye hitap eder ama kimse
 
 ## Sayfa sonunda CTA’yı tekrarlamak dönüşümü artırır mı?
 
+Değişken: Sayfa sonundaki ikinci CTA · Fark: ekle
+
 Uzun sayfada aşağı inen ziyaretçi ikna olduğunda yukarı dönmek zorunda kalmamalıdır. Sayfa sonuna ikinci bir CTA koymak bu sürtünmeyi kaldırır. Karşı tarafta: tekrar eden CTA sayfayı satış baskısı gibi hissettirebilir ve iki CTA farklı metin taşırsa mesaj dağılır.
 
 **Test edilmesi gerekenler**
 - Tekrar: Sayfa sonuna ikinci CTA eklemek toplam aksiyonu artırıyor mu?
-- Metin: İki CTA aynı metni mi taşımalı, farklı mı?
-- Konum: İkinci CTA sayfanın sonunda mı, ikna edici bölümün hemen ardında mı durmalı?
+- Sona ulaşanlar: Aksiyon artışı yalnızca sayfa sonuna kadar inen ziyaretçilerde mi ortaya çıkıyor?
+- Sonraki test: İkinci CTA kazanırsa, onu sayfa sonundan ikna edici bölümün hemen ardına taşımak ayrı bir testte aksiyonu artırıyor mu?
 - Yoğunluk: Üç veya daha fazla tekrar baskı hissi yaratıyor mu?
 - Cihaz: Mobilde daha uzun görünen sayfada tekrar daha mı gerekli?
 
@@ -114,12 +122,14 @@ Uzun sayfada aşağı inen ziyaretçi ikna olduğunda yukarı dönmek zorunda ka
 
 ## Otomatik oynayan tanıtım videosu anlatımı güçlendirir mi?
 
+Değişken: Tanıtım videosunun oynatma biçimi · Fark: değiştir
+
 Video karmaşık bir ürünü metinden hızlı anlatabilir. Otomatik oynatma dikkat çeker ama ses açıksa rahatsız eder, veri tüketir, sayfa yükünü artırır ve bazı ziyaretçilerin hemen çıkmasına yol açar. Tıklayınca oynayan video ise izlenme oranını düşürür fakat izleyeni gerçekten ilgili kılar.
 
 **Test edilmesi gerekenler**
 - Oynatma: Video otomatik mi başlamalı, tıklayınca mı?
-- Kapak karesi: Tıklayınca oynayan videoda kapak olarak ürün ekranı mı, konuşan kişi mi daha çok başlatılıyor?
-- Konum: Video hero’da mı, açıklamanın içinde mi daha çok izleniyor?
+- Ses açma: Sessiz başlayan otomatik videoda ziyaretçilerin kaçı sesi açıp anlatımı sonuna kadar izliyor?
+- Sonraki test: Kazanan oynatma biçimi sabitken videoyu hero’dan açıklama bölümüne taşımak ayrı bir testte izlenmeyi değiştiriyor mu?
 - İzleme derinliği: İzlemeyi yarıda bırakanlar aksiyonu alıyor mu?
 - Cihaz: Mobilde veri tüketimi ve yükleme süresi sonucu değiştiriyor mu?
 
@@ -141,20 +151,22 @@ Video karmaşık bir ürünü metinden hızlı anlatabilir. Otomatik oynatma dik
 
 ## Müşteri logoları güven yaratıyor mu?
 
+Değişken: Müşteri logo bandı · Fark: ekle
+
 Tanınan kurum logoları hızlı bir güven kısayolu sağlar. Ancak logolar ziyaretçinin tanımadığı kurumlardansa etkisizdir, hedef kitleden farklı ölçekteki kurumlarsa (kurumsal logolar küçük işletme ziyaretçisine) “bu benim için değil” hissi bile yaratabilir. Logo bandı ayrıca sayfanın ilk ekranından değerli yer alır.
 
 **Test edilmesi gerekenler**
 - Varlık: Logo bandı eklemek aksiyonu artırıyor mu?
-- Tanınırlık: Hedef kitlenin tanıdığı logolar ile tanımadıkları arasında fark var mı?
+- Tanınırlık: Bandı gören ziyaretçiler kısa ankette logolardaki kurumlardan en az birini tanıdığını söylüyor mu?
 - Ölçek uyumu: Kurumsal logolar küçük ölçekli ziyaretçiyi uzaklaştırıyor mu?
-- Konum: Logo bandı başlığın hemen altında mı, sayfanın ilerisinde mi daha etkili?
-- Segment: Farklı sektörden gelen ziyaretçiye farklı logo seti göstermek fark yaratıyor mu?
+- Sonraki test: Logo bandı kazanırsa, bandı başlığın hemen altından sayfanın ilerisine taşımak ayrı bir testte aksiyonu değiştiriyor mu?
+- Segment: Logo bandının etkisi, logolardaki kurumlarla aynı sektörden gelen ziyaretçide diğer sektörlerden gelenlere göre daha mı güçlü?
 
 **Takip edilecek ana KPI’lar**
 - Ana Aksiyon Tamamlama Oranı: Logolar aksiyonu artırıyor mu?
 - Kaydırma Derinliği: Logo bandı ziyaretçiyi durdurmamalı.
 - Hemen Çıkma Oranı: Ölçek uyumsuzluğu çıkışı artırmamalı.
-- Nitelikli Talep Oranı: Hedef profile uyan taleplerin payı düşmemeli.
+- Talep Başına Nitelik Oranı: Hedef profile uyan taleplerin payı düşmemeli.
 - Sayfa Yüklenme Süresi: Logo görselleri hızı bozmamalı.
 
 **Yapılmaması gerekenler**
@@ -168,12 +180,14 @@ Tanınan kurum logoları hızlı bir güven kısayolu sağlar. Ancak logolar ziy
 
 ## Uzman veya kurucu görünürlüğü güveni artırır mı?
 
+Değişken: Gerçek kişiyi tanıtan blok · Fark: ekle
+
 Arkasında gerçek bir insan olduğunu göstermek (kurucu fotoğrafı ve imzası, alan uzmanının açıklaması) soyut bir markayı somutlaştırır. Karşı tarafta: kişi öne çıkarıldığında marka küçük ölçekli görünebilir, kurumsal alıcıda “tek kişilik iş” algısı yaratabilir ve kişiye bağımlılık riski doğar.
 
 **Test edilmesi gerekenler**
 - Varlık: Gerçek bir kişiyi göstermek aksiyonu artırıyor mu?
-- Rol: Kurucu mu, alan uzmanı mı daha çok güven veriyor?
-- Biçim: Fotoğraf mı, kısa bir açıklama metni mi daha çok güven veriyor?
+- Sonraki test: Kişi bloğu kazanırsa, blokta kurucunun mu alan uzmanının mı yer aldığı ayrı bir testte güveni değiştiriyor mu?
+- Kişiye yönelme: Bloğu gören ziyaretçiler ürünü denemek yerine doğrudan o kişiyle görüşme talebine mi yöneliyor?
 - Ölçek algısı: Kişi vurgusu markayı küçük gösterip kurumsal alıcıyı caydırıyor mu?
 - Segment: Bireysel ve kurumsal ziyaretçi farklı mı tepki veriyor?
 
@@ -195,20 +209,22 @@ Arkasında gerçek bir insan olduğunu göstermek (kurucu fotoğrafı ve imzası
 
 ## Uzun sayfa mı, kısa sayfa mı daha çok dönüştürüyor?
 
+Değişken: Sayfadaki bölüm sayısı · Fark: değiştir
+
 Uzun sayfa itirazları tek tek karşılar ve karmaşık ürünü anlatmaya yer bırakır. Kısa sayfa kararı hızlandırır ve dikkat dağınıklığını azaltır. Belirleyici olan uzunluk değil, ziyaretçinin karar vermek için ihtiyaç duyduğu bilgi miktarıdır; bu da ürünün karmaşıklığına ve fiyat seviyesine bağlıdır.
 
 **Test edilmesi gerekenler**
 - Uzunluk: Bölüm sayısını azaltmak aksiyonu artırıyor mu?
 - İhtiyaç: Çıkarılan bölümler gerçekten okunuyor muydu?
-- Sıra: Kısaltmak yerine sırayı değiştirmek aynı etkiyi veriyor mu?
+- Sonraki test: Kısaltmak yerine yalnızca bölümlerin sırasını değiştirmek, ayrı bir testte aynı etkiyi veriyor mu?
 - İtiraz: Kısalan sayfada cevapsız kalan itiraz destek talebine dönüşüyor mu?
 - Segment: Yeni ziyaretçi uzun, geri dönen ziyaretçi kısa sayfaya mı daha iyi tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
 - Ana Aksiyon Tamamlama Oranı: Uzunluk aksiyonu değiştiriyor mu?
 - Kaydırma Derinliği: Ziyaretçi sayfanın neresine kadar iniyor?
-- Destek Talebi Sayısı: Cevapsız kalan soru yükü artmamalı.
-- Nitelikli Talep Oranı: Az bilgiyle gelen taleplerde uygun olanların payı düşmemeli.
+- Destek Talebi: Cevapsız kalan soru yükü artmamalı.
+- Talep Başına Nitelik Oranı: Az bilgiyle gelen taleplerde uygun olanların payı düşmemeli.
 - Sayfada Kalma Süresi: Karar süresi belirgin şekilde uzamamalı.
 
 **Yapılmaması gerekenler**
@@ -222,19 +238,21 @@ Uzun sayfa itirazları tek tek karşılar ve karmaşık ürünü anlatmaya yer b
 
 ## “Nasıl çalışır” bölümü tereddüdü gideriyor mu?
 
+Değişken: “Nasıl çalışır” bölümü · Fark: ekle
+
 Sürecin adım adım anlatılması belirsizliği azaltır ve “kaydolunca ne olacak” sorusunu cevaplar. Karşı tarafta: süreci göstermek işin ne kadar emek gerektirdiğini de ortaya koyar ve basit sanılan bir hizmetin karmaşık görünmesine yol açabilir. Adım sayısı burada mesajın kendisidir.
 
 **Test edilmesi gerekenler**
 - Varlık: Süreç anlatımı eklemek aksiyonu artırıyor mu?
-- Adım sayısı: Üç adım mı, daha ayrıntılı bir anlatım mı daha ikna edici?
-- Zaman: Her adımın ne kadar süreceğini söylemek fark yaratıyor mu?
+- Sonraki test: Süreç bölümü kazanırsa, üç adımlık özet ile ayrıntılı anlatım ayrı bir testte karşılaştırıldığında hangisi daha ikna edici?
+- Beklenti uyumu: Bölümü gören kullanıcılar kayıttan sonraki ilk adımda takılıp yardım sayfasına daha az mı gidiyor?
 - Karmaşıklık algısı: Süreç görünür olunca iş zor mu görünüyor?
 - Segment: Ürünü tanımayan ile daha önce benzerini kullanmış ziyaretçi farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
 - Ana Aksiyon Tamamlama Oranı: Süreç anlatımı aksiyonu artırıyor mu?
 - Aksiyon Sonrası Tamamlama Oranı: Beklentisi netleşen kullanıcı sonraki adımı bırakmamalı.
-- Destek Talebi Sayısı: “Sonra ne oluyor” soruları azalıyor mu?
+- Destek Talebi: “Sonra ne oluyor” soruları azalıyor mu?
 - Kaydırma Derinliği: Bölüm görülüyor mu?
 - İlk Adım Terk Oranı: Süreci görüp vazgeçme artmamalı.
 
@@ -249,6 +267,8 @@ Sürecin adım adım anlatılması belirsizliği azaltır ve “kaydolunca ne ol
 
 ## Ziyaretçinin geldiği kaynağa göre başlığı değiştirmek işe yarar mı?
 
+Değişken: Başlığın trafik kaynağına göre uyarlanması · Fark: değiştir
+
 Reklamdaki veya yönlendiren sayfadaki ifadeyi başlıkta karşılamak beklenti sürekliliği kurar ve “yanlış yere geldim” hissini önler. Riski: kaynak sayısı arttıkça yönetilemez sayıda varyasyon doğar, yanlış eşleştirme alakasız bir başlık gösterir ve kişiselleştirme rahatsız edici bir takip hissi yaratabilir.
 
 **Test edilmesi gerekenler**
@@ -262,7 +282,7 @@ Reklamdaki veya yönlendiren sayfadaki ifadeyi başlıkta karşılamak beklenti 
 - Ana Aksiyon Tamamlama Oranı: Kaynağa göre başlık aksiyonu artırıyor mu?
 - Hemen Çıkma Oranı: Yanlış eşleşme çıkışı artırmamalı.
 - Kaynak Bazlı Dönüşüm Farkı: Hangi kaynakta kazanç var, hangisinde yok?
-- Nitelikli Talep Oranı: Kaynağa uyumlu mesaj niteliksiz talebin payını artırmamalı.
+- Talep Başına Nitelik Oranı: Kaynağa uyumlu mesaj niteliksiz talebin payını artırmamalı.
 - Sayfa Yüklenme Süresi: Kişiselleştirme gecikme yaratmamalı.
 
 **Yapılmaması gerekenler**
@@ -276,10 +296,12 @@ Reklamdaki veya yönlendiren sayfadaki ifadeyi başlıkta karşılamak beklenti 
 
 ## Sayfanın bittiği izlenimi veren tasarım kaydırmayı durduruyor mu?
 
+Değişken: İlk ekranda alt bölümün görünürlüğü · Fark: değiştir
+
 Tam ekran kaplayan bir bölüm veya güçlü bir yatay ayırıcı, ziyaretçide sayfanın sona erdiği izlenimi yaratabilir ve altındaki içerik hiç görülmez. Bu genelde fark edilmeyen bir kayıptır: içerik oradadır, ölçümde “okunmadı” görünür ve içeriğin kendisi suçlanır. Ayırıcıyı yumuşatmak veya alttan bir parça göstermek kaydırmayı sürdürebilir.
 
 **Test edilmesi gerekenler**
-- Kesinti: Bölüm sınırını yumuşatmak kaydırma derinliğini artırıyor mu?
+- Sonraki test: Alt bölümden parça gösterimi sabitken bölüm ayırıcısını yumuşatmak, ayrı bir testte kaydırma derinliğine ek katkı sağlıyor mu?
 - İpucu: Alttaki içerikten bir parça göstermek devam ettiriyor mu?
 - Yükseklik: Tam ekran yüksekliğinden vazgeçmek fark yaratıyor mu?
 - Sonuç: Artan kaydırma aksiyona dönüşüyor mu, yoksa sadece derinlik mi artıyor?
@@ -303,13 +325,15 @@ Tam ekran kaplayan bir bölüm veya güçlü bir yatay ayırıcı, ziyaretçide 
 
 ## Örnek kullanım senaryoları göstermek karar verdiriyor mu?
 
+Değişken: Kullanım örnekleri bölümü · Fark: ekle
+
 Ziyaretçi çoğu zaman ürünün ne olduğunu değil, kendi durumunda ne işe yarayacağını anlamakta zorlanır. Somut kullanım örnekleri bu boşluğu doldurur. Karşı tarafta: örnekler dar seçilirse kendini orada görmeyen ziyaretçi elenir ve sayfa uzar.
 
 **Test edilmesi gerekenler**
 - Varlık: Kullanım örnekleri eklemek aksiyonu artırıyor mu?
 - Sayı: Kaç örnek gösterildiğinde kendini bulma oranı en yüksek?
-- Seçim: Örnekler ziyaretçinin durumuna göre mi seçilmeli, sabit mi kalmalı?
-- Biçim: Kısa cümleler mi, ayrıntılı vaka anlatımı mı daha etkili?
+- Sonraki test: Örnek bölümü kazanırsa, örnekleri ziyaretçinin durumuna göre seçmek ayrı bir testte sabit örneklerden daha çok aksiyon getiriyor mu?
+- Aşağı itilen içerik: Örnek bölümü eklenince altında kalan fiyat ve kapsam bölümlerinin görülme oranı düşüyor mu?
 - Segment: Farklı kullanıcı tipleri farklı örneklere mi tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
@@ -330,12 +354,14 @@ Ziyaretçi çoğu zaman ürünün ne olduğunu değil, kendi durumunda ne işe y
 
 ## Uzun sayfada bölüm navigasyonu işe yarıyor mu?
 
+Değişken: Sayfa içi bölüm navigasyonu · Fark: ekle
+
 Sayfa içi bağlantılar (sabit bir bölüm menüsü veya içindekiler) ziyaretçinin aradığı bölüme atlamasını sağlar. Riski: navigasyon ziyaretçiyi tek bir bölüme götürüp geri kalan ikna içeriğini atlatabilir; ayrıca ekranda yer kaplar ve mobilde dar alanda sıkışır.
 
 **Test edilmesi gerekenler**
 - Varlık: Bölüm navigasyonu eklemek aksiyonu artırıyor mu?
 - Atlama: Kullanıcılar hangi bölüme atlıyor, aradaki içeriği kaybediyor mu?
-- Biçim: Sabit menü mü, sayfa başındaki içindekiler mi daha çok kullanılıyor?
+- Sonraki test: Navigasyon kazanırsa, sabit menü ile sayfa başındaki içindekiler listesi ayrı bir testte karşılaştırıldığında hangisi daha çok kullanılıyor?
 - Etiketleme: Bölüm adları ziyaretçinin aradığı kelimelerle eşleşiyor mu?
 - Cihaz: Mobilde navigasyon yer kaplayıp içeriği bastırıyor mu?
 
@@ -357,19 +383,21 @@ Sayfa içi bağlantılar (sabit bir bölüm menüsü veya içindekiler) ziyaret�
 
 ## Reddetme seçeneğini görünür yapmak dönüşümü etkiler mi?
 
+Değişken: Açık “şimdi değil” reddetme seçeneği · Fark: ekle
+
 Bir teklifin yanına açık bir “şimdi değil” seçeneği koymak kullanıcıya kontrol hissi verir ve zorlanma tepkisini azaltır. Sezgiye aykırı olan şudur: reddetmeyi kolaylaştırmak kabul oranını düşürebileceği gibi, güven artışı yoluyla toplam ilişkiyi güçlendirebilir. Ölçülmesi gereken tek seferlik kabul değil, sonraki davranıştır.
 
 **Test edilmesi gerekenler**
 - Görünürlük: Açık reddetme seçeneği kabul oranını nasıl değiştiriyor?
 - Sonraki davranış: Reddedenler daha sonra geri dönüp kabul ediyor mu?
-- Metin: “Şimdi değil” ile “İstemiyorum” arasında fark var mı?
-- Tekrar: Reddeden kullanıcıya teklif ne zaman yeniden gösterilmeli?
+- Sonraki test: Reddetme seçeneği kazanırsa, “Şimdi değil” ile “İstemiyorum” ifadeleri ayrı bir testte kabul oranını farklı mı etkiliyor?
+- Çıkış yolu: Açık reddetme seçeneği varken teklifi kapatma işaretiyle veya geri tuşuyla geçenlerin payı azalıyor mu?
 - Segment: Yeni ziyaretçi ile mevcut kullanıcı farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
 - Toplam Kabul Oranı: Belirli bir süre içindeki kümülatif kabul artıyor mu?
 - Anlık Kabul Oranı: Tek gösterimdeki kabul oranı ne oluyor?
-- Geri Dönüş Oranı: Reddeden kullanıcının siteye dönüşü düşmemeli.
+- Tekrar Ziyaret Oranı: Reddeden kullanıcının siteye dönüşü düşmemeli.
 - Şikâyet veya Kapatma Oranı: Rahatsızlık sinyalleri artmamalı.
 - İzin İptal Oranı: Sonradan izin geri çekme artmamalı.
 
@@ -384,14 +412,16 @@ Bir teklifin yanına açık bir “şimdi değil” seçeneği koymak kullanıc�
 
 ## Sayfanın üstündeki fayda çubuğu aksiyonu artırıyor mu?
 
+Değişken: Sayfa üstündeki fayda çubuğu · Fark: ekle
+
 Başlığın hemen üstünde veya altında duran ince bir şerit (ücretsiz kargo, iade süresi, teslimat vaadi) en sık sorulan üç soruyu kaydırmadan cevaplar. Karşı tarafta: şerit reklam bandına benzeyip görmezden gelinebilir, dikkat çekerse asıl başlığın önüne geçer ve ekranın en değerli bölümünden yer alır.
 
 **Test edilmesi gerekenler**
 - Varlık: Fayda çubuğu eklemek aksiyonu artırıyor mu?
-- İçerik: Hangi üç bilgi çubukta durduğunda en çok fark yaratıyor?
-- Konum: Başlığın üstünde mi, altında mı daha çok okunuyor?
+- Fark edilme: Çubuk varken ziyaretçiler kargo ve iade bilgisini yine de sayfanın altında veya yardım sayfasında arıyor mu?
+- Sonraki test: Fayda çubuğu kazanırsa, çubuğu başlığın üstünden altına taşımak ayrı bir testte okunmayı değiştiriyor mu?
 - Görsel ağırlık: Çubuk dikkat çekince başlığın etkisi zayıflıyor mu?
-- Cihaz: Mobilde çubuk ekranın değerli kısmını yiyor mu?
+- Cihaz: Kısa mobil ilk ekranda fayda çubuğunun başlığı ve CTA’yı aşağı itmesi, masaüstünde görülmeyen bir aksiyon kaybı yaratıyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Ana Aksiyon Tamamlama Oranı: Çubuk aksiyonu artırıyor mu?
@@ -411,12 +441,14 @@ Başlığın hemen üstünde veya altında duran ince bir şerit (ücretsiz karg
 
 ## Başlıkta özellik mi, fayda mı önce gelmeli?
 
-Faydayı öne almak ziyaretçinin kendi sonucunu görmesini sağlar. Özelliği öne almak ise ne olduğunu hemen netleştirir ve ne aradığını bilen ziyaretçiyi hızlandırır. Fayda önde olduğunda ürünün ne olduğu belirsiz kalabilir; özellik önde olduğunda ise “bu bana ne kazandırır” sorusu cevapsız kalır.
+Değişken: Başlıkta fayda ile özelliğin sırası · Fark: değiştir
+
+Faydayı öne almak ziyaretçinin kendi sonucunu görmesini sağlar. Özelliği öne almak ise ne olduğunu hemen netleştirir ve ne aradığını bilen ziyaretçiyi hızlandırır. Fayda önde olduğunda ürünün ne olduğu belirsiz kalabilir; özellik önde olduğunda ise “bu bana ne kazandırır” sorusu cevapsız kalır. “Başlık problemi mi, çözümü mü anlatmalı?” senaryosundan farkı: orada başlığın anlatı çerçevesi (problem ya da çözüm) değişir, burada çerçeve sabit kalır ve yalnızca aynı başlıktaki fayda ile özelliğin sırası değişir.
 
 **Test edilmesi gerekenler**
 - Sıra: Fayda mı, özellik mi başta durduğunda aksiyon artıyor?
 - Netlik: Fayda öne alınınca ürünün ne olduğu anlaşılıyor mu?
-- Birleşim: İkisini tek cümlede birleştirmek fark yaratıyor mu?
+- Sonraki test: Kazanan sıra sabitken faydayı ve özelliği tek cümlede birleştiren başlık ayrı bir testte aksiyonu artırıyor mu?
 - Uzunluk: Fayda ifadesi başlığı okunmayacak kadar uzatıyor mu?
 - Segment: Ürünü tanıyan ile ilk kez görenler farklı sıraya mı tepki veriyor?
 
@@ -424,7 +456,7 @@ Faydayı öne almak ziyaretçinin kendi sonucunu görmesini sağlar. Özelliği 
 - Ana Aksiyon Tamamlama Oranı: Sıralama aksiyonu artırıyor mu?
 - Hemen Çıkma Oranı: Belirsizlik çıkışı artırmamalı.
 - Kaydırma Derinliği: Okumaya devam etme artıyor mu?
-- Nitelikli Talep Oranı: Uygun taleplerin payı düşmemeli.
+- Talep Başına Nitelik Oranı: Uygun taleplerin payı düşmemeli.
 - Sayfada Kalma Süresi: İlgi süresi düşmemeli.
 
 **Yapılmaması gerekenler**
@@ -438,12 +470,14 @@ Faydayı öne almak ziyaretçinin kendi sonucunu görmesini sağlar. Özelliği 
 
 ## Güvenceleri madde listesi hâlinde vermek ikna ediyor mu?
 
+Değişken: Güvencelerin sunum biçimi · Fark: değiştir
+
 Kısa madde listesi (iptal koşulu, veri güvenliği, destek, teslimat) paragraf içinde kaybolan güvenceleri taranabilir hâle getirir. Riski: liste uzarsa hiçbiri okunmaz, ayrıca güvence listesi ziyaretçinin aklına gelmemiş endişeleri hatırlatıp tereddüt yaratabilir.
 
 **Test edilmesi gerekenler**
 - Biçim: Madde listesi mi, paragraf mı daha çok ikna ediyor?
-- Sayı: Kaç madde faydalıyken kaçında etkisi kayboluyor?
-- Seçim: Hangi güvenceler en çok fark yaratıyor?
+- Sonraki test: Liste biçimi kazanırsa, listedeki güvence sayısı ayrı bir testte etkiyi değiştiriyor mu? (3 / 5 / 7)
+- Hatırlanma: Liste hâlindeki güvenceleri gören ziyaretçiler kısa ankette iptal koşulunu paragraf sürümüne göre daha doğru hatırlıyor mu?
 - Ters etki: Liste akla gelmemiş endişeyi hatırlatıp tereddüt yaratıyor mu?
 - Segment: İlk kez gelen ile geri dönen kullanıcı farklı mı tepki veriyor?
 
@@ -465,12 +499,14 @@ Kısa madde listesi (iptal koşulu, veri güvenliği, destek, teslimat) paragraf
 
 ## Güvenceleri tek blokta mı, akışa yayarak mı sunmalı?
 
+Değişken: Güvencelerin sayfadaki yerleşimi · Fark: taşı
+
 Tüm güvenceleri tek bölümde toplamak derli toplu bir cevap verir ama o bölüme ulaşmayan ziyaretçi hiçbirini görmez. Endişenin doğduğu yere yerleştirmek (fiyatın yanına iade koşulu, forma veri güvencesi) her güvenceyi tam ihtiyaç anında sunar; buna karşılık sayfa dağınıklaşabilir ve mesaj tekrarı yorucu gelebilir.
 
 **Test edilmesi gerekenler**
 - Dağıtım: Güvenceler tek blokta mı, ilgili noktalara yayılmış mı daha etkili?
 - Eşleşme: Her güvence gerçekten endişenin doğduğu yerde mi duruyor?
-- Tekrar: Aynı güvencenin birden çok yerde geçmesi yoruyor mu?
+- Sonraki test: Dağıtılmış yerleşim kazanırsa, aynı güvenceyi birden fazla noktada tekrarlamak ayrı bir testte ek güven mi yaratıyor, yorgunluk mu?
 - Görünürlük: Tek bloktaki güvenceleri kaç ziyaretçi görüyor?
 - Segment: Tereddütlü ve kararlı ziyaretçi farklı mı tepki veriyor?
 
@@ -492,13 +528,15 @@ Tüm güvenceleri tek bölümde toplamak derli toplu bir cevap verir ama o böl�
 
 ## Video referans yazılı referanstan daha mı ikna edici?
 
+Değişken: Müşteri referansının biçimi · Fark: değiştir
+
 Videoda gerçek bir kişinin konuşması metinden daha inandırıcı gelir ve taklit edilmesi zordur. Bedeli: izlenme oranı okumaya göre düşüktür, üretimi pahalıdır, sayfa yükünü artırır ve videoyu açmayan ziyaretçi hiçbir referans görmemiş olur.
 
 **Test edilmesi gerekenler**
 - Biçim: Video referans mı, metin referans mı daha çok aksiyon getiriyor?
 - İzlenme: Videoyu kaç ziyaretçi başlatıyor, kaçı bitiriyor?
-- Yedek: Video yanında özet metin bulunması farkı değiştiriyor mu?
-- Uzunluk: Kısa kesitler mi, tam anlatım mı daha etkili?
+- Sonraki test: Video biçimi kazanırsa, videonun yanına kısa bir özet metin eklemek ayrı bir testte farkı değiştiriyor mu?
+- Algılanan gerçeklik: Aynı anlatım videoda sunulduğunda ziyaretçiler kısa ankette referansı daha gerçek buluyor mu?
 - Cihaz: Mobilde video izlenme oranı belirgin düşüyor mu?
 
 **Takip edilecek ana KPI’lar**
@@ -519,13 +557,15 @@ Videoda gerçek bir kişinin konuşması metinden daha inandırıcı gelir ve ta
 
 ## Referansı sonuç anlatan müşteriden seçmek fark yaratır mı?
 
+Değişken: Referansın içerik türü · Fark: değiştir
+
 “Çok memnun kaldım” diyen genel bir referans duygu bildirir; “şu sorunu şu kadar sürede çözdük” diyen referans ise somut bir sonuç gösterir. Sonuç odaklı referans daha ikna edicidir ama dar bir kullanım senaryosunu tarif eder ve kendini orada görmeyen ziyaretçiyi kapsamayabilir.
 
 **Test edilmesi gerekenler**
 - İçerik: Sonuç anlatan referans genel övgüden daha mı etkili?
 - Kapsam: Somut referans başka durumdaki ziyaretçiyi dışarıda bırakıyor mu?
-- Kimlik: Referans sahibinin rolü ve sektörü belirtilmesi fark yaratıyor mu?
-- Sayı: Kaç referans gösterildiğinde etki en yüksek?
+- Sonraki test: Sonuç anlatan referans kazanırsa, referans sahibinin rolünü ve sektörünü belirtmek ayrı bir testte etkiyi artırıyor mu?
+- Abartı algısı: Referanstaki somut sonuç ziyaretçiye abartılı gelip genel övgüye göre güveni düşürüyor mu?
 - Segment: Farklı kullanıcı tipleri farklı referansa mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
@@ -546,13 +586,15 @@ Videoda gerçek bir kişinin konuşması metinden daha inandırıcı gelir ve ta
 
 ## Ziyaretçinin geldiği kaynağa uygun referans göstermek işe yarar mı?
 
-Ziyaretçiyle aynı sektörden veya aynı kanaldan gelen bir müşterinin referansı “benim gibi biri” etkisi yaratır. Riski: kaynak eşleştirmesi yanlışsa alakasız bir referans gösterilir, ayrıca her kaynak için ayrı referans yönetmek sürdürülemez hâle gelebilir.
+Değişken: Referansın trafik kaynağına göre seçimi · Fark: değiştir
+
+Ziyaretçiyle aynı sektörden veya aynı kanaldan gelen bir müşterinin referansı “benim gibi biri” etkisi yaratır. Riski: kaynak eşleştirmesi yanlışsa alakasız bir referans gösterilir, ayrıca her kaynak için ayrı referans yönetmek sürdürülemez hâle gelebilir. “Ziyaretçinin geldiği kaynağa göre başlığı değiştirmek işe yarar mı?” senaryosundan farkı: orada kaynağa göre uyarlanan öğe başlıktır, burada başlık sabit kalır ve yalnızca gösterilen referans kaynağa göre seçilir; ikisini aynı testte birlikte uyarlamayın.
 
 **Test edilmesi gerekenler**
 - Eşleştirme: Kaynağa uygun referans aksiyonu artırıyor mu?
 - Kapsam: Kaç kaynak için ayrı referans sürdürülebilir?
 - Yedek: Tanınmayan kaynaktan gelene hangi referans gösteriliyor?
-- Yakınlık: Sektör benzerliği mi, ölçek benzerliği mi daha çok etkiliyor?
+- Sonraki test: Eşleştirme kazanırsa, sektör benzerliğine göre eşleştirme ile ölçek benzerliğine göre eşleştirme ayrı bir testte karşılaştırıldığında hangisi daha etkili?
 - Cihaz: Mobilde eşleştirilen referans ilk ekranda görünüyor mu, yoksa kaydırmanın altında mı kalıyor?
 
 **Takip edilecek ana KPI’lar**
@@ -572,6 +614,8 @@ Ziyaretçiyle aynı sektörden veya aynı kanaldan gelen bir müşterinin refera
 ---
 
 ## Bölümleri zigzag dizmek okumayı sürdürüyor mu?
+
+Değişken: Bölümlerde görsel-metin hizalaması · Fark: değiştir
 
 Görsel ve metnin dönüşümlü olarak sağa sola geçmesi (zigzag) monotonluğu kırar ve her bölümü ayrı bir birim gibi gösterir. Karşı tarafta: göz her bölümde yön değiştirmek zorunda kalır, tarama yavaşlar ve tek sütunlu düzenin sunduğu hızlı okuma kaybolur.
 
@@ -600,13 +644,15 @@ Görsel ve metnin dönüşümlü olarak sağa sola geçmesi (zigzag) monotonluğ
 
 ## Soyut tema görselleri mi, gerçek ürün ekranları mı daha etkili?
 
+Değişken: Sayfa görsellerinin türü · Fark: değiştir
+
 Soyut veya kavramsal görseller estetik bir bütünlük kurar ve ürün henüz olgunlaşmamışken işe yarar. Gerçek ürün ekranları ise ne alındığını gösterir ve belirsizliği kaldırır; buna karşılık ekranlar karmaşık görünüp caydırabilir ve hızla eskiyip bakım yükü yaratabilir.
 
 **Test edilmesi gerekenler**
 - İçerik: Gerçek ürün görüntüsü aksiyonu artırıyor mu?
 - Karmaşıklık: Ekran görüntüsü ürünü zor mu gösteriyor?
-- Ayrıntı: Tam ekran mı, ürünün tek bir parçası mı daha anlaşılır?
-- Güncellik: Eskiyen ekran görüntüsü güveni düşürüyor mu?
+- Sonraki test: Gerçek ekran kazanırsa, tam ekran görüntüsü ile ürünün tek bir parçasına yakınlaşan kesit ayrı bir testte karşılaştırıldığında hangisi daha anlaşılır?
+- İlk kullanım: Gerçek ekranı görüp kaydolan kullanıcı ilk oturumda temel işlevi daha kısa sürede buluyor mu?
 - Segment: Ürünü tanımayan ile deneyimli ziyaretçi farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
@@ -627,19 +673,21 @@ Soyut veya kavramsal görseller estetik bir bütünlük kurar ve ürün henüz o
 
 ## İndirilebilir bir kaynak sunmak lead sayısını artırır mı?
 
-Rehber, şablon veya kontrol listesi karşılığında iletişim bilgisi istemek, satın almaya hazır olmayan ziyaretçiyi de yakalar. Riski: gelen kayıtların çoğu ürünle değil kaynakla ilgilenir, satış ekibinin yükü artar ve niteliksiz lead oranı yükselir. Asıl ölçülmesi gereken kayıt sayısı değil, nitelikli fırsat sayısıdır.
+Değişken: İndirilebilir kaynak teklifi · Fark: ekle
+
+Rehber, şablon veya kontrol listesi karşılığında iletişim bilgisi istemek, satın almaya hazır olmayan ziyaretçiyi de yakalar. Riski: gelen kayıtların çoğu ürünle değil kaynakla ilgilenir, satış ekibinin yükü artar ve niteliksiz lead oranı yükselir. Asıl ölçülmesi gereken kayıt sayısı değil, atanan ziyaretçi başına nitelikli fırsat oranıdır.
 
 **Test edilmesi gerekenler**
 - Varlık: İndirilebilir kaynak sunmak nitelikli talebi artırıyor mu?
-- Konu: Kaynağın konusu ürüne ne kadar yakın olmalı?
-- Kapı: Kaynak iletişim bilgisi karşılığında mı, serbest mi sunulmalı?
+- Asıl yoldan sapma: Kaynağı indiren ziyaretçiler deneme veya satın alma adımı yerine kaynakla mı yetiniyor?
+- Sonraki test: Kaynak kazanırsa, iletişim bilgisi istemeden serbest sunmak ayrı bir testte nitelikli talebi değiştiriyor mu?
 - Nitelik: Gelen kayıtların kaçı gerçekten satışa uygun?
 - Segment: Farklı kullanıcı tipleri kaynağa farklı mı ilgi gösteriyor?
 
 **Takip edilecek ana KPI’lar**
-- Nitelikli Fırsat Sayısı: Satışa uygun talep artıyor mu?
+- Nitelikli Fırsat Oranı (atanan ziyaretçi başına): Satış ekibinin nitelikli kabul ettiği fırsatların atanan ziyaretçiye oranı artıyor mu?
 - Toplam Kayıt Sayısı: Hacim artıyor mu?
-- Kayıt Başına Nitelik Oranı: Niteliksiz kayıt oranı kabul edilemez ölçüde artmamalı.
+- Talep Başına Nitelik Oranı: Niteliksiz kayıt oranı kabul edilemez ölçüde artmamalı.
 - Satış Ekibi İş Yükü: Takip edilemeyecek kadar kayıt birikmemeli.
 - Ana Aksiyon Tamamlama Oranı: Asıl dönüşüm (deneme, satın alma) düşmemeli.
 
@@ -654,12 +702,14 @@ Rehber, şablon veya kontrol listesi karşılığında iletişim bilgisi istemek
 
 ## Para iade garantisini öne çıkarmak satın almayı artırır mı?
 
+Değişken: Para iade garantisinin görünürlüğü · Fark: değiştir
+
 Koşulsuz iade vaadi algılanan riski satıcıya aktarır ve kararsız ziyaretçiyi ilerletir. Bedeli: iade oranı yükselebilir, operasyonel maliyet artabilir ve garanti çok öne çıkarsa ürüne güvenilmediği izlenimi bile doğurabilir. Kazanç, ek satışın iade maliyetini aşıp aşmadığına bağlıdır.
 
 **Test edilmesi gerekenler**
 - Görünürlük: Garantiyi öne çıkarmak satışı artırıyor mu?
-- Süre: Farklı garanti süreleri davranışı nasıl değiştiriyor?
-- Koşul: Koşulsuz ifade ile koşullu ifade arasında fark var mı?
+- Sonraki test: Öne çıkarma kazanırsa, garanti süresini uzatmak ayrı bir testte satış ile iade dengesini nasıl değiştiriyor?
+- Ters sinyal: Garanti öne çıkınca ziyaretçiler kısa ankette ürünün kalitesinden daha çok şüphe ettiğini söylüyor mu?
 - Maliyet dengesi: Artan satış artan iadeyi karşılıyor mu?
 - Segment: İlk kez alan ile tekrar alan müşteri farklı mı tepki veriyor?
 
@@ -681,13 +731,15 @@ Koşulsuz iade vaadi algılanan riski satıcıya aktarır ve kararsız ziyaretç
 
 ## Ziyaretçiyi kendi diliyle karşılamak işe yarar mı?
 
+Değişken: Karşılama ifadesinin dili · Fark: değiştir
+
 Tarayıcı diline veya konuma göre karşılama ifadesini uyarlamak yakınlık kurar ve doğru yere geldiğini hissettirir. Riski: yanlış tespit edilen dil rahatsız eder, yarım çevrilmiş bir sayfa güveni düşürür ve karşılama dili ile içerik dili farklı olursa kafa karışıklığı yaratır.
 
 **Test edilmesi gerekenler**
 - Karşılama: Ziyaretçinin diliyle karşılamak aksiyonu artırıyor mu?
 - Doğruluk: Dil tespiti ne oranda doğru çalışıyor?
 - Tutarlılık: Karşılama çevrildiği hâlde içerik çevrilmemişse etkisi ne oluyor?
-- Kontrol: Ziyaretçiye dil değiştirme imkânı sunmak farkı değiştiriyor mu?
+- Sonraki test: Dil uyarlaması kazanırsa, görünür bir dil değiştirme seçeneği eklemek ayrı bir testte farkı değiştiriyor mu?
 - Segment: Çok dilli pazarlarda hangi ziyaretçi grubu daha çok fayda görüyor?
 
 **Takip edilecek ana KPI’lar**
@@ -708,13 +760,15 @@ Tarayıcı diline veya konuma göre karşılama ifadesini uyarlamak yakınlık k
 
 ## Referansları kaydırıcıda mı, hepsi görünür hâlde mi sunmalı?
 
+Değişken: Referansların sunum düzeni · Fark: değiştir
+
 Kaydırıcı çok sayıda referansı az yerde barındırır ve sayfayı kısaltır. Bedeli: ilk kartın ötesini çok az ziyaretçi görür, otomatik ilerleyen kaydırıcı okumayı yarıda keser ve kaydırılabilir olduğu fark edilmezse geri kalan içerik boşa gider. Hepsini göstermek ise sayfayı uzatır ama tamamının görülmesini sağlar.
 
 **Test edilmesi gerekenler**
 - Biçim: Kaydırıcı mı, hepsi görünür düzen mi daha çok aksiyon getiriyor?
 - Görülme: Kaydırıcıda ilk kartın ötesini kaç ziyaretçi görüyor?
 - Otomatik ilerleme: Kendiliğinden dönen kaydırıcı okumayı kesiyor mu?
-- Sayı: Kaç referans gösterildiğinde etki en yüksek?
+- Sonraki test: Kazanan düzen sabitken gösterilen referans sayısı ayrı bir testte etkiyi değiştiriyor mu? (3 / 6 / 9)
 - Cihaz: Mobilde kaydırıcı parmakla gezinmeye daha mı uygun?
 
 **Takip edilecek ana KPI’lar**
@@ -735,20 +789,22 @@ Kaydırıcı çok sayıda referansı az yerde barındırır ve sayfayı kısalt�
 
 ## Sosyal medya takipçi veya beğeni sayısını göstermek güveni artırır mı?
 
+Değişken: Sosyal medya takipçi sayısı göstergesi · Fark: ekle
+
 Bir marka sayfasının yanında görünen takipçi veya beğeni sayısı, ürünün başkaları tarafından da tercih edildiğini gösteren dolaylı bir sosyal kanıttır. Risk, sayının küçük veya büyümekte olduğu bir markada beklenenin tersi bir etki yaratmasıdır — düşük bir sayı, kanıt yerine şüphe uyandırabilir.
 
 **Test edilmesi gerekenler**
 - Eşik: Sayı belirli bir büyüklüğün altındaysa (ör. 500’ün altı) göstermek zarar mı veriyor?
-- Biçim: Ham sayı mı, yuvarlanmış kısaltma (ör. “12 bin+”) mı daha güvenilir bulunuyor?
-- Konum: Sayaç başlığın yanında mı, sayfanın altında mı daha etkili?
-- Platform: Hangi platformun sayacı (takipçi, üye, indirme) en güçlü sinyali veriyor?
+- Sonraki test: Sayaç kazanırsa, ham sayı ile yuvarlanmış kısaltma (ör. “12 bin+”) ayrı bir testte karşılaştırıldığında hangisi daha güvenilir bulunuyor?
+- Dış platforma kaçış: Sayaca tıklayıp sosyal medya sayfasına giden ziyaretçilerin kaçı siteye dönüp aksiyonu tamamlıyor?
+- Ziyaretçi tipi: Markayı zaten tanıyan geri dönen ziyaretçi ile ilk kez gelen ziyaretçi sayaca farklı mı tepki veriyor?
 - Cihaz: Mobilde sayaç dikkat dağıtıp asıl CTA’dan uzaklaştırıyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Sayaç göstermek satın alma veya kayıt oranını artırıyor mu?
 - Sayfa Terk Oranı: Düşük bir sayı terk oranını artırmamalı.
 - Güven Algısı (anket): Sayaç güveni artırdığını hissettiriyor mu?
-- Tıklama Oranı: Sayaç kendisi tıklanıp dış platforma gidiş yaratıyor mu — gidiyorsa bu bir kayıp noktasıdır.
+- Tıklama Oranı (CTR): Sayaç kendisi tıklanıp dış platforma gidiş yaratıyor mu? Gidiyorsa bu bir kayıp noktasıdır.
 - Sayfada Kalma Süresi: Sayaç dikkat dağıtıp asıl aksiyonu geciktirmemeli.
 
 **Yapılmaması gerekenler**
@@ -762,21 +818,23 @@ Bir marka sayfasının yanında görünen takipçi veya beğeni sayısı, ürün
 
 ## Sayfa açılışında içeriği kısmen kaplayan büyük bir karşılama ekranı ilgiyi artırır mı?
 
+Değişken: Açılıştaki kısmi karşılama ekranı · Fark: ekle
+
 Küçük bir pop-up’tan farklı olarak, kısmi karşılama ekranı sayfanın büyük bir kısmını (genelde ilk ekranın tamamına yakınını) tek bir mesaj veya teklifle kaplar, altındaki içeriğin bir kısmı kenarlarda görünür kalır. Amaç dikkati tek bir noktaya toplamaktır; risk, ziyaretçinin asıl sayfaya hiç ulaşmadan ayrılmasıdır.
 
 **Test edilmesi gerekenler**
 - Kapsam: Ekranın ne kadarını kaplamalı — tamamı mı, büyük bir kısmı mı?
-- İçerik: Tek bir teklif mi, kısa bir değer önermesi mi daha çok ilerletiyor?
+- Kapatma sonrası: Ekranı kapatan ziyaretçiler asıl sayfada kaydırmaya devam ediyor mu, yoksa ilk ekranda mı ayrılıyor?
 - Kapatma: Kapatma işareti yeterince görünür mü, yoksa yanlışlıkla mı atlanıyor?
-- Zamanlama: Sayfa açılır açılmaz mı, kısa bir gecikmeyle mi daha az rahatsız ediyor?
+- Sonraki test: Karşılama ekranı kazanırsa, ekranı kısa bir gecikmeyle göstermek ayrı bir testte rahatsızlığı azaltıyor mu?
 - Segment: İlk kez gelen ile daha önce siteyi ziyaret etmiş kullanıcıya aynı ekran mı gösterilmeli?
 
 **Takip edilecek ana KPI’lar**
-- Devam Etme Oranı: Karşılama ekranını geçip asıl sayfaya ilerleyen ziyaretçi oranı nedir?
+- Ana Aksiyon Tamamlama Oranı: Sayfaya atanan ziyaretçilerin sayfanın ana aksiyonunu tamamlama oranı artıyor mu? Payda ekranı geçenler değil, iki koldaki tüm ziyaretçilerdir.
 - Hemen Çıkma Oranı: Karşılama ekranı kaynaklı hemen çıkma artmamalı.
 - Teklif Kabul Oranı: Ekrandaki teklifi kabul eden ziyaretçi oranı nedir?
 - Sayfa Yüklenme Algısı (anket): Ekran, sayfanın yavaş açıldığı hissini vermemeli.
-- Geri Dönüş Oranı: Ekranı geçen ziyaretçilerin siteye tekrar dönüş oranı düşmemeli.
+- Tekrar Ziyaret Oranı: Atanan ziyaretçilerin siteye tekrar dönüş oranı düşmemeli.
 
 **Yapılmaması gerekenler**
 - Kapatma işaretini gizleyip ziyaretçiyi teklifi kabul etmeye zorlamayın (kural 6).
@@ -789,13 +847,15 @@ Küçük bir pop-up’tan farklı olarak, kısmi karşılama ekranı sayfanın b
 
 ## Anasayfayı tek bir anlatı yerine ziyaretçi tipine göre ayrı bloklara bölmek ilerlemeyi artırır mı?
 
+Değişken: Anasayfanın ziyaretçi tipine göre bölünmesi · Fark: değiştir
+
 Çoğu anasayfa tek bir ziyaretçi profilini varsayıp doğrusal bir anlatı kurar (başlık → fayda → sosyal kanıt → CTA). Farklı ziyaretçi tipleri (ör. bireysel kullanıcı / kurumsal alıcı, yeni müşteri / mevcut müşteri) farklı sorularla geldiğinde bu tek anlatı hiçbirine tam oturmaz. Sayfayı bir yönlendirme sayfası gibi kurup her tipe ayrı bir blok sunmak (ör. “Bireysel kullanım için” / “Ekibiniz için” iki ayrı kart) ilgili ziyaretçiyi daha hızlı doğru içeriğe taşıyabilir; riski, tek bir net mesaj yerine sayfanın başında birden fazla seçenek sunmanın kararsızlık yaratmasıdır. Bu, “Ziyaretçinin geldiği kaynağa göre başlığı değiştirmek işe yarar mı?” senaryosundan farklıdır: orada tek başlık ziyaretçiye göre değişir, burada ekranda aynı anda birden fazla yol görünür durur.
 
 **Test edilmesi gerekenler**
 - Yapı: Ziyaretçi tipine göre ayrı bloklar sunmak toplam ilerlemeyi artırıyor mu?
 - Kararsızlık: Birden fazla yol sunmak, hangisini seçeceğini bilemeyen ziyaretçi yaratıyor mu?
-- Sıra: Hangi ziyaretçi tipi bloğu üstte durmalı?
-- Denge: Bloklar görsel olarak eşit ağırlıkta mı sunulmalı, biri öne mi çıkarılmalı?
+- Sonraki test: Blok yapısı kazanırsa, hangi ziyaretçi tipi bloğunun üstte durduğu ayrı bir testte ilerlemeyi değiştiriyor mu?
+- Atlanan anlatı: Bloğa tıklayıp ilerleyen ziyaretçi, tek anlatıdaki fayda ve sosyal kanıt bölümlerini görmeden mi karar veriyor?
 - Segment: Reklamdan gelen ile organik gelen ziyaretçi doğru bloğu aynı oranda mı buluyor?
 
 **Takip edilecek ana KPI’lar**
@@ -803,7 +863,7 @@ Küçük bir pop-up’tan farklı olarak, kısmi karşılama ekranı sayfanın b
 - İlgili Bloğa Tıklama Oranı (tanısal): Ziyaretçi kendi profiline uyan bloğu buluyor mu?
 - Yanlış Blok Oranı: Yanlış bloğa girip geri dönen ziyaretçi oranı artmamalı.
 - Hemen Çıkma Oranı: Kararsızlık kaynaklı çıkış artmamalı.
-- Sayfada Karar Süresi: İlk tıklamaya kadar geçen süre kabul edilemez ölçüde uzamamalı.
+- Karar Süresi: İlk tıklamaya kadar geçen süre kabul edilemez ölçüde uzamamalı.
 
 **Yapılmaması gerekenler**
 - Aynı testte blok sayısını ve sayfanın geri kalanındaki mesajı birlikte değiştirmeyin.

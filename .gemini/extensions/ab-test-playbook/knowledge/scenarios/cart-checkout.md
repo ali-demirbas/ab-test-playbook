@@ -6,12 +6,14 @@ Yolculuk aşaması: kullanıcı satın almaya karar verdi; sepet, kupon, adres/�
 
 ## CTA buton rengi dönüşümü etkiler mi?
 
+Değişken: CTA buton rengi · Fark: değiştir
+
 Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmızı mı yeşil mi daha iyi” evrensel bir cevabı yoktur, sayfanın geri kalan renk paletiyle kontrastı önemlidir. Marka renginden sapan ama sayfada öne çıkan bir renk genelde kazanır — rengin kendisi değil, göze çarpma derecesi test edilir.
 
 **Test edilmesi gerekenler**
 - Kontrast: Sayfanın geri kalanına göre en çok öne çıkan renk hangisi?
 - Marka tutarlılığı: Marka renginden sapmak dönüşümü artırsa bile marka algısını bozuyor mu?
-- Konum: Renk etkisi buton üstte mi altta mı farklı çalışıyor?
+- Sonraki test: Kazanan renk sabit tutulduğunda butonun üstte ya da altta durması, ayrı bir testte tıklamayı değiştiriyor mu?
 - Cihaz: Mobilde ve masaüstünde kazanan renk aynı mı?
 - Erişilebilirlik: Seçilen renk kontrast oranı (WCAG) eşiğini geçiyor mu?
 
@@ -33,13 +35,15 @@ Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmız�
 
 ## Sepet ve ödeme adımlarında tekrarlayan CTA’ları azaltmak dönüşümü artırır mı?
 
+Değişken: Tekrarlayan CTA sayısı · Fark: kaldır
+
 Aynı adımda aynı işi yapan birden fazla CTA kullanıcı odağını bölerek karar süresini uzatabilir. Burada test edilen CTA sayısıdır: tekrarlayan butonları kaldırmanın dönüşüme etkisi ölçülür. “İkincil aksiyonu bağlantı mı, buton mu yapmalı?” senaryosundan (`ui-elements.md`) farkı: o senaryo farklı işlevdeki ikincil aksiyonun biçimini değiştirir, bu senaryo aynı işlevdeki CTA’ların sayısını azaltır.
 
 **Test edilmesi gerekenler**
 - Sayı: Tek CTA mı, birden fazla CTA mı daha çok dönüştürüyor?
 - Tekrar: Aynı işlevdeki CTA’lar kaldırılınca odak artıyor mu?
 - Akış: Tek CTA ödeme adımlarında ilerlemeyi hızlandırıyor mu?
-- Cihaz: Mobilde ve masaüstünde etki aynı mı?
+- Cihaz: Tekrarlayan CTA’ların ekranın çoğunu kapladığı mobilde bunları kaldırmak, masaüstüne göre ilerlemeyi daha çok mu hızlandırıyor?
 - Kararsızlık: Fazla CTA’lı sayfada yukarı-aşağı gezinme artıyor mu?
 
 **Takip edilecek ana KPI’lar**
@@ -60,20 +64,22 @@ Aynı adımda aynı işi yapan birden fazla CTA kullanıcı odağını bölerek 
 
 ## Ücretsiz kargo çubuğu sepet tutarını artırıyor mu?
 
+Değişken: Ücretsiz kargo ilerleme çubuğu · Fark: ekle
+
 Ücretsiz kargoya ne kadar kaldığını göstermek, sepeti büyütme motivasyonunu yükseltebilir. Bu etkinin gerçekte ne kadar olduğu ölçülmelidir.
 
 **Test edilmesi gerekenler**
 - Motivasyon: Çubuk “ücretsiz kargoya ulaşmak için ürün ekle” davranışını artırıyor mu?
-- Renk: Çubuğun rengi fark edilme oranını değiştiriyor mu?
-- Konum: Sepet, mini sepet ve ürün sayfasında performans değişiyor mu?
-- Doluluk: “X TL kaldı” metni mi, görsel ilerleme çubuğu mu daha çok tamamlatıyor?
+- Fark edilme: Kullanıcılar çubuğu görüp ücretsiz kargoya kalan tutarı doğru okuyor mu?
+- Sonraki test: Çubuğun etkisi kanıtlanırsa yeri (sepet / mini sepet / ürün sayfası) ayrı bir testte sepet tutarını değiştiriyor mu?
+- Eşiğe uzaklık: Eşiğe az kalan sepetlerde çubuğun etkisi, eşiğe uzak sepetlerdekinden daha mı büyük?
 - Cihaz: Mobil ve masaüstünde karar süresi farklı mı?
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Çubuk, dönüşümü düşürmeden toplam geliri artırıyor mu?
 - Ortalama Sepet Tutarı (AOV): Çubuk sepet toplamını artırıyor mu?
 - Sepete Ekleme Oranı: Daha fazla ürün ekleniyor mu?
-- Ödeme Adımına Geçiş: Ödemeye geçiş düşmemeli.
+- Ödeme Adımına Geçiş Oranı: Ödemeye geçiş düşmemeli.
 - Sepet Terk Oranı: Yükselmemeli.
 
 **Yapılmaması gerekenler**
@@ -89,12 +95,14 @@ Aynı adımda aynı işi yapan birden fazla CTA kullanıcı odağını bölerek 
 
 ## Açık kupon kodu alanı sepet terkini artırır mı?
 
+Değişken: Kupon kodu alanının görünürlüğü · Fark: değiştir
+
 Görünür bir kupon kutusu, kodu olmayan kullanıcıyı “indirim arayayım” diye siteden çıkarabilir. Kodu bağlantı arkasına almak bu kaçağı kapatabilir ama kampanya kullanımını düşürebilir.
 
 **Test edilmesi gerekenler**
 - Kaçak: Kupon alanını bağlantı arkasına almak terk oranını düşürüyor mu?
 - Segment: Yeni ve dönen kullanıcıda kupon arama davranışı farklı mı?
-- Metin: “İndirim kodum var” ile “Kupon kullan” farklı sonuç veriyor mu?
+- Sonraki test: Kupon alanı bağlantı arkasındayken bağlantı metni (“İndirim kodum var” / “Kupon kullan”) ayrı bir testte kod kullanımını değiştiriyor mu?
 - Kampanya: Kampanya dönemlerinde etki tersine dönüyor mu?
 - Hata: Kod girip başarısız olan kullanıcının terk oranı ne kadar?
 
@@ -116,11 +124,13 @@ Görünür bir kupon kutusu, kodu olmayan kullanıcıyı “indirim arayayım”
 
 ## Üye olmadan ödeme seçeneği işe yarar mı?
 
+Değişken: Misafir ödeme seçeneği · Fark: ekle
+
 Zorunlu üyelik satın alma sürecini uzatır ve terk oranını yükseltebilir. Misafir ödemenin dönüşüme etkisi ölçülmelidir.
 
 **Test edilmesi gerekenler**
-- Buton görünümü: Misafir ödeme butonu daha görünür olunca tıklama artıyor mu?
-- Alan sayısı: Misafir ödemede alan sayısını azaltmak dönüşümü yükseltiyor mu?
+- Sonraki test: Misafir seçeneği eklendikten sonra butonunun görsel ağırlığı ayrı bir testte artırılınca tercih oranı yükseliyor mu?
+- Kayıt dengesi: Misafir seçeneğinin getirdiği ek sipariş, kaybedilen yeni üye kaydını telafi ediyor mu?
 - Cihaz: Mobilde misafir ödeme seçeneği masaüstüne göre daha mı çok tercih ediliyor?
 - Kategori: Moda ve hızlı tüketimde misafir ödeme daha mı çok tercih ediliyor?
 - Kampanya: Yoğun dönemlerde etki değişiyor mu?
@@ -129,8 +139,8 @@ Zorunlu üyelik satın alma sürecini uzatır ve terk oranını yükseltebilir. 
 - Dönüşüm Oranı (CR): Misafir ödeme satın almayı artırıyor mu?
 - Sepet Terk Oranı: Üyelik zorunluluğu kalkınca düşüyor mu?
 - Checkout Tamamlama Süresi: Süreç kısalıyor mu?
-- Yeni Kullanıcı Kaydı: Ciddi biçimde düşmemeli.
-- Tekrar Satın Alma: Misafir kullanıcı geri dönmeli.
+- Kayıt Oranı: Ciddi biçimde düşmemeli.
+- Tekrar Satın Alma Oranı: Misafir kullanıcı geri dönmeli.
 
 **Yapılmaması gerekenler**
 - Misafir ödemede gereksiz bilgi istemeyin.
@@ -143,20 +153,22 @@ Zorunlu üyelik satın alma sürecini uzatır ve terk oranını yükseltebilir. 
 
 ## Tek sayfa checkout mu, çok adımlı checkout mu?
 
+Değişken: Checkout adım yapısı · Fark: değiştir
+
 Tek sayfa akışı toplam tıklamayı azaltır ama ilk bakışta yoğun görünür. Çok adımlı akış daha sindirilebilirdir ama her adım bir kayıp noktasıdır. Sepet tutarına ve cihaza göre kazanan değişebilir.
 
 **Test edilmesi gerekenler**
 - Toplam etki: Tek sayfa akışı tamamlama oranını artırıyor mu?
-- Cihaz: Mobil ve masaüstünde kazanan farklı mı?
+- Cihaz: Tek sayfanın uzun kaydırma gerektirdiği mobilde çok adımlı akış, geniş ekranlı masaüstünde ise tek sayfa akışı mı kazanıyor?
 - Sepet tutarı: Yüksek tutarda çok adımlı akış daha mı güven veriyor?
-- Yoğunluk: Bölümleri katlanabilir yapmak yoğunluk algısını azaltıyor mu?
-- Segment: Yeni ve dönen kullanıcıda etki farkı var mı?
+- Sonraki test: Tek sayfa kazanırsa bölümleri katlanabilir yapmak ayrı bir testte yoğunluk algısını azaltıyor mu?
+- Segment: Bilgileri kayıtlı dönen kullanıcı tek sayfada, alanları ilk kez dolduran yeni kullanıcı çok adımlı akışta mı daha çok tamamlıyor?
 
 **Takip edilecek ana KPI’lar**
 - Sipariş Tamamlama Oranı: Ödemeye başlayanların bitirme oranı.
-- Adım Bazlı Terk: Hangi alanda kayıp var?
+- Adım Bazlı Terk Oranı: Hangi alanda kayıp var?
 - Checkout Süresi: Toplam süre kısalıyor mu?
-- Form Hata Oranı: Tek sayfada artmamalı.
+- Doğrulama Hatası Oranı: Tek sayfada artmamalı.
 - Destek Talebi: Sipariş sorunları yükselmemeli.
 
 **Yapılmaması gerekenler**
@@ -170,19 +182,21 @@ Tek sayfa akışı toplam tıklamayı azaltır ama ilk bakışta yoğun görün�
 
 ## Adres formundaki alan sayısını azaltmak tamamlamayı artırır mı?
 
+Değişken: Adres formundaki alan sayısı · Fark: kaldır
+
 Her ek form alanı bir sürtünme noktasıdır. Posta koduyla otomatik il/ilçe doldurma veya adres önerisi kullanmak, mobilde yazma yükünü ciddi biçimde azaltabilir.
 
 **Test edilmesi gerekenler**
 - Alan sayısı: Azaltmak tamamlama oranını artırıyor mu?
-- Yöntem: Adres önerisi mi, posta kodundan doldurma mı daha iyi çalışıyor?
+- Sonraki test: Alan sayısı sabitken adres önerisi ile posta kodundan doldurma ayrı bir testte karşılaştırıldığında hangisi daha hızlı tamamlatıyor?
 - Birleştirme: Ad ve soyadı tek alanda toplamak hata oranını artırıyor mu?
 - Cihaz: Mobilde etki masaüstünden daha mı yüksek?
 - Segment: Kayıtlı adresi olan kullanıcıda fark kalıyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Adres Adımı Tamamlama: Formu bitiren kullanıcı oranı.
-- Form Doldurma Süresi: Kısalıyor mu?
-- Checkout Tamamlama: Zincirin sonuna yansıyor mu?
+- Adres Adımı Tamamlama Oranı: Adres adımına ulaşan kullanıcıların (iki kolda aynı tetikleyici) adımı bitirme oranı artıyor mu?
+- Ortalama Doldurma Süresi: Kısalıyor mu?
+- Sipariş Tamamlama Oranı: Zincirin sonuna yansıyor mu?
 - Hatalı Adres / Teslimat Hatası: Artmamalı; en kritik guardrail.
 - Destek Talebi: Adres düzeltme talepleri yükselmemeli.
 
@@ -197,13 +211,15 @@ Her ek form alanı bir sürtünme noktasıdır. Posta koduyla otomatik il/ilçe 
 
 ## Adet seçiminin görünürlüğü davranışı etkiliyor mu?
 
+Değişken: Adet seçicinin görünürlüğü · Fark: değiştir
+
 Sepette adet seçimini daha net sunmak, kullanıcıların adedi artırma davranışını ve sepet değerini etkileyebilir.
 
 **Test edilmesi gerekenler**
 - Cihaz: Mobilde ve masaüstünde adet artırma davranışı aynı mı?
 - Görünürlük: Görünürlük artınca adet artırma davranışı değişiyor mu?
 - Buton: “+ / −” butonlarını belirginleştirmek ekleme hızını artırıyor mu?
-- Konum: Adet alanını merkeze almak sepet tutarını yükseltiyor mu?
+- Sonraki test: Belirgin adet seçici sabitken alanın satır ortasına alınması ayrı bir testte sepet tutarını yükseltiyor mu?
 - Hata: Net adet alanı yanlışlıkla ürün silmeyi azaltıyor mu?
 
 **Takip edilecek ana KPI’lar**
@@ -224,14 +240,16 @@ Sepette adet seçimini daha net sunmak, kullanıcıların adedi artırma davran�
 
 ## Sepetteki ürün önerileri satın almayı artırır mı?
 
+Değişken: Sepetteki tamamlayıcı ürün önerileri · Fark: ekle
+
 Sepet adımında tamamlayıcı ürün göstermek ortalama sepet tutarını yükseltebilir ama asıl akıştan uzaklaştırma riski taşır.
 
 **Test edilmesi gerekenler**
 - Cihaz: Mobil dar ekranda öneri alanı sipariş özetini ve CTA’yı aşağı itiyor mu?
 - Etkileşim: Kullanıcılar öneri alanına tıklayıp inceliyor mu?
-- Uyum: Sepetteki ürünle aynı kategoriden öneri eklemeyi artırıyor mu?
+- Akıştan sapma: Öneri kartına tıklayan kullanıcılar ürün sayfasına gidip sepete geri dönmeden ayrılıyor mu?
 - Sayı: Öneri sayısı kaç olmalı? (2 / 4 / 6)
-- Konum: Özetin üstünde mi, altında mı daha iyi çalışıyor?
+- Sonraki test: Öneri alanı kazanırsa sipariş özetinin üstünde mi altında mı durduğu ayrı bir testte tamamlamayı değiştiriyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Öneriler dönüşümü düşürmeden toplam geliri artırıyor mu?
@@ -251,20 +269,22 @@ Sepet adımında tamamlayıcı ürün göstermek ortalama sepet tutarını yüks
 
 ## Kargo eşiğini yükseltmek sepet ortalamasını artırır mı?
 
+Değişken: Ücretsiz kargo eşik tutarı · Fark: değiştir
+
 Ücretsiz kargo sınırı sepeti büyütmek için güçlü bir teşviktir, ancak eşik fazla yükselirse kullanıcıyı kaçırır. Dengenin nerede olduğu ölçülmelidir.
 
 **Test edilmesi gerekenler**
 - Eşik: 500, 750 ve 1.000 TL’de davranış nasıl değişiyor?
-- Gösterim: Ürün sayfasında mı, sepette mi göstermek daha etkili?
+- Sonraki test: Yeni eşik sabitken eşik bilgisinin ürün sayfasında mı sepette mi duyurulduğu ayrı bir testte sepet tutarını değiştiriyor mu?
 - Kampanya: İndirim döneminde eşiğe yaklaşma isteği artıyor mu?
 - Segment: Sadık müşteri ile yeni kullanıcı aynı tepkiyi mi veriyor?
-- Mesaj: Kalan tutarı göstermek eklemeyi tetikliyor mu?
+- Eşik altı davranış: Sepeti yeni eşiğin hemen altında kalan kullanıcılar ürün ekliyor mu, yoksa siparişi bırakıyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Eşik artışı AOV'yi şişirirken toplam geliri düşürmüyor mu?
 - Ortalama Sepet Tutarı (AOV): Kullanıcılar eşiğe ulaşmak için daha çok ekliyor mu?
 - Dönüşüm Oranı (CR): Eşik değişimi satın almayı düşürüyor mu?
-- Ödemeye Geçiş Oranı: Sepetten ödeme adımına geçiş artıyor mu?
+- Ödeme Adımına Geçiş Oranı: Sepetten ödeme adımına geçiş artıyor mu?
 - Kargo Maliyeti: Birim başına kargo gideri marjı eritmemeli.
 
 **Yapılmaması gerekenler**
@@ -281,6 +301,8 @@ Sepet adımında tamamlayıcı ürün göstermek ortalama sepet tutarını yüks
 ---
 
 ## Microcopy kullanıcı davranışını nasıl etkiliyor?
+
+Değişken: Buton altı microcopy metni · Fark: değiştir
 
 Küçük metin değişiklikleri bile karar hızını, güven algısını ve yönlendirilme davranışını etkileyebilir. Bu test, buton altı mesajların ve güven verici ifadelerin dönüşüme etkisini ölçer.
 
@@ -309,12 +331,14 @@ Küçük metin değişiklikleri bile karar hızını, güven algısını ve yön
 
 ## Kayıtlı kartla hızlı ödeme dönüşümü artırıyor mu?
 
+Değişken: Kayıtlı kartla hızlı ödeme seçeneği · Fark: ekle
+
 Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci hızlandırır ve sürtünmeyi azaltır. Bu kolaylığın dönüşüme ne kadar yansıdığı ölçülmelidir.
 
 **Test edilmesi gerekenler**
 - Otomatik gösterim: Kayıtlı kartın otomatik gelmesi tamamlamayı artırıyor mu?
-- Tercih sunumu: “Evet” / “Hayır” net seçim karar süresini kısaltıyor mu?
-- Konum: Hızlı ödeme mesajının yeri fark edilmeyi değiştiriyor mu?
+- Benimsenme: Kayıtlı kartı olan kullanıcıların ne kadarı hızlı ödemeyi seçiyor, ne kadarı kartı yine elle giriyor?
+- Sonraki test: Hızlı ödeme kazanırsa seçeneğin ödeme adımındaki yeri ayrı bir testte fark edilme oranını değiştiriyor mu?
 - Cihaz: Mobilde hızlı ödemenin etkisi masaüstünden daha mı yüksek?
 - Sağlayıcı: Kayıtlı-kart cüzdan çözümlerinde etki değişiyor mu?
 
@@ -336,18 +360,20 @@ Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci h
 
 ## İlerleme çubuğu tamamlama oranını artırıyor mu?
 
+Değişken: Checkout ilerleme çubuğu · Fark: ekle
+
 İlerleme çubuğu kullanıcıya konumunu ve kalan adımı gösterir, süreçten vazgeçmeyi azaltabilir. Özellikle ödeme ve adres adımlarında etkisi ölçülmelidir.
 
 **Test edilmesi gerekenler**
 - Kavrayış: Çubuk görünür olunca kullanıcı hangi adımda olduğunu anlıyor mu?
 - Motivasyon: “Ne kadar kaldığı” devam etme isteğini artırıyor mu?
 - Kritik adım: Ödeme ve adres adımında terk oranı düşüyor mu?
-- Mobil: Çubuğun konumu deneyimi etkiliyor mu?
-- Geri bildirim: Adım tamamlanınca tik işareti motivasyonu artırıyor mu?
+- Mobil: Dar ekranda eklenen çubuk form alanlarını aşağı itip mobil terk oranını artırıyor mu?
+- Sonraki test: Çubuk kazanırsa tamamlanan adımlara tik işareti koymak ayrı bir testte devam etme isteğini artırıyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Tamamlama Oranı: Süreci bitirenlerin oranı yükseliyor mu?
-- Adım Terk Oranı: Adımlar daha az mı terk ediliyor?
+- Sipariş Tamamlama Oranı: Checkout’a ulaşan kullanıcıların (iki kolda aynı tetikleyici) siparişi bitirme oranı yükseliyor mu?
+- Adım Bazlı Terk Oranı: Adımlar daha az mı terk ediliyor?
 - Adım Süresi: Adımlar daha hızlı mı tamamlanıyor?
 - Geri Dönüş Oranı: Önceki adıma dönüş artmamalı.
 - Sayfa Yüklenme Süresi: Çubuk yavaşlatmamalı.
@@ -364,20 +390,22 @@ Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci h
 
 ## Otomatik indirim kodu davranışı nasıl etkiler?
 
+Değişken: İndirim kodunun otomatik uygulanması · Fark: değiştir
+
 İndirim kodunun otomatik uygulanması ödeme sürecini kısaltarak dönüşümü artırabilir. Gerçek karşılığı ölçülmelidir.
 
 **Test edilmesi gerekenler**
 - Hız: Otomatik kod ödeme adımına geçişi hızlandırıyor mu?
 - Farkındalık: Kampanya farkındalığı tamamlama ile ilişkili mi?
-- Cihaz: Mobil ve masaüstünde etki farklı mı?
+- Cihaz: Kodu kopyalayıp yapıştırmanın zahmetli olduğu mobilde otomatik uygulama, masaüstüne göre tamamlamayı daha çok mu artırıyor?
 - Güven: Otomatik uygulandı mesajı güven veriyor mu?
-- Alan: Manuel kod alanını bağlantı arkasına almak şikâyet yaratıyor mu?
+- Kod çakışması: Otomatik kod uygulanmışken kullanıcılar manuel alana ikinci bir kod girmeye çalışıp hata alıyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Ziyaretçi Başına Gelir (RPV): Otomatik kod CR’yi artırsa bile geliri düşürmemeli; birincil metrik bu.
+- Ziyaretçi Başına Gelir (RPV): Otomatik kod, indirim maliyetine rağmen atanan ziyaretçi başına geliri artırıyor mu? Birincil metrik bu; CR tek başına kazanan seçmez.
 - Dönüşüm Oranı (CR): Otomatik kod satın almayı artırıyor mu? — RPV ile birlikte okunur.
-- Kod Kullanım Oranı: Otomatik uygulama kullanımı artırıyor mu?
-- Ortalama Sepet Tutarı: Sepet değeri değişiyor mu?
+- Kupon Kullanım Oranı: Otomatik uygulama kullanımı artırıyor mu?
+- Ortalama Sepet Tutarı (AOV): Sepet değeri değişiyor mu?
 - Brüt Marj: Otomatik indirim marjı eritmemeli.
 
 **Yapılmaması gerekenler**
@@ -391,17 +419,19 @@ Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci h
 
 ## Ödeme adımındaki güven rozetleri tamamlamayı artırır mı?
 
+Değişken: Ödeme adımındaki güven rozeti şeridi · Fark: ekle
+
 Kart bilgisi girilen ekran, terk oranının en yüksek olduğu andır. Güvenli ödeme, iade garantisi ve 3D Secure gibi görsel sinyaller tereddüdü azaltabilir; fazlası ise şüphe uyandırabilir.
 
 **Test edilmesi gerekenler**
-- Konum: Rozetler kart alanının üstünde mi altında mı daha etkili?
+- Sonraki test: Rozet şeridi kazanırsa kart alanının üstünde mi altında mı durduğu ayrı bir testte ödeme tamamlamayı değiştiriyor mu?
 - Sayı: Kaç rozet optimum? (1 / 3 / 5)
-- Format: Metin + ikon mu, sadece ikon mu daha hızlı algılanıyor?
-- Alternatif: Banka ve kart logoları güven rozetlerinden daha mı güçlü sinyal?
-- Segment: Yeni ve dönen kullanıcıda etki farkı var mı?
+- Fark edilme: Kart bilgisini giren kullanıcılar rozet şeridini fark ediyor mu, oturum kayıtları bunu doğruluyor mu?
+- Tereddüt anı: Rozet şeridi, kart numarası alanında duraksayıp sayfadan çıkan kullanıcı oranını azaltıyor mu?
+- Segment: İlk kez kart bilgisi giren yeni kullanıcıda rozet şeridi, önceden ödeme yapmış dönen kullanıcıya göre terki daha çok mu azaltıyor?
 
 **Takip edilecek ana KPI’lar**
-- Ödeme Tamamlama Oranı: Kart ekranına girenlerin bitirme oranı.
+- Ödeme Tamamlama Oranı: Kart ekranına ulaşanların (iki kolda aynı tetikleyici) ödemeyi bitirme oranı artıyor mu?
 - Ödeme Adımı Terk Oranı: Düşüyor mu?
 - Adımda Geçirilen Süre: Tereddüt kısalıyor mu?
 - Hata / Reddedilme Oranı: Değişmemeli.
@@ -420,20 +450,22 @@ Kart bilgisi girilen ekran, terk oranının en yüksek olduğu andır. Güvenli 
 
 ## Zorunlu ve isteğe bağlı alanları açıkça işaretlemek doldurma oranını artırır mı?
 
+Değişken: Alanların zorunluluk etiketi · Fark: ekle
+
 Formdaki hangi alanın zorunlu, hangisinin isteğe bağlı olduğu genelde belirsizdir; kullanıcı emin olmadığı alanı da doldurur ya da doldurmayıp hata mesajıyla karşılaşır. İkisini de açıkça işaretlemek bu belirsizliği kaldırabilir.
 
 **Test edilmesi gerekenler**
 - Etiket: “(isteğe bağlı)” etiketi eklemek tamamlama süresini/hata oranını düşürüyor mu?
 - Kapsam: Sadece isteğe bağlı alanları mı, yoksa zorunlu alanları da yıldızla mı işaretlemeli?
-- Konum: Etiket alan adının yanında mı, alan içinde placeholder olarak mı daha çok fark ediliyor?
+- Sonraki test: Etiket eklemek kazanırsa etiketin alan adının yanında mı, alan içinde mi durduğu ayrı bir testte fark edilmeyi değiştiriyor mu?
 - Cihaz: Mobilde dar ekranda etiket yer kaplaması okunabilirliği bozuyor mu?
 - Tutarlılık: Formun tamamında aynı işaretleme kuralı uygulandığında etki büyüyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Form Tamamlama Oranı: Formu görenlerin gönderme oranı — birincil metrik.
+- Form Tamamlama Oranı: Form adımına atanan kullanıcıların formu gönderme oranı artıyor mu? Birincil metrik.
 - Doğrulama Hatası Oranı: Yükselmemeli; yanlış doldurulan/boş bırakılan zorunlu alan azalmalı.
-- Form Doldurma Süresi: Kısalıyor mu?
-- Alan Başına Terk: Hangi alanda kayıp azalıyor?
+- Ortalama Doldurma Süresi: Kısalıyor mu?
+- Alan Bazlı Terk Oranı: Hangi alanda kayıp azalıyor?
 - Destek Talebi: Form doldurmayla ilgili talepler artmamalı.
 
 **Yapılmaması gerekenler**
@@ -449,6 +481,8 @@ Formdaki hangi alanın zorunlu, hangisinin isteğe bağlı olduğu genelde belir
 
 ## Ödeme yöntemini adres bilgisinden önce sormak işe yarar mı?
 
+Değişken: Ödeme yöntemi adımının sırası · Fark: taşı
+
 Ödeme adımını öne almak, taahhüdü erken alır ve ödeme yöntemini seçmiş kullanıcının akıştan kopma ihtimalini azaltabilir. Karşı tarafta: kullanıcı toplam tutarı (kargo dahil) görmeden ödeme bilgisi vermeye zorlanır, bu güvensizlik yaratır ve bazı ödeme yöntemleri teslimat adresine bağlı olduğu için teknik olarak da sorun çıkarabilir.
 
 **Test edilmesi gerekenler**
@@ -463,7 +497,7 @@ Formdaki hangi alanın zorunlu, hangisinin isteğe bağlı olduğu genelde belir
 - Adım Bazlı Terk Oranı: Terk başka adıma kaymamalı, azalmalı.
 - Ödeme Hata Oranı: Yöntem uyumsuzluğundan doğan hata artmamalı.
 - Ziyaretçi Başına Gelir (RPV): Gelir düşmemeli.
-- Destek Talebi Sayısı: “Toplam tutarı göremedim” türü talepler artmamalı.
+- Destek Talebi: “Toplam tutarı göremedim” türü talepler artmamalı.
 
 **Yapılmaması gerekenler**
 - Toplam tutarı ödeme bilgisi alındıktan sonra göstermeyin; gizlenen fiyat kabul edilemez (kural 6).
@@ -475,6 +509,8 @@ Formdaki hangi alanın zorunlu, hangisinin isteğe bağlı olduğu genelde belir
 ---
 
 ## Ödeme akışında menü ve bağlantıları kaldırmak tamamlamayı artırır mı?
+
+Değişken: Checkout’taki gezinme bağlantıları · Fark: kaldır
 
 Checkout sırasında üst menüyü, kategori bağlantılarını ve alt bilgi bağlantılarını kaldırmak (tünel akışı) dikkat dağıtıcıları temizler ve kullanıcıyı tek yolda tutar. Riski: kullanıcı bilgiye ulaşamaz (iade koşulu, iletişim), kaybolmuş hisseder ve sitede kapana kısıldığı algısı güveni düşürür.
 
@@ -488,7 +524,7 @@ Checkout sırasında üst menüyü, kategori bağlantılarını ve alt bilgi ba�
 **Takip edilecek ana KPI’lar**
 - Sipariş Tamamlama Oranı: Tünel akışı tamamlamayı artırıyor mu?
 - Adım Bazlı Terk Oranı: Bırakma azalıyor mu?
-- Destek Talebi Sayısı: Bilgiye ulaşamama kaynaklı talepler artmamalı.
+- Destek Talebi: Bilgiye ulaşamama kaynaklı talepler artmamalı.
 - Sepete Geri Dönüş Oranı: Sepeti düzenleme imkânı kaybolmamalı.
 - Ziyaretçi Başına Gelir (RPV): Gelir düşmemeli.
 
@@ -503,12 +539,14 @@ Checkout sırasında üst menüyü, kategori bağlantılarını ve alt bilgi ba�
 
 ## Seçimi onaylayan geri bildirim vermek hatayı azaltır mı?
 
+Değişken: Seçim onayı geri bildirimi · Fark: ekle
+
 Kullanıcı bir seçim yaptığında (beden, adet, teslimat günü) bunun alındığını açıkça göstermek belirsizliği kaldırır ve tekrar tıklamayı önler. Karşı tarafta: her seçime eklenen onay öğesi arayüzü kalabalıklaştırır, sayfa zıplamasına yol açabilir ve deneyimli kullanıcıyı yavaşlatır.
 
 **Test edilmesi gerekenler**
 - Geri bildirim: Seçim onayı hata oranını düşürüyor mu?
-- Biçim: Renk değişimi mi, yazılı onay mı, ikon mu daha net?
-- Kalıcılık: Onay geçici mi görünmeli, seçim boyunca mı kalmalı?
+- Sonraki test: Onay eklemek kazanırsa yazılı mesaj ile ikonlu kısa etiket ayrı bir testte karşılaştırıldığında hangisi hatalı seçimi daha çok azaltıyor?
+- Deneyimli kullanıcı: Onay öğesi, daha önce sipariş vermiş kullanıcının seçim adımını yavaşlatıyor mu?
 - Sayfa hareketi: Beliren onay içeriği kaydırıp yanlış tıklamaya yol açıyor mu?
 - Cihaz: Mobilde onay öğesi ekranda görünüyor mu?
 
@@ -530,6 +568,8 @@ Kullanıcı bir seçim yaptığında (beden, adet, teslimat günü) bunun alınd
 
 ## Varsayılan olarak işaretli gelen seçenekler kabul edilebilir mi?
 
+Değişken: Tarafsız seçeneğin varsayılan seçimi · Fark: değiştir
+
 Bir kutunun önceden işaretli gelmesi kullanıcıyı hızlandırabilir, ama bu tekniğin sınırı nettir: pazarlama izni, veri paylaşımı ve ek ücretli hizmetler önceden işaretlenemez; birçok pazarda bu yasaktır ve kullanıcının açık iradesi gerekir. Test edilebilir olan yalnızca tarafsız tercihlerdir (teslimat günü, kargo yöntemi, adet).
 
 **Test edilmesi gerekenler**
@@ -543,7 +583,7 @@ Bir kutunun önceden işaretli gelmesi kullanıcıyı hızlandırabilir, ama bu 
 - Sipariş Tamamlama Oranı: Varsayılan tamamlamayı artırıyor mu?
 - Varsayılan Değiştirme Oranı: Yüksek değiştirme oranı yanlış varsayılana işarettir.
 - İade veya İptal Oranı: İstenmeyen seçim kaynaklı iptal artmamalı.
-- Destek Talebi Sayısı: “Bunu ben seçmedim” türü talepler artmamalı.
+- Destek Talebi: “Bunu ben seçmedim” türü talepler artmamalı.
 - Ziyaretçi Başına Gelir (RPV): Gelir düşmemeli.
 
 **Yapılmaması gerekenler**
@@ -556,6 +596,8 @@ Bir kutunun önceden işaretli gelmesi kullanıcıyı hızlandırabilir, ama bu 
 ---
 
 ## Ödeme işlenirken adımları gösteren bir yükleme ekranı güveni artırıyor mu?
+
+Değişken: Ödeme yükleme ekranının biçimi · Fark: değiştir
 
 Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve bekleme süresini belirsiz hissettirir. “Kart doğrulanıyor”, “banka onayı bekleniyor”, “sipariş oluşturuluyor” gibi gerçek adımları sırayla göstermek, işlemin özenle yapıldığını hissettirip aynı bekleme süresini daha kısa algılatabilir — görünür emek, güven inşa eder. Risk, adımların gerçek işlem sırasını yansıtmaması veya süreyi yapay olarak uzatmak için kullanılmasıdır.
 
@@ -584,21 +626,23 @@ Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve 
 
 ## Ödeme yöntemi ikonlarını checkout’tan önce görünür yapmak güveni artırır mı?
 
+Değişken: Checkout öncesi ödeme yöntemi ikonları · Fark: ekle
+
 Kullanıcı ödeme adımına gelmeden önce hangi kartların veya yöntemlerin kabul edildiğini bilmek ister; bu bilgi genelde yalnızca ödeme sayfasında ortaya çıkar. İkonları daha erken (ürün sayfası veya sepette) göstermek, desteklenmeyen bir yöntemi kullanan ziyaretçinin akışı erkenden terk etmesini önleyebilir — ama fazla ikon görsel gürültü yaratabilir.
 
 **Test edilmesi gerekenler**
-- Konum: İkonlar ürün sayfasında mı, sepette mi, ikisinde birden mi daha etkili?
+- Sonraki test: İkonların erken gösterimi kazanırsa ürün sayfası ile sepet ayrı bir testte karşılaştırıldığında hangisi ödeme adımına ulaşmayı daha çok artırıyor?
 - Sayı: Tüm yöntemler mi, yalnızca en çok kullanılan 3-4’ü mü daha iyi çalışıyor?
-- Boyut: İkonların göze çarpma derecesi güven algısını değiştiriyor mu?
-- Tıklanabilirlik: İkonlar tıklanabilir olup ödeme koşullarını mı açmalı, yoksa salt bilgi mi olmalı?
+- Terkin yer değiştirmesi: Desteklenmeyen yöntemi kullanan ziyaretçi artık sepette mi ayrılıyor, yani terk yalnızca öne mi kayıyor?
+- Sepet tutarı: Yüksek tutarlı sepetlerde kabul edilen kartları erken görmek ödeme adımına geçişi daha çok artırıyor mu?
 - Cihaz: Mobilde ikon şeridi ekran alanını gereğinden fazla mı kaplıyor?
 
 **Takip edilecek ana KPI’lar**
-- Ödeme Adımına Ulaşma Oranı: İkonları gören ziyaretçilerin ödeme adımına geçme oranı artıyor mu?
+- Dönüşüm Oranı (CR): Ürün sayfası veya sepete atanan ziyaretçilerin siparişi tamamlama oranı artıyor mu?
+- Ödeme Adımına Geçiş Oranı: Tanı metriği; sepete ulaşan ziyaretçilerin (ikonları görenler değil) ödeme adımına geçme oranı artıyor mu?
 - Ödeme Adımı Terk Oranı: Desteklenmeyen yöntem yüzünden son adımda terk azalıyor mu?
 - Sepete Ekleme Oranı: İkonlar erken adımı olumsuz etkilememeli.
 - Sayfa Yüklenme Süresi: Ek görsel sayfayı yavaşlatmamalı.
-- Destek Talebi: “Hangi kartları kabul ediyorsunuz” soruları azalıyor mu?
 
 **Yapılmaması gerekenler**
 - Gerçekte kabul etmediğiniz bir ödeme yöntemini ikon olarak göstermeyin.

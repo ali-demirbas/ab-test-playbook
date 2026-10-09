@@ -10,3 +10,4 @@ __pycache__/
 # unaffected by this rule.
 abtest-card-*.html
 .abtest-history.md
+.abtest-backlog.md

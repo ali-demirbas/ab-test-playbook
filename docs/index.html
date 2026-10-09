@@ -99,13 +99,13 @@
   </ul>
 
   <h2>Install</h2>
-  <pre><code># as a Claude Code plugin
-/plugin install ab-test-playbook
+  <pre><code># in Claude Code: add the marketplace, then install the plugin
+/plugin marketplace add ali-demirbas/ab-test-playbook
+/plugin install ab-test-playbook@ab-test-playbook</code></pre>
 
-# or install the skills with the skills CLI
-npx skills add ali-demirbas/ab-test-playbook --all</code></pre>
+  <p>Then, inside Claude Code: <code>/ab-test suggest</code>, <code>/ab-test design</code>, <code>/ab-test audit</code>, <code>/ab-test results</code>, <code>/ab-test card</code>. A bare <code>/ab-test</code> shows a short menu with one example prompt for each.</p>
 
-  <p>Then, inside Claude Code: <code>/ab-test suggest</code>, <code>/ab-test design</code>, <code>/ab-test audit</code>, <code>/ab-test results</code>.</p>
+  <p><strong>Skills only, limited:</strong> <code>npx skills add ali-demirbas/ab-test-playbook --all</code> copies the six skill instructions but not the binding rules, the scenario archive, the scripts or the review agents, so archive suggestions, the statistics engine and card rendering do not work. Use the plugin install above for the full engine. Requires <code>python3</code> 3.9 or newer on PATH; the scripts use the standard library only.</p>
 
   <h2>What is inside</h2>
   <ul>

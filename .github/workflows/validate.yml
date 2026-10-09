@@ -9,15 +9,32 @@ permissions:
   contents: read
 
 jobs:
+  # The README promises python3 3.9+ with the standard library only, so the
+  # suite runs on both ends of that range: 3.9 catches newer syntax or stdlib
+  # calls slipping in, 3.13 catches deprecations. unittest rather than pytest
+  # keeps CI as dependency-free as the scripts it tests (the suite is
+  # pytest-compatible for anyone who prefers it locally).
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run unit tests (stats engine, validators, card builder, schema)
+        run: python -m unittest discover -s tests -v
+
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - name: Run unit tests (stats engine, scenario validator, card builder, schema)
-        run: python3 -m unittest discover -s tests -v
+          python-version: "3.13"
       - name: Run repo validation
         # Single entry point: content formats plus the cross-file seams —
         # skill/agent frontmatter, internal links, ${CLAUDE_PLUGIN_ROOT}

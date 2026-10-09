@@ -19,7 +19,7 @@
   "dont_items": [
     "Kupon alanını tamamen kaldırmayın; kodu olan kullanıcı öfkelenir.",
     "Geçersiz kod hatasını belirsiz bırakmayın.",
-    "Test sırasında aktif kampanya kurmayın veya kaldırmayın.",
+    "Kodu olan kullanıcının alanı bulamayıp indirimsiz ödemesini gelir kazancı saymayın.",
     "Kupon alanını CTA altına gizleyip fark edilmez yapmayın.",
     "Aynı testte hem konumu hem metni değiştirmeyin."
   ],

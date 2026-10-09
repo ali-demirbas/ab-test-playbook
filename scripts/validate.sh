@@ -294,47 +294,75 @@ else
 fi
 
 echo "== 11. Vocabulary agrees across schema, validator and builder =="
-# The same closed sets are spelled out in more than one place: KPI roles and
-# device types live in the schema's enums, in validate_scenario_json's rule
-# check, and in build_card's device branch. Duplicated vocabulary drifts
-# silently — a role added to the schema alone would validate and then never be
-# enforced.
+# The same closed sets are spelled out in more than one place: the schema's
+# enums, validate_scenario_json's rule checks and build_card's constants (the
+# devices it can frame, the difference types whose ring placement it enforces,
+# the KPI roles it draws pills for, the source/evidence tags and languages its
+# footer and dictionary print). Duplicated vocabulary drifts silently — a
+# device added to the schema alone would validate and then fail to render; a
+# role added to the builder alone would render and never be validated.
 python3 - <<'PY' || FAIL=1
 import json
-import re
 import sys
 
-schema = json.load(open("templates/scenario.schema.json", encoding="utf-8"))
-roles = set(schema["properties"]["kpis"]["items"]["properties"]["role"]["enum"])
-devices = set(schema["properties"]["device"]["enum"])
+sys.path.insert(0, "scripts")
+import build_card as bc  # noqa: E402
 
-builder = open("scripts/build_card.py", encoding="utf-8").read()
+schema = json.load(open("templates/scenario.schema.json", encoding="utf-8"))
+props = schema["properties"]
+card = props["card"]["properties"]
 validator = open("scripts/validate_scenario_json.py", encoding="utf-8").read()
 
 failed = False
 
-# build_card accepts the card-renderable devices; "both" is a definition-level
-# value with no single skeleton, so it is legitimately absent there.
-builder_devices = set(re.findall(r'device not in \(([^)]*)\)', builder))
-if builder_devices:
-    accepted = set(re.findall(r'"([a-z]+)"', builder_devices.pop()))
-    unknown = accepted - devices
-    if unknown:
-        print("FAIL: build_card accepts device(s) the schema does not define: %s" % sorted(unknown))
+
+def same(label, schema_values, builder_values):
+    global failed
+    a, b = set(schema_values), set(builder_values)
+    if a != b:
+        print("FAIL: %s differ: schema %s, build_card %s" % (label, sorted(a), sorted(b)))
         failed = True
 
-for role in ("primary", "guardrail"):
-    if role not in roles:
-        print("FAIL: schema no longer defines KPI role %r, but the validator enforces it" % role)
+
+same("device types (scenario.device)", props["device"]["enum"], bc.DEVICES)
+same("device types (card.device)", card["device"]["enum"], bc.DEVICES)
+same("KPI roles", props["kpis"]["items"]["properties"]["role"]["enum"], bc.KPI_ROLES)
+same("sources", props["source"]["enum"], bc.SOURCES)
+same("evidence levels", props["evidence"]["properties"]["level"]["enum"], bc.EVIDENCE_LEVELS)
+same("ICE tiers", props["ice"]["properties"]["tier"]["enum"], bc.ICE_TIERS)
+same("languages", props["lang"]["enum"], bc.L10N.keys())
+same("mockup bases", card["mockup_basis"]["enum"], bc.MOCKUP_BASES)
+same("ring label positions", card["note_pos"]["enum"], bc.NOTE_POSITIONS)
+# card.difference lists the English types plus their Turkish archive spellings
+# (the archive's "Fark:" line); the builder maps each alias to a type.
+same("difference types", card["difference"]["enum"], set(bc.DIFFERENCES) | set(bc.DIFFERENCE_TR))
+for alias, target in bc.DIFFERENCE_ALIASES.items():
+    if target not in bc.DIFFERENCES:
+        print("FAIL: build_card maps difference alias %r to unknown type %r" % (alias, target))
         failed = True
+
+# Every language prints every word the card frame needs.
+needed = set(bc.L10N["tr"])
+for lang, words in bc.L10N.items():
+    if set(words) != needed:
+        print("FAIL: build_card L10N[%r] keys differ from L10N['tr']: %s" % (lang, sorted(set(words) ^ needed)))
+        failed = True
+    for group, keys in (("role", bc.KPI_ROLES), ("source", bc.SOURCES),
+                        ("evidence", bc.EVIDENCE_LEVELS), ("ice", bc.ICE_TIERS)):
+        missing = set(keys) - set(words[group])
+        if missing:
+            print("FAIL: build_card L10N[%r][%r] has no label for %s" % (lang, group, sorted(missing)))
+            failed = True
+
+for role in ("primary", "guardrail"):
     if '"%s"' % role not in validator and "'%s'" % role not in validator:
         print("FAIL: validator does not mention KPI role %r defined in the schema" % role)
         failed = True
 
 if failed:
     sys.exit(1)
-print("  ok: KPI roles %s and device types %s agree across schema, validator and builder"
-      % (sorted(roles), sorted(devices)))
+print("  ok: devices %s, KPI roles, sources, evidence levels, difference types and languages %s"
+      " agree across schema, validator and builder" % (sorted(bc.DEVICES), sorted(bc.L10N)))
 PY
 
 echo "== 12. Skill description contract (sibling refs + 'Use when') =="
@@ -384,7 +412,134 @@ if failed:
 print(f"  ok: {checked} skill descriptions carry 'Use when' and resolve their sibling references")
 PY
 
-echo "== 13. Gemini CLI extension matches its sources =="
+echo "== 13. Stated counts match the archive and CLAUDE.md =="
+# The scenario total and the rule count are quoted in prose all over the public
+# docs, and nothing tied those numbers to their source: a scenario batch landed
+# and docs/llms.txt kept saying 179 for several releases. The source of truth is
+# the validator's own TOPLAM line and the highest numbered rule in CLAUDE.md.
+# The patterns are deliberately narrow (a number directly before "scenario",
+# "senaryo" or "rules", the badge, "archive of N"): per-turn counts such as
+# "1-5 scenarios" are excluded by the lookbehind, a phrase like "5 full
+# scenarios" never matches, and single-digit numbers are skipped outright (they
+# are per-turn counts or "five rules it will not bend", never a total), so a hit
+# is always a claim about the total.
+python3 - <<'PY' || FAIL=1
+import re
+import subprocess
+import sys
+
+out = subprocess.run([sys.executable, "scripts/validate_scenarios.py"],
+                     capture_output=True, text=True).stdout
+m = re.search(r"TOPLAM:\s*(\d+)", out)
+if not m:
+    print("FAIL: could not read the scenario total (TOPLAM) from validate_scenarios.py")
+    sys.exit(1)
+scenarios = int(m.group(1))
+
+with open("CLAUDE.md", encoding="utf-8") as f:
+    rules = max(int(n) for n in re.findall(r"^(\d+)\.\s+\*\*", f.read(), re.M))
+
+FILES = ["README.md", "README.tr.md", "docs/llms.txt", "docs/index.html",
+         "docs/architecture.md", "CONTRIBUTING.md",
+         ".claude-plugin/plugin.json", ".claude-plugin/marketplace.json"]
+NUM = r"(?<![\d.,/-])(\d+)"
+SCENARIO_RES = [
+    re.compile(NUM + r"[- ](?:(?:curated|experiment|shipped|deney) )?(?:scenario|senaryo)", re.I),
+    re.compile(r"archive of " + NUM, re.I),
+    re.compile(r"scenarios-(\d+)-"),  # the shields badge; NUM's lookbehind would skip it
+]
+RULE_RES = [re.compile(NUM + r" (?:non-negotiable |binding |bağlayıcı )?(?:rules|kural)\b", re.I)]
+
+failed = False
+checked = 0
+for path in FILES:
+    try:
+        lines = open(path, encoding="utf-8").read().splitlines()
+    except FileNotFoundError:
+        continue
+    for lineno, line in enumerate(lines, 1):
+        for kind, regexes, want in (("scenario", SCENARIO_RES, scenarios),
+                                    ("rule", RULE_RES, rules)):
+            for rx in regexes:
+                for hit in rx.finditer(line):
+                    if int(hit.group(1)) < 10:
+                        continue
+                    checked += 1
+                    if int(hit.group(1)) != want:
+                        print(f"FAIL: {path}:{lineno} says {hit.group(0)!r}, "
+                              f"but the real {kind} count is {want}")
+                        failed = True
+if failed:
+    sys.exit(1)
+print(f"  ok: {checked} stated counts match {scenarios} scenarios and {rules} rules")
+PY
+
+echo "== 14. Skills and agents address shipped files via \${CLAUDE_PLUGIN_ROOT} =="
+# At runtime the working directory is the USER's project, not this repo, so a
+# bare `knowledge/scenarios/x.md` in a skill resolves to nothing and the model
+# silently reads no archive. Section 8 only sees paths that already carry the
+# prefix; this catches the ones that forgot it. Code fences are checked too: in
+# a skill, a fenced command is something the model runs from the user's cwd,
+# so a relative `scripts/...` there is the same bug. The front matter is skipped
+# — the description is routing prose for the picker, never resolved as a path.
+python3 - <<'PY' || FAIL=1
+import glob
+import re
+import sys
+
+bare_re = re.compile(r"(?<![\w./{}$-])(?:knowledge|scripts|templates)/")
+failed = False
+checked = 0
+for path in sorted(glob.glob("skills/*/SKILL.md") + glob.glob("agents/*.md")):
+    with open(path, encoding="utf-8") as f:
+        lines = f.read().splitlines()
+    start = 0
+    if lines and lines[0].strip() == "---":
+        for i in range(1, len(lines)):
+            if lines[i].strip() == "---":
+                start = i + 1
+                break
+    checked += 1
+    for lineno in range(start, len(lines)):
+        for hit in bare_re.finditer(lines[lineno]):
+            print(f"FAIL: {path}:{lineno + 1}: bare '{hit.group(0)}' path — "
+                  "prefix it with ${CLAUDE_PLUGIN_ROOT}/")
+            failed = True
+if failed:
+    sys.exit(1)
+print(f"  ok: {checked} skill/agent bodies use only ${{CLAUDE_PLUGIN_ROOT}}-prefixed paths")
+PY
+
+echo "== 15. Skill descriptions fit the 1024-character limit =="
+# The description is the only text the picker sees before a skill loads, and
+# installers enforce a 1024-character ceiling on it. A description that grows
+# past it is truncated or rejected at install time, usually losing the routing
+# hints at its end — "To check ..., see ab-test-audit" — first.
+python3 - <<'PY' || FAIL=1
+import glob
+import re
+import sys
+
+LIMIT = 1024
+failed = False
+longest = 0
+for path in sorted(glob.glob("skills/*/SKILL.md")):
+    text = open(path, encoding="utf-8").read()
+    fm = text.split("---", 2)[1] if text.startswith("---") else ""
+    m = re.search(r"^description:\s*(.+)$", fm, re.M)
+    desc = m.group(1).strip() if m else ""
+    if len(desc) >= 2 and desc[0] == desc[-1] and desc[0] in "\"'":
+        desc = desc[1:-1]
+    longest = max(longest, len(desc))
+    if len(desc) > LIMIT:
+        print(f"FAIL: {path}: description is {len(desc)} characters (limit {LIMIT})")
+        failed = True
+if failed:
+    sys.exit(1)
+print(f"  ok: every skill description is within {LIMIT} characters (longest {longest})")
+PY
+
+echo "== 16. Gemini CLI extension matches its sources =="
 # .gemini/extensions/ is generated from CLAUDE.md, skills/ and agents/, not
 # hand-maintained — the same reasoning as docs/llms-full.txt below, and the
 # same failure mode: a source file edited without regenerating ships an
@@ -395,7 +550,7 @@ else
   err ".gemini/extensions/ is stale — run: python3 scripts/build_gemini.py"
 fi
 
-echo "== 14. Published Markdown bundle matches its sources =="
+echo "== 17. Published Markdown bundle matches its sources =="
 # docs/llms-full.txt is a concatenation of the core docs. Its only value is
 # being current, and a stale bundle is worse than none: it answers questions
 # with documentation the repo no longer ships.

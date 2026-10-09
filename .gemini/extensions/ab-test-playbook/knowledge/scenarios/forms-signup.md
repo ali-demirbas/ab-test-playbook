@@ -6,6 +6,8 @@ Yolculuk aşaması: bir formun doldurulmaya başlanmasından gönderilmesine kad
 
 ## Etiketler alanın üstünde mi, solunda mı durmalı?
 
+Değişken: Alan etiketinin konumu · Fark: taşı
+
 Sola hizalı etiket dikeyde yer kazandırır ama gözün her alanda yatay sıçrama yapmasını gerektirir. Üst hizalı etiket tek bir dikey tarama hattı oluşturur, buna karşılık form daha uzun görünür. Uzun etiketli veya çok dilli formlarda sola hizalama alan genişliğini de daraltır.
 
 **Test edilmesi gerekenler**
@@ -33,6 +35,8 @@ Sola hizalı etiket dikeyde yer kazandırır ama gözün her alanda yatay sıçr
 
 ## Yüzen etiket doldurmayı kolaylaştırıyor mu?
 
+Değişken: Alan etiketinin tipi (sabit, yüzen) · Fark: değiştir
+
 Yüzen etiket (alanın içinde başlayıp yazmaya başlayınca üste kayan etiket) yer kazandırır ve form kısa görünür. Ancak boş haldeyken etiketi placeholder’dan ayırt etmek zorlaşır, kullanıcı alana tıklamadan ne isteneceğini kestiremeyebilir. Otomatik doldurma ile de çakışabilir.
 
 **Test edilmesi gerekenler**
@@ -46,7 +50,7 @@ Yüzen etiket (alanın içinde başlayıp yazmaya başlayınca üste kayan etike
 - Form Tamamlama Oranı: Yüzen etiket gönderimi artırıyor mu?
 - Alan Bazlı Hata Oranı: Yanlış format girişi artmamalı.
 - Ortalama Doldurma Süresi: Etiketi anlamak için harcanan süre uzamamalı.
-- Alan Terk Oranı: Belirli bir alanda bırakma artıyor mu?
+- Alan Bazlı Terk Oranı: Belirli bir alanda bırakma artıyor mu?
 - Erişilebilirlik: Etiket kontrastı ve ekran okuyucu okuması bozulmamalı.
 
 **Yapılmaması gerekenler**
@@ -59,6 +63,8 @@ Yüzen etiket (alanın içinde başlayıp yazmaya başlayınca üste kayan etike
 ---
 
 ## Form alanlarını tek sütuna almak tamamlamayı artırır mı?
+
+Değişken: Form sütun sayısı · Fark: değiştir
 
 İki sütunlu form ekranda kısa görünür ama gözün zikzak çizmesini gerektirir ve bir sütunu tamamen atlama riski yaratır. Tek sütun daha uzun görünür, buna karşılık sıra belirsizliği ortadan kalkar. Birlikte anlam taşıyan alanlarda (il/ilçe, ad/soyad) yan yana dizilim savunulabilir.
 
@@ -87,6 +93,8 @@ Yüzen etiket (alanın içinde başlayıp yazmaya başlayınca üste kayan etike
 
 ## En kolay alanı başa koymak formu tamamlatır mı?
 
+Değişken: Kolay alanların formdaki sırası · Fark: taşı
+
 Formu doldurmaya başlayan kullanıcının bitirme olasılığı artar. Bu nedenle ilk alanın düşünmeyi değil refleksi tetiklemesi (ad, e-posta) tamamlamayı artırabilir. Karşı argüman: kolay alanları öne almak zor alanları sona yığar ve terk noktasını öteler, toplam tamamlama değişmez.
 
 **Test edilmesi gerekenler**
@@ -114,11 +122,13 @@ Formu doldurmaya başlayan kullanıcının bitirme olasılığı artar. Bu neden
 
 ## Alanları baştan göstermek mi, kademeli açmak mı daha çok tamamlatıyor?
 
+Değişken: Form alanlarının açılma biçimi · Fark: değiştir
+
 Tüm alanları baştan göstermek beklentiyi netleştirir ama form uzun görünür. Kademeli açma (bir alan doldurulunca sonrakinin belirmesi, ya da isteğe bağlı bir bölümün bir bağlantıyla açılması) algılanan uzunluğu düşürür. Riski: kullanıcı formun ne kadar süreceğini bilemez ve gizlenen alan sürpriz gibi gelir.
 
 **Test edilmesi gerekenler**
 - Görünürlük: Alanlar baştan mı görünmeli, doldurdukça mı açılmalı?
-- İsteğe bağlı bölüm: Zorunlu olmayan alanları katlanmış bir bölümde sunmak tamamlamayı artırıyor mu?
+- Sonraki test: Alanları tek tek açmak yerine yalnızca isteğe bağlı alanları katlanmış bir bölümde toplamak, ayrı bir testte tamamlamayı artırıyor mu?
 - Beklenti: Kaç adım kaldığı belirsizleşince terk artıyor mu?
 - Doluluk: Kademeli açmada isteğe bağlı alanların doldurulma oranı ne kadar düşüyor?
 - Cihaz: Küçük ekranda kademeli açma daha mı çok fayda veriyor?
@@ -126,9 +136,9 @@ Tüm alanları baştan göstermek beklentiyi netleştirir ama form uzun görün�
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Kademeli açma gönderimi artırıyor mu?
 - Form Başlama Oranı: Kısalan form ilk dokunuşu artırıyor mu?
-- İsteğe Bağlı Alan Doldurma Oranı: Toplanan veri kalitesi kabul edilemez seviyeye düşmemeli.
+- Alan Doldurma Oranı: Toplanan veri kalitesi kabul edilemez seviyeye düşmemeli.
 - Ortalama Doldurma Süresi: Açılıp kapanan bölümler süreyi uzatmamalı.
-- Alan Terk Oranı: Beliren alanda ani bırakma olmamalı.
+- Alan Bazlı Terk Oranı: Beliren alanda ani bırakma olmamalı.
 
 **Yapılmaması gerekenler**
 - Zorunlu bir alanı kademeli açmanın arkasına gizlemeyin; kullanıcı ne isteneceğini bilmeden başlamamalı.
@@ -141,18 +151,20 @@ Tüm alanları baştan göstermek beklentiyi netleştirir ama form uzun görün�
 
 ## Sayfa açılır açılmaz imleci ilk alana koymak işe yarar mı?
 
+Değişken: İlk alana otomatik odaklanma · Fark: değiştir
+
 Sayfa açılır açılmaz ilk alana odaklanmak bir adımı ortadan kaldırır ve masaüstünde yazmaya doğrudan başlatır. Mobilde ise klavyeyi zorla açar, sayfayı yukarı iter ve kullanıcının önce içeriği okumasını engelleyebilir. Formun sayfa içindeki konumu da sonucu değiştirir.
 
 **Test edilmesi gerekenler**
 - Odak: İlk alana otomatik odaklanmak doldurmayı başlatıyor mu?
 - Kaydırma: Otomatik odak sayfayı forma kaydırıp üstteki içeriği atlatıyor mu?
 - Klavye: Mobilde açılan klavye ekranın ne kadarını kapatıyor?
-- Konum: Form ekranın altındaysa otomatik odak faydalı mı, rahatsız edici mi?
+- Fark edilme: Kullanıcı imlecin ilk alanda hazır beklediğini fark edip tıklamadan yazmaya başlıyor mu?
 - Cihaz: Masaüstünde kazanan davranış mobilde de kazanıyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Form Başlama Oranı: İlk alana giriş artıyor mu?
-- Form Tamamlama Oranı: Başlama artışı gönderime dönüşüyor mu?
+- Form Tamamlama Oranı: Form sayfasına atanan ziyaretçilerin formu gönderme oranı artıyor mu?
+- Form Başlama Oranı: Tanı metriği; ilk alana giriş artıp gönderim artmıyorsa bulgu budur.
 - Sayfa Terk Oranı: Otomatik odak nedeniyle sayfadan çıkış artmamalı.
 - Üst İçerik Görüntülenme Oranı: Formun üstündeki açıklamanın okunması düşmemeli.
 - Erişilebilirlik: Klavye ve ekran okuyucu ile gezinme sırası bozulmamalı.
@@ -168,6 +180,8 @@ Sayfa açılır açılmaz ilk alana odaklanmak bir adımı ortadan kaldırır ve
 
 ## Alan yüksekliğini büyütmek doldurmayı etkiler mi?
 
+Değişken: Giriş alanı yüksekliği · Fark: değiştir
+
 Daha büyük giriş alanı dokunma hedefini büyütür, mobilde yanlış dokunmayı azaltır ve alanın tıklanabilir olduğunu görsel olarak netleştirir. Karşı tarafta: büyüyen alanlar formu uzatır, ekranda aynı anda daha az alan görünür ve form daha ağır hissettirebilir.
 
 **Test edilmesi gerekenler**
@@ -179,7 +193,7 @@ Daha büyük giriş alanı dokunma hedefini büyütür, mobilde yanlış dokunma
 
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Büyük alan gönderimi artırıyor mu?
-- Yanlış Dokunma Oranı: Hedef dışına dokunma azalıyor mu?
+- Yanlış Tıklama Oranı: Hedef dışına dokunma azalıyor mu?
 - Form Başlama Oranı: İlk dokunuş artıyor mu?
 - Ortalama Doldurma Süresi: Süre uzamamalı.
 - Erişilebilirlik: Dokunma hedefi erişilebilirlik alt sınırının altına inmemeli.
@@ -195,12 +209,14 @@ Daha büyük giriş alanı dokunma hedefini büyütür, mobilde yanlış dokunma
 
 ## Otomatik tamamlama form doldurmayı hızlandırır mı?
 
+Değişken: Otomatik tamamlama öneri listesi · Fark: ekle
+
 Adres, şehir, şirket gibi alanlarda öneri listesi yazma yükünü azaltır ve yazım hatasını düşürür. Riski: öneri listesi yanlış eşleşme sunarsa kullanıcı hatalı veriyi onaylar, ya da liste klavyenin üstünü kapatıp kullanıcıyı kilitler. Veri kalitesi kazancı ile tamamlama kazancı aynı yönde olmayabilir.
 
 **Test edilmesi gerekenler**
 - Öneri: Otomatik tamamlama tamamlamayı artırıyor mu?
 - Doğruluk: Seçilen öneriler gerçekten doğru veri mi üretiyor?
-- Serbest giriş: Listede olmayan değeri yazabilme kapalıysa terk artıyor mu?
+- Eşleşmeyen değer: Listede karşılığı olmayan bir değer yazan kullanıcı, öneri listesi yüzünden takılıp alanı bırakıyor mu?
 - Liste uzunluğu: Kaç öneri gösterildiğinde seçim hızlanıyor?
 - Cihaz: Mobilde öneri listesi klavyeyle çakışıyor mu?
 
@@ -208,7 +224,7 @@ Adres, şehir, şirket gibi alanlarda öneri listesi yazma yükünü azaltır ve
 - Form Tamamlama Oranı: Öneri gönderimi artırıyor mu?
 - Adres/Alan Doğruluk Oranı: Hatalı veri oranı artmamalı.
 - Ortalama Doldurma Süresi: Alan doldurma süresi kısalıyor mu?
-- Alan Terk Oranı: Öneri listesi olan alanda bırakma artmamalı.
+- Alan Bazlı Terk Oranı: Öneri listesi olan alanda bırakma artmamalı.
 - Operasyonel Yük: Yanlış veriden doğan düzeltme/iletişim maliyeti artmamalı.
 
 **Yapılmaması gerekenler**
@@ -222,21 +238,23 @@ Adres, şehir, şirket gibi alanlarda öneri listesi yazma yükünü azaltır ve
 
 ## Alan altına açıklama eklemek hata oranını düşürür mü?
 
+Değişken: Alan altı yardım metni · Fark: ekle
+
 Kısa bir yardım metni (“Fatura adresinizle aynı olmalı”, “Örnek: 5xx xxx xx xx”) hatalı girişi azaltabilir ve tereddüdü giderebilir. Karşı tarafta: her alana açıklama eklemek formu görsel olarak ağırlaştırır, önemli uyarının fark edilmesini zorlaştırır ve gerçek sorunun yanlış alan tasarımı olduğunu gizler.
 
 **Test edilmesi gerekenler**
 - Açıklama: Alan altı yardım metni hata oranını düşürüyor mu?
 - Kapsam: Tüm alanlara mı, yalnızca hata alan alanlara mı eklenmeli?
-- Zamanlama: Açıklama sürekli mi görünmeli, yoksa odaklanınca mı belirmeli?
-- Ton: Örnek format vermek mi, gerekçe açıklamak mı daha etkili?
+- Okunma: Açıklama eklenen alanda aynı hata türü sürüyorsa, kullanıcılar metni hiç fark etmiyor mu?
+- Sonraki test: Açıklama kalıcı hâle gelirse, metnin örnek format mı gerekçe mi vermesi ayrı bir testte hatayı daha çok düşürüyor mu?
 - Segment: Yeni ziyaretçi ile kayıtlı kullanıcı açıklamaya farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
-- Doğrulama Hatası Oranı: Hatalı gönderim azalıyor mu?
-- Form Tamamlama Oranı: Tamamlama düşmemeli.
+- Form Tamamlama Oranı: Form sayfasına atanan ziyaretçilerin formu gönderme oranı artıyor mu?
+- Doğrulama Hatası Oranı: Tanı metriği; hatalı gönderim azalıyor mu? Hata düşüp gönderim artmıyorsa kazanç veri kalitesindedir, dönüşümde değil.
 - Alan Bazlı Terk Oranı: Açıklama eklenen alanda bırakma azalıyor mu?
 - Ortalama Doldurma Süresi: Okuma yükü süreyi belirgin uzatmamalı.
-- Destek Talebi Sayısı: Aynı konudaki soru sayısı azalıyor mu?
+- Destek Talebi: Aynı konudaki soru sayısı azalıyor mu?
 
 **Yapılmaması gerekenler**
 - Her alana açıklama ekleyip hangisinin işe yaradığını ölçemez hâle gelmeyin.
@@ -249,19 +267,21 @@ Kısa bir yardım metni (“Fatura adresinizle aynı olmalı”, “Örnek: 5xx 
 
 ## Sosyal hesapla giriş seçeneği kaydı artırır mı?
 
+Değişken: Sosyal hesapla giriş seçeneği · Fark: ekle
+
 Sosyal giriş şifre oluşturma yükünü kaldırır ve kaydı hızlandırır. Buna karşılık kullanıcı hangi verinin paylaşılacağından çekinebilir, kurumsal kullanıcı kişisel hesabıyla giriş yapmak istemeyebilir ve sonradan “hangi yöntemle giriş yapmıştım” karışıklığı destek yüküne dönüşebilir.
 
 **Test edilmesi gerekenler**
 - Seçenek: Sosyal giriş eklemek kayıt oranını artırıyor mu?
 - Sağlayıcı sayısı: Tek sağlayıcı mı, birkaç sağlayıcı mı daha iyi çalışıyor?
-- Hiyerarşi: Sosyal giriş birincil mi olmalı, e-posta ile kaydın altında mı durmalı?
+- Sonraki test: Sosyal giriş eklendikten sonra butonların e-posta ile kaydın üstünde ya da altında durması, ayrı bir testte kaydı değiştiriyor mu?
 - Geri dönüş: Kullanıcılar sonraki girişte aynı yöntemi bulabiliyor mu?
 - Segment: Bireysel ve kurumsal kullanıcı farklı yönteme mi yöneliyor?
 
 **Takip edilecek ana KPI’lar**
-- Kayıt Tamamlama Oranı: Sosyal giriş kaydı artırıyor mu?
+- Kayıt Tamamlama Oranı: Kayıt ekranına ulaşan kullanıcıların (iki kolda aynı tetikleyici) kaydı bitirme oranı artıyor mu?
 - İkinci Oturum Giriş Oranı: Kullanıcı geri dönüp giriş yapabilmeli, düşmemeli.
-- Kayıt Sonrası Aktivasyon Oranı: Hızlı kayıt niteliksiz kullanıcı getirmemeli.
+- Aktivasyon Oranı: Hızlı kayıt niteliksiz kullanıcı getirmemeli.
 - Giriş Kaynaklı Destek Talebi: “Giriş yapamıyorum” talepleri artmamalı.
 - E-posta Erişilebilirlik Oranı: Ulaşılabilir e-posta adresi toplama oranı düşmemeli.
 
@@ -276,13 +296,15 @@ Sosyal giriş şifre oluşturma yükünü kaldırır ve kaydı hızlandırır. B
 
 ## Şifre yerine tek kullanımlık kod göndermek girişi artırır mı?
 
+Değişken: Birincil giriş yöntemi · Fark: değiştir
+
 Şifresiz giriş (e-postaya veya telefona gönderilen tek kullanımlık kod) unutulan şifre kaynaklı kayıpları ortadan kaldırır. Bedeli: kullanıcı e-posta veya SMS’e geçmek zorunda kalır, kod gecikirse akış kopar ve kanal teslim oranı doğrudan dönüşüme yansır.
 
 **Test edilmesi gerekenler**
 - Yöntem: Tek kullanımlık kod ile şifreli giriş arasında tamamlama farkı var mı?
 - Kanal geçişi: Kullanıcı e-postaya gidip geri dönebiliyor mu, akış kopuyor mu?
 - Teslim süresi: Kodun ulaşma süresi tamamlamayı ne kadar etkiliyor?
-- Alternatif: Şifreli giriş ikinci seçenek olarak kalırsa sonuç değişiyor mu?
+- Kalıcılık: Kodla bir kez giriş yapan kullanıcı sonraki girişlerde de kodu mu seçiyor, şifreye mi dönüyor?
 - Cihaz: Mobilde kod otomatik doldurulduğunda fark büyüyor mu?
 
 **Takip edilecek ana KPI’lar**
@@ -290,7 +312,7 @@ Sosyal giriş şifre oluşturma yükünü kaldırır ve kaydı hızlandırır. B
 - Kod Teslim ve Kullanım Oranı: Gönderilen kodun kullanılma oranı düşmemeli.
 - İlk Deneme Başarı Oranı: Tek seferde giriş yapabilme artıyor mu?
 - Şifre Sıfırlama Talebi: Sıfırlama yükü azalıyor mu?
-- Destek Talebi Sayısı: Giriş kaynaklı talepler artmamalı.
+- Destek Talebi: Giriş kaynaklı talepler artmamalı.
 
 **Yapılmaması gerekenler**
 - İki adımlı doğrulamayı veya kimlik doğrulamayı bu testin kapsamına almayın; bunlar koruma amaçlıdır (kural 6).
@@ -303,21 +325,23 @@ Sosyal giriş şifre oluşturma yükünü kaldırır ve kaydı hızlandırır. B
 
 ## Kaydı aksiyondan sonraya ertelemek tamamlamayı artırır mı?
 
+Değişken: Kayıt adımının akıştaki yeri · Fark: taşı
+
 Kayıt ekranını aksiyonun önüne koymak niyeti test eder ama hazır olmayan kullanıcıyı kaybeder. Kaydı sonraya bırakmak (önce işlemi yaptırmak, sonra kaydetmeyi teklif etmek) tamamlamayı artırabilir, buna karşılık kayıtsız tamamlanan işlemlerin geri dönüşü ve iletişimi zorlaşır.
 
 **Test edilmesi gerekenler**
 - Zamanlama: Kayıt aksiyondan önce mi, sonra mı istenmeli?
 - Değer anı: Kullanıcı faydayı gördükten sonra kayıt oranı artıyor mu?
 - Kayıp: Kayıtsız tamamlayanların ne kadarı sonradan kaydoluyor?
-- Çerçeveleme: Kaydı “ilerlemeni kaydet” diye sunmak farkı büyütüyor mu?
+- Sonraki test: Ertelenmiş kayıt sabitken, kaydı “ilerlemeni kaydet” diye çerçevelemek ayrı bir testte kayıt oranını artırıyor mu?
 - Segment: Yeni ziyaretçi ile geri dönen kullanıcı farklı zamanlamaya mı uyuyor?
 
 **Takip edilecek ana KPI’lar**
-- Aksiyon Tamamlama Oranı: Asıl işlemi bitirenler artıyor mu?
+- Ana Aksiyon Tamamlama Oranı: Asıl işlemi bitirenler artıyor mu?
 - Kayıt Oranı: Toplam kayıt sayısı kabul edilemez seviyeye düşmemeli.
 - Kayıt Sonrası Geri Dönüş Oranı: İkinci ziyaret oranı düşmemeli.
 - İletişim İzni Oranı: Ulaşılabilir kullanıcı oranı düşmemeli.
-- Destek Talebi Sayısı: “İşlemimi bulamıyorum” talepleri artmamalı.
+- Destek Talebi: “İşlemimi bulamıyorum” talepleri artmamalı.
 
 **Yapılmaması gerekenler**
 - Kaydı erteleyip sonra kullanıcıyı kapatılamayan bir ekranla kayda zorlamayın (kural 6).
@@ -329,6 +353,8 @@ Kayıt ekranını aksiyonun önüne koymak niyeti test eder ama hazır olmayan k
 ---
 
 ## Formu modal içinde mi, sayfa akışında mı göstermeli?
+
+Değişken: Formun sunum biçimi (modal, sayfa içi) · Fark: değiştir
 
 Modal form dikkati toplar ve kullanıcıyı sayfadan koparmaz. Ancak küçük ekranda dar kalır, arkadaki bağlamı gizler, tarayıcı geri tuşuyla ilişkisi kırılgandır ve yanlışlıkla kapatma kaybı yaratır. Sayfa içi form ise bağlamı korur ama kullanıcı formu fark etmeyebilir.
 
@@ -357,12 +383,14 @@ Modal form dikkati toplar ve kullanıcıyı sayfadan koparmaz. Ancak küçük ek
 
 ## Çok adımlı formda geri dönüş imkânı tamamlamayı etkiler mi?
 
+Değişken: Çok adımlı formdaki geri düğmesi · Fark: ekle
+
 Görünür bir geri düğmesi hata düzeltmeyi kolaylaştırır ve kullanıcıya kontrol hissi verir. Karşı argüman: geri dönüş imkânı ilerlemeyi yavaşlatır, kullanıcı adımlar arasında gidip gelir ve girilen veri kaybolursa güven zedelenir. Asıl belirleyici, geri dönüldüğünde verinin korunup korunmadığıdır.
 
 **Test edilmesi gerekenler**
 - Görünürlük: Geri düğmesi görünür olduğunda tamamlama değişiyor mu?
 - Veri koruma: Geri dönünce girilen veri korunuyor mu?
-- Özet: Son adımda düzenleme bağlantısı vermek geri dönüş ihtiyacını karşılıyor mu?
+- Sonraki test: Geri düğmesi yerine son adımdaki özete düzenleme bağlantısı koymak, ayrı bir testte aynı kurtarma işlevini görüyor mu?
 - Kullanım: Geri düğmesi ne sıklıkla kullanılıyor, kullanan tamamlıyor mu?
 - Cihaz: Mobilde tarayıcı geri hareketi ile form geri düğmesi çakışıyor mu?
 
@@ -384,11 +412,13 @@ Görünür bir geri düğmesi hata düzeltmeyi kolaylaştırır ve kullanıcıya
 
 ## Formu cümle hâline getirmek doldurmayı artırır mı?
 
+Değişken: Formun cümle biçiminde kurulması · Fark: değiştir
+
 Alanları bir cümlenin içine yerleştirmek (“Ben [ad], [şehir]’de [hizmet] arıyorum”) formu ankete değil sohbete benzetir ve kısa formlarda samimi durur. Riski: uzun formlarda cümle yapısı dağılır, alanların sırası dilbilgisine esir olur, hata mesajlarını yerleştirmek zorlaşır ve ekran okuyucu deneyimi bozulabilir.
 
 **Test edilmesi gerekenler**
 - Biçim: Cümle formu klasik alan listesinden daha mı çok dolduruluyor?
-- Uzunluk: Kaç alandan sonra cümle yapısı bozuluyor?
+- Sonraki test: Cümle formu kazanırsa, daha uzun bir formda ayrı bir testle denendiğinde cümle yapısı kaçıncı alandan sonra okunmaz hâle geliyor?
 - Hata: Hata mesajları cümle içinde anlaşılır kalıyor mu?
 - Tarama: Kullanıcı hangi bilgilerin isteneceğini bir bakışta görebiliyor mu?
 - Cihaz: Mobilde satır kaymaları cümleyi okunmaz yapıyor mu?
@@ -411,13 +441,15 @@ Alanları bir cümlenin içine yerleştirmek (“Ben [ad], [şehir]’de [hizmet
 
 ## Formu sayfanın ortasına almak mı, sola hizalamak mı?
 
+Değişken: Formun sayfadaki yatay konumu · Fark: taşı
+
 Ortalanmış form dikkati toplar ve tek amaçlı sayfalarda doğal durur. Sola hizalı form ise okuma yönüyle uyumludur ve yanına açıklama, güvence veya özet yerleştirmeye izin verir. Ortalama, formun yanındaki destekleyici içeriği de ortadan kaldırır.
 
 **Test edilmesi gerekenler**
 - Hizalama: Ortalanmış form tamamlamayı artırıyor mu?
-- Destek içeriği: Formun yanındaki güvence veya özet kaybolunca ne oluyor?
+- Yan içerik: Form ortalanınca korunan güvence ve özet bloğu formun altına itilip daha az mı görülüyor?
 - Odak: Ortalama dikkat dağıtıcıları gerçekten azaltıyor mu?
-- Genişlik: Form genişliği hizalamadan bağımsız olarak etkiliyor mu?
+- Sonraki test: Kazanan hizalama sabitken form genişliği (dar / geniş) ayrı bir testte tamamlamayı değiştiriyor mu?
 - Cihaz: Mobilde zaten tek sütuna düşen düzende fark kalıyor mu?
 
 **Takip edilecek ana KPI’lar**
@@ -438,14 +470,16 @@ Ortalanmış form dikkati toplar ve tek amaçlı sayfalarda doğal durur. Sola h
 
 ## Modal formda arka planı soldurmak dikkati topluyor mu?
 
+Değişken: Modal arka plan karartması · Fark: ekle
+
 Arka planı karartmak veya bulanıklaştırmak modalı öne çıkarır ve form dışındaki her şeyi görsel olarak susturur. Karşı tarafta: karartma kullanıcının bağlamını kaybetmesine yol açar, hangi sayfadan geldiğini hatırlamasını zorlaştırır ve yoğun karartma kapana kısılma hissi verebilir.
 
 **Test edilmesi gerekenler**
 - Yoğunluk: Arka plan karartması tamamlamayı artırıyor mu?
 - Bağlam: Arkadaki bilginin görünmesi karar için gerekli mi?
-- Biçim: Karartma mı, bulanıklaştırma mı daha iyi çalışıyor?
-- Kapatma: Karartılmış alana tıklayınca ne olmalı?
-- Cihaz: Mobilde tam ekran forma geçmek karartmadan daha mı iyi?
+- Sonraki test: Karartma kazanırsa, aynı modalda karartma yerine bulanıklaştırma kullanmak ayrı bir testte tamamlamayı artırıyor mu?
+- Dış tıklama: Karartılmış alan tıklanabilir bir yüzey gibi görünüp dışarı tıklayarak yanlışlıkla kapatmayı artırıyor mu?
+- Cihaz: Arka planın zaten az göründüğü mobilde karartmanın etkisi masaüstüne göre daha mı zayıf kalıyor?
 
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Karartma gönderimi artırıyor mu?
@@ -465,13 +499,15 @@ Arka planı karartmak veya bulanıklaştırmak modalı öne çıkarır ve form d
 
 ## Hazır şablon metin sunmak serbest metin alanını doldurtuyor mu?
 
+Değişken: Düzenlenebilir hazır şablon metin · Fark: ekle
+
 Boş bir metin kutusu, ne yazacağını bilmeyen kullanıcıyı durdurur. Hazır bir örnek metin sunmak (düzenlenebilir bir taslak) bu engeli kaldırır ve alanın doldurulma oranını artırabilir. Riski: gönderilen metinlerin çoğu birbirinin aynısı olur, kişisel olmaktan çıkar ve alıcı tarafında değeri düşer.
 
 **Test edilmesi gerekenler**
 - Şablon: Hazır metin sunmak alanın doldurulmasını artırıyor mu?
 - Kişiselleştirme: Kullanıcılar şablonu düzenliyor mu, olduğu gibi mi gönderiyor?
 - Seçenek: Birden fazla şablon sunmak çeşitliliği artırıyor mu?
-- Sunum: Şablon alana yazılı mı gelmeli, bir düğmeyle mi eklenmeli?
+- Sonraki test: Şablonun alana önceden yazılı gelmesi yerine bir düğmeyle eklenmesi, ayrı bir testte doldurma oranını değiştiriyor mu?
 - Segment: Yeni kullanıcı ile deneyimli kullanıcı farklı mı davranıyor?
 
 **Takip edilecek ana KPI’lar**
@@ -492,18 +528,20 @@ Boş bir metin kutusu, ne yazacağını bilmeyen kullanıcıyı durdurur. Hazır
 
 ## Tutar seçiminde hazır butonlar mı, serbest giriş mi sunmalı?
 
+Değişken: Hazır tutar butonları · Fark: ekle
+
 Hazır tutar butonları karar yükünü kaldırır, bir aralık önerir ve yazma zahmetini sıfırlar. Serbest giriş kutusu ise kullanıcıyı kendi tutarını belirlemekte özgür bırakır ama boş kutu ne yazılacağı konusunda bir işaret vermez. Sunulan butonların hangi tutarları içerdiği, seçilen ortalama tutarı doğrudan belirler.
 
 **Test edilmesi gerekenler**
 - Biçim: Hazır butonlar mı, serbest giriş mi daha çok tamamlatıyor?
 - Aralık: Buton tutarları ortalama seçimi hangi yöne çekiyor?
-- Birlikte sunum: Butonların yanında serbest giriş de bulunmalı mı?
-- Varsayılan: Butonlardan biri önceden seçili gelmeli mi?
+- Serbest kutu: Butonlar eklenince, listede olmayan bir tutar yazmak isteyen kullanıcı serbest giriş kutusunu bulup kullanabiliyor mu?
+- Karar yükü: Butonlar tutar belirleme süresini kısaltıp tutar alanında takılıp sayfadan çıkan kullanıcıyı azaltıyor mu?
 - Segment: İlk kez ödeme yapan ile tekrar edenler farklı mı davranıyor?
 
 **Takip edilecek ana KPI’lar**
-- Kullanıcı Başına Toplam Tutar: Biçim toplam tutarı artırıyor mu?
-- Tamamlama Oranı: İşlemi bitiren kullanıcı oranı artıyor mu?
+- Ziyaretçi Başına Gelir (RPV): Tutar ekranına atanan kullanıcı başına toplam tutar artıyor mu?
+- Ana Aksiyon Tamamlama Oranı: İşlemi bitiren kullanıcı oranı artıyor mu?
 - Ortalama Seçilen Tutar: Ortalama tutar düşmemeli.
 - Serbest Giriş Kullanım Oranı: Kendi tutarını girenlerin oranı ne kadar?
 - İptal veya Düzeltme Oranı: Yanlış tutar kaynaklı düzeltme artmamalı.
@@ -519,18 +557,20 @@ Hazır tutar butonları karar yükünü kaldırır, bir aralık önerir ve yazma
 
 ## Formun başına uygunluk açıklaması koymak talebin niteliğini artırır mı?
 
+Değişken: Form başı uygunluk açıklaması · Fark: ekle
+
 Formun üstüne kimin için uygun olduğunu yazmak (asgari bütçe, hizmet bölgesi, gerekli koşul) uymayan kullanıcıyı baştan eler ve satış ekibinin yükünü azaltır. Bedeli: toplam talep sayısı düşer, sınırda kalan bazı uygun kullanıcılar da kendini dışarıda görüp vazgeçer.
 
 **Test edilmesi gerekenler**
 - Açıklama: Uygunluk bilgisi nitelikli talebi artırıyor mu?
 - Hacim kaybı: Toplam talep ne kadar düşüyor?
-- Ton: Koşulu net söylemek mi, yumuşak ifade etmek mi daha iyi çalışıyor?
+- Sonraki test: Açıklama kalıcı olursa, koşulu net ya da yumuşak bir dille yazmak ayrı bir testte nitelikli talebi değiştiriyor mu?
 - Yanlış eleme: Aslında uygun olan kullanıcılar da eleniyor mu?
 - Segment: Ücretli reklamdan gelen ile organik gelen ziyaretçi uygunluk açıklamasına farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
-- Nitelikli Talep Sayısı: Satışa uygun talep artıyor mu?
-- Toplam Form Gönderimi: Hacim kabul edilemez ölçüde düşmemeli.
+- Nitelikli Talep Oranı (atanan ziyaretçi başına): Form sayfasına atanan ziyaretçi başına hedef profile uyan talep oranı artıyor mu?
+- Form Tamamlama Oranı: Toplam gönderim oranı kabul edilemez ölçüde düşmemeli.
 - Talep Başına Nitelik Oranı: Uygun talep oranı artıyor mu?
 - Satış Ekibi Eleme Süresi: Eleme yükü azalıyor mu?
 - Fırsat Kapanış Oranı: Gelen taleplerin satışa dönüşü artıyor mu?
@@ -546,20 +586,22 @@ Formun üstüne kimin için uygun olduğunu yazmak (asgari bütçe, hizmet bölg
 
 ## Asıl formdan önce küçük bir ısındırma sorusu sormak tamamlama oranını artırır mı?
 
+Değişken: Asıl formdan önceki ısındırma sorusu · Fark: ekle
+
 Kullanıcıyı doğrudan çok alanlı bir formla karşılaştırmak yerine, önce tek ve kolay bir soruyla (“Hangisi size en yakın?”) başlamak küçük bir taahhüt yaratır — bu taahhüdün ardından gelen asıl formu tamamlama isteği güçlenebilir. Bu, alanları kademeli açmaktan farklıdır: orada aynı formun alanları sırayla açılır, burada asıl formdan önce ayrı, ilgisiz görünmeyen bir soru sorulur.
 
 **Test edilmesi gerekenler**
-- Soru türü: Kategori seçimi mi, evet/hayır sorusu mu daha çok ilerletiyor?
-- İlgi: Isındırma sorusu asıl formun konusuyla doğrudan ilişkili mi olmalı?
-- Görsel geçiş: Isındırma sorusundan asıl forma geçiş tek ekranda mı, ayrı bir adımda mı daha akıcı?
-- Atlanabilirlik: Soruyu atlama seçeneği sunmak tamamlama oranını düşürüyor mu?
+- Sonraki test: Isındırma sorusu kazanırsa, kategori seçimi ile evet/hayır sorusu ayrı bir testte karşılaştırıldığında hangisi daha çok ilerletiyor?
+- Taahhüt etkisi: Artış soruyu yanıtlamanın yarattığı taahhütten mi geliyor, yoksa soruyu yalnızca zaten istekli ziyaretçiler mi yanıtlıyor?
+- Ek adım maliyeti: Isındırma sorusunun eklediği ekran, asıl forma hiç ulaşmayan ziyaretçi oranını artırıyor mu?
+- Geri dönen ziyaretçi: Formu önceden görmüş ziyaretçi ısındırma sorusunu gereksiz bir engel gibi görüp daha sık mı atlıyor?
 - Cihaz: Mobilde ısındırma adımı ayrı bir ekran gerektirdiğinde etkisi masaüstünden farklı mı?
 
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Isındırma sorusuyla başlayan akış, doğrudan forma göre daha çok tamamlanıyor mu?
 - Isındırma Sorusu Yanıtlama Oranı: Soruyu yanıtlayıp devam eden ziyaretçi oranı nedir?
 - Toplam Süre: Isındırma adımı toplam tamamlama süresini kabul edilemez ölçüde uzatmamalı.
-- Talep Niteliği: Isındırma sorusu talebin niteliğini düşürmemeli.
+- Talep Başına Nitelik Oranı: Isındırma sorusu talebin niteliğini düşürmemeli.
 - Terk Oranı: Isındırma adımının kendisinde terk artmamalı.
 
 **Yapılmaması gerekenler**
@@ -573,18 +615,20 @@ Kullanıcıyı doğrudan çok alanlı bir formla karşılaştırmak yerine, önc
 
 ## Form alanının yanına veri gizliliği güvencesi eklemek kayıt oranını artırır mı?
 
+Değişken: Alan yanındaki gizlilik güvence metni · Fark: ekle
+
 E-posta veya telefon isteyen bir form, kullanıcıda “bu bilgi spam’e mi dönüşecek” tereddüdü yaratabilir. Alanın hemen yanına kısa bir güvence metni (“E-postanızı kimseyle paylaşmayız”) koymak bu tereddüdü giderebilir, ama gereksiz yere hatırlatma da tam tersi bir etki yaratıp “neden bunu söylemeleri gerekti” şüphesi doğurabilir.
 
 **Test edilmesi gerekenler**
 - Varlık: Güvence metni eklemek kayıt oranını artırıyor mu, yoksa şüphe mi uyandırıyor?
-- Konum: Metin alanın hemen altında mı, gönder butonunun yanında mı daha etkili?
-- İkon: Kilit veya kalkan ikonu eklemek metnin etkisini güçlendiriyor mu?
-- Somutluk: Genel bir ifade mi (“gizliliğinize önem veriyoruz”), spesifik bir taahhüt mü (“asla üçüncü taraflarla paylaşmayız”) daha ikna edici?
+- Fark edilme: Kullanıcılar güvence metnini gerçekten görüyor mu, yoksa alan doldurulurken metin gözden mi kaçıyor?
+- Alan düzeyi: Güvence eklenen e-posta veya telefon alanında, alanı boş bırakıp formdan çıkma azalıyor mu?
+- Sonraki test: Güvence kalıcı olursa, genel bir ifade ile spesifik bir taahhüt ayrı bir testte karşılaştırıldığında hangisi daha ikna edici?
 - Segment: Hassas sayılabilecek bir bilgi (ör. telefon) istenen formlarda etki, yalnızca e-posta isteyen formdan farklı mı?
 
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Güvence metni kayıt oranını artırıyor mu?
-- Alan Terk Oranı: İlgili alanda bırakma artmamalı.
+- Alan Bazlı Terk Oranı: İlgili alanda bırakma artmamalı.
 - Güven Algısı (anket): Metin güveni artırdığını hissettiriyor mu, yoksa şüphe mi uyandırıyor?
 - Sayfada Kalma Süresi: Ek metin okuma süresini kabul edilemez ölçüde uzatmamalı.
 - Kayıt Sonrası Şikâyet: Verilen sözle kayıt sonrası gönderim davranışı tutarsızsa bu artmamalı — artıyorsa ayrı, engelleyici bir bulgudur (kural 6).
@@ -600,12 +644,14 @@ E-posta veya telefon isteyen bir form, kullanıcıda “bu bilgi spam’e mi dö
 
 ## Tek seçimlik bir alanda radio button mu, açılır liste (dropdown) mu daha çok tamamlatıyor?
 
+Değişken: Tek seçimlik alanın kontrol tipi · Fark: değiştir
+
 Radio button tüm seçenekleri aynı anda görünür kılar, kullanıcı tıklamadan karşılaştırma yapabilir ama seçenek sayısı arttıkça dikey yer kaplar. Dropdown yer kazandırır ve çok seçenekli durumlarda formu kısa gösterir, buna karşılık seçenekleri görmek için bir ek tıklama gerektirir ve mobilde platformun kendi bileşenine bağlı bir davranışa geçer — kullanıcı neyle karşılaşacağını göremeden tıklar.
 
 **Test edilmesi gerekenler**
 - Biçim: Radio button mu, dropdown mu ilgili alanın doldurulma oranını artırıyor?
-- Seçenek sayısı: Kaç seçenekten sonra dropdown radio button’dan daha avantajlı hâle geliyor?
-- Varsayılan: Dropdown’da hiçbir seçeneğin önceden seçili gelmemesi doğru seçime mi yönlendiriyor, yoksa atlanmasına mı yol açıyor?
+- Sonraki test: Seçenek sayısı farklı alanlarda ayrı testler kurulduğunda, dropdown kaç seçenekten sonra radio button’dan daha avantajlı hâle geliyor?
+- Atlanma: Dropdown’da alanı seçim yapmadan geçip gönderimde hata alan kullanıcı oranı radio button’a göre artıyor mu?
 - Hata: Yanlış seçim oranı biçime göre değişiyor mu?
 - Cihaz: Mobilde platformun kendi dropdown bileşeni radio button’a göre nasıl bir fark yaratıyor?
 
@@ -613,7 +659,7 @@ Radio button tüm seçenekleri aynı anda görünür kılar, kullanıcı tıklam
 - Form Tamamlama Oranı: Biçim gönderimi artırıyor mu?
 - Alan Bazlı Hata Oranı: Yanlış veya eksik seçim artmamalı.
 - Ortalama Doldurma Süresi: İlgili alanı doldurma süresi uzamamalı.
-- Alan Terk Oranı: İlgili alanda bırakma artmamalı.
+- Alan Bazlı Terk Oranı: İlgili alanda bırakma artmamalı.
 - Erişilebilirlik: Klavye ile gezinme ve ekran okuyucu davranışı biçime göre bozulmamalı.
 
 **Yapılmaması gerekenler**

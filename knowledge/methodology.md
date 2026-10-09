@@ -15,8 +15,21 @@ Every scenario is made of three blocks, all three mandatory, each with exactly 5
 - The metric in first position is the **primary metric** — it alone decides the test's winner. Reading five metrics as equally weighted is an invitation to p-hacking.
 - The list carries at least one **guardrail**: something that could degrade while conversion rises. Typical guardrails: gross margin, return rate, page speed (LCP), support tickets, abandonment rate, RPV. Guardrail items are written in "must not drop / must not rise / must not increase" form. A win with no guardrail is a deferred loss: a cost you didn't measure in the test doesn't get canceled, it just gets carried into next quarter's return rate or support load.
 - The metric has to be something the tool can actually measure. "Trust perception" isn't a KPI; its proxy is written instead.
-- **An intermediate-step metric can hide whether completion actually happened.** A change can easily boost a step in the middle of the funnel (add-to-cart, starting checkout, opening the form, choosing express checkout), and this looks like a win at first glance — but if the user who clears that step more easily then gets stuck at the next one, the total order count doesn't change, or even drops. The risk is especially high for variants that speed up, skip, or foreground a step: the user gets thrown at the outcome of a decision they haven't actually made yet, and bounces back. This is why the primary metric is always the real outcome at the end of the funnel (completed order, submitted form); the intermediate-step metric is tracked second, as a diagnostic. If the two move in opposite directions, that's the finding.
+- **An intermediate-step metric can hide whether completion actually happened.** A change can easily boost a step in the middle of the funnel (add-to-cart, starting checkout, opening the form, choosing express checkout), and this looks like a win at first glance — but if the user who clears that step more easily then gets stuck at the next one, the total order count doesn't change, or even drops. The risk is especially high for variants that speed up, skip, or foreground a step: the user gets thrown at the outcome of a decision they haven't actually made yet, and bounces back. This is why the primary metric is the outcome the change is meant to move, measured at the closest point where it is still a business outcome: the completion of the step's job (completed order, submitted form, finished signup), not a click or a step entry on the way there. A step or proxy metric (add-to-cart, CTA click, checkout start) is primary only when traffic can't support the outcome metric; in that case the outcome becomes a guardrail, so a proxy win that loses orders is still caught. Otherwise the intermediate-step metric is tracked second, as a diagnostic. If the two move in opposite directions, that's the finding.
 - **Conversion rate can hide revenue.** In price, installment, discount, or bundle tests, plain "Conversion Rate (CR)" isn't enough as the primary metric — lowering price almost always raises CR but can drop revenue. In these scenarios the primary metric should be revenue-based: Revenue Per Visitor (RPV), or Average Order Value (AOV) × CR. The price scenarios in `knowledge/scenarios/product-detail.md` and `cart-checkout.md` already apply this distinction; the same rule holds when a new price/bundle scenario is produced.
+
+## KPI denominator: assigned visitors (KPI paydası: atanan ziyaretçi)
+
+*Evidence: established statistical practice.* A rate is only comparable between arms when its denominator exists, defined identically, in both arms.
+
+- **The default denominator is the assigned population:** every user (or visitor, session or account, matching the randomization unit) assigned to the test, counted from the assignment event in both arms. "Conversion rate" in a scenario means conversions divided by assigned visitors unless the item says otherwise.
+- **Never "users who saw the new element".** If B adds a pop-up, a hint card or a badge, only B has users who saw it; "share of users who saw the pop-up and continued" has no A counterpart, and the users who see it are already a filtered, non-random group. Comparing it with anything in A compares two different populations.
+- **Triggered analysis is the valid narrower option.** When the change only matters at a specific moment (reaching the payment step, a zero-result search, an exit-intent signal, opening an empty dashboard), the denominator can be the users who reached that trigger, provided the same trigger is logged in both arms, at the same point, whether or not the arm then shows anything (counterfactual logging in A: "B would have shown the pop-up here"). The trigger must sit upstream of the change; if the variant itself changes who reaches the trigger, fall back to the assigned population.
+- **Counts are not primaries.** A count ("Nitelikli Fırsat Sayısı", "Talep Sayısı") is only comparable when the arms are exactly the same size, which a 50/50 split approximates but never guarantees and an unequal split breaks outright. The primary is written as a rate per assigned visitor ("Nitelikli Fırsat Oranı (atanan ziyaretçi başına)"); a count can stay as a secondary readout.
+- **One metric per line.** "Stay rate / return rate" is two metrics with two denominators; pick the one the mechanism predicts and keep the other as a secondary, if at all.
+- **Lagging outcomes need a follow-up window.** Returns, cancellations, retention and repeat purchase happen after the test's exposure; the window (e.g. returns within 30 days of delivery) is declared in advance and applied to both arms from each user's own order or assignment date, and the result isn't read before the window closes for the last cohort. A cause-specific rate ("Beden kaynaklı iade oranı") is preferred over a generic one when the mechanism is specific; its denominator is still orders (or assigned visitors) in each arm, not returns.
+
+The canonical Turkish KPI names, each with its definition, denominator and accepted synonyms, are in `knowledge/kpi-glossary.md`; the archive uses those names, a synonym in a user's plan is read as its canonical metric, and a one-off metric outside the glossary is allowed as long as its denominator is written out. `validate_scenarios.py` warns when a primary KPI is a count ("Sayısı") or uses a "saw it" denominator ("gören/görüp").
 
 ## The hypothesis has three parts
 
@@ -39,7 +52,7 @@ Strong example: "We know from heatmaps that mobile users notice the CTA late; if
 
 If the change is too subtle to make a difference in the metric (e.g. a 2px border-width change), don't build a hypothesis; "is this change distinct enough to be noticed?" is the first filter of every scenario design.
 
-**Which objection are we resolving?** If a user isn't completing a step, there's usually an unnamed objection underneath it. Five patterns repeat:
+**Which objection are we resolving?** If a user isn't completing a step, there's usually an unnamed objection underneath it. Six patterns repeat:
 
 | Objection | The user's question | Typical counter |
 |---|---|---|
@@ -48,6 +61,7 @@ If the change is too subtle to make a difference in the metric (e.g. a 2px borde
 | Fit | "Does this suit my situation?" | A similar-user example, segment-based content |
 | Timing | "Why now?" | Real (not made-up) urgency, opportunity cost |
 | Effort | "How hard will this be?" | "Set up in 5 minutes," a step-by-step walkthrough |
+| Clarity | "What do I get, and what happens next?" | Naming the outcome on the button, previewing the next step or result |
 
 Naming which objection is being targeted in one word when building the hypothesis makes it clearer why the test will (or won't) work. If there's evidence (support tickets, cancellation reasons, a survey answer), which objection it maps to is stated; if not, it's marked as an assumption. The objection-closing message can also be built implicitly — instead of naming the objection directly ("worried you're being lazy?"), moving straight to the solution ("we handle this for you") usually works better; saying the objection out loud can reinforce it.
 
@@ -57,7 +71,7 @@ Naming which objection is being targeted in one word when building the hypothesi
 
 Ideas aren't produced by looking at the page and writing down whatever comes to mind. Four filters are applied, in order.
 
-**1. Opportunity scan.** The five objection lenses above (Trust, Price, Fit, Timing, Effort) are used for the opportunity scan: for each objection, is there a genuine gap or user obstacle on this page? If it's already answered, that lens is skipped. **Not every lens has to produce an idea**; forcing one out of an irrelevant lens produces a suggestion unrelated to the page (e.g. "let's add an expert opinion" at the checkout step). The scan also makes visible what should exist but doesn't, in addition to what's already on screen (see Variable isolation → the addition axis).
+**1. Opportunity scan.** The six objection lenses above (Trust, Price, Fit, Timing, Effort, Clarity) are used for the opportunity scan: for each objection, is there a genuine gap or user obstacle on this page? If it's already answered, that lens is skipped. **Not every lens has to produce an idea**; forcing one out of an irrelevant lens produces a suggestion unrelated to the page (e.g. "let's add an expert opinion" at the checkout step). The scan also makes visible what should exist but doesn't, in addition to what's already on screen (see Variable isolation → the addition axis).
 
 **2. The mechanism gate.** Every candidate has to give a concrete answer to "why would this change alter user behavior?" "More eye-catching," "looks more modern," "cleaner" aren't answers; those candidates aren't suggested. The mechanism has to rest on **an observable user obstacle on the page**, not a generic psychology claim:
 
@@ -130,7 +144,7 @@ These rules hold for every test, so scenario "Never do" boxes don't repeat them 
 
 ## Variance reduction (CUPED) for low traffic
 
-*Evidence: established statistical practice.* When the same users (or accounts) were observed before the test, their pre-period value of the metric is a covariate that explains part of the in-test variance. Adjusting for it (CUPED) shrinks the confidence interval without biasing the effect, so the same MDE needs less sample — often a meaningful reduction when the pre-period metric correlates well with the in-test one. It helps most for returning users and continuous metrics; it does nothing for first-time visitors with no history. The covariate must be measured **before** assignment; an in-test covariate can absorb the treatment effect. `analyze_results.py continuous` supports it with a pre-period covariate column.
+*Evidence: established statistical practice.* When the same users (or accounts) were observed before the test, their pre-period value of the metric is a covariate that explains part of the in-test variance. Adjusting for it (CUPED) shrinks the confidence interval without biasing the effect, so the same MDE needs less sample — often a meaningful reduction when the pre-period metric correlates well with the in-test one. It helps most for returning users and continuous metrics; it does nothing for first-time visitors with no history. The covariate must be measured **before** assignment; an in-test covariate can absorb the treatment effect. `analyze_results.py continuous` supports it with pre-period covariate files. Each in-test value must be paired with **the same user's** pre-period value: with a user id column (`--id-column`) the files are joined by id, and a user missing a pre-period value is an error rather than a silent zero. Without an id the pairing is by row order, which a re-sorted export breaks silently (the variance reduction collapses toward zero, or worse, the estimate drifts), so the output says the rows must be aligned.
 
 ## Sequential testing, peeking and the planned-n guard
 
@@ -154,7 +168,7 @@ These rules hold for every test, so scenario "Never do" boxes don't repeat them 
 
 ## Continuous metrics — heavy-tailed revenue
 
-*Evidence: established statistical practice.* Revenue per visitor, order value and time-on-task are continuous and usually heavy-tailed: a few large orders dominate the mean and the variance. Use `analyze_results.py continuous`: **Welch's t-test** (no equal-variance assumption) as the default; **winsorize** extreme values at a pre-declared percentile (e.g. 99th) so one whale doesn't decide the test; or a **bootstrap** confidence interval when the distribution is far from normal. The winsorization cap is declared before the test, never tuned after. `revenue` remains a directional check; `continuous` is the significance test for these metrics.
+*Evidence: established statistical practice.* Revenue per visitor, order value and time-on-task are continuous and usually heavy-tailed: a few large orders dominate the mean and the variance. Use `analyze_results.py continuous`: **Welch's t-test** (no equal-variance assumption) as the default; **winsorize** extreme values at a pre-declared percentile (e.g. 99th) so one whale doesn't decide the test; or a **bootstrap** confidence interval when the distribution is far from normal. The winsorization cap is declared before the test, never tuned after. Per-user exports usually carry more than one column (user id, revenue, orders); the metric column is named explicitly (`--value-column`), because reading an id column as revenue produces a confident and entirely fake result. `revenue` remains a directional check; `continuous` is the significance test for these metrics. Plan the sample for a continuous metric with `samplesize --metric mean` (baseline mean, baseline SD and a relative MDE), using an SD from historical data capped the same way. A continuous guardrail (order value, LCP) takes the same non-inferiority margin as a rate guardrail (`continuous --ni-margin`).
 
 ## Interpreting results — overall no-difference doesn't mean segment no-difference
 
@@ -177,6 +191,8 @@ One segment can win while another loses; at least one of these three lenses is a
 When suggesting multiple scenarios, rank them with ICE: Impact × Confidence × Ease. A low-effort test on a high-traffic page comes before an ambitious test on a low-traffic page.
 
 **ICE is an ordinal prioritization heuristic, not a measured expected-value model.** The scale is fixed so the same input produces the same ranking (each dimension 1-10, total = the product of the three scores) — but the product itself (e.g. 336 vs. 392) isn't a precise quantity, and a small gap between two totals shouldn't be read as a meaningful difference; two scenarios scoring 320 and 340 aren't reliably ordered relative to each other, they're roughly tied. When scores are close, say so and use a coarse priority tier (High / Medium / Low) instead of quoting the exact product as if it settled the ranking.
+
+**ICE bands.** The tiers have fixed cut-offs so "strong candidate" (CLAUDE.md rule 9) is decidable: **High ≥ 300**, **Medium 125 to 299**, **Low < 125** (125 = 5 × 5 × 5). Confidence follows the evidence label: own data 7 to 10, archive precedent 4 to 7, industry observation 3 to 6, intuition 1 to 3. An intuition-only idea can still reach Medium, but only with high Impact and Ease, and then it says so.
 
 | Dimension | 1-3 | 4-7 | 8-10 |
 |---|---|---|---|
@@ -244,7 +260,7 @@ A classic 50/50 A/B test isn't the right tool for every business model. Fit is e
 | Fit | Context |
 |---|---|
 | High | B2C e-commerce, consumer mobile apps, self-serve SaaS — thousands of weekly sessions, a fast, repeated conversion event |
-| Medium | Marketplaces (may have supply/demand side effects), subscriptions, B2B lead forms — testable, but sample size and delayed conversion need care |
+| Medium | Marketplaces (may have supply/demand side effects), subscriptions, B2B lead forms, pre-quote forms in regulated sectors (insurance, credit: the form and product-selection steps before an offer is made) — testable, but sample size, delayed conversion and regulated copy need care |
 | Low | Low-traffic enterprise sales pages, long sales cycles (months), heavily regulated flows (insurance/finance/health offer and contract steps), businesses dominated by physical-store effects |
 
 **What's suggested when fit is low (don't leave a dead end):**

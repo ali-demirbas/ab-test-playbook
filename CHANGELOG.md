@@ -2,6 +2,25 @@
 
 All notable changes to this project are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 2.1.0 — 2026-10-09
+
+Built from seven end-to-end test runs on real pages (insurance quote forms, a product hub, a credit calculator, a car-rental search, a SaaS pricing page, an app onboarding flow, a desktop product page) plus a results/audit dogfood run. Every finding below was reproduced before it was fixed.
+
+### Fixed
+- **Stats:** `continuous` no longer reads the first CSV column silently (an id column produced a fake significant result); multi-column files need `--value-column`, pre-period files join by `--id-column`. `samplesize --help` no longer crashes. A repeated single-value flag is an error instead of silently keeping the last value. One-sided tests report a one-sided bound. Units are explicit (`absolute_diff_pp`); an MDE above 1 is read as a percent.
+- **Cards:** web cards overflowed into a ~2000px portrait; they now render at 1600x900 with a readable text column. Box headers, role pills and footer follow the user's language (TR/EN). The highlight ring no longer shifts the layout. Phone cards no longer draw an invented app tab bar. Personal data typed into a screenshot's fields is never copied into a card.
+- **Schema:** one JSON per scenario now both validates and renders (the schema and the card builder used two incompatible shapes).
+- **Archive:** KPI denominators that only existed in Variant B fixed (64 primaries); primaries phrased as guardrails rewritten; off-variable test items relabelled as follow-up tests; generic device/segment questions made specific; duplicate never-do lines removed.
+- **Rules and docs:** wrong install command on the demo page, a dead link, stale counts and the 2-5 vs 1-5 scenario contradiction fixed; regulated copy (credit cost display, insurance offer steps, data-purpose text) listed as legally bound; a missing mandatory notice is reported as a compliance finding, not tested.
+
+### Added
+- Stats: guardrail non-inferiority test (`--ni-margin`, verdict clean/degraded/inconclusive), duration planner (`--daily-visitors`, whole weeks, 14-day floor) and its inverse (`--weeks`), continuous-metric sample size, `interaction` subcommand for segment differences, margin-erosion warning in `revenue`, English output by default (`--lang tr` for Turkish).
+- Archive: every scenario carries `Değişken: … · Fark: …` (variable and difference type), enforced by the validator; a KPI glossary (`knowledge/kpi-glossary.md`); validator checks for cross-references, duplicates and near-duplicates.
+- Cards: `phone-web` device, difference-type ring rules enforced in code, KPI role pills, footer with source/evidence/objection/ICE tags and notes, brand colours via CSS variables, 17 new mockup components, `scripts/render_check.mjs` layout check.
+- Rules: "adapted from archive" source tag, ICE bands (High ≥ 300, Medium 125-299), a sixth objection lens (Clarity), routing for product hubs, booking search forms and pre-quote forms, a "defect, not a test" path.
+- Validator: `--prereg-only`, cross-checks between pre-registration and scenario, lagging guardrails (`read_after_days`) and pass/fail guardrails (`type: check`).
+- Repo checks: stated counts must match the archive, no bare resource paths in skills, skill description length; CI matrix on Python 3.9 and 3.13; new examples (results walkthrough, audit) and eval cases.
+
 ## 2.0.0 — 2026-09-29
 
 A full re-audit of the engine, rules and archive. Breaking for anyone relying on the old skill names: skills are `ab-test-*` (reinstall the plugin).
