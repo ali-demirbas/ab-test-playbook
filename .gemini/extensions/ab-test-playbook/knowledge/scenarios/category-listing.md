@@ -11,7 +11,7 @@ Geri sayım sayacı “şimdi karar ver” baskısı yaratır ve kısa vadede t�
 
 **Test edilmesi gerekenler**
 - Aciliyet: Sayaç varken kampanyaya tıklama artıyor mu?
-- Gerçeklik: Sayaç süresi dolduğunda kampanya gerçekten bitiyor mu, yoksa yenileniyor mu — kullanıcı bunu fark ediyor mu?
+- Gerçeklik: Sayaç süresi dolduğunda kampanya gerçekten bitiyor mu, yoksa yenileniyor mu; kullanıcı bunu fark ediyor mu?
 - Sonraki test: Sayaç kazanırsa konumu (sayfa üstü / ürün kartı içi) ayrı bir testte kampanya tıklamasını değiştiriyor mu?
 - Segment: Dönen ziyaretçide mi, yeni ziyaretçide mi etkisi daha büyük?
 - Kalan süre: Kampanyanın son 24 saatinde sayacın tıklamaya etkisi, kampanyanın ilk günlerindekinden daha mı büyük?
@@ -170,7 +170,7 @@ Liste sayfasındaki hızlı ekleme butonu, kullanıcının ürünü incelemeden 
 
 **Yapılmaması gerekenler**
 - Varyant seçmeden sepete eklemeye zorlamayın; yanlış sipariş doğar.
-- Butonun konumu ve boyutu liste düzenini bozmamalı.
+- Aynı testte hızlı ekleme butonunu eklerken kart görselini veya fiyat alanını da değiştirmeyin.
 - Hızlı ekleme butonunu stokta olmayan üründe aktif göstermeyin.
 - Hızlı eklemeyi detay sayfasındaki CTA’nın yerine geçirmeyin.
 - Eklendi geri bildirimini atlamayın; kullanıcı emin olamaz.
@@ -257,7 +257,7 @@ Menüdeki kategorilerin sırası, hangisinin öncelikli/popüler kabul edildiği
 
 **Yapılmaması gerekenler**
 - Menü sırasını kampanya dönemlerinde haftalık oynatmayın; navigasyon ezberi liste sayfasından daha kırılgandır.
-- Varyantta üste alınan kategoriyi yeni bir adla sunmayın; kullanıcı onu menüde tanıyamaz.
+- Aynı testte menü sırasını değiştirirken kategori adlarını veya menüdeki kategori sayısını da değiştirmeyin.
 - Menüde gelir taşıyan bir kategoriyi görünmez derinliğe itmeyin; menü ana seviyesi vitrin işlevi görür.
 - Mobilde menüyü sıkıştıracak kadar çok kategori üste almayın.
 - Menü sırasını yalnızca tıklama sayısına göre kurmayın; gelir katkısını da hesaba katın.
@@ -318,7 +318,7 @@ Değişken: Pop-up gösterim anı · Fark: değiştir
 - Mobilde tam ekran pop-up kullanmayın.
 - Kapatma ikonunu gizlemeyin veya küçültmeyin.
 - Aynı pop-up’ı her sayfada tekrar göstermeyin.
-- Aynı anda birden fazla pop-up tetiklemeyin.
+- Aynı testte gösterim anını değiştirirken pop-up’taki teklifi veya metni de değiştirmeyin.
 
 ---
 
@@ -339,13 +339,13 @@ Sayfa başına daha çok ürün göstermek sayfalar arası geçiş sayısını a
 - Dönüşüm Oranı (CR): Satın almaya kadar giden oran artıyor mu?
 - Liste → Ürün Tıklama Oranı: Tanı metriği; ürüne geçiş artıyor mu?
 - Sayfa Yüklenme Süresi: Liste hızı bozulmamalı.
-- Sayfa Terk Oranı: Ağırlaşan sayfa çıkışı artırmamalı.
+- Karar Süresi: Artan seçenek sayısı ürüne tıklamaya kadar geçen süreyi belirgin şekilde uzatmamalı.
 - Görülen Ürün Sayısı: Kullanıcının gördüğü toplam ürün sayısı düşmemeli.
 
 **Yapılmaması gerekenler**
 - Aynı testte ürün sayısı ile kart tasarımını birlikte değiştirmeyin.
 - Artan ürün sayısını kademeli yükleme olmadan tek seferde yükleyip mobilde listeyi kilitlemeyin.
-- Yüklenme süresi bozulmuşken dönüşüm sonucunu tek başına yorumlamayın.
+- Izgaranın kolon sayısına tam bölünmeyen bir sayı seçip son satırı yarım bırakmayın.
 - Masaüstünde kazanan sayıyı mobile doğrudan taşımayın.
 - Sayfa başına ürün sayısını değiştirirken sıralama algoritmasına dokunmayın.
 
@@ -521,7 +521,7 @@ Değişken: Karttaki tahmini teslimat bilgisi · Fark: ekle
 - Tahmini tarihi kesin tarih gibi yazmayın.
 - Aynı testte teslimat bilgisi ile kargo ücreti bilgisini birlikte eklemeyin.
 - Konuma bağlı tarihi konum bilinmeden kesinmiş gibi göstermeyin.
-- Dönüşüm arttı diye teslimat vaadi tutma oranına bakmadan kazandı demeyin.
+- Karttaki teslim tarihini ürün sayfasında ve sepette gösterilen tarihten farklı hesaplamayın.
 
 ---
 
@@ -570,7 +570,7 @@ Liste sayfasında, ürün kartında taksit avantajını küçük bir rozetle gö
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Gelir anlamlı artıyor mu? Rozet CR’yi artırsa bile birincil karar bu metrikle verilir.
-- Dönüşüm Oranı (CR): Rozetli üründe satın alma artıyor mu? — RPV ile birlikte okunur.
+- Dönüşüm Oranı (CR): Rozetli üründe satın alma artıyor mu? RPV ile birlikte okunur.
 - Tıklama Oranı (CTR): Rozetli ürünler daha çok tıklanıyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
 - İade veya İptal Oranı: Yükselmemeli; taksit beklentisi hayal kırıklığına dönüşmemeli.
@@ -579,10 +579,10 @@ Liste sayfasında, ürün kartında taksit avantajını küçük bir rozetle gö
 - Rozeti her üründe kullanmayın; etkisi sulanır.
 - Rozeti ürün görselini gölgeleyecek kadar büyütmeyin.
 - Rozeti gerçekten vade farksız taksit sunulmayan üründe göstermeyin; koşulu karşılamayan rozet yanıltıcıdır (kural 6).
-- Rozet indirim etiketiyle çakışmasın.
+- Aynı testte taksit rozetini eklerken karttaki fiyatı veya indirim etiketini de değiştirmeyin.
 - Mobilde rozet kartı sıkıştırmasın veya görseli kapatmasın.
 
-> Bu senaryo tek ürünü test ederken varyantlar arasında ürün adı, yorum sayısı ve ek rozetler eşit tutulmalıdır — aksi halde sonucun taksit rozetinden mi, farklı üründen mi geldiği ayırt edilemez.
+> Bu senaryo tek ürünü test ederken varyantlar arasında ürün adı, yorum sayısı ve ek rozetler eşit tutulmalıdır; aksi halde sonucun taksit rozetinden mi, farklı üründen mi geldiği ayırt edilemez.
 
 > **Pazar notu:** Kart taksitinin ve taksit kampanyalarının kurumsallaştığı pazarlara (Türkiye, MENA) özgüdür; taksit mekanizmasının olmadığı pazarlarda bu rozetin karşılığı yoktur.
 
@@ -609,7 +609,7 @@ Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edi
 - Çıkış Oranı: Yükselmemeli; rozet karmaşası kullanıcıyı kaçırmamalı.
 
 **Yapılmaması gerekenler**
-- Çok fazla rozet kullanmayın; görsel karmaşa yaratır.
+- Aynı testte kampanya rozetini eklerken indirim oranını veya karttaki fiyat gösterimini de değiştirmeyin.
 - Fiyat rozetiyle kampanya rozetini aynı renkte yapmayın.
 - Gerçekte kampanyada olmayan veya indirimi uydurma referans fiyata dayanan üründe rozet göstermeyin (kural 6).
 - Rozeti ürün fotoğrafını kapatacak kadar büyütmeyin.
@@ -664,7 +664,7 @@ Bir kategori listesinde stokta olmayan ürünleri tamamen gizlemek sayfayı yaln
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Kategori sayfasına atanan ziyaretçilerin satın alma oranı artıyor mu?
 - Liste → Ürün Tıklama Oranı: Stokta olan ürünlere tıklama oranı artıyor mu?
-- Sayfa Terk Oranı: Gri ürünlerin varlığı terk oranını artırmamalı.
+- Tekrar Ziyaret Oranı: Gizleme varyantında aradığı ürünü listede göremeyen kullanıcının geri gelişi düşmemeli.
 - Haber Ver Kayıt Oranı: Gri gösterimden haber ver akışına geçiş var mı?
 - Sayfa Yüklenme Süresi: Ek etiket/durum mantığı sayfayı yavaşlatmamalı.
 
@@ -672,5 +672,5 @@ Bir kategori listesinde stokta olmayan ürünleri tamamen gizlemek sayfayı yaln
 - Aynı testte gri gösterim biçimini ve sıralama mantığını birlikte değiştirmeyin.
 - Stokta olmayan bir ürünü, sanki satın alınabilirmiş gibi fiyat ve “sepete ekle” butonuyla göstermeyin.
 - Gizleme seçeneğini SEO veya iç bağlantı etkisini ölçmeden kalıcı hâle getirmeyin.
-- Gri ürün sayısı listenin çoğunluğunu oluşturduğunda bunu bulgu olarak görmeden teste devam etmeyin — bu envanter sorunudur, tasarım sorunu değil.
+- Gri ürün sayısı listenin çoğunluğunu oluşturduğunda bunu bulgu olarak görmeden teste devam etmeyin; bu envanter sorunudur, tasarım sorunu değil.
 - Filtre varsayılanını kullanıcı onayı olmadan “yalnızca stokta olanlar” yapıp diğer ürünleri tamamen erişilemez kılmayın.

@@ -4,13 +4,16 @@
 
 Follow the three-box format used by the existing files in `knowledge/scenarios/`:
 
-- **Test edilmesi gerekenler** — exactly 5 items, each `Etiket: soru?`
-- **Takip edilecek ana KPI'lar** — exactly 5 items, first one is the primary metric, at least one is a guardrail
-- **Yapılmaması gerekenler** — exactly 5 items, at least one protects variable isolation
+- A `Değişken: … · Fark: …` line under the title: the one variable and the difference type (`değiştir`, `ekle`, `taşı`, `kaldır`).
+- **Test edilmesi gerekenler**: exactly 5 items, each `Etiket: soru?`
+- **Takip edilecek ana KPI’lar**: exactly 5 items, the first one is the primary metric, at least one is a guardrail that measures an independent harm (never the complement of the primary)
+- **Yapılmaması gerekenler**: exactly 5 items, at least one protects variable isolation (`Aynı testte … değiştirmeyin`)
 
-The full rules — box format, evidence labeling, market-context notes — are in [`knowledge/methodology.md`](knowledge/methodology.md) and [`CLAUDE.md`](CLAUDE.md).
+"Exactly 5" applies to the archive files. A scenario designed for a user's page carries 3 to 6 items per box.
 
-Then run the repo checks before opening a PR (see [Before you open a PR](#before-you-open-a-pr)). The scenario validator inside them enforces five items per box, a guardrail in the KPI list, a device/segment question, and typographic rules (curly apostrophe in box headers, no straight quotes). It also prints the new scenario total: every place the docs state that number (both READMEs, `docs/llms.txt`, `docs/index.html`, `docs/architecture.md`, the plugin manifests) has to be updated in the same change, and `validate.sh` fails until it is.
+The full rules (box format, evidence labeling, market-context notes) are in [`knowledge/methodology.md`](knowledge/methodology.md) and [`CLAUDE.md`](CLAUDE.md).
+
+Then run the repo checks before opening a PR (see [Before you open a PR](#before-you-open-a-pr)). The scenario validator inside them enforces five items per box, a guardrail in the KPI list, a device/segment question, and typographic rules (curly apostrophe in box headers, no straight quotes). It also prints the new scenario total: every place the docs state that number (both READMEs, `docs/llms.txt`, `docs/index.html`, `docs/architecture.md`, the plugin manifests) has to be updated in the same change, and `validate.sh` fails until it is. A new scenario file also needs a line in the stage map of `skills/ab-test-suggest/SKILL.md`; without it the file is never reached.
 
 ## Changing a skill
 

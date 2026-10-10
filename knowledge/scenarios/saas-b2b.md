@@ -33,7 +33,7 @@ Aynı işlevi yapan CTA’nın kelime seçimi (kısa/soyut vs. somut/süre belir
 
 ---
 
-## “Ücretsiz başla” mı, “Demo iste” mi daha çok fırsat getiriyor?
+## “Ücretsiz başla”nın yanına ikinci bir “Demo iste” CTA’sı eklemek daha çok fırsat getiriyor mu?
 
 Değişken: İkincil “Demo iste” CTA’sı · Fark: ekle
 
@@ -95,7 +95,7 @@ Yıllık planın seçili gelmesi indirim algısını öne çıkarır ama kullan�
 
 Değişken: Talep formundaki alan sayısı · Fark: kaldır
 
-Her ek form alanı bir sürtünme noktasıdır. Alan sayısını azaltmak talep hacmini yükseltebilir ama satış ekibine daha az bilgi bırakır. Hacim ile lead kalitesi arasındaki denge ölçülmelidir.
+Her ek form alanı bir sürtünme noktasıdır. Alan sayısını azaltmak talep hacmini yükseltebilir ama satış ekibine daha az bilgi bırakır. Hacim ile lead kalitesi arasındaki denge ölçülmelidir. “Adres formundaki alan sayısını azaltmak tamamlamayı artırır mı?” (`cart-checkout.md`) senaryosundan farkı: burada form bir satış talebi formudur; kazananı gönderim hacmi değil, satış ekibinin kabul ettiği nitelikli fırsat belirler (birincil Nitelikli Fırsat Oranı).
 
 **Test edilmesi gerekenler**
 - Alan sayısı: 6 alan yerine 2 alan talep sayısını artırıyor mu?
@@ -115,7 +115,7 @@ Her ek form alanı bir sürtünme noktasıdır. Alan sayısını azaltmak talep 
 - Satış için gerçekten gereken alanı kaldırmayın.
 - Aynı testte hem alan sayısını hem form tasarımını değiştirmeyin.
 - Zorunlu alan işaretini belirsiz bırakmayın.
-- Sadece form dönüşümüne bakıp kapanış oranını atlamayın.
+- Alan sayısını azaltırken açık rıza kutusunu veya aydınlatma metni bağlantısını formdan çıkarmayın.
 - Eksik bilgiyi sonradan toplayacak akışı kurmadan alan silmeyin.
 
 ---
@@ -201,7 +201,7 @@ Kurumsal planın fiyatını gizlemek satış ekibine görüşme kazandırır ama
 **Yapılmaması gerekenler**
 - Fiyatı gizleyip formda da bilgi vermeyin; kullanıcı boşa düşer.
 - Aynı testte hem fiyatı hem form alanlarını değiştirmeyin.
-- Sadece talep sayısına bakıp kapanış oranını atlamayın.
+- Fiyatı gizlediğiniz kolda aynı fiyatı SSS’de, karşılaştırma tablosunda veya yardım sayfasında açık bırakmayın; kol kirlenir.
 - Rakip fiyatını referans göstererek yanıltmayın.
 - “X TL’den başlayan” aralığını gerçek sözleşmelerin altında kalan bir tabanla yazmayın.
 
@@ -234,7 +234,7 @@ Kısa deneme aciliyet yaratır ama kullanıcı değeri görmeden biter. Uzun den
 - Süre sonunda uyarı vermeden hesabı kapatmayın.
 - Aynı testte hem süreyi hem kart zorunluluğunu değiştirmeyin.
 - Deneme kapsamını planlar arasında farklılaştırmayın.
-- Yalnızca dönüşüme bakıp kalıcılığı atlamayın.
+- Deneme süresini kayıt sayfasında bir, ürün içinde başka bir gün sayısıyla yazmayın; her kolda tüm ekranlar aynı süreyi söylemeli.
 
 ---
 
@@ -242,7 +242,7 @@ Kısa deneme aciliyet yaratır ama kullanıcı değeri görmeden biter. Uzun den
 
 Değişken: Talep formunun adım yapısı · Fark: değiştir
 
-Tek sayfa form tüm alanları baştan gösterir; ne kadar iş olduğu açıktır ama yoğun görünür. Çok adımlı form küçük taahhütlerle ilerletir, ilk adımı bitirenin devam etme olasılığı yüksektir. Bu senaryoyu kurmadan önce şunu kontrol edin: form tek ekrana sığacak şekilde yoğunlaştırılabiliyorsa (ilişkili alanlar yan yana, gereksiz alan çıkarılmış, dikey boşluk azaltılmış) önce onu test edin — adım eklemek her adımda yeni bir terk noktası açar ve çoğu formda tek sayfa kalmak daha iyi çalışır.
+Tek sayfa form tüm alanları baştan gösterir; ne kadar iş olduğu açıktır ama yoğun görünür. Çok adımlı form küçük taahhütlerle ilerletir, ilk adımı bitirenin devam etme olasılığı yüksektir. Bu senaryoyu kurmadan önce şunu kontrol edin: form tek ekrana sığacak şekilde yoğunlaştırılabiliyorsa (ilişkili alanlar yan yana, gereksiz alan çıkarılmış, dikey boşluk azaltılmış) önce onu test edin; adım eklemek her adımda yeni bir terk noktası açar ve çoğu formda tek sayfa kalmak daha iyi çalışır. “Tek sayfa checkout mu, çok adımlı checkout mu?” (`cart-checkout.md`) senaryosundan farkı: burada form bir satış talebi formudur; gönderim kolaylaşırken gelen talebin niteliği de korunmalıdır (guardrail Nitelikli Fırsat Oranı).
 
 **Test edilmesi gerekenler**
 - Tamamlama: Çok adımlı form toplam gönderim oranını artırıyor mu?
@@ -292,7 +292,7 @@ Kurumsal e-posta zorunluluğu spam ve kişisel hesapları eler, satış ekibine 
 - Reddedilme anında kullanıcıya neden belirsiz bırakmayın.
 - Aynı testte hem e-posta kuralını hem diğer alanları değiştirmeyin.
 - Kişisel e-postayı kabul edip sonradan sessizce elemeyin.
-- Doğrulama kuralını yalnızca dönüşüme bakıp gevşetmeyin; kaliteyi izleyin.
+- Kurumsal e-postası olmayan gerçek alıcıya alternatif bir doğrulama yolu (ör. şirket web sitesi) bırakmadan kapıyı tümden kapatmayın.
 
 ---
 
@@ -300,7 +300,7 @@ Kurumsal e-posta zorunluluğu spam ve kişisel hesapları eler, satış ekibine 
 
 Değişken: Deneme bitiş mesajının çerçevesi · Fark: değiştir
 
-Aynı bilgi iki farklı çerçeveyle verilebilir: “Yükseltmezsen 3 gün sonra [X özelliğine] erişimini kaybedeceksin” (kayıp) ya da “Şimdi yükselt, [X özelliğini] kullanmaya devam et” (kazanım). Kayıp çerçevesi genelde kazanım çerçevesinden daha güçlü bir davranışsal tepki yaratır, çünkü insanlar eşdeğer bir kaybı bir kazançtan daha ağır hisseder — ama sürekli kayıp diliyle konuşmak markayı baskıcı hissettirebilir.
+Aynı bilgi iki farklı çerçeveyle verilebilir: “Yükseltmezsen 3 gün sonra [X özelliğine] erişimini kaybedeceksin” (kayıp) ya da “Şimdi yükselt, [X özelliğini] kullanmaya devam et” (kazanım). Kayıp çerçevesi genelde kazanım çerçevesinden daha güçlü bir davranışsal tepki yaratır, çünkü insanlar eşdeğer bir kaybı bir kazançtan daha ağır hisseder; ama sürekli kayıp diliyle konuşmak markayı baskıcı hissettirebilir.
 
 **Test edilmesi gerekenler**
 - Çerçeve: Kayıp diliyle mi, kazanım diliyle mi yazılan mesaj yükseltme oranını artırıyor?
@@ -349,7 +349,7 @@ Bir lead formundaki “şirket büyüklüğü” veya “yıllık bütçe” gib
 - Aynı testte gerekçe metni ile alanın zorunlu/isteğe bağlı durumunu birlikte değiştirmeyin.
 - Gerekçeyi, alanın gerçek kullanım amacını gizleyen yanıltıcı bir cümleyle yazmayın (kural 10).
 - Her alana gerekçe ekleyip hangisinin fark yarattığını ölçemez hâle gelmeyin.
-- Hassas bir alan (kimlik no, doğum tarihi vb.) için yalnızca gerekçe eklemeyi tek çözüm gibi sunmayın — kural 14’teki diğer yöntemler de değerlendirilmeli.
+- Hassas bir alan (kimlik no, doğum tarihi vb.) için yalnızca gerekçe eklemeyi tek çözüm gibi sunmayın; kural 14’teki diğer yöntemler de değerlendirilmeli.
 - Gerekçe metnini alanın kendisinden daha büyük veya dikkat çekici yapıp formu ağırlaştırmayın.
 
 ---
@@ -358,7 +358,7 @@ Bir lead formundaki “şirket büyüklüğü” veya “yıllık bütçe” gib
 
 Değişken: Satış sayfasının sütun yapısı · Fark: değiştir
 
-Bu senaryo `forms-signup.md`’deki form alanı sütun düzeninden farklıdır — orası formun içindeki alanların yerleşimini, bu senaryo sayfanın genel iskeletini (ana içerik + varsa yan sütun) ele alır. İkinci bir sütun (ilgili bağlantılar, ek sosyal kanıt, site içi arama) sayfaya ek bilgi katar ama gözü ana anlatıdan uzaklaştırıp dikkati bölebilir. Tek sütuna indirmek doğrusal, kesintisiz bir okuma akışı kurar; riski, yan sütunda duran bilgiye erişimin kaybolmasıdır.
+Bu senaryo `forms-signup.md`’deki form alanı sütun düzeninden farklıdır; orası formun içindeki alanların yerleşimini, bu senaryo sayfanın genel iskeletini (ana içerik + varsa yan sütun) ele alır. İkinci bir sütun (ilgili bağlantılar, ek sosyal kanıt, site içi arama) sayfaya ek bilgi katar ama gözü ana anlatıdan uzaklaştırıp dikkati bölebilir. Tek sütuna indirmek doğrusal, kesintisiz bir okuma akışı kurar; riski, yan sütunda duran bilgiye erişimin kaybolmasıdır.
 
 **Test edilmesi gerekenler**
 - Yapı: Tek sütunlu sayfa toplam dönüşümü ikinci sütunlu sayfaya göre artırıyor mu?

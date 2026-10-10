@@ -21,13 +21,13 @@ CTA’yı kaydırmadan görünen alana almak aksiyonu erken sunar ve kararı ver
 - Ana Aksiyon Tamamlama Oranı: Sonraki adıma geçen ziyaretçi artıyor mu?
 - CTA Tıklama Oranı: Butona tıklama artıyor mu?
 - Aksiyon Sonrası Dökülme Oranı: Erken tıklayan kullanıcı sonraki adımda kaybedilmemeli.
-- Sayfa Terk Oranı: Hemen çıkış artmamalı.
+- Talep Başına Nitelik Oranı: Açıklamayı okumadan tıklayanların talepleri niteliği düşürmemeli.
 - Kaydırma Derinliği: Sayfanın altındaki içeriğin görülmesi kabul edilemez ölçüde düşmemeli.
 
 **Yapılmaması gerekenler**
 - Aynı testte CTA konumu ile buton metnini birlikte değiştirmeyin.
 - CTA’yı yukarı alırken başlığı da kısaltmayın; hangisinin etkilediği ayrıştırılamaz.
-- Tıklama arttı diye sonraki adımı ölçmeden kazandı demeyin.
+- Mobilde yukarı alınan CTA’yı sabit (yapışkan) bir çubuğa çevirmeyin; o ayrı bir değişkendir.
 - Görünen alanı tek bir ekran boyutuna göre tanımlayıp sonucu tüm cihazlara genellemeyin.
 - CTA’yı yukarı taşımak için zorunlu bilgiyi (fiyat, kapsam) aşağı itmeyin.
 
@@ -108,14 +108,14 @@ Uzun sayfada aşağı inen ziyaretçi ikna olduğunda yukarı dönmek zorunda ka
 - Ana Aksiyon Tamamlama Oranı: Toplam aksiyon artıyor mu?
 - Alt CTA Tıklama Payı: İkinci CTA gerçekten yeni tıklama getiriyor mu, yoksa üsttekini mi bölüyor?
 - Kaydırma Derinliği: Sayfa sonuna ulaşan ziyaretçi oranı düşmemeli.
-- Sayfa Terk Oranı: Baskı hissi çıkışı artırmamalı.
+- İade veya İptal Oranı: Tekrarlanan çağrıyla alınan aksiyon sonradan iptale dönmemeli.
 - Aksiyon Sonrası Tamamlama Oranı: Geç tıklayanların sonraki adımı tamamlaması düşmemeli.
 
 **Yapılmaması gerekenler**
 - İki CTA’yı farklı hedefe gönderip hangisinin çalıştığını ölçemez hâle gelmeyin.
 - Aynı testte CTA sayısı ile CTA metnini birlikte değiştirmeyin.
 - Tekrarı sayfanın her ekranına serpiştirip tek değişken kuralını bozmayın.
-- Toplam tıklama arttı diye üstteki CTA’nın kaybını görmezden gelmeyin.
+- İkinci CTA’yı alt bilgi bağlantılarının arasına sıkıştırıp ayırt edilemez hâle getirmeyin.
 - Sayfa sonu CTA’sını kapatılamayan sabit bir çubuğa dönüştürmeyin.
 
 ---
@@ -144,7 +144,7 @@ Video karmaşık bir ürünü metinden hızlı anlatabilir. Otomatik oynatma dik
 - Sesi açık otomatik oynatma varyantı kurmayın.
 - Videoyu sayfanın kritik yükleme yoluna koyup hız kaybını test sonucuna karıştırmayın.
 - Aynı testte video ile hero başlığını birlikte değiştirmeyin.
-- İzlenme arttı diye aksiyon değişmediyse kazandı demeyin.
+- Veri tasarrufu modundaki veya yavaş bağlantıdaki ziyaretçide otomatik oynatmayı zorla başlatmayın.
 - Durdurulamayan veya kapatılamayan bir video önermeyin.
 
 ---
@@ -199,8 +199,8 @@ Arkasında gerçek bir insan olduğunu göstermek (kurucu fotoğrafı ve imzası
 - İletişim Talebi Sayısı: Soru sorma davranışı artıyor mu?
 
 **Yapılmaması gerekenler**
-- Stok fotoğrafı gerçek kurucu veya uzman gibi sunmayın.
-- Sahip olunmayan unvan veya yetkinlik atfetmeyin.
+- Aynı testte kişi bloğunu eklerken müşteri referanslarını veya logo bandını da değiştirmeyin.
+- Stok fotoğrafı gerçek kurucu veya uzman gibi sunmayın; kişiye sahip olmadığı unvan veya yetkinlik atfetmeyin.
 - Kişinin onaylamadığı bir sözü ondan alıntıymış gibi yazmayın.
 - Uzman görüşünü ürün iddiasının yerine geçirip doğrulanamaz bir vaat üretmeyin.
 - Düzenlemeye tabi alanlarda (sağlık, finans, hukuk) uzman ifadesini hedef pazarın kuralını doğrulamadan yayınlamayın.
@@ -312,11 +312,11 @@ Tam ekran kaplayan bir bölüm veya güçlü bir yatay ayırıcı, ziyaretçide 
 - Kaydırma Derinliği: Alttaki bölümlerin görülme oranı artıyor mu?
 - Alt Bölüm Etkileşim Oranı: Aşağıdaki içerikle etkileşim artıyor mu?
 - Sayfada Kalma Süresi: Süre uzarken aksiyon düşmemeli.
-- Sayfa Terk Oranı: Uzayan sayfa çıkışı artırmamalı.
+- Sayfa Yüklenme Süresi: İlk ekrana giren alt bölümün görselleri yüklenmeyi yavaşlatmamalı.
 
 **Yapılmaması gerekenler**
 - Aynı testte hem bölüm yüksekliğini hem içerik sırasını değiştirmeyin.
-- Kaydırma arttı diye aksiyona bakmadan kazandı demeyin.
+- Alttan parça göstermek için ilk ekrandaki başlığı veya CTA’yı görünen alanın dışına itmeyin.
 - Kaydırmayı zorlamak için sayfayı otomatik kaydıran bir davranış eklemeyin.
 - Tek bir ekran yüksekliğinde ölçüp sonucu tüm cihazlara genellemeyin.
 - Ayırıcıyı kaldırırken bölümler arası okunabilirliği bozmayın.
@@ -370,25 +370,25 @@ Sayfa içi bağlantılar (sabit bir bölüm menüsü veya içindekiler) ziyaret�
 - Navigasyon Kullanım Oranı: Bağlantılar gerçekten kullanılıyor mu?
 - Kaydırma Derinliği: Atlanan bölümlerin görülmesi kabul edilemez ölçüde düşmemeli.
 - Aranan Bölüme Ulaşma Süresi: Bilgiye ulaşma hızlanıyor mu?
-- Sayfa Terk Oranı: Tek bölüme atlayıp çıkma artmamalı.
+- Aksiyon Sonrası Dökülme Oranı: İkna içeriğini atlayıp tıklayanların sonraki adımda dökülmesi artmamalı.
 
 **Yapılmaması gerekenler**
 - Navigasyonu eklerken bölüm başlıklarını da yeniden yazmayın.
 - Sabit navigasyonu ekranın önemli bir kısmını kaplayacak boyutta kurmayın.
-- Kullanım oranı düşük diye faydasız saymayın; doğru ziyaretçi için kritik olabilir.
+- Navigasyona fiyat veya kayıt sayfası gibi sayfa dışına çıkan bağlantılar eklemeyin; yalnızca sayfa içi bölümlere gitmeli.
 - Bağlantı hedeflerini kaydırma sırasında başlığın altında kalacak şekilde bırakmayın.
 - Klavye ile gezilemeyen bir navigasyon önermeyin.
 
 ---
 
-## Reddetme seçeneğini görünür yapmak dönüşümü etkiler mi?
+## Teklifin yanına açık bir reddetme seçeneği eklemek dönüşümü etkiler mi?
 
 Değişken: Açık “şimdi değil” reddetme seçeneği · Fark: ekle
 
 Bir teklifin yanına açık bir “şimdi değil” seçeneği koymak kullanıcıya kontrol hissi verir ve zorlanma tepkisini azaltır. Sezgiye aykırı olan şudur: reddetmeyi kolaylaştırmak kabul oranını düşürebileceği gibi, güven artışı yoluyla toplam ilişkiyi güçlendirebilir. Ölçülmesi gereken tek seferlik kabul değil, sonraki davranıştır.
 
 **Test edilmesi gerekenler**
-- Görünürlük: Açık reddetme seçeneği kabul oranını nasıl değiştiriyor?
+- Varlık: Açık bir reddetme seçeneği eklemek kabul oranını nasıl değiştiriyor?
 - Sonraki davranış: Reddedenler daha sonra geri dönüp kabul ediyor mu?
 - Sonraki test: Reddetme seçeneği kazanırsa, “Şimdi değil” ile “İstemiyorum” ifadeleri ayrı bir testte kabul oranını farklı mı etkiliyor?
 - Çıkış yolu: Açık reddetme seçeneği varken teklifi kapatma işaretiyle veya geri tuşuyla geçenlerin payı azalıyor mu?
@@ -551,7 +551,7 @@ Videoda gerçek bir kişinin konuşması metinden daha inandırıcı gelir ve ta
 - İzin alınmamış bir müşteri görüntüsünü yayınlamayın.
 - Aynı testte referans biçimi ile referans içeriğini birlikte değiştirmeyin.
 - Videoyu tek referans kaynağı yapıp açmayan ziyaretçiyi referanssız bırakmayın.
-- İzlenme arttı diye aksiyona bakmadan kazandı demeyin.
+- Video referansı otomatik ve sesli başlatmayın; oynatma biçimi ayrı bir değişkendir.
 
 ---
 
@@ -696,20 +696,20 @@ Rehber, şablon veya kontrol listesi karşılığında iletişim bilgisi istemek
 - Vaat edilen içeriğe uymayan bir dosya sunmayın.
 - İletişim izni ile indirme iznini tek onaya bağlamayın; izin kuralları pazara göre değişir.
 - Aynı testte kaynağın konusu ile kayıt formunu birlikte değiştirmeyin.
-- Kayıt sayısı arttı diye nitelik tarafına bakmadan kazandı demeyin.
+- Kaynağı indiren kayıtları satışa hazır talep gibi doğrudan satış ekibine aktarmayın; ayrı bir takip akışına alın.
 
 ---
 
-## Para iade garantisini öne çıkarmak satın almayı artırır mı?
+## Para iade garantisini satın alma butonunun yanına taşımak satın almayı artırır mı?
 
-Değişken: Para iade garantisinin görünürlüğü · Fark: değiştir
+Değişken: Para iade garantisi ifadesinin konumu · Fark: taşı
 
-Koşulsuz iade vaadi algılanan riski satıcıya aktarır ve kararsız ziyaretçiyi ilerletir. Bedeli: iade oranı yükselebilir, operasyonel maliyet artabilir ve garanti çok öne çıkarsa ürüne güvenilmediği izlenimi bile doğurabilir. Kazanç, ek satışın iade maliyetini aşıp aşmadığına bağlıdır.
+Koşulsuz iade vaadi algılanan riski satıcıya aktarır ve kararsız ziyaretçiyi ilerletir. Bu testte garanti metni aynı kalır; yalnızca sayfanın altındaki yerinden satın alma butonunun hemen yanına taşınır. Bedeli: iade oranı yükselebilir, operasyonel maliyet artabilir ve garanti çok öne çıkarsa ürüne güvenilmediği izlenimi bile doğurabilir. Kazanç, ek satışın iade maliyetini aşıp aşmadığına bağlıdır.
 
 **Test edilmesi gerekenler**
-- Görünürlük: Garantiyi öne çıkarmak satışı artırıyor mu?
-- Sonraki test: Öne çıkarma kazanırsa, garanti süresini uzatmak ayrı bir testte satış ile iade dengesini nasıl değiştiriyor?
-- Ters sinyal: Garanti öne çıkınca ziyaretçiler kısa ankette ürünün kalitesinden daha çok şüphe ettiğini söylüyor mu?
+- Konum: Garantiyi satın alma butonunun yanına taşımak satışı artırıyor mu?
+- Sonraki test: Yeni konum kazanırsa, garanti süresini uzatmak ayrı bir testte satış ile iade dengesini nasıl değiştiriyor?
+- Ters sinyal: Garanti butonun yanına gelince ziyaretçiler kısa ankette ürünün kalitesinden daha çok şüphe ettiğini söylüyor mu?
 - Maliyet dengesi: Artan satış artan iadeyi karşılıyor mu?
 - Segment: İlk kez alan ile tekrar alan müşteri farklı mı tepki veriyor?
 
@@ -722,9 +722,9 @@ Koşulsuz iade vaadi algılanan riski satıcıya aktarır ve kararsız ziyaretç
 
 **Yapılmaması gerekenler**
 - Uygulanmayacak bir garanti sözü vermeyin.
-- Garantiyi öne çıkarıp koşullarını okunmaz küçüklükte yazmayın.
-- Aynı testte garanti görünürlüğü ile garanti süresini birlikte değiştirmeyin.
-- Dönüşüm arttı diye iade ve maliyet tarafına bakmadan kazandı demeyin.
+- Garantiyi butonun yanına taşıyıp koşullarını okunmaz küçüklükte yazmayın.
+- Aynı testte garantinin konumu ile garanti süresini veya metnini birlikte değiştirmeyin.
+- Yalnızca bazı ürünlerde geçerli garantiyi, sayfadaki her ürünü kapsıyormuş gibi butonun yanına koymayın.
 - Yasal asgari iade hakkını bir pazarlama vaadi gibi sunmayın; zaten zorunlu olabilir.
 
 ---
@@ -782,7 +782,7 @@ Kaydırıcı çok sayıda referansı az yerde barındırır ve sayfayı kısalt�
 - Otomatik ilerleyen ve durdurulamayan bir kaydırıcı kurmayın.
 - Aynı testte sunum biçimi ile referans sayısını birlikte değiştirmeyin.
 - Kaydırılabilir olduğunu gösteren işareti kaldırmayın.
-- Görülme oranı düştüğü hâlde aksiyon arttı diye nedenini araştırmadan kabul etmeyin.
+- En güçlü referansı bir kolda başa, diğer kolda sona koymayın; referans sırası iki kolda aynı kalmalı.
 - Hareket azaltma tercihini yok sayan bir geçiş animasyonu kullanmayın.
 
 ---
@@ -791,7 +791,7 @@ Kaydırıcı çok sayıda referansı az yerde barındırır ve sayfayı kısalt�
 
 Değişken: Sosyal medya takipçi sayısı göstergesi · Fark: ekle
 
-Bir marka sayfasının yanında görünen takipçi veya beğeni sayısı, ürünün başkaları tarafından da tercih edildiğini gösteren dolaylı bir sosyal kanıttır. Risk, sayının küçük veya büyümekte olduğu bir markada beklenenin tersi bir etki yaratmasıdır — düşük bir sayı, kanıt yerine şüphe uyandırabilir.
+Bir marka sayfasının yanında görünen takipçi veya beğeni sayısı, ürünün başkaları tarafından da tercih edildiğini gösteren dolaylı bir sosyal kanıttır. Risk, sayının küçük veya büyümekte olduğu bir markada beklenenin tersi bir etki yaratmasıdır; düşük bir sayı, kanıt yerine şüphe uyandırabilir.
 
 **Test edilmesi gerekenler**
 - Eşik: Sayı belirli bir büyüklüğün altındaysa (ör. 500’ün altı) göstermek zarar mı veriyor?
@@ -802,7 +802,7 @@ Bir marka sayfasının yanında görünen takipçi veya beğeni sayısı, ürün
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Sayaç göstermek satın alma veya kayıt oranını artırıyor mu?
-- Sayfa Terk Oranı: Düşük bir sayı terk oranını artırmamalı.
+- Sayfa Yüklenme Süresi: Sosyal platformdan çekilen sayaç bileşeni sayfayı yavaşlatmamalı.
 - Güven Algısı (anket): Sayaç güveni artırdığını hissettiriyor mu?
 - Tıklama Oranı (CTR): Sayaç kendisi tıklanıp dış platforma gidiş yaratıyor mu? Gidiyorsa bu bir kayıp noktasıdır.
 - Sayfada Kalma Süresi: Sayaç dikkat dağıtıp asıl aksiyonu geciktirmemeli.
@@ -823,7 +823,7 @@ Değişken: Açılıştaki kısmi karşılama ekranı · Fark: ekle
 Küçük bir pop-up’tan farklı olarak, kısmi karşılama ekranı sayfanın büyük bir kısmını (genelde ilk ekranın tamamına yakınını) tek bir mesaj veya teklifle kaplar, altındaki içeriğin bir kısmı kenarlarda görünür kalır. Amaç dikkati tek bir noktaya toplamaktır; risk, ziyaretçinin asıl sayfaya hiç ulaşmadan ayrılmasıdır.
 
 **Test edilmesi gerekenler**
-- Kapsam: Ekranın ne kadarını kaplamalı — tamamı mı, büyük bir kısmı mı?
+- Kapsam: Ekranın ne kadarını kaplamalı; tamamı mı, büyük bir kısmı mı?
 - Kapatma sonrası: Ekranı kapatan ziyaretçiler asıl sayfada kaydırmaya devam ediyor mu, yoksa ilk ekranda mı ayrılıyor?
 - Kapatma: Kapatma işareti yeterince görünür mü, yoksa yanlışlıkla mı atlanıyor?
 - Sonraki test: Karşılama ekranı kazanırsa, ekranı kısa bir gecikmeyle göstermek ayrı bir testte rahatsızlığı azaltıyor mu?

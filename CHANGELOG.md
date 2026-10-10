@@ -2,6 +2,39 @@
 
 All notable changes to this project are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 2.2.0 — 2026-10-10
+
+Built from a full audit after a live run on six screens of a pension and life-insurance app (six scenarios, five critic rounds). Every recurring review finding was traced back to the file that should have prevented it; every engine and builder finding was reproduced with a failing test before it was fixed.
+
+### Breaking
+- **Stats verdicts carry a direction.** `decision_code` is `significant_improvement` or `significant_degradation` (the bare `significant` is gone); a significantly worse variant can no longer read as a win. New `--expected-direction increase|decrease`.
+- **Guardrail direction is required.** `--ni-margin` without `--guardrail-direction must_not_increase|must_not_decrease` is an error; the old silent default reported a rising harmful rate as clean.
+- **`--mde` and `--ni-margin` of 1 or more are rejected** unless written as a percent (`10%`); a bare `1` used to mean a 100% lift.
+- **Card mockups go through an allowlist.** Only the tags, attributes and inline-style values the template's components use are accepted; anything else refuses the card.
+- **Mockup markup is stricter:** attribute values must be double-quoted, `bottom_nav` is refused on `web` and `phone-web`, and `card.url` is required on those two frames.
+- **A pass/fail guardrail needs a `criterion`**, and a scenario box carries 3 to 6 items.
+
+### Fixed
+- **Security:** the card builder's deny-list could be bypassed (unquoted event handlers, encoded `javascript:` URIs, `<meta>`, `<form>`, `<style>`); replaced with a strict allowlist. The input scanner missed plain "ignore all previous instructions" lines.
+- **Stats:** Holm ran on rounded p-values and could call a non-significant arm significant; `interaction` returned `effect_differs: true` next to a warning not to conclude it; an inconclusive guardrail now reports why and what sample would resolve it; `significance` checks SRM itself; Turkish output no longer leaks English errors.
+- **Design flow:** the designer now reads the methodology sections the critic enforces, writes the scenario in full before review, and hands the critic everything it checks. Guardrails state their denominator, lagging guardrails carry their window (`read_after_days`) and the decision rule waits for it, a triggered denominator names an event logged in both arms before the change, and sibling tests on one screen exclude each other.
+- **Rules:** a guardrail is never the complement of the primary ("abandonment" now means a later step); accessibility is a pass/fail check closed before traffic, not a segment metric; personal data covers what a screen displays (balances, allocation shares, chart slices, contract numbers), not only what was typed; a defect in Variant A is reported as a fix to ship, never tested and never changed mid-test; the problem question holds the turn; same-kind questions merge into one; the critic loop is capped at two re-reviews; a test the user explicitly asks for is always produced, with its weakness and a stronger alternative stated.
+- **Regulated flows:** rule 11 now has two cases. A variant that changes a regulated display is held; a variant inside a regulated flow that leaves regulated displays untouched is produced with compliance sign-off as a pre-start gate and the first sentence of its decision rule.
+- **Archive:** 36 guardrails that were the complement of their primary replaced with an independent harm; 35 scenarios given a variable-isolation item; 10 titles that disagreed with their difference type rewritten; 51 generic "read the metric properly" never-do items replaced with variant-scoped ones.
+- **Methodology:** ICE bands and the ICE table disagreed on confidence ranges; the fit tiers are renamed Suitable / Conditional / Poor fit so they can't be confused with ICE tiers; every section carries an evidence label.
+- **Cards:** the builder validates the scenario before building; a ring may not carry margin or padding; the layout check measured ring labels too small and missed a label covering a stepper digit.
+
+### Added
+- Archive: `knowledge/scenarios/finance-pension.md`, 10 scenarios for insurance, pension and finance journeys on web and app (211 → 221 scenarios, 13 stage files), routed from the suggest skill.
+- KPI glossary: a finance, insurance and pension section (83 → 99 canonical names), one denominator per row.
+- Methodology: pre-start gates, pass/fail guardrails, lagging-guardrail windows, derived personal figures, several scenarios on one screen.
+- Stats: guardrail sample planning (`samplesize --ni-margin`, resolvable margin for a given traffic), `--expected-split` for deliberately unequal allocations, A/B/n improvement and degradation flags.
+- Results skill: reads a pre-registration block (direction, alpha, allocation, lagging windows, pass/fail checks, pre-start gates) and ships only when the primary is significant in the declared direction, every margin guardrail is clean, every check passed and every window closed.
+- Audit skill: checks for regulated areas, protections, sensitive fields, lagging windows, accessibility, complement guardrails, guardrail denominators and concurrent tests.
+- Validator: a warning channel with `--strict`; warnings for a missing denominator, a lagging guardrail without a window, a complement guardrail, a missing compliance gate in a regulated scenario and an over-scored Ease.
+- Schema: `card.bottom_nav_active`, pre-registration `trigger` and `pre_start_gates`.
+- Evals: a regulated flow with personal data on screen, a user-insisted weak test, results read against a pre-registration, an English conversation.
+
 ## 2.1.0 — 2026-10-09
 
 Built from seven end-to-end test runs on real pages (insurance quote forms, a product hub, a credit calculator, a car-rental search, a SaaS pricing page, an app onboarding flow, a desktop product page) plus a results/audit dogfood run. Every finding below was reproduced before it was fixed.

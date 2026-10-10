@@ -8,7 +8,7 @@ Yolculuk aşaması: kullanıcı satın almaya karar verdi; sepet, kupon, adres/�
 
 Değişken: CTA buton rengi · Fark: değiştir
 
-Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmızı mı yeşil mi daha iyi” evrensel bir cevabı yoktur, sayfanın geri kalan renk paletiyle kontrastı önemlidir. Marka renginden sapan ama sayfada öne çıkan bir renk genelde kazanır — rengin kendisi değil, göze çarpma derecesi test edilir.
+Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmızı mı yeşil mi daha iyi” evrensel bir cevabı yoktur, sayfanın geri kalan renk paletiyle kontrastı önemlidir. Marka renginden sapan ama sayfada öne çıkan bir renk genelde kazanır; rengin kendisi değil, göze çarpma derecesi test edilir.
 
 **Test edilmesi gerekenler**
 - Kontrast: Sayfanın geri kalanına göre en çok öne çıkan renk hangisi?
@@ -21,7 +21,7 @@ Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmız�
 - Dönüşüm Oranı (CR): Renk değişikliği tamamlanan siparişe yansıyor mu?
 - Tıklama Oranı (CTR): Tanı metriği; buton daha çok fark edilip tıklanıyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon değişiyor mu?
-- Sayfa Terk Oranı: Yükselmemeli.
+- Yanlış Tıklama Oranı: Yeni renk ikincil butonlarla karışıp yanlış butona tıklamayı artırmamalı.
 - Marka Algısı (anket): Ölçülüyorsa düşmemeli.
 
 **Yapılmaması gerekenler**
@@ -50,7 +50,7 @@ Aynı adımda aynı işi yapan birden fazla CTA kullanıcı odağını bölerek 
 - Dönüşüm Oranı (CR): Sade CTA yapısı satın almayı artırıyor mu?
 - Tıklama Oranı (CTR): Tek net CTA tıklamayı artırıyor mu?
 - Adım Tamamlama Oranı: Bir sonraki adıma geçiş kolaylaşıyor mu?
-- Terk Oranı: Yükselmemeli.
+- Mobil Dönüşüm Oranı (CR): Kalan tek CTA’nın ekran dışında kalabildiği mobilde satın alma düşmemeli.
 - Karar Süresi: Belirgin şekilde uzamamalı.
 
 **Yapılmaması gerekenler**
@@ -137,7 +137,7 @@ Zorunlu üyelik satın alma sürecini uzatır ve terk oranını yükseltebilir. 
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Misafir ödeme satın almayı artırıyor mu?
-- Sepet Terk Oranı: Üyelik zorunluluğu kalkınca düşüyor mu?
+- Destek Talebi: Hesapsız siparişte takip ve iade için açılan talepler artmamalı.
 - Checkout Tamamlama Süresi: Süreç kısalıyor mu?
 - Kayıt Oranı: Ciddi biçimde düşmemeli.
 - Tekrar Satın Alma Oranı: Misafir kullanıcı geri dönmeli.
@@ -261,7 +261,7 @@ Sepet adımında tamamlayıcı ürün göstermek ortalama sepet tutarını yüks
 **Yapılmaması gerekenler**
 - Sepet alanını kalabalıklaştırmayın; asıl akıştan uzaklaştırır.
 - Alakasız veya stokta olmayan ürün önermeyin.
-- Fiyat ve indirim tutarsızlığı bırakmayın.
+- Aynı testte öneri alanını eklerken sipariş özetinin veya CTA’nın yerini de değiştirmeyin.
 - Öneri kartında, eklenince değişecek toplam tutarı veya kargo ücretini gizlemeyin.
 - Önerileri “Siparişi Tamamla” butonunun üstüne koymayın.
 
@@ -292,9 +292,9 @@ Değişken: Ücretsiz kargo eşik tutarı · Fark: değiştir
 - “Ücretsiz kargo” mesajını yanlış beklenti yaratacak şekilde kurmayın.
 - Eşiği aşırı yükseltmeyin; kullanıcıyı kaçırır.
 - Aynı testte eşik tutarı ile kalan tutar mesajını birlikte değiştirmeyin.
-- Sadece sepet tutarına bakıp kargo maliyetini atlamayın.
+- Aynı kullanıcıya farklı oturumda veya cihazda farklı eşik göstermeyin; tutarsız eşik güveni bozar.
 
-> Not: Bu senaryo, “Ücretsiz kargo çubuğu sepet tutarını artırıyor mu?” senaryosuyla ilişkilidir — o çubuğun varlığını, bu ise doğru eşik değerini test eder. İkisini aynı anda değiştirmeyin.
+> Not: Bu senaryo, “Ücretsiz kargo çubuğu sepet tutarını artırıyor mu?” senaryosuyla ilişkilidir; o çubuğun varlığını, bu ise doğru eşik değerini test eder. İkisini aynı anda değiştirmeyin.
 
 > **Pazar notu:** Kargo maliyetinin sepete oranı ve tüketicinin ücretsiz kargo beklentisi pazara göre değişir; bir pazarda kabul gören eşik artışı, başka bir pazarda doğrudan terke dönüşebilir.
 
@@ -317,7 +317,7 @@ Küçük metin değişiklikleri bile karar hızını, güven algısını ve yön
 - Dönüşüm Oranı (CR): Microcopy satın almaya yönlendiriyor mu?
 - Tıklama Oranı (CTR): Butona tıklama artıyor mu?
 - Form Tamamlama Oranı: Formu bitirme artıyor mu?
-- Çıkış Oranı: Yanlış microcopy kullanıcıyı kaçırmamalı.
+- İade veya İptal Oranı: Metnin kurduğu beklenti (“İptal ücretsiz”, “Ücret alınmayacak”) sipariş sonrası iptali artırmamalı.
 - Adımda Geçirilen Süre: Uzamamalı.
 
 **Yapılmaması gerekenler**
@@ -385,7 +385,7 @@ Değişken: Checkout ilerleme çubuğu · Fark: ekle
 - Aynı testte çubuğu eklerken funnel adımlarının sayısını birlikte değiştirmeyin.
 - Aşırı animasyonlu veya yavaş yüklenen çubuk kullanmayın.
 
-> **Ölçüm notu:** Bu senaryoda ilk adımın tamamlanma oranı neredeyse her zaman yükselir; asıl soru yükselen adımın siparişe dönüp dönmediğidir. Adım metriği testin fotoğrafını çeker, sonucunu değil — birincil metrik huninin sonunda kalır.
+> **Ölçüm notu:** Bu senaryoda ilk adımın tamamlanma oranı neredeyse her zaman yükselir; asıl soru yükselen adımın siparişe dönüp dönmediğidir. Adım metriği testin fotoğrafını çeker, sonucunu değil; birincil metrik huninin sonunda kalır.
 ---
 
 ## Otomatik indirim kodu davranışı nasıl etkiler?
@@ -403,13 +403,13 @@ Değişken: İndirim kodunun otomatik uygulanması · Fark: değiştir
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Otomatik kod, indirim maliyetine rağmen atanan ziyaretçi başına geliri artırıyor mu? Birincil metrik bu; CR tek başına kazanan seçmez.
-- Dönüşüm Oranı (CR): Otomatik kod satın almayı artırıyor mu? — RPV ile birlikte okunur.
+- Dönüşüm Oranı (CR): Otomatik kod satın almayı artırıyor mu? RPV ile birlikte okunur.
 - Kupon Kullanım Oranı: Otomatik uygulama kullanımı artırıyor mu?
 - Ortalama Sepet Tutarı (AOV): Sepet değeri değişiyor mu?
 - Brüt Marj: Otomatik indirim marjı eritmemeli.
 
 **Yapılmaması gerekenler**
-- Kafa karıştırıcı indirim mesajı göstererek kullanıcıyı şüphelendirmeyin.
+- Aynı testte kodu otomatik uygularken indirim oranını veya kampanya koşulunu da değiştirmeyin.
 - Aynı ekranda birden fazla indirim kodu alanı göstermeyin.
 - Kod uygulandı mesajını geciktirmeyin; güveni azaltır.
 - Otomatik uygulandı denen indirimi gerçek tutarından farklı göstermeyin veya ödemede sessizce düşürmeyin (kural 6).
@@ -504,7 +504,7 @@ Değişken: Ödeme yöntemi adımının sırası · Fark: taşı
 - Aynı testte adım sırası ile adım sayısını birlikte değiştirmeyin.
 - Ödeme güvenlik doğrulamalarını sıralama testinin kapsamına almayın (kural 6).
 - Adrese bağlı yöntemleri test öncesi teknik olarak doğrulamadan varyantı açmayın.
-- Tamamlama arttı diye ödeme hata oranına bakmadan kazandı demeyin.
+- Adres girilince geçersiz kalan ödeme yöntemi seçimini sessizce sıfırlamayın; kullanıcıya nedenini gösterin.
 
 ---
 
@@ -562,7 +562,7 @@ Kullanıcı bir seçim yaptığında (beden, adet, teslimat günü) bunun alınd
 - Beliren onayın sayfayı zıplatmasına izin vermeyin.
 - Aynı testte onay biçimi ile seçim öğesinin tasarımını birlikte değiştirmeyin.
 - Onay mesajını, seçim gerçekte kaydedilmeden göstermeyin.
-- Hata azaldı diye tamamlama oranına bakmadan kazandı demeyin.
+- Onayı birkaç saniyede kaybolan bir bildirimle verip seçimin ekranda kalıcı işaretini kaldırmayın.
 
 ---
 
@@ -599,7 +599,7 @@ Bir kutunun önceden işaretli gelmesi kullanıcıyı hızlandırabilir, ama bu 
 
 Değişken: Ödeme yükleme ekranının biçimi · Fark: değiştir
 
-Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve bekleme süresini belirsiz hissettirir. “Kart doğrulanıyor”, “banka onayı bekleniyor”, “sipariş oluşturuluyor” gibi gerçek adımları sırayla göstermek, işlemin özenle yapıldığını hissettirip aynı bekleme süresini daha kısa algılatabilir — görünür emek, güven inşa eder. Risk, adımların gerçek işlem sırasını yansıtmaması veya süreyi yapay olarak uzatmak için kullanılmasıdır.
+Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve bekleme süresini belirsiz hissettirir. “Kart doğrulanıyor”, “banka onayı bekleniyor”, “sipariş oluşturuluyor” gibi gerçek adımları sırayla göstermek, işlemin özenle yapıldığını hissettirip aynı bekleme süresini daha kısa algılatabilir; görünür emek, güven inşa eder. Risk, adımların gerçek işlem sırasını yansıtmaması veya süreyi yapay olarak uzatmak için kullanılmasıdır.
 
 **Test edilmesi gerekenler**
 - Biçim: Adım adım ilerleyen bir yükleme ekranı tek bir dönen ikona göre terk oranını düşürüyor mu?
@@ -616,7 +616,7 @@ Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve 
 - Ödeme Başarı Oranı: Genel ödeme tamamlama oranı düşmemeli.
 
 **Yapılmaması gerekenler**
-- Gerçek işlemi yapay olarak yavaşlatıp adımları uzatmayın — gösterilen süre gerçek işlem süresini aşarsa bu manipülasyondur (kural 6).
+- Gerçek işlemi yapay olarak yavaşlatıp adımları uzatmayın; gösterilen süre gerçek işlem süresini aşarsa bu manipülasyondur (kural 6).
 - Gerçekleşmeyen bir adımı (ör. çalışmayan bir “dolandırıcılık taraması”) ekrana koymayın.
 - Aynı testte yükleme ekranı biçimi ile ödeme akışının adım sayısını birlikte değiştirmeyin.
 - Hata durumunda kullanıcıyı adımlı ekranda takılı bırakmayın; başarısızlık anında net bir hata mesajına geçin.
@@ -624,29 +624,29 @@ Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve 
 
 ---
 
-## Ödeme yöntemi ikonlarını checkout’tan önce görünür yapmak güveni artırır mı?
+## Sepet sayfasına ödeme yöntemi ikonları eklemek güveni artırır mı?
 
-Değişken: Checkout öncesi ödeme yöntemi ikonları · Fark: ekle
+Değişken: Sepet sayfasındaki ödeme yöntemi ikonları · Fark: ekle
 
-Kullanıcı ödeme adımına gelmeden önce hangi kartların veya yöntemlerin kabul edildiğini bilmek ister; bu bilgi genelde yalnızca ödeme sayfasında ortaya çıkar. İkonları daha erken (ürün sayfası veya sepette) göstermek, desteklenmeyen bir yöntemi kullanan ziyaretçinin akışı erkenden terk etmesini önleyebilir — ama fazla ikon görsel gürültü yaratabilir.
+Kullanıcı ödeme adımına gelmeden önce hangi kartların veya yöntemlerin kabul edildiğini bilmek ister; bu bilgi genelde yalnızca ödeme sayfasında ortaya çıkar. İkonları bir adım önce, sepet sayfasında göstermek, desteklenmeyen bir yöntemi kullanan ziyaretçinin ödeme adımında sürprizle karşılaşmasını önleyebilir; ama fazla ikon görsel gürültü yaratabilir.
 
 **Test edilmesi gerekenler**
-- Sonraki test: İkonların erken gösterimi kazanırsa ürün sayfası ile sepet ayrı bir testte karşılaştırıldığında hangisi ödeme adımına ulaşmayı daha çok artırıyor?
+- Sonraki test: Sepetteki ikonlar kazanırsa aynı şeridi ürün sayfasına da eklemek ayrı bir testte ödeme adımına ulaşmayı daha çok artırıyor mu?
 - Sayı: Tüm yöntemler mi, yalnızca en çok kullanılan 3-4’ü mü daha iyi çalışıyor?
 - Terkin yer değiştirmesi: Desteklenmeyen yöntemi kullanan ziyaretçi artık sepette mi ayrılıyor, yani terk yalnızca öne mi kayıyor?
 - Sepet tutarı: Yüksek tutarlı sepetlerde kabul edilen kartları erken görmek ödeme adımına geçişi daha çok artırıyor mu?
 - Cihaz: Mobilde ikon şeridi ekran alanını gereğinden fazla mı kaplıyor?
 
 **Takip edilecek ana KPI’lar**
-- Dönüşüm Oranı (CR): Ürün sayfası veya sepete atanan ziyaretçilerin siparişi tamamlama oranı artıyor mu?
+- Dönüşüm Oranı (CR): Sepete atanan ziyaretçilerin siparişi tamamlama oranı artıyor mu?
 - Ödeme Adımına Geçiş Oranı: Tanı metriği; sepete ulaşan ziyaretçilerin (ikonları görenler değil) ödeme adımına geçme oranı artıyor mu?
 - Ödeme Adımı Terk Oranı: Desteklenmeyen yöntem yüzünden son adımda terk azalıyor mu?
-- Sepete Ekleme Oranı: İkonlar erken adımı olumsuz etkilememeli.
+- Destek Talebi: “Bu kartla ödeyebilir miyim?” türü sorular artmamalı.
 - Sayfa Yüklenme Süresi: Ek görsel sayfayı yavaşlatmamalı.
 
 **Yapılmaması gerekenler**
 - Gerçekte kabul etmediğiniz bir ödeme yöntemini ikon olarak göstermeyin.
 - Aynı testte ikonların konumunu ve sayısını birlikte değiştirmeyin.
-- İkon şeridini asıl ürün bilgisi veya CTA’nın önüne geçirip hiyerarşiyi bozmayın.
+- İkon şeridini sipariş özetinin veya CTA’nın önüne geçirip hiyerarşiyi bozmayın.
 - Ödeme sağlayıcı marka kurallarına uymayan boyutta veya biçimde logo kullanmayın.
 - Mobilde ikonları okunmaz derecede küçültüp yalnızca dekoratif hâle getirmeyin.

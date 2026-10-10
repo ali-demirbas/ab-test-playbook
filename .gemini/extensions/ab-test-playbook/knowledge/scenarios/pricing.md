@@ -6,11 +6,11 @@ Yolculuk aşaması: fiyatın görüldüğü an. Hem abonelik fiyat sayfası hem 
 
 ---
 
-## Kaç fiyat planı gösterilmeli?
+## Gösterilen fiyat planı sayısını azaltmak geliri artırır mı?
 
 Değişken: Gösterilen fiyat planı sayısı · Fark: kaldır
 
-Az sayıda plan kararı hızlandırır ve karşılaştırma yükünü azaltır. Çok sayıda plan farklı ihtiyaçları karşılar ama seçim felcine yol açabilir ve ziyaretçiyi hiçbirini seçmemeye itebilir. Plan sayısını değiştirmek aynı zamanda hangi planın ortada kaldığını da değiştirir; bu, seçim dağılımını fiyattan bağımsız olarak kaydırır.
+Çok sayıda plan farklı ihtiyaçları karşılar ama seçim felcine yol açabilir ve ziyaretçiyi hiçbirini seçmemeye itebilir. Mevcut çok planlı sayfadan (A) en az seçilen planı kaldırmak (B) kararı hızlandırır ve karşılaştırma yükünü azaltır. Plan sayısını değiştirmek aynı zamanda hangi planın ortada kaldığını da değiştirir; bu, seçim dağılımını fiyattan bağımsız olarak kaydırır.
 
 **Test edilmesi gerekenler**
 - Sayı: Plan sayısını azaltmak toplam geliri artırıyor mu?
@@ -28,7 +28,7 @@ Az sayıda plan kararı hızlandırır ve karşılaştırma yükünü azaltır. 
 
 **Yapılmaması gerekenler**
 - Aynı testte plan sayısı ile plan fiyatlarını birlikte değiştirmeyin.
-- Dönüşüm oranı arttı diye gelire bakmadan kazandı demeyin.
+- Kaldırdığınız planı fiyat sayfasından çıkarıp ödeme adımında veya doğrudan bağlantıyla satılabilir bırakmayın; kol kirlenir.
 - Kaldırdığınız planın mevcut abonelerini test kapsamına almayın.
 - Plan sayısını değiştirirken plan içeriklerini de yeniden paketlemeyin.
 - Seçenek azaltmayı, aslında satmak istediğiniz planı tek çıkış yolu hâline getirmek için kullanmayın.
@@ -118,7 +118,7 @@ Yıllık bir tutarı aylık karşılığıyla göstermek rakamı küçültür ve
 - Aylık gösterip aylık ödeme seçeneği sunmuyorsanız bunu belirtmeden bırakmayın.
 - Aynı testte çerçeveleme ile fiyat seviyesini birlikte değiştirmeyin.
 - Fiyat gösterimi yasal olarak düzenlenen pazarlarda kuralı doğrulamadan çerçeve değiştirmeyin.
-- Dönüşüm arttı diye iptal ve iade tarafına bakmadan kazandı demeyin.
+- Aylık birime bölünen tutarı aşağı yuvarlayıp on iki katı gerçek yıllık tutardan düşük çıkan bir rakam göstermeyin.
 
 ---
 
@@ -175,7 +175,7 @@ Abonelik yorgunluğu yaşayan kullanıcı, her ödemenin tekrarlayacağını var
 - Gerçekte tekrarlayan bir ödeme varken tek seferlik ifadesi kullanmayın.
 - Aynı testte ifade ile fiyatı birlikte değiştirmeyin.
 - İfadeyi ödeme koşullarının yerine geçirmeyin; koşul metni ayrıca bulunmalıdır.
-- Kısa vadeli dönüşüm arttı diye tekrar alım tarafına bakmadan kazandı demeyin.
+- “Otomatik yenileme yok” ifadesini, aynı sayfada önceden işaretli gelen bir abonelik veya ek hizmet kutusuyla birlikte göstermeyin.
 - Abonelik iptali kurallarının düzenlendiği pazarlarda ifadeyi hukuki kontrol olmadan yayınlamayın.
 
 ---
@@ -234,7 +234,7 @@ Fiyatın yanında “içindekilerin toplam değeri” göstermek alınan şeyin 
 - Doğrulanamayan bir referans değeri fiyatın yanına yazmayın (kural 6).
 - Aynı testte değer gösterimi ile paket içeriğini birlikte değiştirmeyin.
 - Referans fiyat gösteriminin düzenlendiği pazarlarda kuralı doğrulamadan yayınlamayın.
-- Değer gösterimi satışı artırdı diye, abartılı değer beklentisiyle alıp sonradan iade edenleri hesaba katmadan kazandı demeyin.
+- Değer toplamına, kullanıcının zaten ücretsiz aldığı kalemleri (ör. standart kargo) parasal değer biçip eklemeyin.
 
 ---
 
@@ -242,7 +242,7 @@ Fiyatın yanında “içindekilerin toplam değeri” göstermek alınan şeyin 
 
 Değişken: Çekici-alternatif üçüncü plan · Fark: ekle
 
-İki plan arasında seçim yapmak zordur çünkü karşılaştırılacak ortak bir ölçüt yoktur. Orta plana yakın fiyatlı ama daha az içerikli üçüncü bir plan eklemek, orta planı “açık ara daha iyi seçenek” gibi gösterebilir — üçüncü planın kendisi neredeyse hiç seçilmez, işlevi karşılaştırma çıpası olmaktır. Bu, yeni bir avantaj eklemez; var olan iki planın algısını üçüncüsüne göre değiştirir.
+İki plan arasında seçim yapmak zordur çünkü karşılaştırılacak ortak bir ölçüt yoktur. Orta plana yakın fiyatlı ama daha az içerikli üçüncü bir plan eklemek, orta planı “açık ara daha iyi seçenek” gibi gösterebilir; üçüncü planın kendisi neredeyse hiç seçilmez, işlevi karşılaştırma çıpası olmaktır. Bu, yeni bir avantaj eklemez; var olan iki planın algısını üçüncüsüne göre değiştirir.
 
 **Test edilmesi gerekenler**
 - Sonraki test: Çekici-alternatif plan kazanırsa orta planın hemen yanında mı, en pahalı sırada mı durduğu ayrı bir testte orta plan seçimini değiştiriyor mu?
@@ -254,16 +254,16 @@ Değişken: Çekici-alternatif üçüncü plan · Fark: ekle
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Çekici-alternatif eklemek geliri artırıyor mu?
 - Orta Plan Seçim Oranı: Orta planı seçen ziyaretçi oranı yükseliyor mu?
-- Çekici-Alternatif Seçilme Oranı: Bu planın kendisi ciddi talep almamalı — aldıysa yapı yanlış kurulmuş demektir.
+- Çekici-Alternatif Seçilme Oranı: Bu planın kendisi ciddi talep almamalı; aldıysa yapı yanlış kurulmuş demektir.
 - En Pahalı Plan Satışı: Gerçek en pahalı planın satışı düşmemeli.
 - Destek Talebi: “Hangi planı seçmeliyim” soruları artmamalı.
 
 **Yapılmaması gerekenler**
-- Çekici-alternatif planı satın alınamaz hâle getirmeyin veya içeriğini gerçek dışı bırakmayın — gerçek, kullanılabilir bir plan olmalı, yalnızca konumlandırması zayıf kurulur.
-- Üçüncü planı eklediğiniz varyantta orta planın fiyatını da ayarlamayın; seçim artışı çıpadan mı, yeni fiyattan mı geldi ayrılamaz.
+- Çekici-alternatif planı satın alınamaz hâle getirmeyin veya içeriğini gerçek dışı bırakmayın; gerçek, kullanılabilir bir plan olmalı, yalnızca konumlandırması zayıf kurulur.
+- Aynı testte üçüncü planı eklerken orta planın fiyatını da değiştirmeyin; seçim artışı çıpadan mı, yeni fiyattan mı geldi ayrılamaz.
 - Çekici-alternatif planı gerçek maliyetinin altında fiyatlandırıp asıl planları yapay biçimde pahalı göstermeyin.
 - Orta planın içeriğini test sırasında zenginleştirmeyin; tek değişken üçüncü seçeneğin varlığıdır.
-- Kurumsal fiyat sayfası gizliyse bu senaryoyu `saas-b2b.md`’deki plan-varsayılanı senaryosuyla karıştırmayın — ikisi ayrı testtir.
+- Kurumsal fiyat sayfası gizliyse bu senaryoyu `saas-b2b.md`’deki plan-varsayılanı senaryosuyla karıştırmayın; ikisi ayrı testtir.
 
 ---
 
@@ -271,7 +271,7 @@ Değişken: Çekici-alternatif üçüncü plan · Fark: ekle
 
 Değişken: Fiyat planlarının sıralama yönü · Fark: değiştir
 
-Planların soldan sağa hangi sırayla dizildiği, karşılaştırma sırasında hangi planın çapa görevi göreceğini belirler. Pahalı plan önce görünürse sonraki planlar daha uygun hissettirebilir; ucuz plan önce görünürse ziyaretçi bütçe eksenli düşünmeye başlar. Bu, plan sayısından ve tablo/kart biçiminden ayrı bir değişkendir — sıralama, ne gösterildiğini değil hangi sırayla görüldüğünü test eder.
+Planların soldan sağa hangi sırayla dizildiği, karşılaştırma sırasında hangi planın çapa görevi göreceğini belirler. Pahalı plan önce görünürse sonraki planlar daha uygun hissettirebilir; ucuz plan önce görünürse ziyaretçi bütçe eksenli düşünmeye başlar. Bu, plan sayısından ve tablo/kart biçiminden ayrı bir değişkendir; sıralama, ne gösterildiğini değil hangi sırayla görüldüğünü test eder.
 
 **Test edilmesi gerekenler**
 - Yön: Ucuzdan pahalıya mı, pahalıdan ucuza mı toplam geliri artırıyor?
@@ -317,7 +317,7 @@ Değişken: Fiyat küsuratının yazım biçimi · Fark: değiştir
 - İade veya İtiraz Oranı: “Beklediğimden pahalı çıktı” itirazları artmamalı.
 
 **Yapılmaması gerekenler**
-- Toplam ödenecek tutarı, yalnızca ana rakamı büyük göstererek gizlemeyin — küsurat küçük olsa da her zaman okunabilir kalmalı.
+- Toplam ödenecek tutarı, yalnızca ana rakamı büyük göstererek gizlemeyin; küsurat küçük olsa da her zaman okunabilir kalmalı.
 - Aynı testte fiyat formatını ve fiyat seviyesini birlikte değiştirmeyin.
 - Farklı ürünlerde tutarsız bir format kullanıp karşılaştırmayı zorlaştırmayın.
 - Vergi veya ek ücretin küsuratını ana tutarla karıştırıp toplam tutarı belirsizleştirmeyin.
@@ -329,7 +329,7 @@ Değişken: Fiyat küsuratının yazım biçimi · Fark: değiştir
 
 Değişken: Fiyattan önce gösterilen referans sayı · Fark: ekle
 
-Bir fiyat, yanında yüksek bir referans sayı (“piyasa ortalaması ₺X”, “benzer hizmetler ₺Y’ye kadar”) olmadan gösterildiğinde ziyaretçi değeri tek başına yargılar; referans sayı önce görüldüğünde asıl fiyat ona göre daha uygun hissedilebilir. Bu, üstü çizili “eski fiyat” göstermekten farklıdır — burada referans sizin geçmiş fiyatınız değil, dış bir karşılaştırma noktasıdır ve doğruluğu ayrıca doğrulanmalıdır.
+Bir fiyat, yanında yüksek bir referans sayı (“piyasa ortalaması ₺X”, “benzer hizmetler ₺Y’ye kadar”) olmadan gösterildiğinde ziyaretçi değeri tek başına yargılar; referans sayı önce görüldüğünde asıl fiyat ona göre daha uygun hissedilebilir. Bu, üstü çizili “eski fiyat” göstermekten farklıdır; burada referans sizin geçmiş fiyatınız değil, dış bir karşılaştırma noktasıdır ve doğruluğu ayrıca doğrulanmalıdır.
 
 **Test edilmesi gerekenler**
 - Varlık: Referans sayı göstermek satın alma oranını artırıyor mu?
@@ -346,7 +346,7 @@ Bir fiyat, yanında yüksek bir referans sayı (“piyasa ortalaması ₺X”, �
 - Ortalama Sepet Tutarı (AOV): Referans sayı ortalama tutarı düşürmemeli.
 
 **Yapılmaması gerekenler**
-- Doğrulanamayan veya uydurma bir referans sayı göstermeyin (kural 6) — piyasa ortalaması veya rakip fiyatı iddiası gerçek, güncel bir kaynağa dayanmalı.
+- Doğrulanamayan veya uydurma bir referans sayı göstermeyin (kural 6); piyasa ortalaması veya rakip fiyatı iddiası gerçek, güncel bir kaynağa dayanmalı.
 - Aynı testte referans sayının varlığını ve asıl fiyat seviyesini birlikte değiştirmeyin.
 - Referans sayıyı gerçekçi olmayacak kadar büyük seçip asıl fiyatı yapay biçimde ucuz göstermeyin.
 - Rakip fiyatını isim vererek gösteriyorsanız haksız rekabet veya karşılaştırmalı reklam kurallarını hedef pazarda doğrulamadan yayınlamayın (kural 11).

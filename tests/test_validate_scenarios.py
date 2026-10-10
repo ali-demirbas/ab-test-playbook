@@ -249,9 +249,13 @@ class TestWarnings(unittest.TestCase):
         kpis = ["- Yükseltme Oranı: Modalı görenlerin ödemeye geçme oranı artıyor mu?"] + make_kpis()[1:]
         self.assertTrue(any("gören/görüp" in w for w in self.warn(make_scenario(kpis=kpis))))
 
-    def test_count_in_secondary_kpi_does_not_warn(self):
+    def test_count_in_secondary_kpi_warns_too(self):
+        # Payda kuralı her KPI satırı içindir; birincil dışındaki satır da uyarı alır
+        # (ayrıntılı durumlar: test_validate_scenarios_v22.py).
         kpis = make_kpis()[:4] + ["- Destek Talebi Sayısı: Fiyatla ilgili talep artmamalı bu testte."]
-        self.assertEqual(self.warn(make_scenario(kpis=kpis)), [])
+        warnings = self.warn(make_scenario(kpis=kpis))
+        self.assertEqual(len(warnings), 1, warnings)
+        self.assertIn("Destek Talebi Sayısı", warnings[0])
 
 
 def make_kpis():

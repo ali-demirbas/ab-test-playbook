@@ -1,6 +1,6 @@
 # Teşekkür ve Sipariş Onay Sayfası
 
-Yolculuk aşaması: satın alma veya kayıt tamamlandıktan hemen sonraki an. Kullanıcı zaten dönüştü — bu sayfa yeni bir dönüşüm hunisi değil, ek değer (çapraz satış, hesap oluşturma, referans) için nadir bir dikkat penceresidir. Her KPI listesinin ilk maddesi birincil metriktir; listede en az bir madde bozulmaması gereken guardrail’dir.
+Yolculuk aşaması: satın alma veya kayıt tamamlandıktan hemen sonraki an. Kullanıcı zaten dönüştü; bu sayfa yeni bir dönüşüm hunisi değil, ek değer (çapraz satış, hesap oluşturma, referans) için nadir bir dikkat penceresidir. Her KPI listesinin ilk maddesi birincil metriktir; listede en az bir madde bozulmaması gereken guardrail’dir.
 
 ---
 
@@ -8,7 +8,7 @@ Yolculuk aşaması: satın alma veya kayıt tamamlandıktan hemen sonraki an. Ku
 
 Değişken: Onay sayfasındaki ürün önerisi şeridi · Fark: ekle
 
-Kullanıcı zaten ödeme yaptı, kart bilgisi elinde ve satın alma kararı tazeyken tekrar sürtünmeden geçmiş olur — bu, ikinci bir satın almayı önermek için nadir bir andır. Risk, önerinin asıl siparişin teslimat/onay bilgisini gölgelemesi veya kullanıcının “az önce ödedim, şimdi mi” hissiyle rahatsız olmasıdır.
+Kullanıcı zaten ödeme yaptı, kart bilgisi elinde ve satın alma kararı tazeyken tekrar sürtünmeden geçmiş olur; bu, ikinci bir satın almayı önermek için nadir bir andır. Risk, önerinin asıl siparişin teslimat/onay bilgisini gölgelemesi veya kullanıcının “az önce ödedim, şimdi mi” hissiyle rahatsız olmasıdır.
 
 **Test edilmesi gerekenler**
 - Gölgeleme: Öneri şeridi eklenince kullanıcı sipariş numarasını ve teslimat tarihini bulmakta zorlanıyor mu?
@@ -22,13 +22,13 @@ Kullanıcı zaten ödeme yaptı, kart bilgisi elinde ve satın alma kararı taze
 - Ek Sipariş Ortalama Tutarı: Yeni siparişlerin ortalama tutarı nedir?
 - Sipariş Bilgisi Görünürlüğü (anket): Kullanıcı asıl sipariş numarasını ve teslimat bilgisini bulabilmeli.
 - Destek Talebi: “Siparişimi nasıl takip ederim” soruları artmamalı.
-- Sayfa Terk Oranı: Öneri şeridi sayfadan hızlı çıkışı artırmamalı.
+- İade veya İptal Oranı: Öneri şeridi asıl siparişte iptal veya iade talebini artırmamalı.
 
 **Yapılmaması gerekenler**
 - Öneriyi, asıl siparişin teslimat tarihi veya sipariş numarasının önüne geçirip gizlemeyin.
 - Aynı testte öneri şeridinin varlığı ile ürün seçim mantığını (ilişkili/genel) birlikte değiştirmeyin.
 - Kullanıcıyı ikinci bir ödeme adımına yönlendirip asıl siparişin tamamlandığı hissini bulanıklaştırmayın.
-- Misafir ödemesi yapan kullanıcıya bu ekranda ayrıca hesap oluşturmayı da aynı anda önermeyin — bu ayrı bir test değişkenidir.
+- Misafir ödemesi yapan kullanıcıya bu ekranda ayrıca hesap oluşturmayı da aynı anda önermeyin; bu ayrı bir test değişkenidir.
 - Öneri şeridini kapatılamaz veya sipariş onayını okumadan geçilemez hâle getirmeyin.
 
 ---
@@ -37,7 +37,7 @@ Kullanıcı zaten ödeme yaptı, kart bilgisi elinde ve satın alma kararı taze
 
 Değişken: Teşekkür sayfasındaki hesap oluşturma daveti · Fark: ekle
 
-Misafir ödemesi checkout sürtünmesini azaltır ama işletmeyi tekrar iletişim kurabileceği bir hesaptan mahrum bırakır. Sipariş tamamlandıktan hemen sonra, bilgiler zaten girilmişken hesap oluşturmayı önermek, checkout öncesinde zorunlu kayıt istemekten farklı bir sürtünme profiline sahiptir — kullanıcı artık kaybedecek bir dönüşümü riske atmıyor.
+Misafir ödemesi checkout sürtünmesini azaltır ama işletmeyi tekrar iletişim kurabileceği bir hesaptan mahrum bırakır. Sipariş tamamlandıktan hemen sonra, bilgiler zaten girilmişken hesap oluşturmayı önermek, checkout öncesinde zorunlu kayıt istemekten farklı bir sürtünme profiline sahiptir; kullanıcı artık kaybedecek bir dönüşümü riske atmıyor.
 
 **Test edilmesi gerekenler**
 - Hesap kullanımı: Davetle açılan hesaplara ilk ay içinde tekrar giriş yapılıyor mu, yoksa hesaplar açılıp unutuluyor mu?
@@ -54,7 +54,7 @@ Misafir ödemesi checkout sürtünmesini azaltır ama işletmeyi tekrar iletişi
 - Destek Talebi: “Siparişim nereye gitti, hesabım var mı” karışıklığı artmamalı.
 
 **Yapılmaması gerekenler**
-- Hesap oluşturmayı, sipariş onayını görmenin ön koşulu hâline getirmeyin — sipariş bilgisi davetten bağımsız her zaman görünür olmalı.
+- Hesap oluşturmayı, sipariş onayını görmenin ön koşulu hâline getirmeyin; sipariş bilgisi davetten bağımsız her zaman görünür olmalı.
 - Aynı testte davet metnini ve ön doldurma davranışını birlikte değiştirmeyin.
 - Kullanıcı reddettiğinde bir daha aynı oturumda tekrar sormayın.
 - Misafir ödemesini bu test yüzünden zorlaştırmayın; checkout akışının kendisine dokunmayın.
@@ -66,7 +66,7 @@ Misafir ödemesi checkout sürtünmesini azaltır ama işletmeyi tekrar iletişi
 
 Değişken: Arkadaşını davet et kartı · Fark: ekle
 
-Kullanıcı memnuniyetinin tepe noktası satın alma anının hemen sonrasıdır — referans isteği için davranışsal olarak en uygun an burasıdır. Riski, teklifin asıl sipariş bilgisini gölgelemesi veya ödül teklifi gerçek değilse güven kaybı yaratmasıdır.
+Kullanıcı memnuniyetinin tepe noktası satın alma anının hemen sonrasıdır; referans isteği için davranışsal olarak en uygun an burasıdır. Riski, teklifin asıl sipariş bilgisini gölgelemesi veya ödül teklifi gerçek değilse güven kaybı yaratmasıdır.
 
 **Test edilmesi gerekenler**
 - Sonraki test: Davet kartı kazanırsa, ödüllü davet ile ödülsüz basit paylaşım ayrı bir testte karşılaştırıldığında hangisi daha çok tıklanıyor?
@@ -79,8 +79,8 @@ Kullanıcı memnuniyetinin tepe noktası satın alma anının hemen sonrasıdır
 - Paylaşım Başlatma Oranı: Teşekkür sayfasına ulaşan alıcılar içinde davet paylaşımı başlatanların oranı (A’da diğer yüzeylerden yapılanlar dahil) artıyor mu?
 - Referans Dönüşüm Oranı: Paylaşılan linkten gelen yeni müşteri sayısı nedir?
 - Sipariş Bilgisi Görünürlüğü (anket): Davet, sipariş bilgisini gölgelememeli.
-- Ödül Talep Oranı: Vaat edilen ödül gerçekten talep edilip kullanılabiliyor mu — edilmiyorsa bu bir bulgudur.
-- Sayfa Terk Oranı: Davet kartı sayfadan hızlı çıkışı artırmamalı.
+- Ödül Talep Oranı: Vaat edilen ödül gerçekten talep edilip kullanılabiliyor mu; edilmiyorsa bu bir bulgudur.
+- Brüt Marj: Ödül maliyeti, davetle gelen siparişlerin marjını eritmemeli.
 
 **Yapılmaması gerekenler**
 - Vaat edilen ödülü gerçekte vermeyin ya da koşullarını sayfada belirtmeden bırakmayın (kural 6).
@@ -95,7 +95,7 @@ Kullanıcı memnuniyetinin tepe noktası satın alma anının hemen sonrasıdır
 
 Değişken: Onay ekranındaki kutlama anı · Fark: ekle
 
-Bir deneyim büyük ölçüde en yoğun anına ve nasıl bittiğine göre hatırlanır — sürecin geri kalanı ortalama olsa bile güçlü bir bitiş, deneyimin genel algısını yükseltebilir. Standart bir “siparişiniz alındı” ekranı yerine kısa bir kutlama animasyonu, kişiselleştirilmiş bir teşekkür mesajı veya beklenmedik küçük bir jest, satın alma sürecinin son izlenimini güçlendirebilir.
+Bir deneyim büyük ölçüde en yoğun anına ve nasıl bittiğine göre hatırlanır; sürecin geri kalanı ortalama olsa bile güçlü bir bitiş, deneyimin genel algısını yükseltebilir. Standart bir “siparişiniz alındı” ekranı yerine kısa bir kutlama animasyonu, kişiselleştirilmiş bir teşekkür mesajı veya beklenmedik küçük bir jest, satın alma sürecinin son izlenimini güçlendirebilir.
 
 **Test edilmesi gerekenler**
 - Sonraki test: Kutlama anı kazanırsa, kısa bir animasyon ile kişiselleştirilmiş metin ayrı bir testte karşılaştırıldığında hangisi daha akılda kalıcı bulunuyor?

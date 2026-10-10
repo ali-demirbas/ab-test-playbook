@@ -7,7 +7,7 @@ Yolculuk aşaması: kullanıcı tek bir ürünü değerlendiriyor; görseller, s
 
 Değişken: Ana görselin fotoğraf kaynağı · Fark: değiştir
 
-Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. İzinli, gerçekten o kullanıcıdan alınmış bir kullanıcı fotoğrafı ürünün gerçek hayattaki halini gösterip güveni artırabilir — ama markanın algılanan kalitesini de düşürebilir. Gerçek olmayan bir fotoğrafı “kullanıcı fotoğrafı” gibi sunmak bu testin kapsamı dışındadır (CLAUDE.md kural 6). “Ürünü kullanım ortamında göstermek düz stüdyo çekiminden daha mı etkili?” senaryosundan farkı: orada iki profesyonel çekim tarzı karşılaştırılır, burada değişken fotoğrafın kaynağıdır (marka mı, müşteri mi).
+Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. İzinli, gerçekten o kullanıcıdan alınmış bir kullanıcı fotoğrafı ürünün gerçek hayattaki halini gösterip güveni artırabilir; ama markanın algılanan kalitesini de düşürebilir. Gerçek olmayan bir fotoğrafı “kullanıcı fotoğrafı” gibi sunmak bu testin kapsamı dışındadır (CLAUDE.md kural 6). “Ürünü kullanım ortamında göstermek düz stüdyo çekiminden daha mı etkili?” senaryosundan farkı: orada iki profesyonel çekim tarzı karşılaştırılır, burada değişken fotoğrafın kaynağıdır (marka mı, müşteri mi).
 
 **Test edilmesi gerekenler**
 - Güven: Kullanıcı fotoğrafı satın alma güvenini artırıyor mu, yoksa “amatör” algısı mı yaratıyor?
@@ -87,7 +87,7 @@ Modelin boyu ve giydiği beden, kullanıcının kendi bedenini seçmesini hızla
 - Model bilgisini teknik terimlerle yazmayın; sade ve anlaşılır olsun.
 - Yazıların görsel üzerinde taşmasına veya okunmaz hale gelmesine izin vermeyin.
 - Model bilgisini yalnızca ürünü iyi gösteren modellerde paylaşıp diğerlerinde gizlemeyin; seçici bilgi beden algısını yanıltır.
-- Tek üründe çıkan sonucu tüm kataloğa genellemeyin.
+- Aynı testte model beden bilgisini eklerken beden tablosunu veya ürün görsellerini de değiştirmeyin.
 
 ---
 
@@ -164,7 +164,7 @@ Yüksek fiyatlı üründe “aylık 2.000 TL” ifadesi, toplam tutardan daha er
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Aylık tutar çerçevesi atanan ziyaretçi başına geliri artırıyor mu? Birincil metrik bu; CR tek başına kazanan seçmez.
-- Dönüşüm Oranı (CR): Taksit vurgusunun satış etkisi — RPV ile birlikte okunur, tek başına yeterli değil.
+- Dönüşüm Oranı (CR): Taksit vurgusunun satış etkisi; RPV ile birlikte okunur, tek başına yeterli değil.
 - Taksit Seçim Oranı: Gerçekten taksit kullanılıyor mu?
 - İade veya İptal Oranı: Yükselmemeli.
 - Fiyat Şeffaflığı Şikâyeti: Destek talebi artmamalı.
@@ -176,7 +176,7 @@ Yüksek fiyatlı üründe “aylık 2.000 TL” ifadesi, toplam tutardan daha er
 - Vade farkı varsa belirtmeden aylık tutar yazmayın.
 - Taksit tablosu CTA’yı aşağı itmemeli.
 
-> **Pazar notu:** Bu senaryo kredi kartı taksitinin yaygın olduğu pazarlara (Türkiye, MENA, Latin Amerika) özgüdür. ABD ve Kuzey Avrupa’da kart taksiti bu biçimde yoktur; oradaki karşılığı “sonra öde” (BNPL) çözümleridir ve güven algısı, hedef kitlesi, yasal çerçevesi farklıdır — sonucu bu pazarlara doğrudan taşımayın.
+> **Pazar notu:** Bu senaryo kredi kartı taksitinin yaygın olduğu pazarlara (Türkiye, MENA, Latin Amerika) özgüdür. ABD ve Kuzey Avrupa’da kart taksiti bu biçimde yoktur; oradaki karşılığı “sonra öde” (BNPL) çözümleridir ve güven algısı, hedef kitlesi, yasal çerçevesi farklıdır; sonucu bu pazarlara doğrudan taşımayın.
 
 ---
 
@@ -195,7 +195,7 @@ Referans fiyat (çıpa) indirimin büyüklüğünü algılatır ama sürekli kul
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Çıpa fiyat atanan ziyaretçi başına geliri artırıyor mu? Birincil metrik bu; CR tek başına kazanan seçmez.
-- Dönüşüm Oranı (CR): Çıpalı gösterimin satış etkisi — RPV ile birlikte okunur.
+- Dönüşüm Oranı (CR): Çıpalı gösterimin satış etkisi; RPV ile birlikte okunur.
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
 - Brüt Marj: Erimemeli; indirim algısı gerçek indirime dönüşmemeli.
 - İade Oranı: Yükselmemeli.
@@ -207,7 +207,7 @@ Referans fiyat (çıpa) indirimin büyüklüğünü algılatır ama sürekli kul
 - İndirim oranını yukarı yuvarlamayın.
 - Çıpa varyantında satış fiyatını kontrolden farklı tutmayın; iki varyantta da ödenen fiyat aynı olmalı, fark yalnızca üstü çizili fiyat olmalı.
 
-> **Pazar notu:** İndirim gösterimi bazı pazarlarda yasal olarak bağlıdır — örneğin Avrupa Birliği’nde referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatı olmak zorundadır. Testi kurmadan önce hedef pazarın fiyat gösterim mevzuatını doğrulayın; “hangi çıpa daha çok satar” sorusu, gösterilmesine izin verilen çıpalarla sınırlıdır.
+> **Pazar notu:** İndirim gösterimi bazı pazarlarda yasal olarak bağlıdır; örneğin Avrupa Birliği’nde referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatı olmak zorundadır. Testi kurmadan önce hedef pazarın fiyat gösterim mevzuatını doğrulayın; “hangi çıpa daha çok satar” sorusu, gösterilmesine izin verilen çıpalarla sınırlıdır.
 
 ---
 
@@ -350,7 +350,7 @@ Müşteri fotoğrafları ürünün gerçek hayattaki halini gösterir ve stüdyo
 **Yapılmaması gerekenler**
 - Fotoğrafları ürün görselleriyle karışacak şekilde sunmayın.
 - Sadece olumlu fotoğrafları seçip filtrelemeyin; güven kaybı yaratır.
-- Düşük çözünürlüklü fotoğrafları büyütmeyin.
+- Aynı testte yorumlara müşteri fotoğraflarını getirirken yorum sıralamasını veya puan özetini de değiştirmeyin.
 - Fotoğraf yüklemeyi yorum yazmanın ön koşulu yapmayın; metin yorum sayısı düşer.
 - Fotoğraf şeridi CTA’yı aşağı itmemeli.
 
@@ -380,7 +380,7 @@ Varsayılan yorum sıralaması, kullanıcının ilk okuduğu üç yorumu belirle
 - Olumsuz yorumları sıralamadan tamamen dışlamayın.
 - “Faydalı” oylarını manipüle edilebilir bırakmayın.
 - “En faydalı” sıralamada ürünün eski sürümüne ait yorumları güncelmiş gibi üste çıkarmayın.
-- Aynı anda hem sıralamayı hem yorum kartı tasarımını değiştirmeyin.
+- Aynı testte hem varsayılan sıralamayı hem yorum kartı tasarımını değiştirmeyin.
 - Sıralama etiketlerini belirsiz isimlendirmeyin.
 
 ---
@@ -401,14 +401,14 @@ Değişken: Düşük stok uyarısı · Fark: ekle
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Aciliyet mesajı satın almayı hızlandırıyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
-- Sepet Terk Oranı: Yükselmemeli; baskı hissi kullanıcıyı kaçırmamalı.
+- Güven Algısı (anket): Düşmemeli; uyarı baskı veya yapaylık hissi yaratmamalı.
 - İade Oranı: Yükselmemeli; aceleyle alınan ürün geri dönmemeli.
 - Karar Süresi: Ürün sayfasında geçen süre (tanı metriği).
 
 **Yapılmaması gerekenler**
 - Gerçek envantere dayanmayan stok uyarısı kullanmayın (kural 6); güven kaybı ve yasal risk yaratır.
 - Aynı mesajı her üründe tekrar etmeyin; aciliyet algısı ölür.
-- Mesajı kırmızıya boğmayın; korku veya spam hissi verir.
+- Aynı testte stok uyarısını eklerken fiyatı veya indirim etiketini de değiştirmeyin.
 - Aciliyet mesajını fiyat ve CTA’nın önüne geçirmeyin.
 - Stok yenilendiğinde uyarıyı kaldırmadan eski “son 3 ürün” sayısını göstermeye devam etmeyin.
 
@@ -437,7 +437,7 @@ Değişken: Aciliyet mesajının tipi · Fark: değiştir
 **Yapılmaması gerekenler**
 - Gerçek satış veya stok verisine dayanmayan sayı göstermeyin (kural 6); en hızlı güven kaybı buradan gelir.
 - Her üründe aynı mesajı tekrar etmeyin.
-- İki mesajı aynı anda test etmeyin; tek değişken bırakın.
+- Aynı testte mesaj tipini değiştirirken mesajın yerini veya rengini de değiştirmeyin.
 - Sayıyı sürekli artan sahte sayaca bağlamayın.
 - Mesaj fiyat ve CTA hiyerarşisini bozmamalı.
 
@@ -458,14 +458,14 @@ Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve s
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Taksit görünürlüğü atanan ziyaretçi başına geliri artırıyor mu? Birincil metrik bu; CR tek başına kazanan seçmez.
-- Dönüşüm Oranı (CR): Taksit görünürlüğü satın almayı artırıyor mu? — RPV ile birlikte okunur.
+- Dönüşüm Oranı (CR): Taksit görünürlüğü satın almayı artırıyor mu? RPV ile birlikte okunur.
 - Ortalama Sepet Tutarı (AOV): Daha pahalı ürüne yöneliyor mu?
 - Taksit Seçim Oranı: Gerçekten taksit kullanılıyor mu?
 - İade veya İptal Oranı: Yükselmemeli.
 
 **Yapılmaması gerekenler**
 - Ürün için geçerli olmayan taksit bilgisi göstermeyin.
-- Mesajı fiyat alanını boğacak kadar büyütmeyin.
+- Aynı testte taksit bilgisini eklerken peşin fiyatın boyutunu veya indirim etiketini de değiştirmeyin.
 - Yalnızca belirli kartlarda geçerli taksiti tüm kartlarda geçerliymiş gibi göstermeyin.
 - Taksit bilgisini peşin fiyattan büyük yazmayın; bu “Aylık taksit tutarını ana fiyat gibi göstermek işe yarar mı?” senaryosunun değişkenidir.
 - Vade farkı varsa belirtmeden taksit tutarı yazmayın.
@@ -501,9 +501,9 @@ Değişken: Fiyatın küsurat biçimi · Fark: değiştir
 - Kuruş kısmını okunamayacak kadar küçültüp fiyatı olduğundan düşük okutmayın.
 - Aynı testte format ile indirim rozetini birlikte değiştirmeyin.
 - Kategori genelinde tutarsız format bırakmayın.
-- Sadece dönüşüme bakıp toplam geliri atlamayın.
+- Küsuratlı fiyatı sepette veya ödeme adımında tam sayıya yuvarlayıp ürün sayfasındakinden farklı göstermeyin.
 
-> **Pazar notu:** Fiyat sonu etkisi kültüre bağlıdır: bazı pazarlarda 9 ile biten fiyat ucuzluk sinyali verirken, bazılarında tam sayı fiyat prestij ve şeffaflık algısı yaratır; belirli rakamların kültürel çağrışımı olan pazarlar da vardır. Kendi pazarınızda ölçmeden başka bir pazarın sonucuna güvenmeyin. Ayrıca bu test aynı ürünü eşzamanlı iki farklı fiyatla göstermeyi gerektirir; bazı pazarlarda fiyat A/B'si tüketici hukuku riski taşır, hedef pazarın kuralını doğrulamadan koşmayın (kural 11).
+> **Pazar notu:** Fiyat sonu etkisi kültüre bağlıdır: bazı pazarlarda 9 ile biten fiyat ucuzluk sinyali verirken, bazılarında tam sayı fiyat prestij ve şeffaflık algısı yaratır; belirli rakamların kültürel çağrışımı olan pazarlar da vardır. Kendi pazarınızda ölçmeden başka bir pazarın sonucuna güvenmeyin. Ayrıca bu test aynı ürünü eşzamanlı iki farklı fiyatla göstermeyi gerektirir; bazı pazarlarda fiyat A/B’si tüketici hukuku riski taşır, hedef pazarın kuralını doğrulamadan koşmayın (kural 11).
 
 ---
 
@@ -522,7 +522,7 @@ Değişken: İndirim mesajının metni · Fark: değiştir
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): İndirim mesajı atanan ziyaretçi başına geliri artırıyor mu? Birincil metrik bu; CR tek başına kazanan seçmez.
-- Dönüşüm Oranı (CR): Hangi sunum satın almayı artırıyor? — RPV ile birlikte okunur.
+- Dönüşüm Oranı (CR): Hangi sunum satın almayı artırıyor? RPV ile birlikte okunur.
 - Ortalama Sepet Tutarı (AOV): İndirim tipi sepeti büyütüyor mu?
 - Brüt Marj: Erimemeli; indirim algısı gerçek indirime dönüşmemeli.
 - Tıklama Oranı (CTR): Etiketli ürünler daha çok tıklanıyor mu?
@@ -531,28 +531,28 @@ Değişken: İndirim mesajının metni · Fark: değiştir
 - Sürekli aktif indirim göstererek kullanıcıyı yanıltmayın.
 - Aynı anda birden fazla indirim mesajı göstermeyin.
 - İndirim sepette koşula bağlıysa “Anında” yazmayın; metin gerçekte uygulanan indirimle aynı olmalı (kural 6).
-- Çok büyük ve agresif etiketle tasarım hiyerarşisini bozmayın.
+- Aynı testte indirim mesajının metnini değiştirirken indirim oranını veya etiketin yerini de değiştirmeyin.
 - Hiç uygulanmamış fiyatı eski fiyat diye göstermeyin.
 
 
-> **Pazar notu:** İndirim gösterimi yasal olarak düzenlenen bir alandır (kural 11): yüzde/tutar gösterimi serbest olsa da referans fiyatın nasıl kurulacağı pazara bağlıdır. AB'de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatı olmak zorundadır; hedef pazarın kuralı doğrulanmadan varyant yayınlanmaz.
+> **Pazar notu:** İndirim gösterimi yasal olarak düzenlenen bir alandır (kural 11): yüzde/tutar gösterimi serbest olsa da referans fiyatın nasıl kurulacağı pazara bağlıdır. AB’de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatı olmak zorundadır; hedef pazarın kuralı doğrulanmadan varyant yayınlanmaz.
 ---
 
-## Kargo ve iade bilgisini öne çıkarmak satışı artırır mı?
+## Kargo ve iade bilgisini fiyatın yakınına taşımak satışı artırır mı?
 
-Değişken: Kargo-iade bloğunun görünürlüğü · Fark: değiştir
+Değişken: Kargo-iade bloğunun konumu · Fark: taşı
 
-Kargo ve iade koşullarını fiyatın yakınında görünür sunmak, “ya beğenmezsem” kaygısını azaltarak satın alma motivasyonunu güçlendirebilir. “Avantaj bilgilerini net sunmak satın almayı etkiler mi?” senaryosundan farkı: burada yalnızca kargo ve iade bilgisinin görünürlüğü değişir; “Teslimat bilgisi satın almayı etkiliyor mu?” senaryosundan farkı: burada teslimat tarihi değil, kargo ücreti ve iade koşulu anlatılır.
+Sayfanın altında veya kapalı bir akordeonda duran kargo ve iade bloğunu fiyatın yakınına taşımak, “ya beğenmezsem” kaygısını azaltarak satın alma motivasyonunu güçlendirebilir. “Avantaj bilgilerini net sunmak satın almayı etkiler mi?” senaryosundan farkı: burada yalnızca kargo ve iade bloğunun konumu değişir, metni aynı kalır; “Teslimat bilgisi satın almayı etkiliyor mu?” senaryosundan farkı: burada teslimat tarihi değil, kargo ücreti ve iade koşulu anlatılır.
 
 **Test edilmesi gerekenler**
-- Sonraki test: Blok görünür kılındıktan sonra sunum biçimi (ikonlu kısa satır / düz metin) ayrı bir testte satın alma oranını değiştiriyor mu?
-- Konum: Bilgiyi sayfanın üstüne taşımak fark edilmeyi yükseltiyor mu?
-- Okunma: Fiyatın yakınında görünür kılınan kargo-iade bloğuna bakan ziyaretçi oranı gerçekten artıyor mu?
-- Koşul farkı: Ücretsiz kargo eşiği olan üründe görünür blok, koşulsuz ücretsiz kargolu ürüne göre daha az mı etki yaratıyor?
-- Cihaz: Kargo ve iade koşullarının genelde kapalı akordeonda kaldığı mobilde görünür blok, masaüstüne göre satın almayı daha çok mu artırıyor?
+- Sonraki test: Blok fiyatın yakınına taşındıktan sonra sunum biçimi (ikonlu kısa satır / düz metin) ayrı bir testte satın alma oranını değiştiriyor mu?
+- Konum: Bloğu fiyatın yakınına taşımak fark edilmeyi yükseltiyor mu?
+- Okunma: Fiyatın yakınına taşınan kargo-iade bloğuna bakan ziyaretçi oranı gerçekten artıyor mu?
+- Koşul farkı: Ücretsiz kargo eşiği olan üründe taşınan blok, koşulsuz ücretsiz kargolu ürüne göre daha az mı etki yaratıyor?
+- Cihaz: Kargo ve iade koşullarının genelde kapalı akordeonda kaldığı mobilde fiyatın yakınına taşınan blok, masaüstüne göre satın almayı daha çok mu artırıyor?
 
 **Takip edilecek ana KPI’lar**
-- Dönüşüm Oranı (CR): Görünür avantaj satışı artırıyor mu?
+- Dönüşüm Oranı (CR): Fiyatın yakınına taşınan blok satışı artırıyor mu?
 - Sepete Ekleme Oranı: Kullanıcı ilk aksiyona yöneliyor mu?
 - İade Oranı: Yükselmemeli; net bilgi yanlış beklentiyi azaltmalı.
 - Bölüm Etkileşimi: Kargo-iade alanı inceleniyor mu?
@@ -561,7 +561,7 @@ Kargo ve iade koşullarını fiyatın yakınında görünür sunmak, “ya beğe
 **Yapılmaması gerekenler**
 - Mesajları tek uzun cümlede birleştirmeyin; avantaj görünmez olur.
 - Koşulları (minimum sepet tutarı vb.) gizlemeyin.
-- Aynı bölüme aşırı bilgi yığmayın; dağınık görünür.
+- Aynı testte bloğu taşırken kargo ve iade metnini veya koşullarını da değiştirmeyin.
 - Mobilde bilgiyi aşağı atarak görünürlüğü azaltmayın.
 - Öne çıkarılan “ücretsiz iade” ifadesini iade kargo ücreti veya süre koşulu varken koşulsuzmuş gibi yazmayın.
 
@@ -573,7 +573,7 @@ Kargo ve iade koşullarını fiyatın yakınında görünür sunmak, “ya beğe
 
 Değişken: Avantaj kutusunun sunum biçimi · Fark: değiştir
 
-Taksit, ücretsiz kargo ve kolay iade gibi avantajlar zaten sayfadayken bunların tek bir düzenli kutuda, net hiyerarşiyle sunulması kullanıcı güvenini güçlendirebilir. “Kargo ve iade bilgisini öne çıkarmak satışı artırır mı?” senaryosundan farkı: burada bilgi içeriği sabittir, değişen avantaj kutusunun sunum biçimidir; “Teslimat bilgisi satın almayı etkiliyor mu?” senaryosundan farkı: teslimat tarihi vaadi bu kutunun konusu değildir.
+Taksit, ücretsiz kargo ve kolay iade gibi avantajlar zaten sayfadayken bunların tek bir düzenli kutuda, net hiyerarşiyle sunulması kullanıcı güvenini güçlendirebilir. “Kargo ve iade bilgisini fiyatın yakınına taşımak satışı artırır mı?” senaryosundan farkı: burada bilgi içeriği sabittir, değişen avantaj kutusunun sunum biçimidir; “Teslimat bilgisi satın almayı etkiliyor mu?” senaryosundan farkı: teslimat tarihi vaadi bu kutunun konusu değildir.
 
 **Test edilmesi gerekenler**
 - Format: İkon, kısa başlık ve sade açıklama anlaşılırlığı artırıyor mu?
@@ -593,7 +593,7 @@ Taksit, ücretsiz kargo ve kolay iade gibi avantajlar zaten sayfadayken bunları
 - Sadeleştirirken önemli koşul ve ayrıntıları gizlemeyin.
 - Tüm avantajları aynı görsel ağırlıkta sunmayın; hiyerarşi korunmalı.
 - Aynı sayfada çok fazla avantaj mesajı göstermeyin.
-- Mobilde konum değişikliğiyle akışı bozmayın.
+- Aynı testte avantaj kutusunun sunum biçimini değiştirirken avantaj metinlerini veya kutunun yerini de değiştirmeyin.
 - Sahip olmadığınız avantajı listelemeyin.
 
 ---
@@ -619,7 +619,7 @@ Taksit, iade, garanti ve teslimat gibi sık sorulan bilgilerin ürün sayfasınd
 - İade Oranı: Net bilgi yanlış beklentiyi azaltıyor mu?
 
 **Yapılmaması gerekenler**
-- SSS bölümünü uzun ve karmaşık yapmayın; yanıtlar kısa olmalı.
+- Aynı testte SSS bölümünü eklerken ürün açıklamasını veya teslimat ve iade metinlerini de değiştirmeyin.
 - Ürüne özel olmayan genel sorular eklemeyin.
 - SSS alanına kampanya ve satış mesajı koymayın.
 - SSS’de iade veya garanti koşulunu gerçek politikadan farklı yazmayın.
@@ -644,23 +644,23 @@ Ek fayda mesajları güven yaratabilir ama fark edilmeyebilir. Satın alma karar
 - Dönüşüm Oranı (CR): Fayda mesajı satın almayı artırıyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
 - Etkileşim Oranı: Kullanıcı mesajı fark edip aksiyon alıyor mu?
-- Sepet Terk Oranı: Yükselmemeli; güven artışı terki azaltmalı.
+- İade Oranı: Yükselmemeli; fayda mesajı ürünün karşılayamayacağı bir beklenti kurmamalı.
 - Liste → Ürün Tıklama Oranı: Fayda rozeti liste kartında da gösteriliyorsa geçiş artıyor mu?
 
 **Yapılmaması gerekenler**
 - Aynı fayda etiketini her üründe tekrar etmeyin; etkisi azalır.
-- Ürünler arasında birbirinden çok farklı faydalar göstermeyin.
+- Aynı testte fayda satırını eklerken ürün başlığını veya fiyat alanını da değiştirmeyin.
 - Aşırı iddialı veya yanıltıcı fayda mesajı kullanmayın.
 - Faydaları fiyat ve CTA’nın önüne koyup hiyerarşiyi bozmayın.
 - Sahip olmadığınız garantiyi fayda diye yazmayın.
 
 ---
 
-## İletişim bilgisini görünür yapmak güveni artırır mı?
+## Header’a iletişim bilgisi eklemek güveni artırır mı?
 
 Değişken: Header’daki iletişim bilgisi · Fark: ekle
 
-Header’da telefon veya e-posta bilgisinin görünmesi markanın ulaşılabilirlik algısını güçlendirebilir, ancak bu her zaman dönüşüme yansımaz.
+Header’a telefon veya e-posta bilgisi eklemek markanın ulaşılabilirlik algısını güçlendirebilir, ancak bu her zaman dönüşüme yansımaz.
 
 **Test edilmesi gerekenler**
 - Konum: Header’da görünmesi güveni ve etkileşimi artırıyor mu?
@@ -680,7 +680,7 @@ Header’da telefon veya e-posta bilgisinin görünmesi markanın ulaşılabilir
 - Çok fazla iletişim bilgisi ekleyip header’ı kalabalıklaştırmayın.
 - Mobilde iletişim alanını ekranı daraltacak şekilde yerleştirmeyin.
 - Tıklanabilir görünüp tıklanamayan ikon veya yazı kullanmayın.
-- Header’daki ikonların kategori menüsünü gölgelemesine izin vermeyin.
+- Aynı testte iletişim bilgisini eklerken header’daki menüyü veya arama alanını da değiştirmeyin.
 - Yanıt veremeyeceğiniz bir kanalı görünür yapmayın.
 
 ---
@@ -703,7 +703,7 @@ Mobilde ekranın üst yarısı tek elle zor erişilir. Birincil CTA’yı ilk ek
 - Sepete Ekleme Oranı: Tanı metriği; CTA’nın doğrudan hedef davranışı.
 - CTA Tıklama Oranı: Ham tıklama farkı.
 - Kaydırma Derinliği: Aşağı inen CTA görseli itip okumayı engellememeli.
-- Sayfa Terk Oranı: Artmamalı.
+- Yanlış Tıklama Oranı: Alta inen CTA’ya kaydırırken istemeden dokunanlar artmamalı.
 
 **Yapılmaması gerekenler**
 - CTA’yı alta taşırken ana görseli veya fiyatı ilk ekranın dışına itmeyin.
@@ -732,7 +732,7 @@ Değişken: Kaydırmada sabit kalan Satın Al butonu · Fark: ekle
 - Sepete Ekleme Oranı: Tanı metriği; sticky buton eklemeyi artırıyor mu?
 - CTA Tıklama Oranı: Ham tıklama farkı ne kadar?
 - Kaydırma Derinliği: Bar içerik okumayı engelliyor mu?
-- Sayfa Terk Oranı: Yükselmemeli; sabit bar rahatsız edip kaçırmamalı.
+- Erişilebilirlik: Sabit bar klavye odağındaki öğeyi ve yakınlaştırılmış ekrandaki içeriği kapatmamalı.
 
 **Yapılmaması gerekenler**
 - Sticky butonu ekranın büyük bölümünü kaplayacak kadar büyütmeyin.
@@ -805,7 +805,7 @@ Değişken: Çoklu paket seçenekleri · Fark: ekle
 
 Değişken: Tahmini teslimat tarihi bilgisi · Fark: ekle
 
-“Bugün sipariş ver, yarın kargoda” gibi net teslimat bilgisi belirsizliği azaltır ve satın alma hızını etkileyebilir. “Kargo ve iade bilgisini öne çıkarmak satışı artırır mı?” senaryosundan farkı: burada kargo ücreti veya iade değil, ürünün ne zaman elde olacağı vaadi test edilir.
+“Bugün sipariş ver, yarın kargoda” gibi net teslimat bilgisi belirsizliği azaltır ve satın alma hızını etkileyebilir. “Kargo ve iade bilgisini fiyatın yakınına taşımak satışı artırır mı?” senaryosundan farkı: burada kargo ücreti veya iade değil, ürünün ne zaman elde olacağı vaadi test edilir.
 
 **Test edilmesi gerekenler**
 - Cihaz: Teslimat tarihini görmek için ödeme adımına ilerlemenin daha zahmetli olduğu mobilde sayfadaki tarih, masaüstünden daha mı etkili?
@@ -826,7 +826,7 @@ Değişken: Tahmini teslimat tarihi bilgisi · Fark: ekle
 - “Teslimat garantisi” ifadesini koşulları belirtmeden kullanmayın.
 - Tüm ürünlere aynı mesajı uygulamayın; stok ve lojistiğe göre gösterin.
 - “Yarın kargoda” mesajını kesim saati geçtikten sonra da göstermeyin; söz tutulmaz.
-- Gecikme olasılığını gizlemeyin; güven kaybı yaratır.
+- Aynı testte teslimat tarihini eklerken kargo ücretini veya iade bilgisini de değiştirmeyin.
 
 ---
 
@@ -853,7 +853,7 @@ Küçük görsellerin (thumbnail) solda dikey dizilmesi ana görsele daha çok y
 **Yapılmaması gerekenler**
 - Aynı testte küçük görsel konumu ile ana görsel boyutunu bağımsız değişkenler gibi ayrı ayrı değiştirmeyin; ikisi birlikte tek bir yerleşim kararıdır.
 - Küçük görselleri dokunulamayacak kadar küçültmeyin.
-- Görsel sayısını yerleşimle birlikte değiştirmeyin.
+- Aynı testte küçük görsellerin konumunu değiştirirken görsel sayısını veya sırasını da değiştirmeyin.
 - Klavye ile galeride gezinmeyi bozmayın.
 - Masaüstü sonucunu mobil galeriye taşımayın.
 
@@ -942,7 +942,7 @@ Değişken: Öneri mesajının tonu · Fark: değiştir
 - Öneriyi kişiselleştirilmiş gibi sunup aslında herkese aynı seçeneği göstermeyin.
 - Aynı testte önerinin tonu ile önerilen seçeneği birlikte değiştirmeyin.
 - Diğer seçeneklere erişimi zorlaştırmayın.
-- Öneri kabul oranı arttı diye, önerilen seçeneği alıp sonradan iade eden kullanıcıyı saymadan kararlı tonu kazanan ilan etmeyin.
+- Kararlı tonu, öneriyi geri çevirmeyi suçlayan bir ret ifadesiyle (“Yine de daha zayıf seçeneği istiyorum”) birleştirmeyin.
 
 ---
 
@@ -967,11 +967,11 @@ Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal k�
 - Bildirim Şikâyeti: Gereksiz veya sık bildirim şikâyeti artmamalı.
 
 **Yapılmaması gerekenler**
-- Gerçekte belirsiz olan bir stok geliş tarihini kesinmiş gibi göstermeyin (kural 10) — tahminse tahmin olduğu belirtilir.
+- Gerçekte belirsiz olan bir stok geliş tarihini kesinmiş gibi göstermeyin (kural 10); tahminse tahmin olduğu belirtilir.
 - Aynı testte haber ver biçimini ve alternatif ürün önerisinin varlığını birlikte değiştirmeyin.
 - Kullanıcıdan yalnızca haber ver kaydı için gereğinden fazla bilgi istemeyin.
 - Haber ver akışına gerçek stok verisiyle doğrulanmamış bir aciliyet mesajı (ör. “sadece birkaç adet kalacak”) eklemeyin (kural 6).
-- Butonu kaldırırken sayfanın geri kalanını (fiyat, görsel, açıklama) aynı anda yeniden düzenlemeyin — tek değişken haber ver mekanizmasının kendisidir.
+- Butonu kaldırırken sayfanın geri kalanını (fiyat, görsel, açıklama) aynı anda yeniden düzenlemeyin; tek değişken haber ver mekanizmasının kendisidir.
 
 ---
 
@@ -979,7 +979,7 @@ Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal k�
 
 Değişken: Satın alma öncesi özelleştirme seçeneği · Fark: ekle
 
-Kullanıcıya rengi, gravürü veya kombinasyonu kendi seçtirmek, ürünü kendi emeğiyle şekillendirdiği bir şey hâline getirir — bu sahiplenme hissi, hazır bir üründen daha yüksek bir değer algısı yaratabilir. Riski, özelleştirme adımının karmaşık gelip asıl satın alma kararını geciktirmesi veya terke yol açmasıdır.
+Kullanıcıya rengi, gravürü veya kombinasyonu kendi seçtirmek, ürünü kendi emeğiyle şekillendirdiği bir şey hâline getirir; bu sahiplenme hissi, hazır bir üründen daha yüksek bir değer algısı yaratabilir. Riski, özelleştirme adımının karmaşık gelip asıl satın alma kararını geciktirmesi veya terke yol açmasıdır.
 
 **Test edilmesi gerekenler**
 - Varlık: Özelleştirme seçeneği sunmak satın alma niyetini artırıyor mu?
@@ -992,7 +992,7 @@ Kullanıcıya rengi, gravürü veya kombinasyonu kendi seçtirmek, ürünü kend
 - Dönüşüm Oranı (CR): Ürün sayfasına atanan ziyaretçilerin satın alma oranı artıyor mu? Payda özelleştirmeyi başlatanlar değil, iki koldaki tüm ziyaretçilerdir.
 - Özelleştirme Tamamlama Oranı: Adımı başlatıp bitiren ziyaretçi oranı nedir?
 - İade Oranı: Özelleştirilmiş ürünlerin iade oranı standart üründen yüksek olmamalı.
-- Sayfa Terk Oranı: Özelleştirme adımı terk oranını artırmamalı.
+- Brüt Marj: Özelleştirmenin üretim maliyeti sipariş başına marjı eritmemeli.
 - Teslimat Süresi Algısı (anket): Özelleştirmenin teslimatı uzatabileceği net anlaşılmalı.
 
 **Yapılmaması gerekenler**
@@ -1025,7 +1025,7 @@ Değişken: Ürünün köken bilgisi · Fark: ekle
 - Destek Talebi: Köken bilgisiyle ilgili doğrulama talebi artmamalı.
 
 **Yapılmaması gerekenler**
-- Gerçek üretim veya tasarım yerinden farklı bir köken iddia etmeyin (kural 6, kural 10) — bu hem etik hem yasal bir ihlaldir.
+- Gerçek üretim veya tasarım yerinden farklı bir köken iddia etmeyin (kural 6, kural 10); bu hem etik hem yasal bir ihlaldir.
 - Aynı testte köken bilgisinin varlığını ve ürün fiyatını birlikte değiştirmeyin.
 - Köken bilgisini yalnızca algı yüksek olan ülkelerde gösterip düşük olanlarda gizleyerek seçici bir yanıltma kurmayın.
 - Hedef pazarın köken veya menşei etiketleme mevzuatını doğrulamadan format değiştirmeyin (kural 11).
@@ -1037,7 +1037,7 @@ Değişken: Ürünün köken bilgisi · Fark: ekle
 
 Değişken: Paket içeriğinin fiyat dağılımı · Fark: değiştir
 
-Bir paket ucuz ve pahalı ürünleri bir araya getirdiğinde, ucuz ürün pahalı ürünün algılanan değerini sulandırabilir — ziyaretçi paketin ortalama değerini pahalı üründen değil ucuz üründen referans alabilir. Benzer fiyat aralığındaki ürünleri bir araya getirmek bu riski azaltır ama paketin toplam faydasını daraltabilir.
+Bir paket ucuz ve pahalı ürünleri bir araya getirdiğinde, ucuz ürün pahalı ürünün algılanan değerini sulandırabilir; ziyaretçi paketin ortalama değerini pahalı üründen değil ucuz üründen referans alabilir. Benzer fiyat aralığındaki ürünleri bir araya getirmek bu riski azaltır ama paketin toplam faydasını daraltabilir.
 
 **Test edilmesi gerekenler**
 - Kompozisyon: Benzer fiyatlı ürünlerden oluşan paket mi, karışık fiyatlı paket mi geliri artırıyor?

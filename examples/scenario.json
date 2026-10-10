@@ -40,8 +40,8 @@
       "text": "Yeni ve dönen kullanıcıda kupon arama davranışı farklı mı?"
     },
     {
-      "label": "Metin",
-      "text": "“İndirim kodum var” ile “Kupon kullan” farklı sonuç veriyor mu?"
+      "label": "Sonraki test",
+      "text": "Bağlantı kazanırsa, “İndirim kodum var” ile “Kupon kullan” metni ayrı bir testte fark yaratıyor mu?"
     },
     {
       "label": "Kampanya",

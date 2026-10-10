@@ -6,7 +6,7 @@ looks like while that happens.
 
 | File | What it is |
 |---|---|
-| `scenario.json` | **The canonical example: one JSON per scenario.** It validates against [`templates/scenario.schema.json`](../templates/scenario.schema.json) and the card builder renders it directly. One variable, two variants, one primary KPI listed first, two guardrails, a stated evidence level, the footer tags (source, objection, ICE tier), and the optional `preregistration` block — the decisions fixed before launch (primary KPI and direction, guardrail margins, alpha, power, alternative, allocation, planned sample, decision rule, pre-declared segments), shaped to map onto the experiment-configuration fields common testing platforms ask for. Its `card` object is the visual layer: the two mockup bodies, the difference type (`change`), the device frame (`phone-web`), the address-bar domain and the mockup basis (`representative`, so the footer says it's a representative example). |
+| `scenario.json` | **The canonical example: one JSON per scenario.** It validates against [`templates/scenario.schema.json`](../templates/scenario.schema.json) and the card builder renders it directly. One variable, two variants, one primary KPI listed first, two guardrails, a stated evidence level, the footer tags (source, objection, ICE tier), and the optional `preregistration` block — the decisions fixed before launch (primary KPI and direction, guardrail margins, alpha, power, alternative, allocation, planned sample, decision rule, pre-declared segments), shaped to map onto the experiment-configuration fields common testing platforms ask for. A guardrail in that block takes one of three shapes: a margin (`direction` + `margin_relative`), a lagging margin (the same plus `read_after_days`, read only after the window closes), or a pass/fail check (`"type": "check"` with a required `criterion` and no margin, e.g. accessibility). Two optional fields record the rest of the plan: `trigger` (the exposure event that defines the denominator in both arms) and `pre_start_gates` (what must be closed before the test takes traffic, such as compliance sign-off). The three boxes hold 3 to 6 items each in a designed scenario; exactly five is the archive's rule and applies to `knowledge/scenarios/` only. A test item about a different variable is labelled `Sonraki test` (`Next test`) or left out. Its `card` object is the visual layer: the two mockup bodies, the difference type (`change`), the device frame (`phone-web`), the address-bar domain and the mockup basis (`representative`, so the footer says it's a representative example). On a native app screen (`phone`), `card.bottom_nav` lists the real tab labels and `card.bottom_nav_active` marks the active one. |
 | `scenario-card-input.json` | The legacy flat card input (`desc`, `kpi_items`, `variant_a`, … at the top level), kept so older inputs keep building. New cards use `scenario.json`'s shape. |
 | [`../docs/demo/scenario-card.html`](../docs/demo/scenario-card.html) | A rendered card, served as the zero-install demo. |
 | [`results-walkthrough.md`](results-walkthrough.md) | A finished test read end to end with real script output: SRM check, significance, continuous metric with CUPED, guardrail margin, decision and the history row. |
@@ -26,10 +26,15 @@ And validating the same file:
 ```bash
 python3 scripts/validate_scenario_json.py examples/scenario.json            # Turkish messages
 python3 scripts/validate_scenario_json.py --lang en examples/scenario.json  # English messages
+python3 scripts/validate_scenario_json.py --strict examples/scenario.json   # warnings fail too
 ```
 
-`ab-test-design` validates its bare pre-registration block on its own with
-`--prereg-only` (a file holding just `{"preregistration": {...}}`).
+The pre-registration block is validated **inside** the scenario JSON: the
+validator also checks that the pre-registered variable, primary KPI and every
+guardrail name are the ones in the KPI box. `ab-test-design` works this way;
+`--prereg-only` (a file holding just `{"preregistration": {...}}`) is for the
+case where no scenario JSON exists. Problems that don't invalidate the file are
+printed as warnings; `--strict` turns them into failures.
 
 To see the card the way a reader does, render it in headless Chromium (needs a
 local Playwright install; not part of the unit suite):

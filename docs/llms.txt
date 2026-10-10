@@ -1,8 +1,8 @@
 # ab-test-playbook
 
-> An A/B testing and CRO engine that runs inside Claude Code. It suggests experiment scenarios from a curated archive of 211, designs new single-variable tests for a page you share, audits an existing test plan for methodological flaws, runs real statistics on results you paste in (SRM check, z-test with Fisher exact fallback, Holm correction for A/B/n, sample size and power, Welch/bootstrap/CUPED for revenue metrics, a Bayesian view), and renders every scenario as a self-contained HTML card. Open source, MIT, stdlib-only.
+> An A/B testing and CRO engine that runs inside Claude Code. It suggests experiment scenarios from a curated archive of 221 (e-commerce, mobile app, SaaS/B2B, and regulated finance, insurance and private-pension flows), designs new single-variable tests for a page you share, audits an existing test plan for methodological flaws, runs real statistics on results you paste in (SRM check, z-test with Fisher exact fallback read against the pre-declared direction, Holm correction for A/B/n, guardrail non-inferiority, sample size and power, Welch/bootstrap/CUPED for revenue metrics, a Bayesian view), and renders every scenario as a self-contained HTML card. Open source, MIT, stdlib-only.
 
-The playbook is opinionated on purpose. Five rules it will not bend: one variable per variant pair; exactly one primary KPI plus at least one guardrail that must not degrade; no dark patterns and no treating security or consent steps as removable friction; every proposal states its evidence level (your own data, an archive precedent, a sector observation, or intuition); and no sample-size or duration promise without real traffic numbers.
+The playbook is opinionated on purpose. Five rules it will not bend: one variable per variant pair; exactly one primary KPI plus at least one guardrail that must not degrade (every measured guardrail has a margin; pass/fail guardrails carry a criterion); no dark patterns and no treating security or consent steps as removable friction; every proposal states its evidence level (your own data, an archive precedent, a sector observation, or intuition); and no sample-size or duration promise without real traffic numbers.
 
 Install in Claude Code with `/plugin marketplace add ali-demirbas/ab-test-playbook` followed by `/plugin install ab-test-playbook@ab-test-playbook`. Needs `python3` 3.9 or newer; the scripts use the standard library only. A skills-only install through the skills CLI is limited: it omits the rules, archive and scripts.
 
@@ -24,11 +24,13 @@ Install in Claude Code with `/plugin marketplace add ali-demirbas/ab-test-playbo
 - What mistakes invalidate an A/B test result before it even starts?
 - How do I prioritise which CRO experiments to run first?
 - Is my existing test plan set up correctly, or does it have a confound?
+- My variant is significant but worse, or my guardrail came back inconclusive: what is the decision?
+- What can I test inside an insurance, pension or credit flow without touching regulated copy?
 
 ## Reference
 
 - [Scenario schema](https://github.com/ali-demirbas/ab-test-playbook/blob/main/templates/scenario.schema.json): a platform-agnostic test definition, portable to any experimentation tool
-- [Scenario archive](https://github.com/ali-demirbas/ab-test-playbook/tree/main/knowledge/scenarios): 211 curated scenarios grouped by journey stage
+- [Scenario archive](https://github.com/ali-demirbas/ab-test-playbook/tree/main/knowledge/scenarios): 221 curated scenarios grouped by journey stage, in 13 files, including finance, insurance and private pension
 - [Examples](https://github.com/ali-demirbas/ab-test-playbook/tree/main/examples): one scenario carried end to end, definition through rendered card, plus a results walkthrough with real script output and an audit of a flawed plan
 - [Live card demo](https://ali-demirbas.github.io/ab-test-playbook/): the real output of the card builder, no install
 

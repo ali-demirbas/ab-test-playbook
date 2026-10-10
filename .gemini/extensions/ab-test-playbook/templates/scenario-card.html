@@ -43,6 +43,7 @@
   .ph.hero .r-sub,.ph.hero .r-meta,.ph.hero .r-help{color:rgba(255,255,255,.82)}
   .bottomnav{display:flex;justify-content:space-around;border-top:1px solid #ececee;padding:10px 0 12px;margin-top:auto}
   .bottomnav span{font-size:9px;color:#70707a}
+  .bottomnav span.on{color:var(--brand);font-weight:700}
 
   /* ---- değişen öğe işareti ----
      .hl değişen öğenin etrafına çizilir. Halka outline ile çizilir: kutu modeline
@@ -193,7 +194,8 @@
 
        KARTI ELLE DOLDURMA. Senaryo tek bir JSON'dur (templates/scenario.schema.json);
        scripts/build_card.py yerleştiricileri doldurur, metni kaçırır, cihaz çerçevesini seçer:
-         device: phone      → telefon çerçevesi + durum çubuğu; sekme çubuğu YALNIZCA card.bottom_nav ile (yerel uygulama)
+         device: phone      → telefon çerçevesi + durum çubuğu; sekme çubuğu YALNIZCA card.bottom_nav ile (yerel uygulama),
+                              ekranın ait olduğu sekme card.bottom_nav_active ile (sekmenin adı ya da 0 tabanlı sırası)
          device: phone-web  → telefon çerçevesi + durum çubuğu + mobil adres çubuğu (kilit + card.url'deki alan adı), sekme çubuğu yok
          device: web        → tarayıcı çerçevesi (üç nokta + adres çubuğu), mockup'lar geniş, metin sütunu 580px
 
@@ -224,6 +226,12 @@
          Kampanya şeridi <div class="r-banner">4 taksit imkânı</div> (marka renginde dolu şerit)
          Rozet, fiyat    .r-badge (.warn, .brand) · <span class="r-old">1.200 TL</span><span class="r-now">990 TL</span><span class="r-per">/ay</span>
          Kalemler        .r-item/.r-thumb/.r-item-body/.r-name/.r-meta/.r-price · .r-line, .r-line.total · .r-card · .r-divider · .r-stars · .r-link
+
+       İŞARETLEME İZİN LİSTESİYLE SINIRLIDIR; build_card.py listede olmayanı temizlemez, kartı reddeder:
+         etiketler  div span p b strong i em u s small sup sub br hr ul ol li
+         nitelikler class style data-note data-pos title role aria-*  (her değer çift tırnak içinde)
+         yok        yorum, bağlantı (href), görsel/kaynak (src), form, betik, olay işleyici (on…=), style içinde url(), dış stil içe aktarma, position:fixed
+         .hl sarmalayıcısı satır içi margin ya da padding taşımaz (halka içeriği itmez); r-… sınıfları yalnızca burada tanımlı olanlardır.
 
        İÇERİK GERÇEK YAZILIR (mockup-style.md → Gerçekçilik seviyesi). Alanlara girilmiş kişisel veri
        (ad, e-posta, telefon, kimlik/kart numarası) asla taşınmaz; alan boş varsayılan hâliyle çizilir. -->

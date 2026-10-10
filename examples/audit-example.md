@@ -58,6 +58,8 @@ python3 scripts/analyze_results.py interaction \
   ],
   "interaction_relative": {"ratio_of_rate_ratios": 1.15797, "p_value": 0.18004, "is_significant": false},
   "effect_differs": false,
+  "scale_dependent": false,
+  "decision_code": "no_evidence_of_difference",
   "decision": "no evidence the effect differs between segments"
 }
 ```
@@ -97,9 +99,28 @@ difference (p = 0.18). Fix: declare one decision segment before launch, or
 decide on the overall result and treat segments as exploratory, testing a
 segment difference only with `interaction`.
 
-**[Serious] Guardrail without a number.** "Must not get worse" can't be
-decided. Proposal (to confirm): cart abandonment must not rise more than 2%
-relative, tested one-sided.
+**[Serious] Guardrail without a number, and not an independent harm.** "Must
+not get worse" can't be decided, and once the primary is orders per homepage
+visitor, cart abandonment is a step that primary already contains: it can't
+degrade while the primary improves. A free-returns promise has an obvious cost
+the primary can't see: returns. Proposal (to confirm): return rate within 30
+days of delivery, per order, must not rise more than 5% relative, tested
+one-sided (`--guardrail-direction must_not_increase`) and read 30 days after the
+last order of the test; the ship decision waits for that window.
+
+**[Serious] Stopping on an early look.** "Day 5 so far … (significant!)" on a
+7-day plan with no planned sample is peeking: checking repeatedly and reacting
+when significance appears inflates the false-positive rate. Fix: fix the sample
+per arm before launch and read the result once, when it is reached
+(`significance --planned-n` flags an early look).
+
+**[Serious] No accessibility check.** B adds a tappable banner. It needs a
+pass/fail check on B before launch (keyboard and screen-reader reachable, an
+accessible name, touch target size, contrast), not a metric.
+
+**[Serious] The banner's claim is market-dependent and has to be true.** "Free
+returns for 30 days" must match the store's actual returns policy in the target
+market, which the plan doesn't state. Needs verifying before any traffic.
 
 **[Serious] Client-side switch after load.** Users can see A flash before B
 (flicker), which both changes the experience and blurs which arm a user saw.
@@ -109,7 +130,7 @@ exposure is logged separately from assignment.
 **[Improvement] Duration.** Seven days misses weekly cycles; plan at least two
 full weeks, sized with `samplesize` once the primary metric is fixed.
 
-**[Improvement] No "never do" list.** The plan doesn't state what would
+**[Serious] No "never do" list.** The plan doesn't state what would
 invalidate it (rule 1). Written up as a finding; the plan is not rewritten into
 the three boxes for the user.
 
@@ -119,5 +140,7 @@ the three boxes for the user.
 unequal denominators) each invalidate the result on their own. It can run once
 the button copy is equalised, the assignment bug behind the SRM is fixed, both
 arms are measured per homepage visitor with orders as the primary, the
-guardrail has a margin, and either one segment is pre-declared or segments are
-read as exploratory. Restart the count from day 1 after the fix.
+guardrail is an independent harm with a margin and a follow-up window, the
+sample is fixed in advance and read once, and either one segment is
+pre-declared or segments are read as exploratory. Restart the count from day 1
+after the fix.

@@ -22,7 +22,7 @@ Anında filtreleme hızlı geri bildirim verir; toplu filtreleme daha kontrollü
 - Filtre Kullanım Oranı: Hangi modelde daha çok filtre uygulanıyor?
 - Keşif Derinliği: Daha fazla ürün görüntüleniyor mu?
 - Sayfa Yenileme Süresi: Site hızı bozulmamalı.
-- Terk Oranı: Yükselmemeli.
+- Sıfır Sonuç Oranı: Toplu uygulamada birbirini dışlayan seçimler boş sonuç ekranını artırmamalı.
 
 **Yapılmaması gerekenler**
 - Anında filtrelemede her tıklamada sayfayı en üste kaydırıp kullanıcının yerini kaybettirmeyin.
@@ -55,25 +55,25 @@ Arama çubuğunun konumu ve görünürlüğü, kullanıcının ürün keşif dav
 
 **Yapılmaması gerekenler**
 - Arama kullanımı yüksek bir sitede menü-içi kolu teste hiç sokmayın; o kol ancak arama payı düşükse denenir.
-- Placeholder metnini uzun yazmayın; okunabilirlik düşer.
+- Aynı testte arama alanının görünürlüğünü değiştirirken placeholder metnini de değiştirmeyin.
 - İkon varyantında ikonu etiketsiz ve tanınmayan bir simgeyle göstermeyin.
 - Mobilde arama ikonunu tıklanamayacak kadar küçültmeyin.
 - Sonuçsuz aramada kullanıcıyı boş ekranda bırakmayın.
 
 ---
 
-## Varsayılan arama önerileri dönüşümü etkiliyor mu?
+## Arama kutusundaki önceki arama önerilerini kaldırmak dönüşümü etkiliyor mu?
 
 Değişken: Önceki arama önerileri · Fark: kaldır
 
-Arama alanının önceki aramaları otomatik doldurup doldurmaması, keşif sürecini ve karar hızını değiştirebilir.
+Arama kutusu açıldığında önceki aramaları varsayılan öneri olarak listelemek aramaya başlamayı hızlandırır ama kullanıcıyı eski aramalarına geri çeker. Bu varsayılan öneri listesini kaldırmak (geçmişe erişim ayrı bir bağlantıda kalır) keşif sürecini ve karar hızını değiştirebilir.
 
 **Test edilmesi gerekenler**
 - Hız: Varsayılan öneri varken aramaya daha hızlı başlanıyor mu?
 - Keşif: Otomatik doldurmamak yeni içerik keşfini artırıyor mu?
 - Boş kutu: Boş arama kutusu popüler kategorilere yönlendiriyor mu?
 - Cihaz: Mobilde klavye açıkken öneri listesi ekranın ne kadarını kaplıyor ve kullanımı değiştiriyor mu?
-- Geçmiş: Geçmişe erişimi kaldırmak şikâyet yaratıyor mu?
+- Geçmiş: Önceki aramalar varsayılan listeden kalkınca geçmişini arayan kullanıcıdan şikâyet geliyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Arama sonrası satın alma nasıl değişiyor?
@@ -85,7 +85,7 @@ Arama alanının önceki aramaları otomatik doldurup doldurmaması, keşif sür
 **Yapılmaması gerekenler**
 - Önceki aramaları tamamen kaldırmayın; kullanıcı geçmişe erişebilmeli.
 - Otomatik doldurulan eski aramayı kullanıcı silmeden yeni aramaya eklemeyin.
-- Aynı testte kategori ve filtre isimlerini değiştirmeyin.
+- Aynı testte önceki arama önerilerini kaldırırken popüler arama veya kategori önerilerini de değiştirmeyin.
 - Otomatik önerileri tümden kapatıp kullanıcıyı yönsüz bırakmayın.
 - Başka kullanıcıların hassas aramalarını popüler öneri olarak göstermeyin.
 
@@ -113,7 +113,7 @@ Sonuç bulunamayan arama, terk oranı en yüksek ekranlardan biridir. Boş bir e
 
 **Yapılmaması gerekenler**
 - Alakasız ürün önerip kullanıcıyı yanıltmayın.
-- Arama kutusunu ekrandan kaldırmayın.
+- Aynı testte öneri bloklarını eklerken arama kutusunun yerini veya sıfır sonuç mesajını da değiştirmeyin.
 - Sıfır sonuç sayfasını sadece kampanya alanına çevirmeyin.
 - Öneri bloklarını arama kutusunun üstüne yerleştirip yeniden aramayı zorlaştırmayın.
 - Yazım önerisini otomatik uygulayıp kullanıcıyı şaşırtmayın.
@@ -145,7 +145,7 @@ Varsayılan sıralama, kullanıcıların büyük çoğunluğunun gördüğü tek
 - Stokta olmayan ürünleri üst sıraya taşımayın.
 - Aynı testte hem sıralamayı hem filtre setini değiştirmeyin.
 - Sponsorlu ürünleri organik sonuç gibi göstermeyin.
-- Sadece dönüşüme bakıp marj etkisini atlamayın.
+- Varsayılan sıralamayı, etiketinde yazan ölçütten (“Önerilen”, “Çok satan”) farklı bir kurala göre dizmeyin.
 
 ---
 
@@ -172,7 +172,7 @@ Menünün sabit kalması sayfa içi gezinme hızını artırabilir, ancak ekran 
 **Yapılmaması gerekenler**
 - Sticky menüyü ekranın büyük bölümünü kaplayacak kadar yüksek yapmayın.
 - Mobilde menünün CTA ve filtreleri kapatmasına izin vermeyin.
-- Sayfa hızını düşüren animasyon ve gölge kullanmayın.
+- Aynı testte menüyü sabitlerken menü öğelerini veya sırasını da değiştirmeyin.
 - Sticky menüyü kaydırma yönüne göre sürekli gizleyip gösterip titremeye yol açmayın.
 - Menü sabitlenirken sayfa kaymasına yol açmayın.
 
@@ -203,7 +203,7 @@ Mega menü mü, sade yatay menü mü daha iyi gezinme sunuyor? Yapıdaki fark, i
 - Mega menüde çok fazla kategori sunmayın; bilgi yükü yaratır.
 - Mobilde yatay menüde kaydırma sorununa izin vermeyin.
 - Mega menüde kolon sayısını taranamayacak kadar artırmayın.
-- Menü açılma hızını yavaşlatan animasyon eklemeyin.
+- Aynı testte menü yapısını değiştirirken kategori adlarını veya sırasını da değiştirmeyin.
 
 ---
 
@@ -232,7 +232,7 @@ Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir.
 - Alt başlıkları aşırı azaltıp keşfi kısıtlamayın.
 - Kaldırılan alt başlıklara giden eski bağlantıları yönlendirmesiz bırakmayın.
 - Mobilde sticky menünün kritik alanları kapatmasına izin vermeyin.
-- Menü değişikliğiyle birlikte sayfa hızını etkileyen eklemeler yapmayın.
+- Aynı testte alt başlıkları azaltırken kalan başlıkların adını veya sırasını da değiştirmeyin.
 
 ---
 
@@ -261,7 +261,7 @@ Değişken: İndirim oranı filtresi · Fark: ekle
 - Tutarsız sonuç veren indirim aralığı tasarlamayın.
 - Uydurma referans fiyattan hesaplanan indirim oranını filtreye dahil etmeyin; filtre yalnızca gerçek indirimi göstermeli (kural 6).
 - Mobilde filtre alanını ekranı kaplayacak kadar büyütmeyin.
-- Yalnızca dönüşüme bakıp marj etkisini atlamayın.
+- Aynı testte indirim filtresini eklerken varsayılan sıralamayı veya diğer filtrelerin sırasını da değiştirmeyin.
 
 ---
 
@@ -288,7 +288,7 @@ Filtre panelinin sayfa kaydırılırken ekranda kalması, listenin ortasında fi
 **Yapılmaması gerekenler**
 - Aynı testte filtrenin kalıcılığı ile filtre seçeneklerini birlikte değiştirmeyin.
 - Sabit paneli ekranın yarısını kaplayacak boyutta kurmayın.
-- Sabit panelde filtre kullanımı arttı diye, daralan ürün alanının ürüne tıklamayı düşürüp düşürmediğine bakmadan kazanan ilan etmeyin.
+- Mobilde sabit paneli, tek dokunuşla daraltılamayan bir blok olarak bırakmayın.
 - Sabit panelin altında kalan içeriği erişilemez bırakmayın.
 - Klavye ile gezinirken sabit panelin odak sırasını bozmayın.
 
@@ -312,12 +312,12 @@ Filtreleri doğrudan görünür kılmak varlıklarını hatırlatır ve kullanı
 - Filtre Kullanım Oranı: Filtre uygulayan kullanıcı oranı artıyor mu?
 - Aranan Ürüne Ulaşma Süresi: Doğru ürüne ulaşma hızlanıyor mu?
 - Görülen Ürün Sayısı: Daralan alan görülen ürün sayısını düşürmemeli.
-- Liste Terk Oranı: Kalabalıklaşan sayfa çıkışı artırmamalı.
+- Sayfa Yüklenme Süresi: Açıktaki filtre paneli ve seçenek sayıları listenin yüklenmesini (LCP) geciktirmemeli.
 
 **Yapılmaması gerekenler**
 - Aynı testte filtre görünürlüğü ile filtre sayısını birlikte değiştirmeyin.
 - Açıkta gösterdiğiniz filtreleri kategoriye göre değiştirip testi karıştırmayın.
-- Açıktaki filtrelerin kullanımı arttı diye, kalabalıklaşan sayfanın liste terkini artırıp artırmadığına bakmadan açık düzeni kazanan saymayın.
+- Açık düzende filtre panelini, ilk ürün satırını ilk ekranın dışına itecek kadar uzatmayın.
 - Düğme arkasındaki filtreye kaç filtre uygulandığını gösteren işareti kaldırmayın.
 - Tek kategoride ölçüp sonucu filtre yapısı çok farklı kategorilere taşımayın.
 
@@ -340,7 +340,7 @@ Aranan kelimenin sonuç başlıklarında işaretlenmesi eşleşmenin nerede oldu
 - Dönüşüm Oranı (CR): Aramadan satışa giden oran artıyor mu?
 - Arama Sonucu Tıklama Oranı: Tanı metriği; sonuçlara tıklama artıyor mu?
 - Arama Tekrarı Oranı: Aynı kullanıcının yeniden arama yapması artmamalı.
-- Sonuç Terk Oranı: Sonuç sayfasından çıkış artmamalı.
+- Geri Dönüş Oranı: Vurgulanan zayıf eşleşmeye tıklayıp ürün sayfasından hemen sonuçlara dönenler artmamalı.
 - Erişilebilirlik: Vurgu yalnızca renge dayanmamalı, kontrast korunmalıdır.
 
 **Yapılmaması gerekenler**
@@ -377,4 +377,4 @@ Filtreleri “kimin için, hangi bütçeyle” gibi bir soru akışına çevirme
 - Aynı testte soru sayısı ile soru içeriğini birlikte değiştirmeyin.
 - Akışın sonunda boş sonuç veren kombinasyonları çıkışsız bırakmayın.
 - Cevapları sonraki ziyarette kullanıcıya sormadan kalıcı hâle getirmeyin.
-- Akış tamamlama arttı diye dönüşüme bakmadan kazandı demeyin.
+- Akışın getirdiği sonuç kümesinde hangi cevapların uygulandığını gizlemeyin; kullanıcı her birini tek tek geri alabilmeli.

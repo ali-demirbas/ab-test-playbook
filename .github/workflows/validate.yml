@@ -25,16 +25,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Run unit tests (stats engine, validators, card builder, schema)
+      - name: Run unit tests (stats engine, validators, card builder, schema, example outputs)
+        # tests/test_examples_doc.py re-runs every analyze_results.py command quoted
+        # in examples/*.md and compares the JSON printed next to it, so "real
+        # script output" in the docs cannot drift from the engine.
         run: python -m unittest discover -s tests -v
 
+  # Same two ends of the supported range as the unit tests: the validators and
+  # both bundle builders are scripts users run too, and a 3.10+ construct in one
+  # of them would otherwise only surface on a contributor's machine.
   validate:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: ${{ matrix.python-version }}
       - name: Run repo validation
         # Single entry point: content formats plus the cross-file seams —
         # skill/agent frontmatter, internal links, ${CLAUDE_PLUGIN_ROOT}

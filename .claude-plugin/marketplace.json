@@ -4,7 +4,7 @@
     "name": "Ali Demirbaş"
   },
   "metadata": {
-    "description": "A/B testing and CRO for Claude Code: 211 experiment scenarios, single-variable test design, plan audits and a stdlib-only statistics engine."
+    "description": "A/B testing and CRO for Claude Code: 221 experiment scenarios (e-commerce, mobile app, SaaS, finance, insurance and pension), single-variable test design, plan audits and a stdlib-only statistics engine."
   },
   "plugins": [
     {

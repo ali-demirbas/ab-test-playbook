@@ -55,7 +55,7 @@ Yüzen etiket (alanın içinde başlayıp yazmaya başlayınca üste kayan etike
 
 **Yapılmaması gerekenler**
 - Etiketi tamamen placeholder’a çevirip kaldırmayın; bu ayrı ve daha riskli bir değişikliktir.
-- Yüzen etiketi hem etiket hem yardım metni yerine kullanmayın.
+- Aynı testte etiket tipini değiştirirken alan yüksekliğini veya yardım metnini de değiştirmeyin.
 - Yüzen etiketi, alan boşken placeholder ile aynı renk ve boyutta bırakıp ikisini ayırt edilemez hâle getirmeyin.
 - Otomatik doldurma davranışını test aracıyla bastırmayın; gerçek kullanımda çalışan hâli ölçülmelidir.
 - Hareket azaltma tercihini yok sayan bir geçiş animasyonu koymayın.
@@ -165,7 +165,7 @@ Sayfa açılır açılmaz ilk alana odaklanmak bir adımı ortadan kaldırır ve
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Form sayfasına atanan ziyaretçilerin formu gönderme oranı artıyor mu?
 - Form Başlama Oranı: Tanı metriği; ilk alana giriş artıp gönderim artmıyorsa bulgu budur.
-- Sayfa Terk Oranı: Otomatik odak nedeniyle sayfadan çıkış artmamalı.
+- Doğrulama Hatası Oranı: Üstteki açıklamayı okumadan yazmaya başlayanların hatalı gönderimi artmamalı.
 - Üst İçerik Görüntülenme Oranı: Formun üstündeki açıklamanın okunması düşmemeli.
 - Erişilebilirlik: Klavye ve ekran okuyucu ile gezinme sırası bozulmamalı.
 
@@ -203,7 +203,7 @@ Daha büyük giriş alanı dokunma hedefini büyütür, mobilde yanlış dokunma
 - Alanı büyütürken aradaki boşluğu da değiştirmeyin; ikisi ayrı değişkendir.
 - Dokunma hedefini küçülten bir varyantı erişilebilirlik alt sınırının altına indirmeyin; bu test edilecek bir seçenek değildir.
 - Masaüstünde ölçüp mobil dokunma davranışı hakkında sonuç çıkarmayın.
-- Alanı büyütüp aynı anda ekranda görünen alan sayısını düşürürken bunu yalnızca tamamlama ile değerlendirmeyin, başlama oranına da bakın.
+- Yalnızca bazı alanları büyütüp aynı formda iki farklı alan yüksekliği bırakmayın.
 
 ---
 
@@ -231,7 +231,7 @@ Adres, şehir, şirket gibi alanlarda öneri listesi yazma yükünü azaltır ve
 - Serbest metin girişini tamamen kapatıp kullanıcıyı listeye hapsetmeyin.
 - Kullanıcının seçtiği öneriyi arka planda farklı bir değerle (ör. düzeltilmiş adres) sessizce değiştirmeyin.
 - Aynı testte otomatik tamamlama ile alan sayısını birlikte değiştirmeyin.
-- Tamamlama arttı diye veri doğruluğuna bakmadan kazandı demeyin.
+- Öneri listesini ilk harfte açmayın; birkaç karakter yazılmadan çıkan liste yanlış seçimi artırır.
 - Öneri listesini klavye ile gezilemez hâlde bırakmayın.
 
 ---
@@ -261,7 +261,7 @@ Kısa bir yardım metni (“Fatura adresinizle aynı olmalı”, “Örnek: 5xx 
 - Açıklamayı hata mesajının yerine koymayın; ikisi farklı işlev görür.
 - Yardım metnini tıklanınca açılan bir ipucunun arkasına gizleyip “açıklama ekledik” demeyin; görünürlük ayrı bir değişkendir.
 - Açıklama metnini kontrastı düşük gri ile yazıp okunmaz hâle getirmeyin.
-- Hatalı alan tasarımını açıklama ile yamamayın; asıl çözüm alanın kendisi olabilir.
+- Aynı testte yardım metnini eklerken alanın etiketini veya doğrulama kuralını da değiştirmeyin.
 
 ---
 
@@ -289,7 +289,7 @@ Sosyal giriş şifre oluşturma yükünü kaldırır ve kaydı hızlandırır. B
 - Sosyal girişi tek seçenek yapıp e-posta ile kaydı kaldırmayın.
 - Hangi verilerin alındığını gizleyen bir buton metni kullanmayın.
 - Aynı testte hem sosyal giriş eklemeyi hem form alanı azaltmayı yapmayın.
-- Kayıt arttı diye aktivasyona bakmadan kazandı demeyin.
+- Sosyal hesapla gelen kullanıcıyı, aynı e-postayla açılmış mevcut hesabından ayrı ikinci bir hesaba düşürmeyin.
 - Kimlik doğrulama akışının güvenlik adımlarını sürtünme diye testin konusu yapmayın (kural 6).
 
 ---
@@ -319,7 +319,7 @@ Değişken: Birincil giriş yöntemi · Fark: değiştir
 - Kod ekranında kodun hangi adrese veya numaraya gönderildiğini gizlemeyin; kullanıcı yanlış kanalı düzeltebilmeli.
 - Şifreli girişi aynı anda kaldırıp geri dönüşü olmayan bir varyant kurmayın.
 - Kodun gelmediği durumda yeniden gönderme seçeneğini kaldırmayın veya uzun bir bekleme süresinin arkasına saklamayın.
-- Yalnızca yeni kullanıcıda ölçüp sonucu mevcut kullanıcı tabanına genellemeyin.
+- Aynı testte giriş yöntemini değiştirirken giriş ekranındaki alanları veya oturum süresini de değiştirmeyin.
 
 ---
 
@@ -347,7 +347,7 @@ Kayıt ekranını aksiyonun önüne koymak niyeti test eder ama hazır olmayan k
 - Kaydı erteleyip sonra kullanıcıyı kapatılamayan bir ekranla kayda zorlamayın (kural 6).
 - İşlemi tamamlatıp ardından sonucu kayıt arkasına kilitlemeyin.
 - Aynı testte hem zamanlamayı hem kayıt formunun alanlarını değiştirmeyin.
-- Aksiyon tamamlama arttı diye kayıt kaybını ölçmeden kazandı demeyin.
+- Kayıtsız tamamlanan işlemin sonucuna yeniden ulaşma yolunu (e-posta bağlantısı, takip kodu) bırakmadan varyantı açmayın.
 - Yasal olarak kimlik veya izin gerektiren bir işlemde kaydı ertelemeyi test konusu yapmayın.
 
 ---
@@ -369,7 +369,7 @@ Modal form dikkati toplar ve kullanıcıyı sayfadan koparmaz. Ancak küçük ek
 - Form Tamamlama Oranı: Sunum biçimi gönderimi artırıyor mu?
 - Form Başlama Oranı: Formun fark edilmesi artıyor mu?
 - Yanlışlıkla Kapatma Oranı: Veri girildikten sonra kapatma artmamalı.
-- Sayfa Terk Oranı: Modal nedeniyle sayfadan çıkış artmamalı.
+- Talep Başına Nitelik Oranı: Arkadaki bilgiyi görmeden gönderilen formlar niteliği düşürmemeli.
 - Erişilebilirlik: Modal açıkken odak dışarı kaçmamalı, klavyeyle kapatma bozulmamalı.
 
 **Yapılmaması gerekenler**
@@ -405,7 +405,7 @@ Görünür bir geri düğmesi hata düzeltmeyi kolaylaştırır ve kullanıcıya
 - Geri düğmesini ekleyip veri korumasını uygulamadan test etmeyin; kaybolan veriyi değil kendi hatanızı ölçersiniz.
 - Aynı testte adım sayısını da değiştirmeyin.
 - Tarayıcı geri hareketini engelleyen bir varyant kurmayın.
-- Geri dönüş az kullanıldı diye faydasız saymayın; nadir ama kritik bir kurtarma yolu olabilir.
+- Geri düğmesini “İleri” düğmesiyle aynı görsel ağırlıkta yan yana koymayın; yanlış dokunuş ilerlemeyi geri alır.
 - Ödeme adımında geri dönüşü test ederken işlem güvenliği kontrollerini zayıflatmayın (kural 6).
 
 ---
@@ -457,7 +457,7 @@ Ortalanmış form dikkati toplar ve tek amaçlı sayfalarda doğal durur. Sola h
 - Form Başlama Oranı: İlk dokunuş artıyor mu?
 - Destek İçerik Görülme Oranı: Yandaki güvencelerin görülmesi kabul edilemez ölçüde düşmemeli.
 - Ortalama Doldurma Süresi: Süre uzamamalı.
-- Sayfa Terk Oranı: Çıkış artmamalı.
+- Destek Talebi: Güvence ve özet bloğunu görmeden gönderenlerin açtığı talepler artmamalı.
 
 **Yapılmaması gerekenler**
 - Aynı testte hizalama ile form genişliğini birlikte değiştirmeyin.
@@ -485,7 +485,7 @@ Arka planı karartmak veya bulanıklaştırmak modalı öne çıkarır ve form d
 - Form Tamamlama Oranı: Karartma gönderimi artırıyor mu?
 - Yanlışlıkla Kapatma Oranı: Veri girildikten sonra kapatma artmamalı.
 - Form Başlama Oranı: Formun fark edilmesi artıyor mu?
-- Sayfa Terk Oranı: Kapana kısılma hissi çıkışı artırmamalı.
+- Ortalama Doldurma Süresi: Arkadaki bilgiye bakmak için modalı kapatıp yeniden açmak süreyi uzatmamalı.
 - Erişilebilirlik: Odak modaldan kaçmamalı, klavyeyle kapatma yolu kaybolmamalı.
 
 **Yapılmaması gerekenler**
@@ -522,18 +522,18 @@ Boş bir metin kutusu, ne yazacağını bilmeyen kullanıcıyı durdurur. Hazır
 - Şablon metni kullanıcı yazmış gibi gönderip bunu belirtmeyin.
 - Aynı testte şablon varlığı ile alanın zorunluluğunu birlikte değiştirmeyin.
 - Tek bir şablon sunup tüm gönderimlerin aynılaşmasını sonuçtan bağımsız görmezden gelmeyin.
-- Doldurma oranı arttı diye metinlerin özgünlüğüne bakmadan kazandı demeyin.
+- Şablona kullanıcının adı veya iletişim bilgisi gibi kişisel verileri kendiliğinden gömmeyin; kullanıcı fark etmeden paylaşır.
 
 ---
 
-## Tutar seçiminde hazır butonlar mı, serbest giriş mi sunmalı?
+## Serbest tutar girişinin üstüne hazır tutar butonları eklemek toplam tutarı artırır mı?
 
 Değişken: Hazır tutar butonları · Fark: ekle
 
-Hazır tutar butonları karar yükünü kaldırır, bir aralık önerir ve yazma zahmetini sıfırlar. Serbest giriş kutusu ise kullanıcıyı kendi tutarını belirlemekte özgür bırakır ama boş kutu ne yazılacağı konusunda bir işaret vermez. Sunulan butonların hangi tutarları içerdiği, seçilen ortalama tutarı doğrudan belirler.
+Hazır tutar butonları karar yükünü kaldırır, bir aralık önerir ve yazma zahmetini sıfırlar. Serbest giriş kutusu ise kullanıcıyı kendi tutarını belirlemekte özgür bırakır ama boş kutu ne yazılacağı konusunda bir işaret vermez. Bu testte butonlar serbest giriş kutusunun üstüne eklenir, kutu yerinde kalır. Sunulan butonların hangi tutarları içerdiği, seçilen ortalama tutarı doğrudan belirler.
 
 **Test edilmesi gerekenler**
-- Biçim: Hazır butonlar mı, serbest giriş mi daha çok tamamlatıyor?
+- Varlık: Serbest girişin üstüne hazır butonlar eklemek tamamlamayı artırıyor mu?
 - Aralık: Buton tutarları ortalama seçimi hangi yöne çekiyor?
 - Serbest kutu: Butonlar eklenince, listede olmayan bir tutar yazmak isteyen kullanıcı serbest giriş kutusunu bulup kullanabiliyor mu?
 - Karar yükü: Butonlar tutar belirleme süresini kısaltıp tutar alanında takılıp sayfadan çıkan kullanıcıyı azaltıyor mu?
@@ -550,7 +550,7 @@ Hazır tutar butonları karar yükünü kaldırır, bir aralık önerir ve yazma
 - Serbest giriş imkânını tamamen kaldırıp kullanıcıyı hazır tutarlara hapsetmeyin.
 - Yüksek bir tutarı önceden seçili getirip kullanıcıyı fark etmeden ona yönlendirmeyin; ödenecek tutarı artıran varsayılan kural 6 sınırındadır (bkz. cart-checkout → varsayılan işaretli seçenekler).
 - Aynı testte butonların varlığı ile buton tutarlarını birlikte değiştirmeyin.
-- Tamamlama arttı diye ortalama tutara bakmadan kazandı demeyin.
+- Butona dokununca kullanıcının serbest giriş kutusuna yazdığı tutarı uyarısız silmeyin.
 - Tutarları görünmez küçüklükte yazıp seçim yapmayı zorlaştırmayın.
 
 ---
@@ -579,7 +579,7 @@ Formun üstüne kimin için uygun olduğunu yazmak (asgari bütçe, hizmet bölg
 - Uygunluk açıklamasını caydırıcı veya küçümseyici bir dille yazmayın.
 - Aynı testte açıklama ile form alanlarını birlikte değiştirmeyin.
 - Gerçekte esnek olan bir koşulu kesin kuralmış gibi yazmayın.
-- Hacim düştü diye niteliğe bakmadan kaybetti demeyin; birincil metrik nitelikli taleptir.
+- Koşulu karşılamayan kullanıcıya gidebileceği başka bir yol (farklı ürün, bekleme listesi) göstermeden açıklamayı koymayın.
 - Ayrımcılık doğuracak bir eleme kriterini uygunluk açıklaması olarak kullanmayın.
 
 ---
@@ -588,7 +588,7 @@ Formun üstüne kimin için uygun olduğunu yazmak (asgari bütçe, hizmet bölg
 
 Değişken: Asıl formdan önceki ısındırma sorusu · Fark: ekle
 
-Kullanıcıyı doğrudan çok alanlı bir formla karşılaştırmak yerine, önce tek ve kolay bir soruyla (“Hangisi size en yakın?”) başlamak küçük bir taahhüt yaratır — bu taahhüdün ardından gelen asıl formu tamamlama isteği güçlenebilir. Bu, alanları kademeli açmaktan farklıdır: orada aynı formun alanları sırayla açılır, burada asıl formdan önce ayrı, ilgisiz görünmeyen bir soru sorulur.
+Kullanıcıyı doğrudan çok alanlı bir formla karşılaştırmak yerine, önce tek ve kolay bir soruyla (“Hangisi size en yakın?”) başlamak küçük bir taahhüt yaratır; bu taahhüdün ardından gelen asıl formu tamamlama isteği güçlenebilir. Bu, alanları kademeli açmaktan farklıdır: orada aynı formun alanları sırayla açılır, burada asıl formdan önce ayrı, ilgisiz görünmeyen bir soru sorulur.
 
 **Test edilmesi gerekenler**
 - Sonraki test: Isındırma sorusu kazanırsa, kategori seçimi ile evet/hayır sorusu ayrı bir testte karşılaştırıldığında hangisi daha çok ilerletiyor?
@@ -602,14 +602,14 @@ Kullanıcıyı doğrudan çok alanlı bir formla karşılaştırmak yerine, önc
 - Isındırma Sorusu Yanıtlama Oranı: Soruyu yanıtlayıp devam eden ziyaretçi oranı nedir?
 - Toplam Süre: Isındırma adımı toplam tamamlama süresini kabul edilemez ölçüde uzatmamalı.
 - Talep Başına Nitelik Oranı: Isındırma sorusu talebin niteliğini düşürmemeli.
-- Terk Oranı: Isındırma adımının kendisinde terk artmamalı.
+- Form Tamamlama Oranı (geri dönen ziyaretçi): Formu önceden görmüş ziyaretçide ek adım tamamlamayı düşürmemeli.
 
 **Yapılmaması gerekenler**
 - Isındırma sorusunu asıl formla ilgisiz, dikkat dağıtıcı bir konu yapmayın.
 - Aynı testte ısındırma sorusunun içeriğini ve asıl formun alan sayısını birlikte değiştirmeyin.
 - Soruyu zorunlu hâle getirip atlama seçeneği sunmadan ilerlemeyi engellemeyin.
 - Isındırma sorusunun cevabını, kullanıcıya söylemeden başka bir amaç (ör. segmentleme) için kullanmayın.
-- Isındırma adımını, asıl formun alan sayısını azaltmanın yerine geçen bir çözüm gibi sunmayın — ikisi ayrı testtir.
+- Isındırma adımını, asıl formun alan sayısını azaltmanın yerine geçen bir çözüm gibi sunmayın; ikisi ayrı testtir.
 
 ---
 
@@ -631,12 +631,12 @@ E-posta veya telefon isteyen bir form, kullanıcıda “bu bilgi spam’e mi dö
 - Alan Bazlı Terk Oranı: İlgili alanda bırakma artmamalı.
 - Güven Algısı (anket): Metin güveni artırdığını hissettiriyor mu, yoksa şüphe mi uyandırıyor?
 - Sayfada Kalma Süresi: Ek metin okuma süresini kabul edilemez ölçüde uzatmamalı.
-- Kayıt Sonrası Şikâyet: Verilen sözle kayıt sonrası gönderim davranışı tutarsızsa bu artmamalı — artıyorsa ayrı, engelleyici bir bulgudur (kural 6).
+- Kayıt Sonrası Şikâyet: Verilen sözle kayıt sonrası gönderim davranışı tutarsızsa bu artmamalı; artıyorsa ayrı, engelleyici bir bulgudur (kural 6).
 
 **Yapılmaması gerekenler**
-- Vermediğiniz bir sözü yazmayın — “asla paylaşmayız” derken üçüncü taraf pazarlama ortaklarıyla paylaşıyorsanız bu kural 6 ihlalidir.
+- Vermediğiniz bir sözü yazmayın; “asla paylaşmayız” derken üçüncü taraf pazarlama ortaklarıyla paylaşıyorsanız bu kural 6 ihlalidir.
 - Aynı testte güvence metnini ve form alan sayısını birlikte değiştirmeyin.
-- Metni, gerçek bir gizlilik politikası bağlantısının yerine geçecek şekilde sunmayın — ayrıntılı politika hâlâ erişilebilir olmalı.
+- Metni, gerçek bir gizlilik politikası bağlantısının yerine geçecek şekilde sunmayın; ayrıntılı politika hâlâ erişilebilir olmalı.
 - Güvence metnini o kadar büyük veya göze batan yapmayın ki asıl formu gölgelesin.
 - Hedef pazarın veri koruma mevzuatının gerektirdiği açık rıza metnini bu güvence cümlesiyle karıştırıp eksik bırakmayın (kural 11).
 
@@ -646,7 +646,7 @@ E-posta veya telefon isteyen bir form, kullanıcıda “bu bilgi spam’e mi dö
 
 Değişken: Tek seçimlik alanın kontrol tipi · Fark: değiştir
 
-Radio button tüm seçenekleri aynı anda görünür kılar, kullanıcı tıklamadan karşılaştırma yapabilir ama seçenek sayısı arttıkça dikey yer kaplar. Dropdown yer kazandırır ve çok seçenekli durumlarda formu kısa gösterir, buna karşılık seçenekleri görmek için bir ek tıklama gerektirir ve mobilde platformun kendi bileşenine bağlı bir davranışa geçer — kullanıcı neyle karşılaşacağını göremeden tıklar.
+Radio button tüm seçenekleri aynı anda görünür kılar, kullanıcı tıklamadan karşılaştırma yapabilir ama seçenek sayısı arttıkça dikey yer kaplar. Dropdown yer kazandırır ve çok seçenekli durumlarda formu kısa gösterir, buna karşılık seçenekleri görmek için bir ek tıklama gerektirir ve mobilde platformun kendi bileşenine bağlı bir davranışa geçer; kullanıcı neyle karşılaşacağını göremeden tıklar.
 
 **Test edilmesi gerekenler**
 - Biçim: Radio button mu, dropdown mu ilgili alanın doldurulma oranını artırıyor?

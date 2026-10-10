@@ -2,7 +2,7 @@
 
 Yolculuk aşaması: sayfaya değil öğeye bağlı kararlar. Bir butonun ne dediği, bir bağlantının nasıl davrandığı, bir ikonun etiketli olup olmadığı her sayfada karşınıza çıkar; bu yüzden ayrı bir dosyada toplanmıştır. Buton rengi ve CTA sayısı `cart-checkout.md`, CTA tekrarı `home-landing.md`, ürün sayfasındaki satın alma butonu `product-detail.md` içindedir.
 
-**Bir uyarı.** Bu dosyadaki değişikliklerin çoğu etki sıralamasının alt kademesindedir (`knowledge/methodology.md` → Fikir üretme merceği): daha yüksek kademeden bir aday varken bunlar birinci sıraya konmaz. Yasak değildir — buradaki bir senaryo, sayfada gözlemlenebilen bir kullanıcı engeline dayanan güçlü bir mekanizmaya sahipse önerilir (ör. kontrastı yetersiz olduğu için gerçekten görülmeyen bir buton). Mekanizması “daha dikkat çekici olur” seviyesinde kalıyorsa önerilmez. Düşük trafikli sayfada bu testler ölçülemeyecek kadar küçük fark arar; orada daha yapısal bir değişiklik tercih edilir (`methodology.md` → Uygunluk tablosu). Her KPI listesinin ilk maddesi birincil metriktir; listede en az bir madde bozulmaması gereken guardrail’dir.
+**Bir uyarı.** Bu dosyadaki değişikliklerin çoğu etki sıralamasının alt kademesindedir (`knowledge/methodology.md` → Fikir üretme merceği): daha yüksek kademeden bir aday varken bunlar birinci sıraya konmaz. Yasak değildir; buradaki bir senaryo, sayfada gözlemlenebilen bir kullanıcı engeline dayanan güçlü bir mekanizmaya sahipse önerilir (ör. kontrastı yetersiz olduğu için gerçekten görülmeyen bir buton). Mekanizması “daha dikkat çekici olur” seviyesinde kalıyorsa önerilmez. Düşük trafikli sayfada bu testler ölçülemeyecek kadar küçük fark arar; orada daha yapısal bir değişiklik tercih edilir (`methodology.md` → Uygunluk tablosu). Her KPI listesinin ilk maddesi birincil metriktir; listede en az bir madde bozulmaması gereken guardrail’dir.
 
 ---
 
@@ -31,10 +31,10 @@ Değişken: Buton metninin ifade çerçevesi · Fark: değiştir
 - Aynı testte buton metni ile buton biçimini birlikte değiştirmeyin.
 - Metni butona sığmayacak kadar uzatıp iki satıra bölmeyin.
 - Aynı sayfadaki iki butonu farklı yaklaşımla yazıp hangisinin etkilediğini karıştırmayın.
-- Tıklama arttı diye sonraki adıma bakmadan kazandı demeyin.
+- Kazanç ifadesini, tıklamanın bir ödeme veya bağlayıcı işlem başlattığını gizleyecek biçimde yazmayın.
 
 
-> **Not:** SaaS deneme CTA'sının metni `saas-b2b.md`'de kendi senaryosudur (huni-sonu birincil metrikleriyle); deneme akışı için onu kullanın.
+> **Not:** SaaS deneme CTA’sının metni `saas-b2b.md`’de kendi senaryosudur (huni-sonu birincil metrikleriyle); deneme akışı için onu kullanın.
 ---
 
 ## Dolu buton mu, çerçeveli buton mu daha çok tıklanıyor?
@@ -54,7 +54,7 @@ Dolu buton görsel ağırlığıyla öne çıkar ve birincil aksiyonu işaret ed
 - Ana Aksiyon Tamamlama Oranı: Birincil aksiyon artıyor mu?
 - CTA Tıklama Oranı: Asıl istenen aksiyon artıyor mu?
 - İkincil Buton Tıklama Oranı: İkincil aksiyon tamamen kaybolmamalı.
-- Sayfa Terk Oranı: Belirsiz hiyerarşi çıkışı artırmamalı.
+- Yanlış Tıklama Oranı: Belirsizleşen hiyerarşi, yanlış butona tıklayıp hemen geri dönenleri artırmamalı.
 - Erişilebilirlik: Buton kenar ve metin kontrastı eşiğin altına inmemeli.
 
 **Yapılmaması gerekenler**
@@ -83,7 +83,7 @@ Butona benzeyen bir öğe tıklanabilirliğini açıkça duyurur; bağlantı ise
 - Ana Aksiyon Tamamlama Oranı: İki yolun toplamı artıyor mu?
 - Birincil Aksiyon Oranı: Asıl istenen aksiyon kabul edilemez ölçüde düşmemeli.
 - İkincil Aksiyon Oranı: İkincil yolun kullanımı ne kadar?
-- Sayfa Terk Oranı: Seçenek karmaşası çıkışı artırmamalı.
+- Karar Süresi: Eş ağırlıklı iki seçenek karar süresini kabul edilemez ölçüde uzatmamalı.
 - Erişilebilirlik: Dokunma hedefi küçülmemeli, odak görünürlüğü bozulmamalı.
 
 **Yapılmaması gerekenler**
@@ -91,7 +91,7 @@ Butona benzeyen bir öğe tıklanabilirliğini açıkça duyurur; bağlantı ise
 - Aynı testte biçim ile konumu birlikte değiştirmeyin.
 - İkincil aksiyonu birincil kadar belirgin yapıp hiyerarşiyi silmeyin.
 - Bağlantıyı yalnızca renkle ayırt edilebilir bırakmayın.
-- Birincil aksiyon düştü diye toplam ilerlemeye bakmadan karar vermeyin.
+- Buton kolunda ikincil aksiyonun metnini uzatıp birincil butonu mobilde alt satıra itmeyin.
 
 ---
 
@@ -149,7 +149,7 @@ Değişken: CTA’nın taahhüt düzeyi · Fark: değiştir
 - Aynı testte buton taahhüdü ile fiyat gösterimini birlikte değiştirmeyin.
 - Küçük adımı, aslında büyük bir taahhüde götüren bir kapı gibi kurmayın.
 - İki butonu eşit görsel ağırlıkta verip hiyerarşiyi silmeyin.
-- Tıklama arttı diye zincirin sonuna bakmadan kazandı demeyin.
+- “Fiyatı gör” gibi küçük adım butonunu, fiyatın zaten sayfada yazdığı bir yerde kullanmayın; adımın gerçek bir karşılığı olmalı.
 
 ---
 
@@ -174,7 +174,7 @@ Değişken: İkon yanındaki yazılı etiket · Fark: ekle
 - Erişilebilirlik: Etiketsiz ikon erişilebilir adsız kalmamalı.
 
 **Yapılmaması gerekenler**
-- Etiketi eklerken ikonu da değiştirmeyin.
+- Aynı testte etiketi eklerken ikonun kendisini de değiştirmeyin.
 - Etiketi yalnızca üzerine gelince görünen bir ipucuna dönüştürüp “etiket eklendi” saymayın.
 - Etiket eklerken dokunma hedeflerini küçültmeyin.
 - Ekran okuyucu için tanımlı erişilebilir adı görsel etikete bağımlı hâle getirmeyin.
@@ -228,7 +228,7 @@ Açıklama metninin içine gömülü bir bağlantı, tam ilgili düşünce oluş
 - Ana Aksiyon Tamamlama Oranı: Bağlantı asıl hedefe götürüyor mu?
 - Bağlantı Tıklama Oranı: Tıklama artıyor mu?
 - Kaydırma Derinliği: Metnin okunması kabul edilemez ölçüde düşmemeli.
-- Sayfa Terk Oranı: Erken ayrılma artmamalı.
+- Geri Dönüş Oranı: Bağlantıyla erken ayrılan kullanıcı, hedef sayfadan hemen geri dönmemeli.
 - Erişilebilirlik: Bağlantı yalnızca renkle işaretlenmemeli.
 
 **Yapılmaması gerekenler**
@@ -236,7 +236,7 @@ Açıklama metninin içine gömülü bir bağlantı, tam ilgili düşünce oluş
 - Aynı testte bağlantı yerleşimi ile paragraf metnini birlikte değiştirmeyin.
 - Bağlantı metnini “buraya tıklayın” gibi bağlamsız bir ifadeye indirgemeyin.
 - Aynı paragrafa birden çok bağlantı koyup hangisinin çalıştığını ölçemez hâle gelmeyin.
-- Tıklama arttı diye asıl hedefe ulaşmayı ölçmeden kazandı demeyin.
+- Metin içi bağlantıyı yeni sekmede açıp kullanıcıyı okuduğu sayfadan habersizce koparmayın.
 
 ---
 
@@ -294,7 +294,7 @@ Seçim yapılır yapılmaz sonraki adıma geçmek bir tıklamayı ortadan kaldı
 - Ödeme veya onay adımını otomatik geçişe bağlamayın.
 - Aynı testte otomatik geçiş ile adım sayısını birlikte değiştirmeyin.
 - Otomatik geçişte girilen veriyi korumayan bir uygulama bırakmayın.
-- Süre kısaldı diye hata oranına bakmadan kazandı demeyin.
+- Birden çok seçenek işaretlenebilen veya metin girilen adımda otomatik geçiş kurmayın; kullanıcı girişini bitirmeden ilerler.
 
 ---
 
@@ -302,7 +302,7 @@ Seçim yapılır yapılmaz sonraki adıma geçmek bir tıklamayı ortadan kaldı
 
 Değişken: Site geneli kampanya duyuru şeridi · Fark: ekle
 
-Belirli bir süre boyunca tüm sayfalarda görünen bir duyuru şeridi kampanyayı kaçırılmaz kılar. Riski: kullanıcılar reklam bandına benzeyen öğeleri görmezden gelmeyi öğrenmiştir, şerit her sayfada dikey alan yer ve süreklileşen bir duyuru bir süre sonra görünmez hâle gelir. (Kalıcı hizmet vaatlerini — kargo, iade, teslimat — sayfa üstünde göstermek ayrı bir senaryodur: `home-landing.md` → fayda çubuğu.)
+Belirli bir süre boyunca tüm sayfalarda görünen bir duyuru şeridi kampanyayı kaçırılmaz kılar. Riski: kullanıcılar reklam bandına benzeyen öğeleri görmezden gelmeyi öğrenmiştir, şerit her sayfada dikey alan yer ve süreklileşen bir duyuru bir süre sonra görünmez hâle gelir. (Kalıcı hizmet vaatlerini; kargo, iade, teslimat; sayfa üstünde göstermek ayrı bir senaryodur: `home-landing.md` → fayda çubuğu.)
 
 **Test edilmesi gerekenler**
 - Varlık: Site geneli duyuru kampanya aksiyonunu artırıyor mu?
@@ -316,14 +316,14 @@ Belirli bir süre boyunca tüm sayfalarda görünen bir duyuru şeridi kampanyay
 - Dönüşüm Oranı (CR): Sitenin ana dönüşümü düşmemeli.
 - Çubuk Tıklama Oranı: Çubuk gerçekten tıklanıyor mu?
 - Kapatma Oranı: Rahatsızlık sinyali olarak kapatma artmamalı.
-- Sayfa Terk Oranı: Ek öğe çıkışı artırmamalı.
+- Sayfa Yüklenme Süresi: Her sayfaya eklenen şerit ana içeriğin yüklenmesini geciktirmemeli.
 
 **Yapılmaması gerekenler**
 - Kapatılamayan bir çubuk kurmayın (kural 6).
 - Aynı testte çubuğun varlığı ile içeriğini birlikte değiştirmeyin.
 - Süresi dolunca gerçekten kalkmayan “süreli” kampanya duyurmayın; sayaç ve tarih gerçek olmalı (kural 6).
 - Çubuğu sabitleyip ekranın önemli bir kısmını kalıcı olarak kaplamayın.
-- Çubuk tıklaması arttı diye sitenin ana dönüşümüne bakmadan kazandı demeyin.
+- Şeridi ödeme adımında da gösterip kullanıcıyı siparişin ortasında kampanya sayfasına çekmeyin.
 
 ---
 
@@ -345,14 +345,14 @@ Değişken: Kampanya şeridinin görünme anı · Fark: değiştir
 - Çubuk Görülme Oranı: Çubuğu gören ziyaretçi oranı ne kadar?
 - Yanlış Tıklama Oranı: Kayan içerik kaynaklı yanlış tıklama artmamalı.
 - Dönüşüm Oranı (CR): Ana dönüşüm düşmemeli.
-- Sayfa Terk Oranı: Çıkış artmamalı.
+- Kapatma Oranı: Gecikmeli beliren şeridi okumadan kapatanların payı artmamalı.
 
 **Yapılmaması gerekenler**
 - Beliren çubuğun sayfa içeriğini kaydırmasına izin vermeyin; yer önceden ayrılmalıdır.
 - Aynı testte zamanlama ile çubuk içeriğini birlikte değiştirmeyin.
 - Aynı oturumda kapatılan çubuğu tekrar tekrar göstermeyin.
 - Gecikmeli gösterimi kullanıcı bir aksiyona başladığı anda tetiklemeyin.
-- Görülme oranı arttı diye aksiyona bakmadan kazandı demeyin.
+- Gecikmeli şeridi, ekran okuyucuya duyurulmadan veya klavye odağını üzerine çekerek belirecek biçimde kurmayın.
 
 ---
 
@@ -373,7 +373,7 @@ Sayılı rozet ne kadar bekleyen iş olduğunu söyler ve aciliyeti ölçeklendi
 - Ana Aksiyon Tamamlama Oranı: Teste atanan kullanıcılar içinde bekleyen işi (ör. okunmamış mesajı yanıtlama) tamamlayanların oranı artıyor mu?
 - İlgili Bölüm Ziyaret Oranı: Tanı metriği; rozetin işaret ettiği bölüme giriş artıyor mu?
 - Rozet Yoksayma Oranı: Sürekli görülüp tıklanmayan rozet oranı artmamalı.
-- Uygulama veya Site Terk Oranı: Rahatsızlık çıkışı artırmamalı.
+- Tekrar Ziyaret Oranı: Bunaltan rozet, ilan edilen pencerede geri gelen kullanıcı oranını düşürmemeli.
 - Erişilebilirlik: Rozet yalnızca renkle anlatılmamalı, ekran okuyucuya duyurusuz kalmamalı.
 
 **Yapılmaması gerekenler**
@@ -381,7 +381,7 @@ Sayılı rozet ne kadar bekleyen iş olduğunu söyler ve aciliyeti ölçeklendi
 - Aynı testte rozet biçimi ile rozetin konumunu birlikte değiştirmeyin.
 - Sıfırlanamayan, kullanıcının kapatamadığı bir rozet kurmayın.
 - Rozeti yalnızca kırmızı renkle ayırt edilebilir bırakmayın.
-- Tıklama arttı diye ilgili bölümdeki tamamlamaya bakmadan kazandı demeyin.
+- Sayılı rozette sayıyı, kullanıcı işi bitirdikten sonra da güncellenmeyen eski değerde bırakmayın.
 
 ---
 
@@ -402,7 +402,7 @@ Erişilebilir bir destek düğmesi tereddüt eden kullanıcıya çıkış yolu v
 - Dönüşüm Oranı (CR): Destek erişimi satışa dönüyor mu?
 - Sohbet Başlatma Oranı: Düğme kullanılıyor mu?
 - Destek Yanıt Süresi: Yanıt süresi vaat edilen seviyenin altına düşmemeli.
-- Terk Oranı: Tereddüt kaynaklı bırakma azalıyor mu?
+- Sepet Terk Oranı: Sorusu cevapsız kaldığı için sepeti bırakanlar azalıyor mu?
 - Ana Buton Görünürlüğü: Destek düğmesi asıl aksiyonu kapatmamalı.
 
 **Yapılmaması gerekenler**
@@ -410,7 +410,7 @@ Erişilebilir bir destek düğmesi tereddüt eden kullanıcıya çıkış yolu v
 - Aynı testte düğmenin varlığı ile konumunu birlikte değiştirmeyin.
 - Düğmeyi ana aksiyon butonunun üzerine bindirmeyin.
 - Sohbet başlatmadan kişisel bilgi zorunluluğu koymayın.
-- Sohbet sayısı arttı diye dönüşüme ve yanıt süresine bakmadan kazandı demeyin.
+- Düğmeyi, klavyeyle ulaşılamayan veya ekran okuyucuda adsız kalan bir yüzen öğe olarak kurmayın.
 
 ---
 
@@ -431,7 +431,7 @@ Kendiliğinden açılan sohbet penceresi yardımın varlığını duyurur ve pas
 - Dönüşüm Oranı (CR): Kendiliğinden açılma satışa dönüyor mu?
 - Sohbet Başlatma Oranı: Sohbet sayısı artıyor mu?
 - Nitelikli Sohbet Oranı: Anlamsız veya boş sohbet oranı artmamalı.
-- Sayfa Terk Oranı: Rahatsızlık çıkışı artırmamalı.
+- Erişilebilirlik: Kendiliğinden açılan pencere klavye odağını çalmamalı, ekran okuyucuya duyurusuz açılmamalı.
 - Destek Talebi: Ekibin taşıyabileceği talep seviyesi aşılmamalı.
 
 **Yapılmaması gerekenler**
@@ -439,7 +439,7 @@ Kendiliğinden açılan sohbet penceresi yardımın varlığını duyurur ve pas
 - Kullanıcı bir form doldururken veya ödeme yaparken pencereyi açmayın.
 - Aynı testte açılma davranışı ile karşılama mesajını birlikte değiştirmeyin.
 - Kapatılan pencereyi aynı oturumda tekrar açmayın.
-- Sohbet sayısı arttı diye niteliğe ve destek yüküne bakmadan kazandı demeyin.
+- Otomatik karşılama mesajını gerçek bir temsilci yazmış gibi gösterip otomatik olduğunu gizlemeyin.
 
 ---
 
@@ -460,7 +460,7 @@ Tablo satır ve sütun mantığıyla doğrudan karşılaştırma kurar; çok say
 - Ana Aksiyon Tamamlama Oranı: Sunum biçimi seçim yapmayı artırıyor mu?
 - Karşılaştırma Etkileşim Oranı: İçerik gerçekten inceleniyor mu?
 - Karar Süresi: Seçim süresi kabul edilemez ölçüde uzamamalı.
-- Sayfa Terk Oranı: Karmaşa çıkışı artırmamalı.
+- İade veya İptal Oranı: Farkları bulamayıp yanlış seçeneği alanların iade veya iptali artmamalı.
 - Erişilebilirlik: Tablo yapısı ekran okuyucuda anlamsız hâle gelmemeli.
 
 **Yapılmaması gerekenler**
@@ -507,7 +507,7 @@ Bir sayfadaki dış bağlantı (ör. blog yazısındaki kaynak, ortak site linki
 
 Değişken: Buton metninin kipi · Fark: değiştir
 
-Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağzından söylediği birinci şahıs bildirimiyle mi (“Başlıyorum”) yazıldığı, kararı kimin verdiği hissini değiştirebilir — emir kipi siteden gelen bir talimat gibi okunurken, birinci şahıs ifade kullanıcının kendi kararını onayladığı bir cümle gibi okunur. Etkisi küçük ama tutarlı bir mikro-copy farkıdır; markanın genel ses tonuyla uyumlu olmayan bir kalıp tuhaf durabilir. “Buton metni eylemi mi, kazanılan şeyi mi söylemeli?” senaryosundan farkı: o senaryo metnin içeriğini (eylem mi kazanç mı), bu senaryo aynı içeriğin dilbilgisel kipini değiştirir.
+Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağzından söylediği birinci şahıs bildirimiyle mi (“Başlıyorum”) yazıldığı, kararı kimin verdiği hissini değiştirebilir; emir kipi siteden gelen bir talimat gibi okunurken, birinci şahıs ifade kullanıcının kendi kararını onayladığı bir cümle gibi okunur. Etkisi küçük ama tutarlı bir mikro-copy farkıdır; markanın genel ses tonuyla uyumlu olmayan bir kalıp tuhaf durabilir. “Buton metni eylemi mi, kazanılan şeyi mi söylemeli?” senaryosundan farkı: o senaryo metnin içeriğini (eylem mi kazanç mı), bu senaryo aynı içeriğin dilbilgisel kipini değiştirir.
 
 **Test edilmesi gerekenler**
 - Kip: Emir kipi mi, birinci şahıs bildirimi mi tıklama oranını artırıyor?
@@ -520,12 +520,12 @@ Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağz
 - Dönüşüm Oranı (CR): Buton metni, tıklamadan sonraki adımın tamamlanmasını artırıyor mu?
 - Tıklama Oranı (CTR): Tanı metriği; buton metni tıklamayı artırıyor mu?
 - Marka Algısı (anket): İfade markayı samimiyetsiz veya tuhaf hissettirmemeli.
-- Sayfa Terk Oranı: Değişiklik terk oranını artırmamalı.
+- Destek Talebi: “Yanlışlıkla başlattım” türü talepler artmamalı; ifade, verilmemiş bir kararı verilmiş gibi göstermemeli.
 - Tekrar Ziyaret Oranı: Kısa vadeli tıklama artışı uğruna marka algısı zedelenmemeli.
 
 **Yapılmaması gerekenler**
 - Aynı testte buton metninin kipini ve rengini veya boyutunu birlikte değiştirmeyin.
-- Birinci şahıs ifadeyi, kullanıcının henüz vermediği bir kararı vermiş gibi göstermek için kullanmayın — ücretli bir işlemde onay adımı hâlâ ayrıca gösterilmeli.
+- Birinci şahıs ifadeyi, kullanıcının henüz vermediği bir kararı vermiş gibi göstermek için kullanmayın; ücretli bir işlemde onay adımı hâlâ ayrıca gösterilmeli.
 - Marka sesi ile tutarsız bir kip seçip sayfanın geri kalanıyla çelişen bir ton yaratmayın.
 - Farklı butonlarda farklı kipler kullanıp sayfa içi tutarlılığı bozmayın.
 - Birinci şahıs kipi reddetme butonunda (“Hayır, indirim istemiyorum”) kullanıcıyı suçlayan bir ifadeye çevirmeyin.
@@ -550,13 +550,13 @@ Bir sitenin herhangi bir noktasındaki tanıtım banner’ı genellikle birden f
 - Banner Tıklama Oranı: Tanı metriği; tek odaklı banner tıklamayı artırıyor mu?
 - Dönüşüm Oranı (CR): Banner odağı sitenin ana dönüşümünü düşürmemeli.
 - Kaybolan Teklif Farkındalığı (anket): Banner’dan çıkarılan diğer tekliflerin bilinirliği kabul edilemez ölçüde düşmemeli.
-- Sayfa Terk Oranı: Tek mesaj kaynaklı çıkış artmamalı.
+- Brüt Marj: Tek mesaj indirime kilitlenince indirimli sipariş payı marjı eritmemeli.
 
 **Yapılmaması gerekenler**
 - Aynı testte banner’ın odağı ile konumunu/boyutunu birlikte değiştirmeyin.
 - Gerçekte sınırlı olmayan bir teklifi “bugüne özel” gibi göstermeyin (kural 6).
 - Çıkarılan diğer teklifleri sitenin hiçbir yerinde göstermeyip tamamen kaybettirmeyin; en azından ilgili sayfada bulunabilir olmalılar.
-- Tıklama arttı diye tıklama sonrası tamamlamaya bakmadan kazandı demeyin.
+- Tek motivasyonlu banner’ı, vaat ettiği teklifin geçerli olmadığı bir ürün veya kategori sayfasına bağlamayın.
 - Tek motivasyonu, aslında farklı ziyaretçi segmentlerine göre değişmesi gereken bir mesajı zorla tekleştirmek için kullanmayın.
 
 ---
@@ -565,7 +565,7 @@ Bir sitenin herhangi bir noktasındaki tanıtım banner’ı genellikle birden f
 
 Değişken: Seçeneklerden birine verilen görsel ağırlık · Fark: değiştir
 
-Kullanıcıya birden fazla eşdeğer seçenek (ör. ürün varyantı, özellik kartı, indirilecek kaynak) sunulduğunda hepsini aynı görsel ağırlıkta göstermek nötr durur ama karar yükünü tamamen kullanıcıya bırakır. Seçeneklerden birini boyut, renk veya konumla diğerlerinden görünür biçimde ağır göstermek seçimi hızlandırabilir; riski, öne çıkarılan seçeneğin gerçekten çoğunluğun ihtiyacına uymamasıdır — bu durumda ağırlık seçimi değil yalnızca tıklamayı yönlendirmiş olur. Bu, `pricing.md`’deki plan sırası veya “en popüler” rozeti senaryolarından farklıdır: onlar fiyat planlarına özgüdür, bu senaryo fiyat içermeyen herhangi bir çoklu seçenek sunumuna uygulanır.
+Kullanıcıya birden fazla eşdeğer seçenek (ör. ürün varyantı, özellik kartı, indirilecek kaynak) sunulduğunda hepsini aynı görsel ağırlıkta göstermek nötr durur ama karar yükünü tamamen kullanıcıya bırakır. Seçeneklerden birini boyut, renk veya konumla diğerlerinden görünür biçimde ağır göstermek seçimi hızlandırabilir; riski, öne çıkarılan seçeneğin gerçekten çoğunluğun ihtiyacına uymamasıdır; bu durumda ağırlık seçimi değil yalnızca tıklamayı yönlendirmiş olur. Bu, `pricing.md`’deki plan sırası veya “en popüler” rozeti senaryolarından farklıdır: onlar fiyat planlarına özgüdür, bu senaryo fiyat içermeyen herhangi bir çoklu seçenek sunumuna uygulanır.
 
 **Test edilmesi gerekenler**
 - Ağırlık: Bir seçeneği görsel olarak öne çıkarmak toplam seçim hızını artırıyor mu?

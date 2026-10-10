@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-A/B test istatistik motoru (v2.1): oran testleri, guardrail (non-inferiority), örneklem ve süre
+A/B test istatistik motoru (v2.2): oran testleri, guardrail (non-inferiority), örneklem ve süre
 planı, SRM, sürekli metrikler, segment etkileşimi, Bayes görünümü.
 
 Mesaj dili: --lang en|tr (varsayılan en). Sayısal alanlar ve alan adları iki dilde aynıdır.
@@ -9,15 +9,20 @@ Kullanım:
   Sonuç yorumlama (iki kol; normal yaklaşım geçersizse otomatik Fisher exact):
     python3 analyze_results.py significance \\
       --control-visitors 5000 --control-conversions 250 \\
-      --variant-visitors 5000 --variant-conversions 290 [--alternative greater] [--planned-n 8000]
+      --variant-visitors 5000 --variant-conversions 290 [--alternative greater] [--planned-n 8000] \\
+      [--expected-direction increase|decrease] [--expected-split 0.5]
+    Karar kodu yönü taşır: significant_improvement / significant_degradation / not_significant /
+    interim_no_decision / invalid_srm. Beklenen yönün tersine anlamlı sonuç asla kazanan okunmaz.
 
   A/B/n (her varyant kontrolle kıyaslanır, Holm düzeltmesi):
     python3 analyze_results.py significance --control-visitors 5000 --control-conversions 250 \\
       --variant 5000:290 --variant 5000:270
 
-  Guardrail (non-inferiority; marj göreli kesir, ör. 0.02):
+  Guardrail (non-inferiority; marj göreli kesir, ör. 0.02; yön ZORUNLU, varsayılanı yok):
     python3 analyze_results.py significance ... --ni-margin 0.02 \\
       --guardrail-direction must_not_increase|must_not_decrease
+    python3 analyze_results.py samplesize --baseline-rate 0.04 --ni-margin 0.02 \\
+      --guardrail-direction must_not_increase      (bu marjı çözmek için gereken örneklem)
 
   Örneklem büyüklüğü ve süre (ters yön: --weeks ile saptanabilir MDE):
     python3 analyze_results.py samplesize --baseline-rate 0.05 --mde 0.20 \\
@@ -47,6 +52,8 @@ Kullanım:
     python3 analyze_results.py revenue ... [--margin-rate 0.35 --variant-margin-rate 0.28]
 
 Tam sayı girdileri esnektir: 1000, 1e3, 1,000 ve 1_000 kabul edilir.
+Göreli değerler (--mde, --ni-margin) kesirdir: 0.10 = %10. 1 ve üstü belirsiz olduğu için reddedilir;
+yüzde yazmak için açık biçimi kullanın: --mde 10%.
 Sadece Python standart kütüphanesi kullanır. Dış bağımlılık yok.
 """
 import argparse
@@ -65,7 +72,7 @@ DEFAULT_SEED = 12345
 _PROFIT_DROP_WARN_PCT = 1.0
 
 _DESCRIPTION_EN = """\
-A/B test statistics engine (v2.1): proportion tests, guardrail (non-inferiority), sample-size and
+A/B test statistics engine (v2.2): proportion tests, guardrail (non-inferiority), sample-size and
 duration planning, SRM, continuous metrics, segment interaction, Bayesian view.
 
 Message language: --lang en|tr (default en). Numeric fields and field names are identical in both.
@@ -73,7 +80,9 @@ Message language: --lang en|tr (default en). Numeric fields and field names are 
 Examples:
   significance --control-visitors 5000 --control-conversions 250 --variant-visitors 5000 --variant-conversions 290
   significance ... --variant 5000:290 --variant 5000:270            (A/B/n, Holm)
-  significance ... --ni-margin 0.02 --guardrail-direction must_not_increase   (guardrail)
+  significance ... --expected-direction decrease                    (a primary where down is good)
+  significance ... --ni-margin 0.02 --guardrail-direction must_not_increase   (guardrail; direction required)
+  samplesize --baseline-rate 0.04 --ni-margin 0.02 --guardrail-direction must_not_increase   (guardrail plan)
   samplesize --baseline-rate 0.05 --mde 0.20 [--daily-visitors 4000]
   samplesize --metric mean --baseline-mean 42 --baseline-sd 120 --mde 0.05
   samplesize --baseline-rate 0.05 --weeks 3 --daily-visitors 4000   (inverse: detectable MDE)
@@ -83,7 +92,9 @@ Examples:
   bayes ... [--seed 12345]
   revenue ... [--margin-rate 0.35 --variant-margin-rate 0.28]
 
-Integer inputs are flexible: 1000, 1e3, 1,000 and 1_000 are accepted. Python standard library only.
+Integer inputs are flexible: 1000, 1e3, 1,000 and 1_000 are accepted. Relative values (--mde, --ni-margin)
+are fractions: 0.10 = 10%. A value of 1 or more is ambiguous and rejected; write a percent explicitly
+as --mde 10%. Python standard library only.
 """
 
 # ---------------------------------------------------------------------------
@@ -306,6 +317,81 @@ def _excludes_zero(ci, alternative, null=0.0):
 
 _ALTERNATIVES = ("two-sided", "greater", "less")
 _GUARDRAIL_DIRECTIONS = ("must_not_decrease", "must_not_increase")
+_EXPECTED_DIRECTIONS = ("increase", "decrease")
+_OPPOSITE = {"greater": "less", "less": "greater"}
+
+
+def _alpha(confidence):
+    """1 − güven düzeyi, kayan nokta artığı olmadan: 1 − 0.95 = 0.050000000000000044 değil 0.05.
+    Eşikteki bir p-değerinin (ör. Holm 2 × 0.025) yanlışlıkla 'anlamlı' çıkmasını önler."""
+    return round(1 - confidence, 12)
+
+
+def _num(x):
+    """Tam sayıyı binlik ayırıcıyla yazar: en → 8,000; tr → 8.000 (Türkçede '8,000' sekiz okunur)."""
+    s = f"{x:,}"
+    return s.replace(",", ".") if LANG == "tr" else s
+
+
+def _resolve_expected_direction(expected_direction, alternative, guardrail_direction=None):
+    """Metrikte hangi yön 'iyileşme' sayılır. Tek yönlü testte hipotez yönü zaten beyan edilmiş yöndür
+    (greater → increase, less → decrease); çelişen bir beyan hatadır. Verilmezse: guardrail koşusunda
+    guardrail yönünden türetilir (must_not_increase = yukarı kötü → 'decrease'; aksi halde artan bir
+    iade oranı 'anlamlı iyileşme' okunurdu), o da yoksa varsayılan 'increase'."""
+    implied = {"greater": "increase", "less": "decrease"}.get(alternative)
+    if expected_direction is None:
+        from_guardrail = {"must_not_increase": "decrease", "must_not_decrease": "increase"}.get(guardrail_direction)
+        return implied or from_guardrail or "increase"
+    if expected_direction not in _EXPECTED_DIRECTIONS:
+        raise ValueError(_t(
+            f"beklenen yön şunlardan biri olmalı: {', '.join(_EXPECTED_DIRECTIONS)} (verilen: {expected_direction})",
+            f"expected direction must be one of: {', '.join(_EXPECTED_DIRECTIONS)} (given: {expected_direction})"))
+    if implied and implied != expected_direction:
+        want = "less" if expected_direction == "decrease" else "greater"
+        raise ValueError(_t(
+            f"--alternative {alternative} bir {'artışı' if implied == 'increase' else 'düşüşü'} test eder ama "
+            f"--expected-direction {expected_direction} verildi; ikisi çelişiyor. Bu metrik için "
+            f"--alternative {want} kullanın.",
+            f"--alternative {alternative} tests for {'an increase' if implied == 'increase' else 'a decrease'} "
+            f"but --expected-direction is {expected_direction}; the two contradict each other. Use "
+            f"--alternative {want} for this metric."))
+    return expected_direction
+
+
+def _effect_direction(diff):
+    return "variant_higher" if diff > 0 else ("variant_lower" if diff < 0 else "none")
+
+
+def _verdict_code(diff, is_significant, opposite_significant, expected):
+    """Yön taşıyan karar kodu. Zararlı yönde anlamlı sonuç hiçbir zaman 'iyileşme' okunmaz."""
+    if is_significant:
+        favourable = (diff > 0) == (expected == "increase") and diff != 0
+        return "significant_improvement" if favourable else "significant_degradation"
+    if opposite_significant:
+        return "significant_degradation"
+    return "not_significant"
+
+
+def _direction_warning(code, is_significant, expected, rel_pct, alternative, p_opposite):
+    if code != "significant_degradation":
+        return None
+    exp_tr = "artış" if expected == "increase" else "düşüş"
+    exp_en = "an increase" if expected == "increase" else "a decrease"
+    size_tr = f" (göreli %{rel_pct:+.1f})" if rel_pct is not None else ""
+    size_en = f" ({rel_pct:+.1f}% relative)" if rel_pct is not None else ""
+    if is_significant:
+        return _t(
+            f"Anlamlı KÖTÜLEŞME: fark beklenen yönün ({exp_tr}) tersine anlamlı{size_tr}. Bu bir kazanan "
+            "değil, kaybeden; yayına alınmaz.",
+            f"Significant DEGRADATION: the difference is significant against the expected direction "
+            f"({exp_en}){size_en}. This is a loser, not a winner; don't ship it.")
+    return _t(
+        f"Tek yönlü test ({alternative}) anlamlı değil, ama fark TERS yönde anlamlı{size_tr} (ters yönlü tek "
+        f"yönlü p = {p_opposite}). Bu 'fark yok' değil, zarardır: yayına alınmaz, 'fark yok' diye "
+        "kaydedilmez.",
+        f"The one-sided test ({alternative}) is not significant, but the difference is significant in the "
+        f"OPPOSITE direction{size_en} (one-sided p the other way = {p_opposite}). This is harm, not 'no "
+        "difference': don't ship it and don't record it as 'no difference'.")
 
 
 def _check_alternative(alternative, confidence=None):
@@ -324,15 +410,35 @@ def _check_confidence(confidence):
 
 
 def _normalize_relative(value, flag):
-    """Göreli kesir bekleyen girdiler (MDE, NI marjı): mutlak değeri 1'den büyükse yüzde sayılır
-    (10 → 0.10). 1.5 gibi bir değer de %1.5 okunur; %150 kastediliyorsa bu araçla planlanmaz."""
-    if abs(value) > 1:
-        new = value / 100
-        return new, _t(
-            f"{flag} {value:g} 1'den büyük; yüzde olarak yorumlandı ({value:g} → {new:g}). "
-            "Göreli değerler kesir olarak verilir: %10 için 0.10.",
-            f"{flag} {value:g} is greater than 1, so it was read as a percentage ({value:g} → {new:g}). "
-            "Relative values are fractions: 0.10 for 10%.")
+    """Göreli kesir bekleyen girdiler (MDE, NI marjı). Kural tek: değer KESİRDİR (0.10 = %10).
+    Mutlak değeri 1 veya üstü olan bir sayı belirsizdir (1 → %1 mi %100 mü? 10 → %10 mu %1000 mi?)
+    ve reddedilir; eskiden 1, %100 lift olarak sessizce okunup birkaç yüz kişilik bir plan veriyordu.
+    Yüzde yazmak isteyen açık biçimi kullanır: '10%' → 0.10. Döner: (kesir, not)."""
+    if isinstance(value, str):
+        txt = value.strip().replace(" ", "")
+        explicit = txt.endswith("%")
+        try:
+            num = float(txt[:-1] if explicit else txt)
+        except ValueError:
+            raise ValueError(_t(f"{flag}: sayı bekleniyordu, ör. 0.10 veya 10% (verilen: {value!r})",
+                                f"{flag}: expected a number, e.g. 0.10 or 10% (given: {value!r})"))
+        if not math.isfinite(num):
+            raise ValueError(_t(f"{flag}: sonlu bir sayı bekleniyordu (verilen: {value!r})",
+                                f"{flag}: expected a finite number (given: {value!r})"))
+        if explicit:
+            return num / 100, _t(f"{flag} {txt} yüzde olarak verildi ({num / 100:g}).",
+                                 f"{flag} {txt} was given as a percent ({num / 100:g}).")
+        value = num
+    if abs(value) >= 1:
+        raise ValueError(_t(
+            f"{flag} {value:g} belirsiz: göreli değerler kesir olarak verilir (0.10 = %10, 0.01 = %1), bu yüzden "
+            f"{value:g} hem %{value:g} hem %{value * 100:g} okunabilir. %{value:g} kastediyorsanız "
+            f"{flag} {value / 100:g} ya da açık yüzde biçimiyle {flag} {value:g}% yazın; gerçekten "
+            f"%{value * 100:g} kastediyorsanız {flag} {value * 100:g}% yazın.",
+            f"{flag} {value:g} is ambiguous: relative values are fractions (0.10 = 10%, 0.01 = 1%), so "
+            f"{value:g} could mean {value:g}% or {value * 100:g}%. For {value:g}% write {flag} {value / 100:g} "
+            f"or the explicit percent form {flag} {value:g}%; if you really mean {value * 100:g}% write "
+            f"{flag} {value * 100:g}%."))
     return value, None
 
 
@@ -484,9 +590,14 @@ def _validate_arm(ad, v, c):
 
 def _decision_text(code):
     return {
-        "significant": _t("anlamlı", "significant"),
+        "significant_improvement": _t("anlamlı iyileşme (beklenen yönde)",
+                                      "significant improvement (in the expected direction)"),
+        "significant_degradation": _t("anlamlı kötüleşme (beklenen yönün tersine): kazanan değil",
+                                      "significant degradation (against the expected direction): not a win"),
         "not_significant": _t("anlamlı değil", "not significant"),
         "interim_no_decision": _t("ara bakış: nihai karar verilmez", "interim look: no final decision"),
+        "invalid_srm": _t("geçersiz: örneklem oranı uyuşmazlığı (SRM), sonuç yorumlanmaz",
+                          "invalid: sample ratio mismatch (SRM), the result is not interpreted"),
     }[code]
 
 
@@ -505,6 +616,16 @@ def _observed_power_note():
 # ---------------------------------------------------------------------------
 
 def _prepare_ni(margin, direction):
+    if direction is None:
+        # Varsayılan yok: must_not_decrease varsayıldığında artan bir iade/hata oranı 'clean' çıkıyordu.
+        raise ValueError(_t(
+            "--ni-margin ile birlikte --guardrail-direction zorunludur; varsayılanı yoktur. Yukarı kötüyse "
+            "(iade, iptal, hata, destek talebi, LCP) must_not_increase; aşağı kötüyse (marj, dönüşüm, "
+            "elde tutma) must_not_decrease verin. Yanlış yön, kötüleşen bir metriği 'temiz' gösterir.",
+            "--guardrail-direction is required with --ni-margin; there is no default. Use must_not_increase "
+            "when up is bad (returns, cancellations, errors, support tickets, LCP) and must_not_decrease "
+            "when down is bad (margin, conversion, retention). The wrong direction reports a degrading "
+            "metric as clean."))
     if direction not in _GUARDRAIL_DIRECTIONS:
         raise ValueError(_t(
             f"guardrail yönü şunlardan biri olmalı: {', '.join(_GUARDRAIL_DIRECTIONS)} (verilen: {direction})",
@@ -517,11 +638,26 @@ def _prepare_ni(margin, direction):
     return margin, theta, conv_note
 
 
+def _ni_required_n(unit_var_control, unit_var_variant, base, margin, theta, alpha, power=0.80, ratio=1.0):
+    """Gerçekte hiçbir değişiklik yokken (varyant = kontrol) non-inferiority'yi göstermek için gereken
+    kontrol örneklemi: n_k = (z_α + z_β)² · (Var_v/ratio + θ²·Var_k) / (baz · marj)².
+    Tek yönlü test; birim varyans oranlarda p(1−p), ortalamalarda sd²."""
+    z = norm_ppf(1 - alpha) + norm_ppf(power)
+    return math.ceil(z * z * (unit_var_variant / ratio + theta * theta * unit_var_control)
+                     / (base * margin) ** 2 - 1e-9)
+
+
 def _ni_result(margin, direction, theta, observed_rel, stat_name, stat, p_ni, p_harm, alpha,
-               method, conv_note, df=None):
+               method, conv_note, df=None, rare_event=None, needed=None):
     passed = p_ni < alpha
     degraded = p_harm < alpha
     status = "clean" if passed else ("degraded" if degraded else "inconclusive")
+    reason = None
+    if rare_event is not None:
+        # Wald yaklaşımı bu sayılarda güvenilmez: ne 'temiz' ne 'kötüleşti' kararı verilir.
+        status, passed, reason = "inconclusive", False, "rare_event"
+    elif status == "inconclusive":
+        reason = "underpowered"
     if direction == "must_not_decrease":
         h0 = _t(f"H0: varyant kontrolden marjdan (%{margin * 100:g}) fazla kötü (varyant ≤ {theta:g} × kontrol)",
                 f"H0: variant is worse than control by more than the margin ({margin * 100:g}%) "
@@ -535,9 +671,45 @@ def _ni_result(margin, direction, theta, observed_rel, stat_name, stat, p_ni, p_
                     "clean: the one-sided test shows the harm stays inside the margin"),
         "degraded": _t("kötüleşti: zarar anlamlı biçimde marjın ötesinde",
                        "degraded: the harm is significantly beyond the margin"),
-        "inconclusive": _t("belirsiz: ne marj içinde kaldığı ne de marjı aştığı gösterilebildi — 'temiz' sayılmaz",
-                           "inconclusive: neither inside nor beyond the margin could be shown — not 'clean'"),
-    }[status]
+        "inconclusive": _t("belirsiz: ne marj içinde kaldığı ne de marjı aştığı gösterilebildi; 'temiz' sayılmaz",
+                           "inconclusive: neither inside nor beyond the margin could be shown; not 'clean'"),
+    }[status] + "."
+    sample_needed, extra = None, None
+    if reason == "rare_event":
+        extra = _t(
+            f"Olay sayısı çok az (en küçük beklenen sayı {rare_event:.1f} < 10): normal yaklaşım geçerli değil, "
+            "bu yüzden guardrail için karar verilmedi; p-değerleri yalnızca bilgi içindir. Daha fazla veri toplayın.",
+            f"Too few events (smallest expected count {rare_event:.1f} < 10): the normal approximation isn't "
+            "valid, so no guardrail verdict is given; the p-values are shown for information only. Collect "
+            "more data.")
+    elif reason == "underpowered" and needed is not None:
+        n_need, n_now, n_now_variant = needed
+        tight = n_need > n_now
+        sample_needed = {
+            "n_control": n_need,
+            "n_variant": math.ceil(n_need * n_now_variant / n_now - 1e-9),
+            "current_n_control": n_now,
+            "multiple_of_current": round(n_need / n_now, 1),
+            "power": 0.80,
+            "assumes": "no true change",
+            "margin_too_tight_for_current_n": tight,
+        }
+        if tight:
+            extra = _t(
+                f"Marj bu trafik için dar: metrik gerçekte hiç değişmemiş olsa bile %{margin * 100:g} marjın içinde "
+                f"kaldığını %80 güçle göstermek için kontrol kolunda yaklaşık {_num(n_need)} gözlem gerekir "
+                f"(şu an {_num(n_now)}; {n_need / n_now:.1f} katı). Bu örneklemle guardrail çözülemez: ya bu "
+                "örnekleme kadar devam edin ya da bir sonraki testte, testten ÖNCE, daha geniş bir marj beyan edin.",
+                f"The margin is too tight for this traffic: even if the metric truly did not change, showing it "
+                f"stays inside a {margin * 100:g}% margin at 80% power needs about {n_need:,} observations in "
+                f"control (now {n_now:,}; {n_need / n_now:.1f}x). This sample cannot resolve the guardrail: "
+                "run to that sample, or declare a wider margin BEFORE the next test.")
+        else:
+            extra = _t(
+                "Örneklem, değişmeyen bir metriği marj içinde göstermeye yeterdi; belirsizlik gözlenen farkın "
+                "marja yakın olmasından geliyor. Guardrail çözülmedi sayılır.",
+                "The sample was large enough to clear an unchanged metric; the uncertainty comes from the "
+                "observed change sitting close to the margin. Treat the guardrail as unresolved.")
     out = {
         "margin_relative": margin,
         "direction": direction,
@@ -548,21 +720,25 @@ def _ni_result(margin, direction, theta, observed_rel, stat_name, stat, p_ni, p_
         "p_value_degraded": _round_p(p_harm),
         "passed": passed,
         "status": status,
+        "inconclusive_reason": reason,
+        "inconclusive_detail": extra,
+        "sample_needed": sample_needed,
         "method": method,
         "null_hypothesis": h0,
-        "note": " ".join(x for x in (status_txt, conv_note) if x),
+        "note": " ".join(x for x in (status_txt, extra, conv_note) if x),
     }
     if df is not None:
         out["df"] = round(df, 2)
     return out
 
 
-def non_inferiority_proportions(x1, n1, x2, n2, margin, direction="must_not_decrease", confidence=0.95):
+def non_inferiority_proportions(x1, n1, x2, n2, margin, direction=None, confidence=0.95):
     """Oran için göreli marjlı non-inferiority (Wald, oran sınırı doğrusallaştırılmış):
     Δ = p_v − θ·p_k, Var = p_v(1−p_v)/n_v + θ²·p_k(1−p_k)/n_k; θ = 1 − marj (must_not_decrease)
-    veya 1 + marj (must_not_increase). Tek yönlü; 'passed' = H0 (marjdan fazla zarar) reddedildi."""
+    veya 1 + marj (must_not_increase). Tek yönlü; 'passed' = H0 (marjdan fazla zarar) reddedildi.
+    Yön zorunludur. Nadir olay bölgesinde (beklenen sayılardan biri < 10) Wald güvenilmez: 'inconclusive'."""
     margin, theta, conv_note = _prepare_ni(margin, direction)
-    alpha = 1 - confidence
+    alpha = _alpha(confidence)
     p1, p2 = x1 / n1, x2 / n2
     se = math.sqrt(p2 * (1 - p2) / n2 + theta * theta * p1 * (1 - p1) / n1)
     stat = p2 - theta * p1
@@ -574,18 +750,24 @@ def non_inferiority_proportions(x1, n1, x2, n2, margin, direction="must_not_decr
     else:  # iki oran da 0 veya 1: Wald varyansı tanımsız, karar verilmez
         z, p_ni, p_harm = 0.0, 1.0, 1.0
     observed_rel = (p2 / p1 - 1) if p1 > 0 else None
+    p_pool = (x1 + x2) / (n1 + n2)
+    min_expected = min(n1 * p_pool, n1 * (1 - p_pool), n2 * p_pool, n2 * (1 - p_pool))
+    rare = min_expected if min_expected < 10 else None
+    needed = None
+    if 0 < p1 < 1:
+        needed = (_ni_required_n(p1 * (1 - p1), p1 * (1 - p1), p1, margin, theta, alpha, ratio=n2 / n1), n1, n2)
     return _ni_result(margin, direction, theta, observed_rel, "z", z, p_ni, p_harm, alpha,
-                      "wald-ratio-margin", conv_note)
+                      "wald-ratio-margin", conv_note, rare_event=rare, needed=needed)
 
 
-def non_inferiority_means(m1, v1, n1, m2, v2, n2, margin, direction="must_not_decrease", confidence=0.95):
+def non_inferiority_means(m1, v1, n1, m2, v2, n2, margin, direction=None, confidence=0.95):
     """Ortalama için göreli marjlı non-inferiority (Welch tipi): t = (m_v − θ·m_k) / sqrt(v_v/n_v + θ²·v_k/n_k),
     sd Welch-Satterthwaite. Göreli marj için kontrol ortalaması pozitif olmalı."""
     margin, theta, conv_note = _prepare_ni(margin, direction)
     if m1 <= 0:
         raise ValueError(_t("göreli non-inferiority marjı için kontrol ortalaması pozitif olmalı",
                             "a relative non-inferiority margin needs a positive control mean"))
-    alpha = 1 - confidence
+    alpha = _alpha(confidence)
     a1 = theta * theta * v1 / n1
     a2 = v2 / n2
     se2 = a1 + a2
@@ -599,8 +781,9 @@ def non_inferiority_means(m1, v1, n1, m2, v2, n2, margin, direction="must_not_de
         p_ni, p_harm = _t_p(t, df, good), _t_p(t, df, bad)
     else:
         df, t, p_ni, p_harm = None, 0.0, 1.0, 1.0
+    needed = (_ni_required_n(v1, v1, m1, margin, theta, alpha, ratio=n2 / n1), n1, n2) if v1 > 0 else None
     return _ni_result(margin, direction, theta, m2 / m1 - 1, "t", t, p_ni, p_harm, alpha,
-                      "welch-ratio-margin", conv_note, df)
+                      "welch-ratio-margin", conv_note, df, needed=needed)
 
 
 def _ni_warning(ni):
@@ -610,9 +793,9 @@ def _ni_warning(ni):
                   f"Guardrail degraded: the variant is beyond the tolerated margin ({ni['margin_relative'] * 100:g}%) "
                   f"(p = {ni['p_value_degraded']}). Stop the test whatever the primary metric shows.")
     if ni["status"] == "inconclusive":
-        return _t("Guardrail belirsiz: zararın marj içinde kaldığı gösterilemedi; 'temiz' diye raporlamayın.",
+        return _t("Guardrail belirsiz: zararın marj içinde kaldığı gösterilemedi; 'temiz' diye raporlamayın. ",
                   "Guardrail inconclusive: it couldn't be shown that the harm stays inside the margin; "
-                  "don't report it as clean.")
+                  "don't report it as clean. ") + (ni.get("inconclusive_detail") or "")
     return None
 
 
@@ -622,20 +805,37 @@ def _ni_warning(ni):
 
 def significance(control_visitors, control_conversions, variant_visitors, variant_conversions,
                  confidence=0.95, alternative="two-sided", planned_n=None, power_target=0.80,
-                 ni_margin=None, guardrail_direction="must_not_decrease"):
+                 ni_margin=None, guardrail_direction=None, expected_direction=None, expected_split=0.5):
     """İki oranın karşılaştırması. Normal yaklaşım geçerliyse iki-oranlı z-testi,
     değilse otomatik Fisher exact testi; karar KULLANILAN yöntemin p-değerine dayanır.
     Tek yönlü hipotezde 'confidence_interval_diff' yalnızca karar yönündeki sınırı taşır;
-    iki yönlü aralık 'confidence_interval_diff_two_sided' alanındadır."""
+    iki yönlü aralık 'confidence_interval_diff_two_sided' alanındadır.
+    expected_direction: birincil metrikte iyileşme sayılan yön ('increase' varsayılan, 'decrease');
+    'decision_code' bu yöne göre significant_improvement / significant_degradation ayrımı yapar.
+    expected_split: kontrol koluna planlanan pay; SRM bu paya göre denetlenir ve tespit edilirse
+    karar kodu 'invalid_srm' olur."""
+    return _significance(control_visitors, control_conversions, variant_visitors, variant_conversions,
+                         confidence, alternative, planned_n, power_target, ni_margin, guardrail_direction,
+                         expected_direction, expected_split)[0]
+
+
+def _significance(control_visitors, control_conversions, variant_visitors, variant_conversions,
+                  confidence=0.95, alternative="two-sided", planned_n=None, power_target=0.80,
+                  ni_margin=None, guardrail_direction=None, expected_direction=None, expected_split=0.5,
+                  check_srm=True):
+    """significance() gövdesi. Döner: (çıktı, yuvarlanmamış {'p', 'p_opposite'}) — Holm düzeltmesi
+    yuvarlanmış p ile değil bu değerlerle yapılır."""
     _validate_arm("kontrol", control_visitors, control_conversions)
     _validate_arm("varyant", variant_visitors, variant_conversions)
     _check_confidence(confidence)
     _check_alternative(alternative, confidence)
+    expected = _resolve_expected_direction(expected_direction, alternative,
+                                           guardrail_direction if ni_margin is not None else None)
     if planned_n is not None and planned_n <= 0:
         raise ValueError(_t(f"planlanan örneklem pozitif olmalı (verilen: {planned_n})",
                             f"planned sample must be positive (given: {planned_n})"))
 
-    alpha = 1 - confidence
+    alpha = _alpha(confidence)
     p1 = control_conversions / control_visitors
     p2 = variant_conversions / variant_visitors
     n1, n2 = control_visitors, variant_visitors
@@ -676,6 +876,16 @@ def significance(control_visitors, control_conversions, variant_visitors, varian
         method = "fisher-exact"
         p_value = fisher_exact(n1, control_conversions, n2, variant_conversions, alternative)
     is_significant = p_value < alpha
+    # Tek yönlü testte veri ters yöne gidebilir: o yönün p-değeri de hesaplanır ki zarar
+    # 'anlamlı değil' diye sessizce kapanmasın.
+    p_opposite = None
+    if alternative != "two-sided":
+        opp = _OPPOSITE[alternative]
+        if normal_approx_valid:
+            p_opposite = _p_from_z(z, opp) if se_pool > 0 else 1.0
+        else:
+            p_opposite = fisher_exact(n1, control_conversions, n2, variant_conversions, opp)
+    opposite_significant = p_opposite is not None and not is_significant and p_opposite < alpha
     ci_agrees = _excludes_zero(ci, alternative) == is_significant
 
     # --- Mevcut örneklemde güç / MDE ---
@@ -704,8 +914,24 @@ def significance(control_visitors, control_conversions, variant_visitors, varian
         ni = non_inferiority_proportions(control_conversions, n1, variant_conversions, n2,
                                          ni_margin, guardrail_direction, confidence)
 
+    srm_block = None
+    if check_srm:
+        sr = srm(n1, n2, expected_split)
+        srm_block = {"srm_detected": sr["srm_detected"], "p_value": sr["p_value"],
+                     "observed_split": sr["observed_split"], "expected_split": expected_split}
+    srm_detected = bool(srm_block and srm_block["srm_detected"])
+
+    verdict = _verdict_code(diff, is_significant, opposite_significant, expected)
+    rel_pct = relative_lift * 100 if relative_lift is not None else None
+
     # Uyarılar öncelik sırasıyla; 'note' en öncelikli olanı, 'warnings' hepsini taşır.
     warnings = []
+    if srm_detected:
+        warnings.append(_srm_warning(srm_block["observed_split"], expected_split, srm_block["p_value"]))
+    dir_warning = _direction_warning(verdict, is_significant, expected, rel_pct, alternative,
+                                     _round_p(p_opposite) if p_opposite is not None else None)
+    if dir_warning:
+        warnings.append(dir_warning)
     if not normal_approx_valid:
         warnings.append(_t(
             "Nadir olay uyarısı: beklenen dönüşüm/dönüşmeme sayılarından en az biri "
@@ -718,8 +944,8 @@ def significance(control_visitors, control_conversions, variant_visitors, varian
             "confidence interval is the Newcombe score interval. Data is thin; don't read this as firm evidence."))
     if peeking_risk:
         warnings.append(_t(
-            f"Ara bakış (peeking) riski: kol başına planlanan {planned_n:,} ziyaretçiye ulaşılmadı "
-            f"(en küçük kol {min(n1, n2):,}). Planlanan örneklem dolmadan erken durdurma yanlış pozitif "
+            f"Ara bakış (peeking) riski: kol başına planlanan {_num(planned_n)} ziyaretçiye ulaşılmadı "
+            f"(en küçük kol {_num(min(n1, n2))}). Planlanan örneklem dolmadan erken durdurma yanlış pozitif "
             "oranını şişirir; bu sonuç nihai karar değildir.",
             f"Peeking risk: the planned {planned_n:,} visitors per arm hasn't been reached "
             f"(smallest arm {min(n1, n2):,}). Stopping before the planned sample inflates the false-positive "
@@ -739,10 +965,12 @@ def significance(control_visitors, control_conversions, variant_visitors, varian
             "Borderline: the p-value (pooled z-test) and the confidence bound (Newcombe) use different methods "
             "and disagree here. The result sits on the threshold; don't read it as firm evidence."))
 
-    if peeking_risk:
+    if srm_detected:
+        code = "invalid_srm"
+    elif peeking_risk:
         code = "interim_no_decision"
     else:
-        code = "significant" if is_significant else "not_significant"
+        code = verdict
 
     out = {
         "control_rate": round(p1, 5),
@@ -768,6 +996,10 @@ def significance(control_visitors, control_conversions, variant_visitors, varian
             [round(rel2[0] * 100, 2), round(rel2[1] * 100, 2)] if rel2 else None,
         "ci_agrees_with_p": ci_agrees,
         "is_significant": is_significant,
+        "effect_direction": _effect_direction(diff),
+        "expected_direction": expected,
+        "opposite_direction_significant": opposite_significant,
+        "p_value_opposite_direction": _round_p(p_opposite) if p_opposite is not None else None,
         "decision": _decision_text(code),
         "decision_code": code,
         "normal_approx_valid": normal_approx_valid,
@@ -782,38 +1014,75 @@ def significance(control_visitors, control_conversions, variant_visitors, varian
         "warnings": warnings,
         "note": warnings[0] if warnings else None,
     }
+    if srm_block is not None:
+        out["srm"] = srm_block
     if ni is not None:
         out["non_inferiority"] = ni
-    return out
+        out["guardrail_status"] = ni["status"]
+    return out, {"p": p_value, "p_opposite": p_opposite, "diff": diff, "expected": expected,
+                 "dir_warning": dir_warning}
+
+
+def _srm_warning(observed, expected_split, p):
+    return _t(
+        f"SRM (örneklem oranı uyuşmazlığı): kontrol payı %{observed * 100:.2f}, planlanan %{expected_split * 100:g} "
+        f"(p = {p}). Randomizasyon veya ölçüm bozuk; anlamlılık, lift ve segment sonuçları yorumlanmaz. "
+        "Planlanan bölüşüm 50/50 değilse kontrol payını --expected-split ile verin.",
+        f"SRM (sample ratio mismatch): control share {observed * 100:.2f}% against a planned {expected_split * 100:g}% "
+        f"(p = {p}). Randomization or measurement is broken; significance, lift and segment results are not "
+        "interpreted. If the planned split was not 50/50, pass the control share with --expected-split.")
 
 
 def significance_multi(control_visitors, control_conversions, variants, confidence=0.95,
                        alternative="two-sided", planned_n=None, ni_margin=None,
-                       guardrail_direction="must_not_decrease"):
+                       guardrail_direction=None, expected_direction=None, expected_ratios=None):
     """A/B/n: her varyant kontrolle kıyaslanır, p-değerleri Holm ile düzeltilir.
-    variants: [(ziyaretçi, dönüşüm), ...]"""
+    variants: [(ziyaretçi, dönüşüm), ...]. expected_ratios: kontrol dahil planlanan kol oranları
+    (varsayılan eşit); SRM tüm kollar üzerinden denetlenir."""
     if not variants:
         raise ValueError(_t("en az bir varyant gerekli", "at least one variant is required"))
     names = [chr(ord("B") + i) if i < 25 else f"V{i + 1}" for i in range(len(variants))]
-    comps = [significance(control_visitors, control_conversions, v, c, confidence, alternative, planned_n,
-                          ni_margin=ni_margin, guardrail_direction=guardrail_direction)
+    pairs = [_significance(control_visitors, control_conversions, v, c, confidence, alternative, planned_n,
+                           ni_margin=ni_margin, guardrail_direction=guardrail_direction,
+                           expected_direction=expected_direction, check_srm=False)
              for v, c in variants]
-    raw = [c["p_value"] for c in comps]
-    adj = holm_adjust(raw)
-    alpha = 1 - confidence
+    comps = [pr[0] for pr in pairs]
+    # Holm, 5 haneye yuvarlanmış p ile değil yuvarlanmamış p ile yapılır: 0.02500056 → 2p = 0.0500011
+    # anlamlı değildir, yuvarlanmış 0.025 ise eşiğin altına düşüyordu.
+    exact = [pr[1]["p"] for pr in pairs]
+    adj = holm_adjust(exact)
+    one_sided = alternative != "two-sided"
+    adj_opp = holm_adjust([pr[1]["p_opposite"] for pr in pairs]) if one_sided else [None] * len(pairs)
+    alpha = _alpha(confidence)
+    sr = srm_multi([control_visitors] + [v for v, _ in variants], expected_ratios)
+    srm_block = {"srm_detected": sr["srm_detected"], "p_value": sr["p_value"],
+                 "observed_shares": sr["observed_shares"], "expected_shares": sr["expected_shares"]}
     out = []
-    for name, (v, c), r, pr, pa in zip(names, variants, comps, raw, adj):
+    for name, (v, c), r, extra, pa, po in zip(names, variants, comps, pairs, adj, adj_opp):
+        extra = extra[1]
         r = dict(r)
         r["arm"] = name
         r["variant_visitors"], r["variant_conversions"] = v, c
-        r["p_value_raw"] = pr
+        r["p_value_raw"] = r["p_value"]
         r["p_value_adjusted"] = _round_p(pa)
         r["is_significant_raw"] = r["is_significant"]
         r["is_significant"] = pa < alpha
-        if r["peeking_risk"]:
+        r["opposite_direction_significant"] = bool(one_sided and not r["is_significant"] and po < alpha)
+        verdict = _verdict_code(extra["diff"], r["is_significant"], r["opposite_direction_significant"],
+                                extra["expected"])
+        if sr["srm_detected"]:
+            code = "invalid_srm"
+        elif r["peeking_risk"]:
             code = "interim_no_decision"
         else:
-            code = "significant" if r["is_significant"] else "not_significant"
+            code = verdict
+        # Yön uyarısı Holm sonrası karara göre yeniden kurulur (ham karar değişmiş olabilir).
+        warnings = [w for w in r["warnings"] if w != extra["dir_warning"]]
+        dw = _direction_warning(verdict, r["is_significant"], extra["expected"], r["relative_lift_pct"],
+                                alternative, _round_p(po) if po is not None else None)
+        if dw:
+            warnings.insert(0, dw)
+        r["warnings"], r["note"] = warnings, (warnings[0] if warnings else None)
         r["decision"], r["decision_code"] = _decision_text(code), code
         out.append(r)
     notes = [_t(
@@ -830,6 +1099,12 @@ def significance_multi(control_visitors, control_conversions, variants, confiden
     if ni_margin is not None:
         notes.append(_t("Guardrail (non-inferiority) p-değerleri çoklu karşılaştırma için düzeltilmemiştir.",
                         "Guardrail (non-inferiority) p-values are not adjusted for multiple comparisons."))
+    if sr["srm_detected"]:
+        notes.insert(0, _t(
+            f"SRM (örneklem oranı uyuşmazlığı): kol payları planla uyuşmuyor (p = {sr['p_value']}). Sonuçlar "
+            "yorumlanmaz. Planlanan oranlar eşit değilse --expected-ratios ile verin.",
+            f"SRM (sample ratio mismatch): the arm shares don't match the plan (p = {sr['p_value']}). The "
+            "results are not interpreted. If the planned ratios aren't equal, pass them with --expected-ratios."))
     return {
         "control_visitors": control_visitors,
         "control_conversions": control_conversions,
@@ -841,8 +1116,11 @@ def significance_multi(control_visitors, control_conversions, variants, confiden
         "ci_adjustment": "none",
         "confidence_level": confidence,
         "alternative": alternative,
+        "srm": srm_block,
         "comparisons": out,
         "any_significant": any(r["is_significant"] for r in out),
+        "any_significant_improvement": any(r["decision_code"] == "significant_improvement" for r in out),
+        "any_significant_degradation": any(r["decision_code"] == "significant_degradation" for r in out),
         "peeking_risk": any(r["peeking_risk"] for r in out),
         "note": " ".join(notes),
     }
@@ -873,7 +1151,8 @@ def srm_multi(visitors, expected_ratios=None):
     expected = [total * sh for sh in shares]
     chi2 = sum((o - e) ** 2 / e for o, e in zip(visitors, expected))
     df = len(visitors) - 1
-    p_value = chi2_sf(chi2, df)
+    # Çok büyük ki-karede kuyruk olasılığı 0.0'a taşar; p hiçbir zaman tam 0 basılmaz.
+    p_value = max(chi2_sf(chi2, df), _FPMIN)
     approx_valid = min(expected) >= 5
     # SRM her testte koşulur; nominal %5 eşiği her 20 testte bir yanlış alarm verir.
     # Pratikte çok daha katı p < 0.001 eşiği kullanılır (tasarım tercihi).
@@ -908,12 +1187,23 @@ def srm(control_visitors, variant_visitors, expected_split=0.5):
                             f"expected split must be between 0 and 1 (given: {expected_split})"))
     r = srm_multi([control_visitors, variant_visitors], [expected_split, 1 - expected_split])
     total = control_visitors + variant_visitors
+    observed = control_visitors / total
     r.update({
         "control_visitors": control_visitors,
         "variant_visitors": variant_visitors,
-        "observed_split": round(control_visitors / total, 5),
+        "observed_split": round(observed, 5),
         "expected_split": expected_split,
     })
+    # Ters verilmiş pay: gözlenen kontrol payı beklenene değil (1 − beklenen)'e oturuyorsa büyük olasılıkla
+    # --expected-split varyantın payıyla verilmiştir.
+    if r["srm_detected"] and expected_split != 0.5 and abs(observed - (1 - expected_split)) < abs(observed - expected_split) / 4:
+        hint = _t(
+            f"Gözlenen kontrol payı (%{observed * 100:.1f}) beklenenin tersine (%{(1 - expected_split) * 100:g}) çok "
+            "yakın: --expected-split KONTROL kolunun payıdır, varyantınki değil; ters verilmiş olabilir.",
+            f"The observed control share ({observed * 100:.1f}%) sits close to the mirror of the expected one "
+            f"({(1 - expected_split) * 100:g}%): --expected-split is the CONTROL share, not the variant's; it "
+            "may have been given the wrong way round.")
+        r["note"] = " ".join(x for x in (r["note"], hint) if x)
     return r
 
 
@@ -943,19 +1233,62 @@ def _check_plan_inputs(confidence, power, alternative, ratio, arms, daily_visito
                                 "--weeks also needs --daily-visitors"))
 
 
-def _prepare_mde(mde, notes):
+def _prepare_mde(mde, notes, alternative="two-sided"):
+    """Döner: (mutlak göreli MDE, yön işareti). Negatif MDE veya --alternative less bir DÜŞÜŞ hedefler:
+    hedef değer baz × (1 − MDE) olur ve örneklem o hedefe göre hesaplanır (oranlarda artışla aynı değildir)."""
     mde, conv = _normalize_relative(mde, "--mde")
     if conv:
         notes.append(conv)
     if mde == 0:
         raise ValueError(_t(f"MDE sıfır olamaz (verilen: {mde})", f"MDE cannot be zero (given: {mde})"))
-    if mde < 0:
-        notes.append(_t(f"Negatif MDE ({mde}) mutlak değeriyle ({abs(mde)}) kullanıldı; örneklem hesabı "
-                        "artış yönünde hedef oranla yapıldı.",
-                        f"Negative MDE ({mde}) was used as its absolute value ({abs(mde)}); the sample size was "
-                        "computed for an increase."))
-        mde = abs(mde)
-    return mde
+    sign = -1 if (mde < 0 or alternative == "less") else 1
+    mde = abs(mde)
+    if sign < 0:
+        notes.append(_t(f"Hedef bir düşüş (%{mde * 100:g}): örneklem, baz değerin altındaki hedefe göre hesaplandı.",
+                        f"The target is a decrease ({mde * 100:g}%): the sample size was computed for a target "
+                        "below the baseline."))
+    return mde, sign
+
+
+def _guardrail_plan(unit_var, base, ni_margin, guardrail_direction, alpha, power, k, comparisons,
+                    daily_visitors, weeks, notes):
+    """samplesize için guardrail (non-inferiority) planı: beyan edilen marjı, metrik gerçekte değişmezken
+    gösterebilmek için gereken örneklem; --weeks verilirse o sürede çözülebilen en küçük marj."""
+    margin, theta, conv = _prepare_ni(ni_margin, guardrail_direction)
+    if conv:
+        notes.append(conv)
+    n_control = _ni_required_n(unit_var, unit_var, base, margin, theta, alpha, power, k)
+    n_variant = math.ceil(n_control * k - 1e-9)
+    block = {
+        "margin_relative": margin,
+        "direction": guardrail_direction,
+        "assumes": "no true change",
+        "required_n_control": n_control,
+        "required_n_variant": n_variant,
+        "required_n_total": n_control + comparisons * n_variant,
+    }
+    if weeks is not None:
+        n_c_avail = weeks * 7 * daily_visitors / (1 + comparisons * k)
+        sign = -1 if guardrail_direction == "must_not_decrease" else 1
+
+        def need(m):
+            return _ni_required_n(unit_var, unit_var, base, m, 1 + sign * m, alpha, power, k)
+
+        found = _bisect_mde(need, n_c_avail, 1 - 1e-9)
+        block["available_n_control"] = math.floor(n_c_avail)
+        block["margin_resolvable_relative_pct"] = round(found * 100, 2) if found is not None else None
+        if found is not None and found > margin:
+            notes.append(_t(
+                f"Guardrail marjı (%{margin * 100:g}) bu trafik ve sürede çözülemez; çözülebilen en küçük marj "
+                f"yaklaşık %{found * 100:.1f}. Ya marjı testten önce buna göre beyan edin ya da süreyi uzatın.",
+                f"The guardrail margin ({margin * 100:g}%) can't be resolved with this traffic and duration; the "
+                f"smallest resolvable margin is about {found * 100:.1f}%. Declare the margin accordingly before "
+                "the test, or run longer."))
+    elif daily_visitors is not None:
+        d = _duration(block["required_n_total"], daily_visitors, notes)
+        block.update({"duration_days_raw": d["duration_days_raw"], "duration_days": d["duration_days"],
+                      "duration_weeks": d["duration_weeks"]})
+    return block
 
 
 def _duration(total_n, daily_visitors, notes):
@@ -996,9 +1329,12 @@ def _bisect_mde(n_needed, n_available, hi):
 
 
 def sample_size(baseline_rate, mde=None, confidence=0.95, power=0.80, alternative="two-sided",
-                ratio=1.0, arms=2, daily_visitors=None, weeks=None):
+                ratio=1.0, arms=2, daily_visitors=None, weeks=None, ni_margin=None, guardrail_direction=None):
     """Oran metriği için örneklem planı.
-    mde: göreli minimum tespit edilebilir fark (ör. 0.20 = %20 lift); 1'den büyükse yüzde sayılır (10 → 0.10).
+    mde: göreli minimum tespit edilebilir fark, KESİR olarak (0.20 = %20 lift); 1 ve üstü belirsizdir ve
+    reddedilir, yüzde için açık biçim '20%'. Negatif MDE veya alternative='less' bir düşüş hedefler.
+    ni_margin (+ guardrail_direction): guardrail planı — baseline_rate burada GUARDRAIL metriğinin baz
+    oranıdır; 'guardrail' bloğu bu marjı çözmek için gereken örneklemi verir.
     ratio: varyant/kontrol örneklem oranı (n_varyant = ratio * n_kontrol).
     arms: toplam kol sayısı (kontrol dahil); alfa n-1 karşılaştırmaya Bonferroni ile bölünür.
     daily_visitors: tüm kollar toplamı günlük uygun ziyaretçi → süre (tam hafta, en az 14 gün).
@@ -1007,14 +1343,15 @@ def sample_size(baseline_rate, mde=None, confidence=0.95, power=0.80, alternativ
         raise ValueError(_t(f"baz dönüşüm oranı 0 ile 1 arasında olmalı (verilen: {baseline_rate})",
                             f"baseline conversion rate must be between 0 and 1 (given: {baseline_rate})"))
     _check_plan_inputs(confidence, power, alternative, ratio, arms, daily_visitors, weeks)
-    if mde is None and weeks is None:
-        raise ValueError(_t("--mde verin (veya ters hesap için --weeks ve --daily-visitors)",
-                            "give --mde (or --weeks and --daily-visitors for the inverse calculation)"))
+    if mde is None and weeks is None and ni_margin is None:
+        raise ValueError(_t("--mde verin (veya ters hesap için --weeks ve --daily-visitors; guardrail planı için --ni-margin)",
+                            "give --mde (or --weeks and --daily-visitors for the inverse calculation; "
+                            "--ni-margin for a guardrail plan)"))
 
     notes = []
     p1 = baseline_rate
     comparisons = arms - 1
-    alpha = (1 - confidence) / comparisons
+    alpha = _alpha(confidence) / comparisons
     z_alpha = _z_alpha(alpha, alternative)
     z_beta = norm_ppf(power)
     k = ratio
@@ -1037,8 +1374,8 @@ def sample_size(baseline_rate, mde=None, confidence=0.95, power=0.80, alternativ
     }
 
     if mde is not None:
-        mde = _prepare_mde(mde, notes)
-        p2 = p1 * (1 + mde)
+        mde, sign = _prepare_mde(mde, notes, alternative)
+        p2 = p1 * (1 + sign * mde)
         if p2 >= 1:
             raise ValueError(_t(f"hedef oran %100'ü aşıyor ({p2:.3f}); baz oran veya MDE'yi küçültün",
                                 f"target rate exceeds 100% ({p2:.3f}); reduce the baseline rate or the MDE"))
@@ -1063,6 +1400,7 @@ def sample_size(baseline_rate, mde=None, confidence=0.95, power=0.80, alternativ
         out.update({
             "target_rate": round(p2, 5),
             "mde_relative_pct": round(mde * 100, 2),
+            "mde_direction": "decrease" if sign < 0 else "increase",
             "required_n_control": n_control,
             "required_n_variant": n_variant,
             "required_n_per_variant": n_control if ratio == 1 else n_variant,
@@ -1091,6 +1429,11 @@ def sample_size(baseline_rate, mde=None, confidence=0.95, power=0.80, alternativ
             notes.append(_t("Bu trafik ve sürede hiçbir gerçekçi fark saptanamaz; süreyi uzatın veya trafiği artırın.",
                             "No realistic effect is detectable with this traffic and duration; run longer or add traffic."))
 
+    if ni_margin is not None:
+        # Guardrail tek yönlü test edilir; alfa birincil planla aynı karşılaştırma sayısına bölünür.
+        out["guardrail"] = _guardrail_plan(p1 * (1 - p1), p1, ni_margin, guardrail_direction, alpha, power, k,
+                                           comparisons, daily_visitors, weeks, notes)
+
     if arms > 2:
         notes.append(_t(f"{arms} kol: alfa {comparisons} karşılaştırmaya Bonferroni ile bölündü "
                         f"(karşılaştırma başına alfa {alpha:.4f}).",
@@ -1101,7 +1444,8 @@ def sample_size(baseline_rate, mde=None, confidence=0.95, power=0.80, alternativ
 
 
 def sample_size_mean(baseline_mean, baseline_sd, mde=None, confidence=0.95, power=0.80,
-                     alternative="two-sided", ratio=1.0, arms=2, daily_visitors=None, weeks=None):
+                     alternative="two-sided", ratio=1.0, arms=2, daily_visitors=None, weeks=None,
+                     ni_margin=None, guardrail_direction=None):
     """Sürekli metrik (ortalama) için örneklem planı — iki örneklem normal yaklaşımı, iki kolda eşit sd:
     n_kontrol = (z_α + z_β)² · sd² · (1 + 1/ratio) / δ², δ = |ortalama| · mde."""
     if baseline_mean == 0:
@@ -1111,12 +1455,13 @@ def sample_size_mean(baseline_mean, baseline_sd, mde=None, confidence=0.95, powe
         raise ValueError(_t(f"baz standart sapma pozitif olmalı (verilen: {baseline_sd})",
                             f"baseline standard deviation must be positive (given: {baseline_sd})"))
     _check_plan_inputs(confidence, power, alternative, ratio, arms, daily_visitors, weeks)
-    if mde is None and weeks is None:
-        raise ValueError(_t("--mde verin (veya ters hesap için --weeks ve --daily-visitors)",
-                            "give --mde (or --weeks and --daily-visitors for the inverse calculation)"))
+    if mde is None and weeks is None and ni_margin is None:
+        raise ValueError(_t("--mde verin (veya ters hesap için --weeks ve --daily-visitors; guardrail planı için --ni-margin)",
+                            "give --mde (or --weeks and --daily-visitors for the inverse calculation; "
+                            "--ni-margin for a guardrail plan)"))
     notes = []
     comparisons = arms - 1
-    alpha = (1 - confidence) / comparisons
+    alpha = _alpha(confidence) / comparisons
     zsum = _z_alpha(alpha, alternative) + norm_ppf(power)
     k = ratio
     m_abs = abs(baseline_mean)
@@ -1132,14 +1477,15 @@ def sample_size_mean(baseline_mean, baseline_sd, mde=None, confidence=0.95, powe
         "alpha_per_comparison": round(alpha, 6),
     }
     if mde is not None:
-        mde = _prepare_mde(mde, notes)
+        mde, sign = _prepare_mde(mde, notes, alternative)
         delta = m_abs * mde
         n_control = math.ceil(zsum ** 2 * baseline_sd ** 2 * (1 + 1 / k) / delta ** 2 - 1e-9)
         n_variant = math.ceil(n_control * k - 1e-9)
         total = n_control + comparisons * n_variant
         out.update({
-            "target_mean": round(baseline_mean + math.copysign(delta, baseline_mean), 6),
+            "target_mean": round(baseline_mean + sign * math.copysign(delta, baseline_mean), 6),
             "mde_relative_pct": round(mde * 100, 2),
+            "mde_direction": "decrease" if sign < 0 else "increase",
             "mde_absolute": round(delta, 6),
             "required_n_control": n_control,
             "required_n_variant": n_variant,
@@ -1166,6 +1512,12 @@ def sample_size_mean(baseline_mean, baseline_sd, mde=None, confidence=0.95, powe
             "mde_detectable_relative_pct": round(delta / m_abs * 100, 2),
             "mde_detectable_absolute": round(delta, 6),
         })
+    if ni_margin is not None:
+        if baseline_mean <= 0:
+            raise ValueError(_t("göreli non-inferiority marjı için baz ortalama pozitif olmalı",
+                                "a relative non-inferiority margin needs a positive baseline mean"))
+        out["guardrail"] = _guardrail_plan(baseline_sd ** 2, baseline_mean, ni_margin, guardrail_direction, alpha,
+                                           power, k, comparisons, daily_visitors, weeks, notes)
     notes.append(_t("Normal yaklaşım, iki kolda eşit sd varsayar. Çarpık gelir verisinde sd'yi, analizde "
                     "uygulayacağınız winsorize ile aynı şekilde kırpılmış geçmiş veriden hesaplayın.",
                     "Normal approximation, equal SD in both arms. For skewed revenue data, compute the SD from "
@@ -1217,11 +1569,26 @@ def read_csv_table(path, value_column=None, id_column=None, value_flag="--value-
     sütununu metrik sanıp sahte bir anlamlı sonuç üretir. Başlık satırı otomatik algılanır
     (ilk satırdaki tüm dolu hücreler sayı değilse başlıktır).
     inherited=True: sütun belirtimi başka bir dosyadan devralındı; tek sütunlu dosyada yok sayılır."""
-    with open(path, encoding="utf-8-sig", newline="") as f:
-        raw = list(csv.reader(f))
+    try:
+        with open(path, encoding="utf-8-sig", newline="") as f:
+            raw = list(csv.reader(f))
+    except FileNotFoundError:
+        raise ValueError(_t(f"{path}: dosya bulunamadı", f"{path}: file not found"))
+    except UnicodeDecodeError:
+        raise ValueError(_t(f"{path}: dosya UTF-8 değil (ör. UTF-16 veya Windows-1254); UTF-8 CSV olarak dışa aktarın",
+                            f"{path}: the file is not UTF-8 (e.g. UTF-16 or a Windows code page); export it as UTF-8 CSV"))
+    except OSError as e:
+        raise ValueError(_t(f"{path}: dosya okunamadı ({e.strerror or e})", f"{path}: could not read the file ({e.strerror or e})"))
     rows = [(i + 1, [c.strip() for c in r]) for i, r in enumerate(raw) if any(c.strip() for c in r)]
     if not rows:
         raise ValueError(_t(f"{path}: hiç sayısal değer yok", f"{path}: no numeric values"))
+    if all(len(r) == 1 and ";" in r[0] for _, r in rows):
+        raise ValueError(_t(
+            f"{path}: dosya noktalı virgülle ayrılmış görünüyor (ör. {rows[0][1][0]!r}); bu, Türkçe yerel ayarlı "
+            "Excel'in varsayılan dışa aktarımıdır. Virgülle ayrılmış ve nokta ondalıklı CSV olarak dışa aktarın.",
+            f"{path}: the file looks semicolon-delimited (e.g. {rows[0][1][0]!r}), the default spreadsheet "
+            "export in locales that use a decimal comma. Export it comma-delimited with a dot as the decimal "
+            "separator."))
     first = list(rows[0][1])
     while len(first) > 1 and first[-1] == "":
         first.pop()
@@ -1395,7 +1762,7 @@ def welch_test(m1, v1, n1, m2, v2, n2, confidence=0.95, alternative="two-sided")
     df = num / den
     t = diff / se
     p = _t_p(t, df, alternative)
-    alpha = 1 - confidence
+    alpha = _alpha(confidence)
     tc2 = t_ppf(1 - alpha / 2, df)
     two = [diff - tc2 * se, diff + tc2 * se]
     if alternative == "two-sided":
@@ -1427,12 +1794,16 @@ def _rel_ci_means(m1, v1, n1, m2, v2, n2, confidence, alternative="two-sided"):
 def continuous(control=None, variant=None, control_stats=None, variant_stats=None,
                confidence=0.95, alternative="two-sided", winsorize=None, bootstrap=0, seed=DEFAULT_SEED,
                control_pre=None, variant_pre=None, cuped_join=None, ni_margin=None,
-               guardrail_direction="must_not_decrease", extra_notes=None):
+               guardrail_direction=None, extra_notes=None, expected_direction=None):
     """Sürekli metrik karşılaştırması (ör. ziyaretçi başına gelir; sıfırlar dahil).
     control/variant: kullanıcı başına değer listesi; ya da *_stats = (n, mean, sd).
-    cuped_join: 'id' (kimlikle hizalandı) veya 'row-order' (satır sırasıyla; varsayılan, uyarı notu eklenir)."""
+    cuped_join: 'id' (kimlikle hizalandı) veya 'row-order' (satır sırasıyla; varsayılan, uyarı notu eklenir).
+    expected_direction: iyileşme sayılan yön ('increase' varsayılan); 'decision_code' buna göre
+    significant_improvement / significant_degradation / not_significant olur."""
     _check_confidence(confidence)
     _check_alternative(alternative, confidence)
+    expected = _resolve_expected_direction(expected_direction, alternative,
+                                           guardrail_direction if ni_margin is not None else None)
     raw_mode = control is not None and variant is not None
     if not raw_mode and (control_stats is None or variant_stats is None):
         raise ValueError(_t("ya iki CSV (kullanıcı başına değer) ya da iki kol için n/ortalama/sd verin",
@@ -1478,8 +1849,24 @@ def continuous(control=None, variant=None, control_stats=None, variant_stats=Non
                             "give per-user CSVs."))
 
     w = welch_test(m1, v1, n1, m2, v2, n2, confidence, alternative)
-    alpha = 1 - confidence
+    alpha = _alpha(confidence)
     rel_ci, rel_ci2 = _rel_ci_means(m1, v1, n1, m2, v2, n2, confidence, alternative)
+
+    def verdict(wt, base_mean):
+        """Welch sonucundan yön taşıyan karar alanları; tek yönlü testte ters yön de denetlenir."""
+        sig = wt["p_value"] < alpha
+        p_opp = None
+        if alternative != "two-sided" and wt["df"] is not None:
+            p_opp = _t_p(wt["t"], wt["df"], _OPPOSITE[alternative])
+        opp_sig = p_opp is not None and not sig and p_opp < alpha
+        code = _verdict_code(wt["diff"], sig, opp_sig, expected)
+        rel = wt["diff"] / base_mean * 100 if base_mean else None
+        warn = _direction_warning(code, sig, expected, rel, alternative,
+                                  _round_p(p_opp) if p_opp is not None else None)
+        return {"effect_direction": _effect_direction(wt["diff"]),
+                "opposite_direction_significant": opp_sig,
+                "decision": _decision_text(code), "decision_code": code}, warn
+    main_verdict, main_warn = verdict(w, m1)
     result.update({
         "control": {"n": n1, "mean": round(m1, 6), "sd": round(math.sqrt(v1), 6)},
         "variant": {"n": n2, "mean": round(m2, 6), "sd": round(math.sqrt(v2), 6)},
@@ -1496,11 +1883,16 @@ def continuous(control=None, variant=None, control_stats=None, variant_stats=Non
         "confidence_interval_relative_lift_pct": rel_ci,
         "confidence_interval_relative_lift_pct_two_sided": rel_ci2,
         "is_significant": w["p_value"] < alpha,
+        "expected_direction": expected,
     })
+    result.update(main_verdict)
+    if main_warn:
+        notes.append(main_warn)
 
     if ni_margin is not None:
         ni = non_inferiority_means(m1, v1, n1, m2, v2, n2, ni_margin, guardrail_direction, confidence)
         result["non_inferiority"] = ni
+        result["guardrail_status"] = ni["status"]
         if _ni_warning(ni):
             notes.append(_ni_warning(ni))
 
@@ -1576,6 +1968,7 @@ def continuous(control=None, variant=None, control_stats=None, variant_stats=Non
                 "confidence_interval_diff_two_sided": [round(x, 6) for x in wc["ci_diff_two_sided"]],
                 "is_significant": wc["p_value"] < alpha,
             }
+            result["cuped"].update(verdict(wc, cm)[0])
             notes.append(_t("CUPED: theta birleşik veriden hesaplandı; ön-dönem değeri test başlamadan "
                             "ölçülmüş olmalı, aksi halde düzeltme yanlıdır.",
                             "CUPED: theta was estimated from the pooled data; the pre-period value must be "
@@ -1606,7 +1999,7 @@ def interaction(seg1, seg2, confidence=0.95, names=("seg1", "seg2")):
     A = kontrol, B = varyant. Mutlak ölçek: (pB−pA)₁ − (pB−pA)₂, z = DiD / sqrt(Var₁ + Var₂), varyanslar
     havuzlanmamış. Göreli ölçek: log(pB/pA)₁ − log(pB/pA)₂, Katz varyansı (1−p)/x."""
     _check_confidence(confidence)
-    alpha = 1 - confidence
+    alpha = _alpha(confidence)
     zc = norm_ppf(1 - alpha / 2)
     segs = []
     for name, ((na, xa), (nb, xb)) in zip(names, (seg1, seg2)):
@@ -1662,13 +2055,23 @@ def interaction(seg1, seg2, confidence=0.95, names=("seg1", "seg2")):
                            "etkileşim sonucunu güvenilir saymayın.",
                            "A segment cell has fewer than 10 conversions/non-conversions; the normal "
                            "approximation is weak, don't rely on the interaction result."))
-    if relative is not None and relative["is_significant"] != absolute["is_significant"]:
+    # Ölçekler uyuşmuyorsa 'etki farklı' denmez: bayrak, kod ve metin aynı şeyi söyler.
+    scale_dependent = relative is not None and relative["is_significant"] != absolute["is_significant"]
+    if scale_dependent:
         warnings.append(_t("Mutlak ve göreli ölçek farklı sonuç veriyor: etkileşim ölçeğe bağlı. 'Etki segmentte "
                            "farklı' demeyin; iki ölçeği birlikte raporlayın.",
                            "The absolute and relative scales disagree: the interaction is scale-dependent. Don't "
                            "say 'the effect differs by segment'; report both scales together."))
-    differs = absolute["is_significant"]
-    code = "effect_differs" if differs else "no_evidence_of_difference"
+    differs = absolute["is_significant"] and not scale_dependent
+    code = "scale_dependent" if scale_dependent else ("effect_differs" if differs else "no_evidence_of_difference")
+    decision = {
+        "scale_dependent": _t("etkileşim ölçeğe bağlı: yalnızca bir ölçekte anlamlı, segment farkı sonucu çıkarılmaz",
+                              "scale-dependent interaction: significant on one scale only, no segment "
+                              "difference is concluded"),
+        "effect_differs": _t("etki segmentler arasında farklı", "effect differs between segments"),
+        "no_evidence_of_difference": _t("segmentler arasında fark kanıtı yok",
+                                        "no evidence the effect differs between segments"),
+    }[code]
     note = _t(
         "Yalnızca test öncesinde belirlenmiş segmentler için kullanın; sonuç görüldükten sonra seçilen segmentte "
         "bu test p-hacking'dir. Etkileşim testinin gücü düşüktür (aynı büyüklükte bir farkı saptamak ana etkiye "
@@ -1686,9 +2089,9 @@ def interaction(seg1, seg2, confidence=0.95, names=("seg1", "seg2")):
         "interaction_absolute": absolute,
         "interaction_relative": relative,
         "effect_differs": differs,
+        "scale_dependent": scale_dependent,
         "decision_code": code,
-        "decision": _t("etki segmentler arasında farklı", "effect differs between segments") if differs else
-        _t("segmentler arasında fark kanıtı yok", "no evidence the effect differs between segments"),
+        "decision": decision,
         "warnings": warnings,
         "note": note,
     }
@@ -1897,10 +2300,13 @@ def _sig_word(flag):
 
 
 def _ni_line(ni):
-    return _t(f"Guardrail ({ni['direction']}, marj %{ni['margin_relative'] * 100:g}): {ni['status']}, "
-              f"p = {ni['p_value']}",
-              f"Guardrail ({ni['direction']}, margin {ni['margin_relative'] * 100:g}%): {ni['status']}, "
-              f"p = {ni['p_value']}")
+    """Metin çıktısında kod değerleri değil okunur karşılıkları basılır (JSON'da kodlar aynen kalır)."""
+    direction = {"must_not_decrease": _t("düşmemeli", "must not decrease"),
+                 "must_not_increase": _t("artmamalı", "must not increase")}[ni["direction"]]
+    status = {"clean": _t("temiz", "clean"), "degraded": _t("kötüleşti", "degraded"),
+              "inconclusive": _t("belirsiz (temiz sayılmaz)", "inconclusive (not clean)")}[ni["status"]]
+    return _t(f"Guardrail ({direction}, marj %{ni['margin_relative'] * 100:g}): {status}, p = {ni['p_value']}",
+              f"Guardrail ({direction}, margin {ni['margin_relative'] * 100:g}%): {status}, p = {ni['p_value']}")
 
 
 def format_text(command, r):
@@ -1930,7 +2336,7 @@ def format_text(command, r):
             + (_t(f" (göreli {_pct(r['relative_lift_pct'])})", f" (relative {_pct(r['relative_lift_pct'])})")
                if r["relative_lift_pct"] is not None else ""),
             f"z = {r['z_score']}, p = {r['p_value']} [{r['method']}] → "
-            + _sig_word(r["is_significant"])
+            + r["decision"]
             + _t(f" (güven düzeyi %{r['confidence_level'] * 100:.0f})", f" (confidence level {r['confidence_level'] * 100:.0f}%)")
             + ("" if r["normal_approx_valid"] else _t("  [nadir olay: Fisher exact kullanıldı]",
                                                       "  [rare event: Fisher exact used]")),
@@ -1945,8 +2351,6 @@ def format_text(command, r):
                             f"{r['mde_at_current_n_pct']:.1f}%"))
         if r.get("non_inferiority"):
             lines.append(_ni_line(r["non_inferiority"]))
-        if r.get("peeking_risk"):
-            lines.append(_t("Karar: ara bakış, nihai karar verilmez", "Decision: interim look, no final decision"))
         for w in r.get("warnings") or ([r["note"]] if r.get("note") else []):
             lines.append(_t("Uyarı: ", "Warning: ") + w)
         return "\n".join(lines)
@@ -1974,7 +2378,7 @@ def format_text(command, r):
             + (_t(f" (göreli {_pct(r['relative_lift_pct'])})", f" (relative {_pct(r['relative_lift_pct'])})")
                if r["relative_lift_pct"] is not None else ""),
             f"Welch t = {r['t_stat']}, " + _t("sd", "df") + f" = {r['df']}, p = {r['p_value']} → "
-            + _sig_word(r["is_significant"]),
+            + r["decision"],
             _t("Farkın güven aralığı: ", "Confidence interval of the difference: ")
             + _interval(r["confidence_interval_diff"], 1, ",.4f"),
         ]
@@ -2057,9 +2461,9 @@ def format_text(command, r):
     if "required_n_total" in r:
         if r.get("metric") == "mean":
             lines.append(_t(
-                f"Baz ortalama {r['baseline_mean']:g} (sd {r['baseline_sd']:g}), hedef {r['target_mean']:g} "
-                f"(göreli %{r['mde_relative_pct']:g} fark) için varyant başına {r['required_n_per_variant']:,} "
-                f"gözlem gerekir (toplam {r['required_n_total']:,}; güven %{r['confidence_level'] * 100:.0f}, "
+                f"Baz ortalama {r['baseline_mean']:g} (ss {r['baseline_sd']:g}), hedef {r['target_mean']:g} "
+                f"(göreli %{r['mde_relative_pct']:g} fark) için varyant başına {_num(r['required_n_per_variant'])} "
+                f"gözlem gerekir (toplam {_num(r['required_n_total'])}; güven %{r['confidence_level'] * 100:.0f}, "
                 f"güç %{r['power'] * 100:.0f}).",
                 f"Baseline mean {r['baseline_mean']:g} (sd {r['baseline_sd']:g}), target {r['target_mean']:g} "
                 f"({r['mde_relative_pct']:g}% relative effect) needs {r['required_n_per_variant']:,} observations per "
@@ -2068,27 +2472,38 @@ def format_text(command, r):
         else:
             lines.append(_t(
                 f"Baz oran %{r['baseline_rate'] * 100:.2f}, hedef %{r['target_rate'] * 100:.2f} "
-                f"(göreli %{r['mde_relative_pct']:g} lift) için varyant başına {r['required_n_per_variant']:,} "
-                f"ziyaretçi gerekir (toplam {r['required_n_total']:,}; güven %{r['confidence_level'] * 100:.0f}, "
+                f"(göreli %{r['mde_relative_pct']:g} fark) için varyant başına {_num(r['required_n_per_variant'])} "
+                f"ziyaretçi gerekir (toplam {_num(r['required_n_total'])}; güven %{r['confidence_level'] * 100:.0f}, "
                 f"güç %{r['power'] * 100:.0f}).",
                 f"Baseline rate {r['baseline_rate'] * 100:.2f}%, target {r['target_rate'] * 100:.2f}% "
                 f"({r['mde_relative_pct']:g}% relative lift) needs {r['required_n_per_variant']:,} visitors per "
                 f"variant ({r['required_n_total']:,} total; confidence {r['confidence_level'] * 100:.0f}%, "
                 f"power {r['power'] * 100:.0f}%)."))
         if r.get("ratio", 1) != 1:
-            lines[-1] += _t(f" Kontrol {r['required_n_control']:,} / varyant {r['required_n_variant']:,}.",
+            lines[-1] += _t(f" Kontrol {_num(r['required_n_control'])} / varyant {_num(r['required_n_variant'])}.",
                             f" Control {r['required_n_control']:,} / variant {r['required_n_variant']:,}.")
         if r.get("duration_days") is not None and r.get("weeks") is None:
             lines.append(_t(f"Süre: {r['duration_days']} gün ({r['duration_weeks']} hafta; günde "
-                            f"{r['daily_visitors']:,} ziyaretçiyle örneklem {r['duration_days_raw']} günde dolar).",
+                            f"{_num(r['daily_visitors'])} ziyaretçiyle örneklem {r['duration_days_raw']} günde dolar).",
                             f"Duration: {r['duration_days']} days ({r['duration_weeks']} weeks; at "
                             f"{r['daily_visitors']:,} visitors/day the sample fills in {r['duration_days_raw']} days)."))
     if r.get("weeks") is not None:
         mde = r.get("mde_detectable_relative_pct")
-        lines.append(_t(f"{r['weeks']} haftada (günde {r['daily_visitors']:,} ziyaretçi) saptanabilir en küçük göreli fark: "
+        lines.append(_t(f"{r['weeks']} haftada (günde {_num(r['daily_visitors'])} ziyaretçi) saptanabilir en küçük göreli fark: "
                         + (f"%{mde:g}" if mde is not None else "yok"),
                         f"Smallest relative effect detectable in {r['weeks']} weeks ({r['daily_visitors']:,} visitors/day): "
                         + (f"{mde:g}%" if mde is not None else "none")))
+    if r.get("guardrail"):
+        g = r["guardrail"]
+        lines.append(_t(
+            f"Guardrail planı (marj %{g['margin_relative'] * 100:g}): metrik değişmezken marjın içinde kaldığını "
+            f"göstermek için kontrol kolunda {_num(g['required_n_control'])} gözlem gerekir "
+            f"(toplam {_num(g['required_n_total'])}).",
+            f"Guardrail plan (margin {g['margin_relative'] * 100:g}%): showing an unchanged metric stays inside the "
+            f"margin needs {g['required_n_control']:,} observations in control ({g['required_n_total']:,} total)."))
+        if g.get("margin_resolvable_relative_pct") is not None:
+            lines.append(_t(f"Bu sürede çözülebilen en küçük marj: %{g['margin_resolvable_relative_pct']:g}",
+                            f"Smallest margin resolvable in this window: {g['margin_resolvable_relative_pct']:g}%"))
     if r.get("note"):
         lines.append(_t("Not: ", "Note: ") + r["note"])
     return "\n".join(lines)
@@ -2132,6 +2547,34 @@ def _repeated_flag_error(args):
     return None
 
 
+_ARGPARSE_TR = (
+    (r"^the following arguments are required: (.+)$", r"şu argümanlar zorunlu: \1"),
+    (r"^argument (.+?): invalid choice: (.+?) \(choose from (.+)\)$",
+     r"\1 argümanı: geçersiz seçim: \2 (seçenekler: \3)"),
+    (r"^argument (.+?): invalid (?:float|int) value: (.+)$", r"\1 argümanı: geçersiz sayı: \2"),
+    (r"^argument (.+?): expected one argument$", r"\1 argümanı: bir değer bekleniyor"),
+    (r"^argument (.+?): expected (.+) arguments?$", r"\1 argümanı: \2 değer bekleniyor"),
+    (r"^argument (.+?): (.+)$", r"\1 argümanı: \2"),
+    (r"^unrecognized arguments: (.+)$", r"tanınmayan argümanlar: \1"),
+)
+
+
+class _JsonErrorParser(argparse.ArgumentParser):
+    """argparse hatalarını da diğer hatalar gibi tek satır JSON olarak stdout'a ve seçili dilde basar
+    (çıkış kodu 2). Varsayılan davranış İngilizce bir metni stderr'e yazıyordu: --lang tr altında dil
+    sızıyor, çıktıyı JSON bekleyen çağıran da boş stdout görüyordu."""
+
+    def error(self, message):
+        if LANG == "tr":
+            for pattern, repl in _ARGPARSE_TR:
+                if re.match(pattern, message):
+                    message = re.sub(pattern, repl, message)
+                    break
+        self.print_usage(sys.stderr)
+        print(json.dumps({"error": message}, ensure_ascii=False))
+        sys.exit(2)
+
+
 def _parse_list(s, conv, label):
     try:
         return [conv(x) for x in str(s).split(",") if x.strip()]
@@ -2143,8 +2586,8 @@ def _parse_list(s, conv, label):
 def build_parser():
     """Seçili dile (LANG) göre yardım metinleriyle ayrıştırıcıyı kurar. Yardım metinlerinde '%' yerine
     '%%' yazılır: argparse yardım metnini %-biçimlendirmeden geçirir, tek '%' --help'i çökertir."""
-    parser = argparse.ArgumentParser(description=__doc__ if LANG == "tr" else _DESCRIPTION_EN,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = _JsonErrorParser(description=__doc__ if LANG == "tr" else _DESCRIPTION_EN,
+                              formatter_class=argparse.RawDescriptionHelpFormatter)
     lang_help = _t("Mesaj dili (en|tr, varsayılan en)", "Message language (en|tr, default en)")
     parser.add_argument("--lang", choices=_LANGS, default="en", help=lang_help)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -2152,12 +2595,19 @@ def build_parser():
                   "Hypothesis direction: two-sided (default), greater (variant > control), less")
     fmt_help = _t("Çıktı biçimi: json (varsayılan) veya text", "Output format: json (default) or text")
     conf_help = _t("Güven düzeyi, ör. 0.95", "Confidence level, e.g. 0.95")
-    ni_help = _t("Guardrail non-inferiority marjı (göreli kesir, ör. 0.02 = 2 yüzde); tek yönlü test edilir",
-                 "Guardrail non-inferiority margin (relative fraction, e.g. 0.02 = 2 percent); tested one-sided")
-    dir_help = _t("Guardrail yönü: must_not_decrease (varsayılan; ör. dönüşüm, marj) veya must_not_increase "
-                  "(ör. iade oranı, hata oranı, LCP)",
-                  "Guardrail direction: must_not_decrease (default; e.g. conversion, margin) or must_not_increase "
-                  "(e.g. return rate, error rate, LCP)")
+    ni_help = _t("Guardrail non-inferiority marjı: göreli KESİR (0.02 = 2 yüzde) ya da açık yüzde biçimi (2%%); "
+                 "1 ve üstü reddedilir. Tek yönlü test edilir; --guardrail-direction zorunludur",
+                 "Guardrail non-inferiority margin: a relative FRACTION (0.02 = 2 percent) or the explicit percent "
+                 "form (2%%); 1 or more is rejected. Tested one-sided; --guardrail-direction is required")
+    dir_help = _t("Guardrail yönü, --ni-margin ile ZORUNLU (varsayılan yok): must_not_increase = yukarı kötü "
+                  "(iade, iptal, hata oranı, LCP); must_not_decrease = aşağı kötü (dönüşüm, marj)",
+                  "Guardrail direction, REQUIRED with --ni-margin (no default): must_not_increase = up is bad "
+                  "(returns, cancellations, error rate, LCP); must_not_decrease = down is bad (conversion, margin)")
+    exp_help = _t("Birincil metrikte iyileşme sayılan yön: increase (varsayılan) veya decrease (aşağı iyi olan "
+                  "metrik). Karar kodu buna göre significant_improvement / significant_degradation olur",
+                  "Which direction counts as an improvement on the primary metric: increase (default) or decrease "
+                  "(a metric where down is good). The decision code becomes significant_improvement / "
+                  "significant_degradation accordingly")
 
     def new(name, help_text):
         p = sub.add_parser(name, help=help_text, description=help_text)
@@ -2179,8 +2629,15 @@ def build_parser():
     p1.add_argument("--planned-n", type=parse_count, default=None,
                     help=_t("Kol başına planlanan örneklem; altındaysa ara bakış (peeking) uyarısı verilir",
                             "Planned sample per arm; below it the result is flagged as an interim look (peeking)"))
-    p1.add_argument("--ni-margin", type=float, default=None, help=ni_help)
-    p1.add_argument("--guardrail-direction", choices=_GUARDRAIL_DIRECTIONS, default="must_not_decrease", help=dir_help)
+    p1.add_argument("--ni-margin", default=None, help=ni_help)
+    p1.add_argument("--guardrail-direction", choices=_GUARDRAIL_DIRECTIONS, default=None, help=dir_help)
+    p1.add_argument("--expected-direction", choices=_EXPECTED_DIRECTIONS, default=None, help=exp_help)
+    p1.add_argument("--expected-split", type=float, default=0.5,
+                    help=_t("Kontrol koluna planlanan pay (varsayılan 0.5); SRM buna göre denetlenir",
+                            "Planned control share (default 0.5); SRM is checked against it"))
+    p1.add_argument("--expected-ratios", default=None,
+                    help=_t("A/B/n: kontrol dahil planlanan kol oranları, ör. 2,1,1 (varsayılan eşit)",
+                            "A/B/n: planned arm ratios including control, e.g. 2,1,1 (default equal)"))
     p1.add_argument("--format", choices=["json", "text"], default="json", help=fmt_help)
 
     p3 = new("revenue", _t("Gelir/kâr yön göstergesi (çıkarım için 'continuous' kullanın)",
@@ -2226,9 +2683,18 @@ def build_parser():
                     help=_t("Baz ortalama; --metric mean için", "Baseline mean; for --metric mean"))
     p2.add_argument("--baseline-sd", type=float, default=None,
                     help=_t("Baz standart sapma; --metric mean için", "Baseline standard deviation; for --metric mean"))
-    p2.add_argument("--mde", type=float, default=None,
-                    help=_t("Göreli minimum tespit edilebilir fark, ör. 0.20 (1'den büyükse yüzde sayılır: 10 = 0.10)",
-                            "Relative minimum detectable effect, e.g. 0.20 (values above 1 are read as percent: 10 = 0.10)"))
+    p2.add_argument("--mde", default=None,
+                    help=_t("Göreli minimum tespit edilebilir fark, KESİR olarak: 0.20 = 20 yüzde. 1 ve üstü belirsiz "
+                            "olduğu için reddedilir; yüzde için açık biçim: 20%%. Negatif değer bir düşüş hedefler",
+                            "Relative minimum detectable effect as a FRACTION: 0.20 = 20 percent. A value of 1 or "
+                            "more is ambiguous and rejected; write a percent explicitly as 20%%. A negative value "
+                            "targets a decrease"))
+    p2.add_argument("--ni-margin", default=None,
+                    help=_t("Guardrail planı: --baseline-rate guardrail metriğinin baz oranıdır; bu marjı çözmek için "
+                            "gereken örneklem (ve --weeks ile çözülebilen en küçük marj) döner",
+                            "Guardrail plan: --baseline-rate is the guardrail metric's own base rate; returns the "
+                            "sample needed to resolve this margin (and, with --weeks, the smallest resolvable margin)"))
+    p2.add_argument("--guardrail-direction", choices=_GUARDRAIL_DIRECTIONS, default=None, help=dir_help)
     p2.add_argument("--confidence", type=float, default=0.95, help=conf_help)
     p2.add_argument("--power", type=float, default=0.80, help=_t("İstatistiksel güç, ör. 0.80", "Statistical power, e.g. 0.80"))
     p2.add_argument("--alternative", choices=_ALTERNATIVES, default="two-sided", help=alt_help)
@@ -2281,8 +2747,9 @@ def build_parser():
                     help=_t("CUPED: kontrol ön-dönem kovaryatı", "CUPED: control pre-period covariate"))
     p5.add_argument("--variant-pre-csv", default=None,
                     help=_t("CUPED: varyant ön-dönem kovaryatı", "CUPED: variant pre-period covariate"))
-    p5.add_argument("--ni-margin", type=float, default=None, help=ni_help)
-    p5.add_argument("--guardrail-direction", choices=_GUARDRAIL_DIRECTIONS, default="must_not_decrease", help=dir_help)
+    p5.add_argument("--ni-margin", default=None, help=ni_help)
+    p5.add_argument("--guardrail-direction", choices=_GUARDRAIL_DIRECTIONS, default=None, help=dir_help)
+    p5.add_argument("--expected-direction", choices=_EXPECTED_DIRECTIONS, default=None, help=exp_help)
     p5.add_argument("--format", choices=["json", "text"], default="json", help=fmt_help)
 
     p7 = new("interaction", _t("Segment etkileşimi: tedavi etkisi iki segmentte gerçekten farklı mı (fark-içinde-fark)",
@@ -2327,19 +2794,30 @@ def _run(args):
         if not variants:
             raise ValueError(_t("en az bir varyant verin: --variant-visitors/--variant-conversions veya --variant Z:D",
                                 "give at least one variant: --variant-visitors/--variant-conversions or --variant V:C"))
-        ni = dict(ni_margin=args.ni_margin, guardrail_direction=args.guardrail_direction)
+        ni = dict(ni_margin=args.ni_margin, guardrail_direction=args.guardrail_direction,
+                  expected_direction=args.expected_direction)
         if len(variants) == 1:
+            if args.expected_ratios:
+                raise ValueError(_t("--expected-ratios A/B/n içindir; iki kolda --expected-split kullanın",
+                                    "--expected-ratios is for A/B/n; with two arms use --expected-split"))
             return significance(args.control_visitors, args.control_conversions,
                                 variants[0][0], variants[0][1], args.confidence,
-                                args.alternative, args.planned_n, **ni)
+                                args.alternative, args.planned_n, expected_split=args.expected_split, **ni)
+        ratios = _parse_list(args.expected_ratios, float, "--expected-ratios") if args.expected_ratios else None
         return significance_multi(args.control_visitors, args.control_conversions, variants,
-                                  args.confidence, args.alternative, args.planned_n, **ni)
+                                  args.confidence, args.alternative, args.planned_n, expected_ratios=ratios, **ni)
     if args.command == "revenue":
         return revenue(args.control_visitors, args.control_conversions, args.control_aov,
                        args.variant_visitors, args.variant_conversions, args.variant_aov,
                        args.margin_rate, args.variant_margin_rate)
     if args.command == "srm":
         if args.visitors:
+            if args.control_visitors is not None or args.variant_visitors is not None:
+                raise ValueError(_t(
+                    "--visitors ile --control-visitors/--variant-visitors birlikte verilemez; hangisinin okunacağı "
+                    "belirsiz olur. Tüm kolları --visitors ile verin ya da iki kolu ayrı bayraklarla.",
+                    "--visitors cannot be combined with --control-visitors/--variant-visitors; it would be unclear "
+                    "which one is read. Give every arm in --visitors, or the two arms with the separate flags."))
             ratios = _parse_list(args.expected_ratios, float, "--expected-ratios") if args.expected_ratios else None
             return srm_multi(_parse_list(args.visitors, parse_count, "--visitors"), ratios)
         if args.control_visitors is None or args.variant_visitors is None:
@@ -2349,7 +2827,7 @@ def _run(args):
     if args.command == "continuous":
         kw = dict(confidence=args.confidence, alternative=args.alternative, winsorize=args.winsorize,
                   bootstrap=args.bootstrap, seed=args.seed, ni_margin=args.ni_margin,
-                  guardrail_direction=args.guardrail_direction)
+                  guardrail_direction=args.guardrail_direction, expected_direction=args.expected_direction)
         info = None
         if args.control_csv or args.variant_csv:
             if not (args.control_csv and args.variant_csv):
@@ -2379,7 +2857,8 @@ def _run(args):
                      args.draws, args.seed, args.credible)
     # samplesize
     plan = dict(confidence=args.confidence, power=args.power, alternative=args.alternative, ratio=args.ratio,
-                arms=args.arms, daily_visitors=args.daily_visitors, weeks=args.weeks)
+                arms=args.arms, daily_visitors=args.daily_visitors, weeks=args.weeks,
+                ni_margin=args.ni_margin, guardrail_direction=args.guardrail_direction)
     if args.metric == "mean":
         if args.baseline_mean is None or args.baseline_sd is None:
             raise ValueError(_t("--metric mean için --baseline-mean ve --baseline-sd gerekli",

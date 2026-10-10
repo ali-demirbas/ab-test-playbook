@@ -5,9 +5,9 @@
 **Beklenen davranış:**
 1. Önce SRM kontrolü çalışır (`analyze_results.py srm --control-visitors 5000 --variant-visitors 5000`): bölüşüm temiz.
 2. Ardından `analyze_results.py significance` çalıştırılır, sayı elle tahmin edilmez.
-3. p-değeri ~0,077, `is_significant: false` çıkar. Skill bunu "kesin kaybetti" diye sunmaz; 9 günün iki haftadan kısa olduğunu ve örneklem/süre yetersizliğinin olası sebep olduğunu söyler.
+3. p-değeri ~0,077, `is_significant: false`, `decision_code: not_significant`, `effect_direction: variant_higher` çıkar. Skill bunu "kesin kaybetti" diye sunmaz; 9 günün iki haftadan kısa olduğunu ve örneklem/süre yetersizliğinin olası sebep olduğunu söyler.
 4. Mutlak fark (0,8 yüzde puan: %5,0 → %5,8) ile göreli lift (%16) ayrı ayrı ve etiketli verilir, karıştırılmaz.
-5. Segment kırılımı sorulur (genel sonuç belirsiz olduğu için sorulması doğru; henüz veri istatistiksel olarak net "farksız" değil, "henüz karar verilemez" durumunda).
+5. Turun **tek** sorusu MDE hedefidir (“bu sayfada hangi büyüklükte bir fark yayına almaya değer?”): süre verilmiş, ön kayıt ve MDE verilmemiş; “örneklem yeterli mi” sorusu MDE olmadan cevaplanamaz. Segment kırılımı sorusu sıralamada daha geridedir ve sonraki tura kalır (`ab-test-results` → soru sırası, kural 19).
 
 **Girdi B (örneklem planlama):** "Sepet sayfamda dönüşüm oranı %5. En az %20'lik bir artışı yakalamak istiyorum. Kaç ziyaretçi lazım? Günde 800 ziyaretçi alıyoruz."
 
@@ -27,7 +27,7 @@
 
 **Beklenen davranış:**
 1. İlk çalışan komut `analyze_results.py srm --control-visitors 10000 --variant-visitors 9500` olur → `chi2` 12,82, `p_value` 0,000343, `srm_detected: true`.
-2. Skill **durur**: sonuç Geçersiz'dir; anlamlılık, lift ve segment yorumlanmaz, `significance` çalıştırılmaz ya da çalıştırıldıysa sonucu raporlanmaz.
+2. Skill **durur**: sonuç Geçersiz'dir; anlamlılık, lift ve segment yorumlanmaz, `significance` çalıştırılmaz ya da çalıştırıldıysa sonucu raporlanmaz (çalıştırılırsa aynı şeyi söyler: `decision_code: invalid_srm`).
 3. Olası sebepler sayılır (atama ile maruz kalma olayının tek olay olarak loglanması, bot filtresinin tek kola uygulanması, yönlendirme kaybı, test ortasında hata düzeltmesi) ve test-hafızası satırı `geçersiz` olarak önerilir.
 
 **Girdi E (nadir olay, Fisher yedeği):** "Kontrol 400 ziyaretçi 2 dönüşüm, varyant 400 ziyaretçi 9 dönüşüm. Anlamlı mı?"
@@ -42,7 +42,19 @@
 1. Dosyalar okunmadan önce `validate_input.py` ile taranır (kural 18).
 2. `continuous` alt komutu `--value-column revenue --id-column user_id --control-pre-csv … --variant-pre-csv … --pre-value-column revenue_pre30d` ile çalışır (Welch t-testi + CUPED). Gelir oran testine (`significance`) sokulmaz.
 3. Skill CUPED'in varyansı ne kadar düşürdüğünü (`variance_reduction_pct`) ve düzeltilmiş farkı raporlar; ön-dönem değerinin testten **önce** ölçülmüş olması gerektiğini söyler.
-4. RPV guardrail olarak okunuyorsa `--ni-margin` ile tek yönlü test edilir; `status: clean` ancak tolerans sınırı içinde kaldığı gösterildiğinde "temiz" denir.
+4. RPV guardrail olarak okunuyorsa `--ni-margin` ve **zorunlu** `--guardrail-direction must_not_decrease` ile tek yönlü test edilir (yön verilmezse script hata döner, varsayılan yoktur); `status: clean` ancak tolerans sınırı içinde kaldığı gösterildiğinde "temiz" denir.
+
+**Girdi G (belirsiz MDE):** “Baz oran %3, MDE 1 olsun, kaç ziyaretçi lazım?”
+
+**Beklenen davranış:**
+1. `samplesize --baseline-rate 0.03 --mde 1` hata döner: 1, %1 mi %100 mü belli değildir. Skill hatayı kullanıcının dilinde aktarır ve hangisinin kastedildiğini sorar; %100 varsayıp kol başına birkaç yüz kişilik bir plan vermez.
+2. Kullanıcı “%1” derse `--mde 0.01` (ya da `--mde 1%`) ile yeniden çalıştırılır.
+
+**Girdi H (A/A sonucu):** “A/A testim bitti: 10.000 ziyaretçi 500 dönüşüm, 10.000 ziyaretçi 540 dönüşüm.”
+
+**Beklenen davranış:**
+1. `srm` ve `significance` çalışır; sonuç A/A geçme ölçütüne göre okunur: SRM yok ve fark anlamlı değil → **geçti**.
+2. “Kazandı”, “yayına al”, kademeli yayılım tablosu ve lift dili kullanılmaz; test-hafızası satırı teklif edilmez.
 
 **Düşme koşulları:**
 - Script çalıştırılmadan p-değeri/anlamlılık tahmini yapılması.
@@ -52,3 +64,6 @@
 - Süre/trafik bilgisi verilmişken göz ardı edilip salt istatistiksel sonuca göre kesin karar verilmesi.
 - Hata JSON'u döndüğü halde skill'in sayı uydurup yorum yapması.
 - Kullanıcı başına gelir verisinin oran testiyle analiz edilmesi.
+- Guardrail yönünün kullanıcıya sorulmadan ya da ön kayıttan okunmadan varsayılması.
+- `--mde 1` girdisinin %100 lift olarak planlanması.
+- Bir A/A sonucunun kazanan/kaybeden diliyle sunulması.

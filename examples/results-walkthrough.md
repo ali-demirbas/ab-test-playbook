@@ -12,7 +12,7 @@ numbers.
 ## The test
 
 - **Page:** cart. **Variable:** an estimated delivery date shown under the order total (A: no date; B: "Arrives Fri, 16 Oct").
-- **Pre-registered** (the block `ab-test-design` emits before launch): primary = order completion per cart visitor, two-sided, alpha 0.05, power 0.8, MDE 12% relative; guardrail = revenue per cart visitor (RPV), `must_not_decrease`, margin 3% relative; allocation 50/50.
+- **Pre-registered** (the block `ab-test-design` emits before launch): primary = order completion per cart visitor, direction `increase`, two-sided, alpha 0.05, power 0.8, MDE 12% relative; guardrail = revenue per cart visitor (RPV), `must_not_decrease`, margin 3% relative; allocation 50/50. No lagging guardrail (`read_after_days`) and no pass/fail check in this plan, so every guardrail can be read on the day the test ends.
 - **Planned sample**, computed before launch from a 4.5% baseline and ~3,600 eligible cart visitors a day:
 
 ```bash
@@ -32,6 +32,14 @@ python3 scripts/analyze_results.py samplesize --baseline-rate 0.045 --mde 0.12 -
 ```
 
 So `planned_n_per_arm` = 24,453 went into the pre-registration, and the test ran for 14 days.
+
+The guardrail's margin is planned the same way, on the guardrail's own baseline
+(`samplesize --metric mean --baseline-mean 3.73 --baseline-sd 21.9 --ni-margin 0.03 --guardrail-direction must_not_decrease`):
+showing that an **unchanged** RPV stays inside a 3% margin would need about
+459,621 users per arm, far more than this test collects. That is worth knowing
+before launch: with 25,000 per arm this guardrail comes back `clean` only if RPV
+actually rises, `degraded` if it falls well past the margin, and `inconclusive`
+in between.
 
 ## Regenerating the data
 
@@ -97,7 +105,8 @@ A 50.3 / 49.7 split on 50,000 users is ordinary noise (p = 0.24). Had
 python3 $REPO/scripts/analyze_results.py significance \
   --control-visitors 25130 --control-conversions 1134 \
   --variant-visitors 24870 --variant-conversions 1206 \
-  --alternative two-sided --planned-n 24453
+  --alternative two-sided --planned-n 24453 \
+  --expected-direction increase --expected-split 0.5
 ```
 
 ```json
@@ -112,16 +121,23 @@ python3 $REPO/scripts/analyze_results.py significance \
   "confidence_interval_diff": [-0.00034, 0.00707],
   "confidence_interval_relative_lift_pct": [-0.72, 16.31],
   "is_significant": false,
+  "effect_direction": "variant_higher",
+  "expected_direction": "increase",
   "decision": "not significant",
+  "decision_code": "not_significant",
   "planned_n_per_arm": 24453,
   "peeking_risk": false,
   "low_sample_warning": false,
-  "mde_at_current_n_pct": 11.53
+  "mde_at_current_n_pct": 11.53,
+  "srm": {"srm_detected": false, "p_value": 0.244929, "observed_split": 0.5026, "expected_split": 0.5}
 }
 ```
 
-`--alternative` is the pre-registered direction, not one picked after seeing the
-data. `peeking_risk: false` because both arms passed the planned 24,453.
+`--alternative` and `--expected-direction` are the pre-registered values, not
+ones picked after seeing the data. `decision_code` carries the direction: had
+the variant been significantly *lower*, it would read `significant_degradation`
+(a loser, never a ship) rather than a bare "significant". The `srm` block
+repeats step 0 on the same two arms. `peeking_risk: false` because both arms passed the planned 24,453.
 `method: z-test` because the counts are large enough for the normal
 approximation; with a handful of conversions the script switches to Fisher's
 exact test on its own and says so.
@@ -141,6 +157,10 @@ python3 $REPO/scripts/analyze_results.py continuous \
   --ni-margin 0.03 --guardrail-direction must_not_decrease
 ```
 
+`--guardrail-direction` is required: it comes from the pre-registration, and the
+script refuses to assume one (the wrong direction reports a degrading metric as
+clean).
+
 ```json
 {
   "method": "welch-t-test",
@@ -155,6 +175,7 @@ python3 $REPO/scripts/analyze_results.py continuous \
     "p_value": 0.02925,
     "status": "clean"
   },
+  "guardrail_status": "clean",
   "cuped": {
     "join": "id",
     "theta": 0.178388,
@@ -203,10 +224,10 @@ The decision table in `skills/ab-test-results/SKILL.md`, row by row:
 | Input | Value |
 |---|---|
 | SRM | none (p = 0.24) |
-| Significant | no (p = 0.075) |
+| Primary (`decision_code`) | `not_significant` (p = 0.075; the variant is higher, the declared direction) |
 | Sample vs. MDE target | reached (25,130 and 24,870 ≥ 24,453) |
 | Duration | 14 days, two full weeks |
-| Guardrail | clean (RPV non-inferior at 3%) |
+| Guardrails | all clean: RPV non-inferior at 3%; no lagging window, no pass/fail check |
 
 → **No significant difference at the planned 12% effect.** What the chat says:
 
@@ -219,9 +240,9 @@ The decision table in `skills/ab-test-results/SKILL.md`, row by row:
 >
 > Next step: if a ~7.5% lift would be worth shipping, a confirmation run needs
 > about 61,337 users per arm, about 5 weeks at your traffic
-> (`samplesize --mde 0.075`). Otherwise, a bolder version of the same idea
-> (date plus a delivery-promise badge at the payment step) is the stronger next
-> test.
+> (`samplesize --mde 0.075`). Otherwise, a bolder version of the same variable
+> (the date shown next to the checkout button instead of under the total) is
+> the stronger next test.
 
 ## Step 4: the history row
 

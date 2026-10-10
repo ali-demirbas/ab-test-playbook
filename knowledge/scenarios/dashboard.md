@@ -1,6 +1,6 @@
 # Dashboard (Sürekli Kullanılan Ana Ekran)
 
-Yolculuk aşaması: kullanıcı zaten kayıtlı ve düzenli olarak geri dönüp kullandığı ana ekran — ilk açılış/onboarding (`mobile-app.md`) veya pazarlama ana sayfası (`home-landing.md`) değil, tekrar eden kullanımın kendisi. Boş durum (henüz veri/aktivite yokken ekranın görünümü) burada kritik bir alt konudur. Her KPI listesinin ilk maddesi birincil metriktir; listede en az bir madde bozulmaması gereken guardrail’dir.
+Yolculuk aşaması: kullanıcı zaten kayıtlı ve düzenli olarak geri dönüp kullandığı ana ekran; ilk açılış/onboarding (`mobile-app.md`) veya pazarlama ana sayfası (`home-landing.md`) değil, tekrar eden kullanımın kendisi. Boş durum (henüz veri/aktivite yokken ekranın görünümü) burada kritik bir alt konudur. Her KPI listesinin ilk maddesi birincil metriktir; listede en az bir madde bozulmaması gereken guardrail’dir.
 
 ---
 
@@ -8,7 +8,7 @@ Yolculuk aşaması: kullanıcı zaten kayıtlı ve düzenli olarak geri dönüp 
 
 Değişken: Boş durumdaki aksiyon kartı · Fark: ekle
 
-Yeni kaydolan bir kullanıcı dashboard’u ilk açtığında ekran genelde boştur — grafik, liste veya widget’ları dolduracak veri henüz yoktur. Boş bir tablo veya “veri yok” mesajı kullanıcıyı ne yapması gerektiği konusunda yalnız bırakır; somut bir sonraki-aksiyon kartı bu boşluğu bir davete çevirebilir.
+Yeni kaydolan bir kullanıcı dashboard’u ilk açtığında ekran genelde boştur; grafik, liste veya widget’ları dolduracak veri henüz yoktur. Boş bir tablo veya “veri yok” mesajı kullanıcıyı ne yapması gerektiği konusunda yalnız bırakır; somut bir sonraki-aksiyon kartı bu boşluğu bir davete çevirebilir.
 
 **Test edilmesi gerekenler**
 - Sonraki test: Kart kazanırsa içeriği (genel “başlayın” mesajı / kurulumda eksik kalan spesifik adım) ayrı bir testte karşılaştırıldığında tıklama değişiyor mu?
@@ -28,7 +28,7 @@ Yeni kaydolan bir kullanıcı dashboard’u ilk açtığında ekran genelde boş
 - Kullanıcının henüz vermediği bir veriyi varsayıp örnek olarak göstermeyin; gerçek olmayan veriyi gerçekmiş gibi sunmayın.
 - Aynı testte boş-durum mesajının içeriğini ve görsel biçimini birlikte değiştirmeyin.
 - Kartı kapatılamaz hâle getirmeyin; kullanıcı isterse boş durumu görmezden gelebilmeli.
-- Aksiyonu tamamlamadan diğer özelliklere erişimi kısıtlamayın — bu bir yönlendirme kartıdır, bir kilit değil.
+- Aksiyonu tamamlamadan diğer özelliklere erişimi kısıtlamayın; bu bir yönlendirme kartıdır, bir kilit değil.
 - Farklı kullanıcı segmentlerine gösterilen örnek verileri birbirine karıştırmayın.
 
 ---
@@ -56,7 +56,7 @@ Sabit bir widget sırası her kullanıcıya aynı düzeni sunar ve öngörülebi
 **Yapılmaması gerekenler**
 - Aynı testte sıralama mantığını (en son/en sık) ve güncelleme sıklığını birlikte değiştirmeyin.
 - Kullanıcının manuel olarak sabitlediği bir widget’ı algoritmik sıralamayla yeniden taşımayın.
-- Az kullanılan ama kritik bir widget’ı (ör. faturalandırma uyarısı) sırf düşük etkileşimli diye tamamen gizlemeyin — kritik bilgi guardrail’dir.
+- Az kullanılan ama kritik bir widget’ı (ör. faturalandırma uyarısı) sırf düşük etkileşimli diye tamamen gizlemeyin; kritik bilgi guardrail’dir.
 - Sıralamayı kullanıcının paylaşmadığı verilerden türetmeyin, yalnızca gözlemlenen kullanım verisini kullanın.
 - Kişiselleştirmeyi kapatma seçeneği sunmadan zorunlu hâle getirmeyin.
 

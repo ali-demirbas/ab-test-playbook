@@ -6,6 +6,7 @@ doğrular. Yeni senaryo eklerken veya mevcut bir senaryoyu düzenlerken çalış
 
     python3 scripts/validate_scenarios.py            # hatalar + uyarılar
     python3 scripts/validate_scenarios.py --verbose  # sözlükte olmayan birincil KPI’ları da listeler
+    python3 scripts/validate_scenarios.py taslak.md  # arşiv yerine verilen dosya(lar)ı denetler
 
 Denetlenen kurallar (CLAUDE.md ve knowledge/methodology.md'den):
   1. Üç kutu eksiksiz: Test edilmesi gerekenler / Takip edilecek ana KPI'lar /
@@ -22,17 +23,27 @@ Denetlenen kurallar (CLAUDE.md ve knowledge/methodology.md'den):
      (“… artıyor mu?”), “bozulmamalı” cümlesi guardrail maddesine aittir.
  10. Yapılmaması gerekenler: arşiv genelinde birebir tekrar eden madde yok; genel
      test hijyeni kalıpları (“Test sırasında … değiştirmeyin”, “sık sık
-     değiştirmeyin” …) yasak, onlar methodology → Test hygiene’de bir kez yazılı.
+     değiştirmeyin”, “Sadece … bakıp … atlamayın” …) yasak, onlar methodology →
+     Test hygiene’de bir kez yazılı.
  11. Başka bir senaryoya “Başlık?” senaryosu biçiminde verilen atıf, iç içe
      tırnaklar normalleştirildikten sonra var olan bir `## ` başlığına çözülür.
  12. Kutuları neredeyse aynı olan iki senaryo (kelime kümesi Jaccard benzerliği
      eşiğin üstünde) ancak birinde diğerine “… senaryosundan farkı” atfı varsa
      geçer.
 
-Uyarılar (çıkış kodunu etkilemez):
+Uyarılar (çıkış kodunu etkilemez; sonda “Uyarı sayısı: N” satırı basılır):
   - Değişken ifadesi “ ve ” veya “/” içeriyor: iki değişken olabilir.
-  - Birincil KPI “Sayısı” içeriyor (kollar farklı büyüklükteyse sayı
-    karşılaştırılamaz) veya “gören/görüp” diyor (payda yalnızca B’de var olabilir).
+  - Bir KPI “Sayısı” içeriyor (kollar farklı büyüklükteyse sayı
+    karşılaştırılamaz) veya paydası “gören/görüp” diyor (payda yalnızca B’de var
+    olabilir). Birincil KPI’da satırın tamamına, diğer satırlarda yalnızca ada
+    bakılır; “… başına” yazan sayı, sözlükte kanonik adı olan ikincil satır ve
+    “yalnız B” etiketli tanı satırı uyarı almaz.
+  - Guardrail, birincil KPI’ın tümleyeni: birincil bir tamamlama/dönüşüm/kayıt
+    oranı, guardrail adımı yazılmamış “Terk Oranı” ya da “Sayfa Terk Oranı”.
+  - Yapılmaması gerekenler kutusunda değişken yalıtımı maddesi yok (“Aynı
+    testte …”, “… aynı anda …”, “… birlikte … değiştirmeyin”, “tek değişken”).
+  - Başlığı ve Değişken ifadesi neredeyse aynı olan iki senaryo (dosyalar arası
+    da), biri diğerine “… senaryosundan farkı” atfı vermiyorsa.
   - knowledge/kpi-glossary.md varsa: sözlükte kanonik adı olmayan birincil KPI
     sayısı (--verbose ile liste).
 
@@ -79,6 +90,22 @@ TWO_VARIABLE_HINT = re.compile(r"\sve\s|/")
 # "gören/görüp" paydanın yalnızca yeni öğeyi gören B kolunda var olduğunu ima eder.
 COUNT_HINT = re.compile(r"sayısı", re.IGNORECASE)
 SAW_HINT = re.compile(r"\bgör(?:en|üp)", re.IGNORECASE)
+PER_HINT = re.compile(r"başına", re.IGNORECASE)
+# Yalnızca B kolunda var olan bir tanı satırı kollar arasında karşılaştırılmaz;
+# öyle etiketlendiyse payda uyarısı anlamsızdır.
+B_ONLY_HINT = re.compile(r"yalnız(?:ca)?\s+B\b|sadece\s+B\b")
+
+# Tümleyen guardrail: birincil bir tamamlama/dönüşüm/kayıt oranıyken adımı
+# yazılmamış terk oranı (sözlükteki “Terk Oranı” ve “Sayfa Terk Oranı”) aynı
+# metriğin 1 − hâlidir. Sonraki adımın terki (“Ödeme Adımı Terk Oranı”) geçerli
+# bir guardrail'dir ve bu kalıba girmez.
+COMPLETE_HINT = re.compile(r"tamamlama|dönüşüm|kayıt", re.IGNORECASE)
+GENERIC_ABANDON = re.compile(r"^(?:sayfa(?:yı)?\s+)?terk\s+oranı$", re.IGNORECASE)
+
+# Değişken yalıtımı maddesi: senaryonun kendi değişkeninin yanında neyin
+# değişmeyeceğini söyler (kural 4). Her senaryoda en az bir tane beklenir.
+ISOLATION_HINT = re.compile(
+    r"aynı testte|aynı anda|birlikte\s+(?:\S+\s+){0,8}?değiştirmeyin|tek değişken", re.IGNORECASE)
 
 # Her senaryonun Yapılmaması gerekenler kutusu kendi varyantına özgüdür; genel
 # test hijyeni methodology.md → Test hygiene'de bir kez yazılıdır. Bu kalıplar
@@ -92,6 +119,8 @@ BANNED_NEVER_DO = (
      "“örneklem dolmadan” genel istatistik hijyenidir"),
     (re.compile(r"\berken (?:kapatmayın|durdurmayın|sonlandırmayın|bitirmeyin)", re.IGNORECASE),
      "“erken kapatmayın” genel istatistik hijyenidir"),
+    (re.compile(r"^(?:sadece|yalnızca)\s.+\sbakıp\s.+\satlamayın", re.IGNORECASE),
+     "“Sadece … bakıp … atlamayın” genel sonuç okuma hijyenidir"),
 )
 
 # Başka bir senaryoya atıf: “Başlık?” senaryosu / senaryosundan / senaryolarından …
@@ -102,6 +131,10 @@ QUOTE_CHARS = re.compile(r"[“”‘’'\"]")
 
 # Kutuları neredeyse aynı iki senaryo: kelime kümesi Jaccard benzerliği.
 NEAR_DUP_THRESHOLD = 0.28
+# Başlık + Değişken ifadesi: iki senaryo aynı soruyu aynı değişkenle soruyorsa
+# kutuları farklı yazılmış olsa da aynı testtir. Başlıklar kısa olduğu için eşik
+# kutu benzerliğininkinden yüksektir.
+TITLE_DUP_THRESHOLD = 0.5
 NEAR_DUP_STOPWORDS = frozenset(
     "ve veya ile için bir bu şu daha çok en ne değil olarak gibi kadar ama hem iki "
     "aynı testte artıyor artırıyor azalıyor düşüyor oranı mı mi mu mü var yok her".split()
@@ -218,8 +251,16 @@ def check_scenario(filename, title, body):
     return errors
 
 
-def check_warnings(filename, title, body):
-    """Hata olmayan ama bakılması gereken durumlar."""
+def bare_label(label):
+    """Sondaki tek parantez niteleyicisi olmadan ad: 'Terk Oranı (CR)' → 'Terk Oranı'."""
+    return re.sub(r"\s*\([^()]*\)$", "", label).strip()
+
+
+def check_warnings(filename, title, body, glossary=None):
+    """Hata olmayan ama bakılması gereken durumlar.
+
+    glossary verilirse (kpi-glossary.md), sözlükte adı olan ikincil satırlar
+    sayı uyarısı almaz: o satır paydasını sözlükten devralır."""
     warnings = []
     where = f"{filename} → {title[:50]}"
     var, _, _ = parse_variable_line(body)
@@ -228,16 +269,47 @@ def check_warnings(filename, title, body):
     kpis = box_items(body, KPI_BOX)
     if kpis:
         primary = kpis[0]
-        if COUNT_HINT.search(kpi_label(primary)):
-            warnings.append(
-                f"{where}: birincil KPI bir sayı (“Sayısı”); kollar farklı büyüklükteyse karşılaştırılamaz, "
-                f"atanan ziyaretçi başına orana çevirin → {kpi_label(primary)}"
-            )
-        if SAW_HINT.search(primary):
-            warnings.append(
-                f"{where}: birincil KPI paydası “gören/görüp” diyor; yalnızca B’de var olan bir payda "
-                f"karşılaştırılamaz (methodology → KPI denominator) → {primary[2:70]}"
-            )
+        if not B_ONLY_HINT.search(primary):
+            if COUNT_HINT.search(kpi_label(primary)) and not PER_HINT.search(kpi_label(primary)):
+                warnings.append(
+                    f"{where}: birincil KPI bir sayı (“Sayısı”); kollar farklı büyüklükteyse karşılaştırılamaz, "
+                    f"atanan ziyaretçi başına orana çevirin → {kpi_label(primary)}"
+                )
+            if SAW_HINT.search(primary):
+                warnings.append(
+                    f"{where}: birincil KPI paydası “gören/görüp” diyor; yalnızca B’de var olan bir payda "
+                    f"karşılaştırılamaz (methodology → KPI denominator) → {primary[2:70]}"
+                )
+        for item in kpis[1:]:
+            label = kpi_label(item)
+            if B_ONLY_HINT.search(item):
+                continue
+            # Birincil dışındaki satırlarda yalnızca ada bakılır: soru metni
+            # “süreci görüp vazgeçme” gibi paydayla ilgisiz ifadeler taşır.
+            in_glossary = glossary is not None and glossary_status(label, glossary) != "missing"
+            if COUNT_HINT.search(label) and not PER_HINT.search(label) and not in_glossary:
+                warnings.append(
+                    f"{where}: KPI bir sayı (“Sayısı”); kollar farklı büyüklükteyse karşılaştırılamaz, "
+                    f"atanan ziyaretçi başına orana çevirin ya da sözlüğe paydasıyla ekleyin → {label}"
+                )
+            if SAW_HINT.search(label):
+                warnings.append(
+                    f"{where}: KPI paydası “gören/görüp” diyor; yalnızca B’de var olan bir payda "
+                    f"karşılaştırılamaz (methodology → KPI denominator) → {label}"
+                )
+        if COMPLETE_HINT.search(kpi_label(primary)):
+            for item in kpis[1:]:
+                if GENERIC_ABANDON.match(bare_label(kpi_label(item))) and re.search(GUARDRAIL_PATTERN, item):
+                    warnings.append(
+                        f"{where}: guardrail birincil KPI’ın tümleyeni gibi görünüyor (aynı adımın terki, "
+                        f"1 − birincil); bağımsız bir zarar ölçün: sonraki adım, kalite, maliyet → {kpi_label(item)}"
+                    )
+    nevers = box_items(body, NEVER_BOX)
+    if nevers and not any(ISOLATION_HINT.search(item) for item in nevers):
+        warnings.append(
+            f"{where}: Yapılmaması gerekenler kutusunda değişken yalıtımı maddesi yok "
+            f"(“Aynı testte … değiştirmeyin” ailesi; kural 4)"
+        )
     return warnings
 
 
@@ -353,6 +425,39 @@ def find_near_duplicates(scenarios, threshold=NEAR_DUP_THRESHOLD):
     return errors, infos
 
 
+def title_tokens(title, variable):
+    words = re.findall(r"\w+", f"{title} {variable or ''}".casefold())
+    return {w for w in words if len(w) > 2 and w not in NEAR_DUP_STOPWORDS}
+
+
+def find_title_variable_duplicates(scenarios, threshold=TITLE_DUP_THRESHOLD):
+    """Başlığı ve Değişken ifadesi neredeyse aynı olan senaryo çiftleri
+    (dosyalar arası da).
+
+    Dönüş: (uyarılar, bilgiler). Kutu benzerliği denetimi (find_near_duplicates)
+    aynı testi farklı kelimelerle yazılmış kutularda kaçırır; bu denetim soruya
+    ve değişkene bakar. Çiftten biri diğerine “… senaryosundan farkı” atfı
+    veriyorsa bilinçli bir kardeş senaryodur (bilgi)."""
+    prepared = []
+    for name, title, body in scenarios:
+        var, _, _ = parse_variable_line(body)
+        refs = {normalize_title(q) for q, _, has_fark in extract_cross_refs(body) if has_fark}
+        prepared.append((name, title, title_tokens(title, var), refs))
+    warnings, infos = [], []
+    for (n1, t1, k1, r1), (n2, t2, k2, r2) in itertools.combinations(prepared, 2):
+        score = jaccard(k1, k2)
+        if score < threshold:
+            continue
+        pair = f"{n1} → {t1[:50]} ⟷ {n2} → {t2[:50]} (benzerlik {score:.2f})"
+        if normalize_title(t2) in r1 or normalize_title(t1) in r2:
+            infos.append(pair)
+        else:
+            warnings.append(
+                f"başlık ve Değişken neredeyse aynı, ama ikisi de diğerine “… senaryosundan farkı” atfı vermiyor: {pair}"
+            )
+    return warnings, infos
+
+
 # --- KPI sözlüğü --------------------------------------------------------------
 
 def parse_glossary(text):
@@ -397,23 +502,32 @@ def glossary_status(label, glossary):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Senaryo arşivinin biçim denetimi.")
+    parser.add_argument("files", nargs="*",
+                        help="arşiv yerine denetlenecek .md dosyaları (ör. kullanıcının yazdığı tek senaryo)")
     parser.add_argument("--verbose", action="store_true",
                         help="sözlükte kanonik adı olmayan birincil KPI’ları da listele")
     args = parser.parse_args(argv)
 
-    if not os.path.isdir(SCENARIO_DIR):
-        print(f"HATA: senaryo dizini bulunamadı: {SCENARIO_DIR}")
-        return 1
+    if args.files:
+        paths = list(args.files)
+        missing_files = [p for p in paths if not os.path.isfile(p)]
+        if missing_files:
+            print(f"HATA: dosya bulunamadı: {', '.join(missing_files)}")
+            return 1
+    else:
+        if not os.path.isdir(SCENARIO_DIR):
+            print(f"HATA: senaryo dizini bulunamadı: {SCENARIO_DIR}")
+            return 1
+        paths = [os.path.join(SCENARIO_DIR, n) for n in sorted(os.listdir(SCENARIO_DIR)) if n.endswith(".md")]
 
     all_errors, all_warnings = [], []
     total = 0
     per_file = {}
     file_texts, scenarios = [], []
+    glossary = load_glossary()
 
-    for name in sorted(os.listdir(SCENARIO_DIR)):
-        if not name.endswith(".md"):
-            continue
-        path = os.path.join(SCENARIO_DIR, name)
+    for path in paths:
+        name = os.path.basename(path)
         with open(path, encoding="utf-8") as f:
             text = f.read()
         file_texts.append((name, text))
@@ -437,12 +551,14 @@ def main(argv=None):
                 if body.count(f"**{header}**") > 1:
                     all_errors.append(f"{name} → {title[:50]}: '{header}' kutusu birden fazla kez tanımlı")
             all_errors.extend(check_scenario(name, title, body))
-            all_warnings.extend(check_warnings(name, title, body))
+            all_warnings.extend(check_warnings(name, title, body, glossary=glossary))
 
     all_errors.extend(find_duplicate_never_do(scenarios))
     all_errors.extend(find_unresolved_cross_refs(file_texts, [t for _, t, _ in scenarios]))
     dup_errors, dup_infos = find_near_duplicates(scenarios)
     all_errors.extend(dup_errors)
+    title_warnings, title_infos = find_title_variable_duplicates(scenarios)
+    all_warnings.extend(title_warnings)
 
     print("Senaryo sayısı:")
     for name, count in per_file.items():
@@ -455,8 +571,12 @@ def main(argv=None):
         for i in dup_infos:
             print(f"  - {i}")
         print()
+    if title_infos:
+        print(f"Başlığı ve değişkeni benzer {len(title_infos)} kardeş senaryo çifti (birbirine ‘farkı’ atfı veriyor):")
+        for i in title_infos:
+            print(f"  - {i}")
+        print()
 
-    glossary = load_glossary()
     if glossary is not None:
         missing = []
         for name, title, body in scenarios:
@@ -479,6 +599,7 @@ def main(argv=None):
         for w in all_warnings:
             print(f"  - {w}")
         print()
+    print(f"Uyarı sayısı: {len(all_warnings)}")
 
     if all_errors:
         print(f"{len(all_errors)} sorun bulundu:")

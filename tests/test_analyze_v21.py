@@ -257,7 +257,7 @@ class TestNonInferiority(unittest.TestCase):
     def test_proportion_must_not_decrease_hand(self):
         # 10% vs 10%, marj %5 → θ=0.95: Δ = 0.1 − 0.095 = 0.005
         # se = sqrt(0.09/20000 + 0.9025·0.09/20000) = 0.0029260 → z = 1.70883 → p = 0.04374
-        r = ar.significance(20000, 2000, 20000, 2000, ni_margin=0.05)
+        r = ar.significance(20000, 2000, 20000, 2000, ni_margin=0.05, guardrail_direction="must_not_decrease")
         ni = r["non_inferiority"]
         se = math.sqrt(0.09 / 20000 + 0.95 ** 2 * 0.09 / 20000)
         self.assertAlmostEqual(ni["z"], 0.005 / se, places=3)
@@ -287,13 +287,17 @@ class TestNonInferiority(unittest.TestCase):
         self.assertGreater(ni["p_value"], 0.9)
 
     def test_margin_as_percent_and_invalid_inputs(self):
-        ni = ar.significance(20000, 2000, 20000, 2000, ni_margin=5)["non_inferiority"]
+        # v2.2: çıplak 5 belirsizdir (reddedilir); yüzde açık biçimle verilir.
+        ni = ar.significance(20000, 2000, 20000, 2000, ni_margin="5%",
+                             guardrail_direction="must_not_decrease")["non_inferiority"]
         self.assertEqual(ni["margin_relative"], 0.05)
-        self.assertIn("percentage", ni["note"])
+        self.assertIn("percent", ni["note"])
+        with self.assertRaises(ValueError):
+            ar.significance(20000, 2000, 20000, 2000, ni_margin=5, guardrail_direction="must_not_decrease")
         with self.assertRaises(ValueError):
             ar.significance(20000, 2000, 20000, 2000, ni_margin=0.05, guardrail_direction="up")
         with self.assertRaises(ValueError):
-            ar.significance(20000, 2000, 20000, 2000, ni_margin=0)
+            ar.significance(20000, 2000, 20000, 2000, ni_margin=0, guardrail_direction="must_not_decrease")
 
     def test_cli_ni(self):
         rc, out, _ = run_cli("significance", "--control-visitors", "10000", "--control-conversions", "500",
@@ -395,13 +399,14 @@ class TestUnitsPowerAndMultiArm(unittest.TestCase):
         self.assertEqual(r["absolute_diff"], 0.008)
         self.assertEqual(r["absolute_diff_pp"], 0.8)
 
-    def test_mde_above_one_is_percent(self):
-        a = ar.sample_size(0.05, 10)
+    def test_mde_explicit_percent(self):
+        # v2.2: "10" belirsizdir ve reddedilir (test_analyze_v22); açık biçim "10%" = 0.10.
+        a = ar.sample_size(0.05, "10%")
         b = ar.sample_size(0.05, 0.10)
         self.assertEqual(a["required_n_per_variant"], b["required_n_per_variant"])
         self.assertAlmostEqual(a["target_rate"], 0.055)
-        self.assertIn("percentage", a["note"])
-        self.assertEqual(ar.sample_size_mean(50, 100, 10)["required_n_per_variant"], 6280)
+        self.assertIn("percent", a["note"])
+        self.assertEqual(ar.sample_size_mean(50, 100, "10%")["required_n_per_variant"], 6280)
 
     def test_observed_power_note(self):
         r = ar.significance(5000, 250, 5000, 290)
@@ -417,7 +422,7 @@ class TestUnitsPowerAndMultiArm(unittest.TestCase):
         self.assertIn("unadjusted", m["note"])
         for c in m["comparisons"]:
             self.assertEqual(c["p_value"], c["p_value_raw"])
-            self.assertIn(c["decision_code"], ("significant", "not_significant"))
+            self.assertIn(c["decision_code"], ("significant_improvement", "not_significant"))
 
 
 class TestBayesSeed(unittest.TestCase):
@@ -504,8 +509,9 @@ class TestLanguage(unittest.TestCase):
             ar.set_lang("en")
         e = ar.significance(5000, 250, 5000, 340)
         self.assertEqual(t["decision_code"], e["decision_code"])
-        self.assertEqual(t["decision"], "anlamlı")
-        self.assertEqual(e["decision"], "significant")
+        self.assertEqual(e["decision_code"], "significant_improvement")
+        self.assertIn("anlamlı iyileşme", t["decision"])
+        self.assertIn("significant improvement", e["decision"])
         self.assertEqual(set(t), set(e))
 
     def test_invalid_lang(self):

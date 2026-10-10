@@ -1,6 +1,6 @@
 # Eval 01 — suggest akışı
 
-**Girdi A:** "Moda e-ticaret sitem var, sepet sayfam için test öner." (Trafik verilmemiş, sayfa paylaşılmamış.)
+**Girdi A:** "Moda e-ticaret sitem var, sepet sayfam için test öner." (Trafik verilmemiş, sayfa paylaşılmamış: ekran görüntüsü, URL ya da sayfanın tarifi yok, yalnızca sayfa tipi var. Router tanımına göre bu “sayfa yok” durumudur ve `suggest` çalışır.)
 
 **Beklenen davranış:**
 1. Ön kapı: trafik, test aracı veya kurulum bilgisi **sorulmaz** (trafik: kural 5; araç/kurulum: senaryo üretimi için gerekli değildir, `ab-test-suggest` adım 1). Sayfa paylaşılmadığı için kural 13'ün problem sorusu da zorunlu değildir; senaryo doğrudan üretilir.
@@ -12,7 +12,8 @@
 7. Her kartın KPI kutusunda ilk madde birincil diye işaretli, en az bir guardrail "…memeli" kalıbında.
 8. Örnekler moda bağlamına yerelleştirilmiş (kulaklık örneği geçmiyor).
 9. `agents/mockup-reviewer` kart başına ayrı ayrı değil, turun bütün kartları için bir kez çalışır.
-10. Tur en fazla bir soru sorar: backlog teklifi ya da "N güçlü aday daha var" teklifi, ikisi birden değil (kural 19).
+10. `agents/scenario-critic` çağrısına eksiksiz girdi verilir (başlık, değişken ve fark türü, varyantlar, mekanizma, üç kutu, kaynak etiketi, kanıt etiketi, itiraz, gerekçeli ICE puanları, sayfa bağlamı, test hafızası, açıkça istenen testler); `FIX: input missing` dönmez. Aynı ekrana düşen iki öneri varsa her birinin “Yapılmaması gerekenler” kutusunda diğerini adıyla anan bir madde bulunur. En fazla iki yeniden inceleme yapılır (kural 17).
+11. Tur en fazla bir soru sorar: backlog teklifi ya da "N güçlü aday daha var" teklifi, ikisi birden değil (kural 19).
 
 **Düşme koşulları:**
 - Ön kapıda trafik, test aracı, kurulum veya marka kılavuzu sorusu sorulması.

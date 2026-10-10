@@ -2,9 +2,9 @@
 
 Bu dosya projenin test hafızasıdır. `ab-test-playbook` skill'leri öneri üretmeden, yeni senaryo tasarlamadan ve bir test planını denetlemeden önce burayı okur; aynı değişkenin daha önce test edilip edilmediğini, ne sonuç verdiğini bilir.
 
-**Nereye konur:** Projenin kök dizininde `.abtest-history.md` adıyla. (Bu dosya o şablonun kendisidir — kopyalayıp adını değiştirin.)
+**Nereye konur:** Projenin kök dizininde `.abtest-history.md` adıyla. (Bu dosya o şablonun kendisidir; kopyalayıp adını değiştirin.)
 
-**Kim doldurur:** Bir test bittiğinde `/ab-test results` çalıştırdığınızda, sonucu yorumladıktan sonra kaydın satır hâlini size verir; onu buraya yapıştırırsınız. Elle de yazabilirsiniz.
+**Kim doldurur:** Bir test bittiğinde `/ab-test results` çalıştırdığınızda, sonucu yorumladıktan sonra kaydın satır hâlini gösterir ve siz onaylarsanız dosyaya ekler; onaylamazsanız satırı kendiniz yapıştırırsınız. Elle de yazabilirsiniz.
 
 **Gizlilik:** Bu dosya sizin iş verinizi içerir. Public bir depoda tutuyorsanız `.gitignore`'a ekleyin.
 
@@ -23,26 +23,28 @@ Yeni kayıt en üste eklenir (en yeni önce).
 
 ## Sonuç değerleri
 
-Yalnızca şunlardan biri yazılır — yorum "Not" sütununa gider:
+Yalnızca şunlardan biri yazılır; yorum "Not" sütununa gider:
 
-- **kazandı** — birincil metrikte anlamlı iyileşme, guardrail temiz, süre kuralı sağlandı
-- **kaybetti** — birincil metrikte anlamlı kötüleşme
-- **fark yok** — örneklem hedefine ulaşıldı ama anlamlı fark çıkmadı
-- **yetersiz** — örneklem/süre dolmadan kapatıldı; sonuç bilgi taşımaz, tekrar denenebilir
-- **durduruldu** — guardrail bozulduğu için erken kapatıldı
-- **geçersiz** — ölçüm/kurulum hatası (SRM, yanlış event, kirlenmiş trafik); sonuç okunamaz
+- **kazandı** (won): birincil metrikte önceden ilan edilen yönde anlamlı iyileşme, guardrail temiz, gecikmeli pencereler kapandı
+- **kaybetti** (lost): birincil metrikte anlamlı kötüleşme
+- **fark yok** (no difference): örneklem hedefine ulaşıldı ama anlamlı fark çıkmadı
+- **yetersiz** (inconclusive): örneklem/süre dolmadan kapatıldı; sonuç bilgi taşımaz, tekrar denenebilir
+- **durduruldu** (stopped): guardrail bozulduğu için erken kapatıldı
+- **geçersiz** (invalid): ölçüm/kurulum hatası (SRM, yanlış event, kirlenmiş trafik); sonuç okunamaz
+
+Bir dosyada tek dil kullanılır: Türkçe değerlerle başlayan dosya Türkçe, İngilizce değerlerle başlayan dosya İngilizce sürer.
 
 ## Genellenebilir örüntü sütunu
 
-Yalnızca **kazandı** sonucunda doldurulur. Buraya yazılan şey testin kendisi değil, testin ardındaki soyut fikirdir — "kargo çubuğu kazandı" değil, "ilerleme göstergesi harcama davranışını güçlendiriyor" gibi. Amaç: bir sayfada işe yarayan bir mekanizmanın başka sayfalarda da denenebilir olduğunu görmek. `ab-test-suggest` bu sütunu okur ve benzer bir mekanizma başka bir sayfaya uyuyorsa "burada da denenebilir, çünkü [X sayfasında] aynı mekanizma kazanmıştı" diye önerebilir — ama bunu otomatik varsaymaz, hâlâ ayrı bir test olarak kurar.
+Yalnızca **kazandı** sonucunda doldurulur. Buraya yazılan şey testin kendisi değil, testin ardındaki soyut fikirdir; "kargo çubuğu kazandı" değil, "ilerleme göstergesi harcama davranışını güçlendiriyor" gibi. Amaç: bir sayfada işe yarayan bir mekanizmanın başka sayfalarda da denenebilir olduğunu görmek. `ab-test-suggest` bu sütunu okur ve benzer bir mekanizma başka bir sayfaya uyuyorsa "burada da denenebilir, çünkü [X sayfasında] aynı mekanizma kazanmıştı" diye önerebilir; ama bunu otomatik varsaymaz, hâlâ ayrı bir test olarak kurar.
 
 ## Neden "kaybetti" kaydı fikri öldürmez
 
 Skill'ler bu dosyayı okurken geçmiş sonucu **bilgi** olarak kullanır, otomatik veto olarak değil. Aynı fikir şu durumlarda yeniden test edilebilir ve bunun gerekçesi çıktıda yazılır:
 
 - Sayfanın veya akışın kendisi o testten sonra değişti
-- Sonuç "yetersiz" veya "geçersiz" idi — yani aslında hiç ölçülmedi
+- Sonuç "yetersiz" veya "geçersiz" idi; yani aslında hiç ölçülmedi
 - Test farklı bir segmentte/cihazda/pazarda koşulmuştu
 - Aradan uzun süre geçti ve kullanıcı davranışı ya da rekabet değişti
 
-Aynı değişken aynı sayfada art arda "fark yok" veriyorsa, skill daha küçük bir varyasyon değil, daha yapısal bir değişiklik önerir (yerel tepe riski — bkz. `knowledge/methodology.md`).
+Aynı değişken aynı sayfada art arda "fark yok" veriyorsa, skill daha küçük bir varyasyon değil, daha yapısal bir değişiklik önerir (yerel tepe riski; bkz. `knowledge/methodology.md`).

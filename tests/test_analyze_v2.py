@@ -134,7 +134,8 @@ class TestAlternativeAndPower(unittest.TestCase):
         self.assertTrue(any("peeking" in w for w in r["warnings"]))
         r2 = ar.significance(5000, 250, 5000, 330, planned_n=5000)
         self.assertFalse(r2["peeking_risk"])
-        self.assertEqual(r2["decision"], "anlamlı")
+        self.assertEqual(r2["decision_code"], "significant_improvement")
+        self.assertIn("anlamlı iyileşme", r2["decision"])
 
     def test_single_prioritized_note(self):
         r = ar.significance(1000, 0, 1000, 5)

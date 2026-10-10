@@ -2,7 +2,7 @@
 
 Bu dosya henüz koşulmamış test adaylarının sıralı listesidir. `ab-test-suggest` ve `ab-test-design` öneri üretmeden önce burayı okur (varsa); aynı sayfa için zaten sırada bekleyen bir aday yeniymiş gibi tekrar önerilmez.
 
-**Nereye konur:** Projenin kök dizininde `.abtest-backlog.md` adıyla. (Bu dosya o şablonun kendisidir — kopyalayıp adını değiştirin.) İsteğe bağlıdır.
+**Nereye konur:** Projenin kök dizininde `.abtest-backlog.md` adıyla. (Bu dosya o şablonun kendisidir; kopyalayıp adını değiştirin.) İsteğe bağlıdır.
 
 **Kim doldurur:** `ab-test-suggest` bir turdaki güçlü adayları (mekanizma kapısından geçen ve ICE ≥ Orta olanlar) buraya eklemeyi önerir; yalnızca siz sohbette onaylarsanız ekler. Elle de yazabilirsiniz. Bir aday koşulunca satırı silin ve sonucu `.abtest-history.md`'ye yazın.
 
@@ -22,5 +22,5 @@ En yüksek ICE en üstte.
 
 - **ICE:** Yüksek / Orta (Düşük adaylar buraya eklenmez)
 - **Kanıt:** kendi verisi / arşiv emsali / sektör gözlemi / sezgi
-- **Kaynak:** arşivden / bu sayfa için üretildi
+- **Kaynak:** arşivden / arşivden uyarlandı / bu sayfa için üretildi
 - **Durum:** sırada / tasarlanıyor / koşuyor (koşan test bitince satır geçmiş dosyasına taşınır)

@@ -281,14 +281,26 @@ class TestPreregistration(unittest.TestCase):
         self.assertTrue(any("expected guardrail" in e for e in errs), errs)
 
     def test_check_guardrail_needs_no_margin(self):
+        # Her guardrail bir kez tanımlanır: kontrol, KPI kutusundaki kendi satırına karşılık gelir.
+        sc = base_scenario()
+        sc["kpis"].append({"name": "Erişilebilirlik Kontrolü", "role": "guardrail"})
+        pre = base_prereg()
+        pre["guardrails"].append({"name": "Erişilebilirlik Kontrolü", "type": "check",
+                                  "criterion": "Klavye ve ekran okuyucu kontrolünde kritik bulgu yok"})
+        sc["preregistration"] = pre
+        self.assertEqual(validate(sc, SCHEMA), [])
+
+    def test_same_guardrail_cannot_be_defined_twice(self):
         pre = base_prereg()
         pre["guardrails"].append({"name": "Kupon kullanımı", "type": "check",
                                   "criterion": "Klavye ve ekran okuyucu kontrolünde kritik bulgu yok"})
-        self.assertEqual(errors_for(preregistration=pre), [])
+        errs = errors_for(preregistration=pre)
+        self.assertTrue(any("defined twice" in e for e in errs), errs)
 
     def test_check_guardrail_cannot_carry_a_margin(self):
         errs = prereg_errors(guardrails=[{"name": "Kupon kullanımı", "type": "check", "margin_relative": 0.05}])
-        self.assertTrue(any("oneOf" in e for e in errs), errs)
+        self.assertTrue(any("either margin-based" in e for e in errs), errs)
+        self.assertFalse(any("oneOf" in e for e in errs), errs)
 
     def test_lagging_guardrail_read_after_days(self):
         self.assertEqual(prereg_errors(guardrails=[{"name": "Kupon kullanımı", "direction": "must_not_decrease",

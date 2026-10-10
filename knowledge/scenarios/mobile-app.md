@@ -29,7 +29,7 @@ Tüm servisleri eşit boyutta göstermek nötr bir deneyim yaratır. Öncelikli 
 - Büyük ikonun diğer kategorilerin erişimini gölgelemesine izin vermeyin.
 - İkonu banner hissi verecek kadar büyütmeyin.
 - Aynı testte ikonu büyütürken rengini veya konumunu da değiştirmeyin.
-- Sadece tıklamaya bakıp servisin tamamlama oranını atlamayın.
+- Büyütülen ikonu, kullanıcının bulunduğu bölgede veya saatte hizmet vermeyen bir servise ayırmayın.
 
 ---
 
@@ -108,7 +108,7 @@ Yükleme ekranları çoğunlukla boş geçer. Bu anlarda kampanya veya avantaj b
 - Ziyaretçi Başına Gelir (RPV): Kampanya mesajı geliri artırıyor mu?
 - Dönüşüm Oranı (CR): Kampanya mesajı satın almayı artırıyor mu?
 - Kampanya Etkileşimi: Kampanyalı ürünlere trafik artıyor mu?
-- Terk Oranı: Bekleme sırasında çıkış artmamalı.
+- Yükleme Ekranında Terk Oranı: Yükleme bitmeden uygulamadan çıkanların payı artmamalı.
 - Sayfa Geçiş Hızı: Kullanıcı yüklemeden sonra daha hızlı mı ilerliyor?
 
 **Yapılmaması gerekenler**
@@ -193,7 +193,7 @@ Zamana bağlı pop-up herkesi keser; çıkış niyetine bağlı pop-up sadece za
 
 **Takip edilecek ana KPI’lar**
 - Oturum Devam Oranı: Çıkış niyeti sinyali iki kolda da loglanır (A’da pop-up çıkmaz); sinyal veren kullanıcılar içinde oturuma devam edenlerin oranı artıyor mu?
-- Pop-up Yanıt Oranı: Teklifi kabul eden oranı.
+- Pop-up Yanıt Oranı: Tanı metriği; teklifi kabul edenlerin oranı ne kadar (yalnız B kolu içi, kollar arası karşılaştırılmaz)?
 - Dönüşüm Oranı (CR): Toplam satışa etkisi.
 - Oturum Süresi: Düşmemeli.
 - E-bülten Çıkış Oranı: Agresif toplama abonelikleri bozmamalı.
@@ -207,11 +207,11 @@ Zamana bağlı pop-up herkesi keser; çıkış niyetine bağlı pop-up sadece za
 
 ---
 
-## Uygulama indirme banner’ı web dönüşümünü düşürüyor mu?
+## Mobil webe uygulama indirme banner’ı eklemek web dönüşümünü düşürüyor mu?
 
 Değişken: Uygulama indirme banner’ı · Fark: ekle
 
-Mobil webde uygulama banner’ı kurulum sayısını artırır ama devam eden oturumu böler. Bu test iki hedefin çakıştığı klasik bir örnektir; tek metrikle okunursa yanlış karar verilir.
+Mobil webe eklenen uygulama indirme banner’ı kurulum sayısını artırır ama devam eden oturumu böler. Bu test iki hedefin çakıştığı klasik bir örnektir; tek metrikle okunursa yanlış karar verilir.
 
 **Test edilmesi gerekenler**
 - Kazanç: Banner uygulama kurulumunu ne kadar artırıyor?
@@ -228,11 +228,11 @@ Mobil webde uygulama banner’ı kurulum sayısını artırır ama devam eden ot
 - 7. Gün Elde Tutma: Kurulum kalıcı mı?
 
 **Yapılmaması gerekenler**
-- Sadece kurulum sayısına bakıp web kaybını görmezden gelmeyin.
+- Uygulaması zaten kurulu olan kullanıcıya indirme banner’ı göstermeyin; uygulamayı açma bağlantısı ayrı bir durumdur.
 - Banner’ı kapatılamaz yapmayın.
 - Ödeme akışının içinde göstermeyin.
 - Her sayfada tekrar tekrar açmayın.
-- Aynı testte teklif tutarını da değiştirmeyin.
+- Aynı testte banner’ı eklerken web fiyatını veya uygulamaya özel indirim teklifini de değiştirmeyin.
 
 ---
 
@@ -261,7 +261,7 @@ Uygulamanın üstüne yerleşen kısa baloncuklar, bulunması zor işlevleri ilk
 - Aynı testte ipucu sayısı ile ipucu metinlerini birlikte değiştirmeyin.
 - Kullanıcıyı ürünle hiç temas etmeden art arda beş ipucundan geçirmeyin.
 - İpucu katmanını ekran okuyucu ile gezilemez bırakmayın.
-- Özellik kullanımı arttı diye elde tutmaya bakmadan kazandı demeyin.
+- İpucunu, tanıttığı işlevin ekranda görünmediği bir anda göstermeyin; baloncuk işaret ettiği öğenin yanında durmalı.
 
 ---
 
@@ -312,14 +312,14 @@ Herkese aynı “sonraki adım” yerine kullanıcının nerede kaldığına gö
 - Önerilen Adımın Tamamlanma Oranı: Tanı metriği; öneri gerçekten yapılıyor mu?
 - Alakasız Öneri Oranı: Yanlış öneri gösterimi kabul edilemez seviyeye çıkmamalı.
 - 7. Gün Elde Tutma: Elde tutma artıyor mu?
-- Uygulama Terk Oranı: Öneri baskısı çıkışı artırmamalı.
+- Uygulama Silme Oranı: Öneri baskısı, ilan edilen pencerede uygulamayı silen kullanıcıyı artırmamalı.
 
 **Yapılmaması gerekenler**
 - Durum tespitini kullanıcının paylaşmadığı verilerden türetip bunu ima etmeyin.
 - Yedek öneri tanımlamadan kişiselleştirme kurmayın.
 - Aynı testte öneri mantığı ile önerinin sunum biçimini birlikte değiştirmeyin.
 - Kullanıcının kendi seçtiği yolu öneriyle ezmeyin.
-- Öneri tamamlandı diye asıl değere ulaşmaya bakmadan kazandı demeyin.
+- Kullanıcının az önce tamamladığı veya bilerek atladığı adımı yeniden önermeyin.
 
 ---
 
@@ -327,7 +327,7 @@ Herkese aynı “sonraki adım” yerine kullanıcının nerede kaldığına gö
 
 Değişken: Profil tamamlama göstergesi · Fark: ekle
 
-Görünürde biten ama tam dolu olmayan bir gösterge (“Profiliniz %70 tamamlandı”) bitmemiş bir işi akılda tutar ve kapatma isteği yaratır — bu, ilk kayıt formunun kendisindeki adım-adım ilerleme çubuğundan (bkz. `cart-checkout.md`) farklı bir mekanizmadır: orada amaç akışta nerede olunduğunu göstermek, burada amaç kayıttan sonra kalan, isteğe bağlı alanlara geri döndürmektir.
+Görünürde biten ama tam dolu olmayan bir gösterge (“Profiliniz %70 tamamlandı”) bitmemiş bir işi akılda tutar ve kapatma isteği yaratır; bu, ilk kayıt formunun kendisindeki adım-adım ilerleme çubuğundan (bkz. `cart-checkout.md`) farklı bir mekanizmadır: orada amaç akışta nerede olunduğunu göstermek, burada amaç kayıttan sonra kalan, isteğe bağlı alanlara geri döndürmektir.
 
 **Test edilmesi gerekenler**
 - Sonraki test: Gösterge kazanırsa, gösterim biçimi (yüzde / “3 alan kaldı”) ayrı bir testte tamamlamayı değiştiriyor mu?

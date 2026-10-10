@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/ali-demirbas/ab-test-playbook/templates/scenario.schema.json",
   "title": "Scenario",
-  "description": "Tool-agnostic definition of a single A/B test: one variable, two variants, exactly one primary KPI and at least one guardrail, plus the optional card layer scripts/build_card.py renders from the same file (one JSON per scenario). Deliberately independent of any testing platform's own schema; whoever imports it maps it to their tool. Several of CLAUDE.md's binding rules are enforced here structurally rather than in prose: rule 1 (three boxes, at least three items each), rule 2 (one primary KPI, listed first), rule 3 (a guardrail exists), rule 4 (one variable, two variants), rule 8 (source is stated, an adapted scenario names its archive original), rule 10 (evidence level is stated). Cross-field rules a schema cannot express (pre-registration agrees with the scenario, ring placement matches the difference type, numbers only with known traffic) are checked by scripts/validate_scenario_json.py.",
+  "description": "Tool-agnostic definition of a single A/B test: one variable, two variants, exactly one primary KPI and at least one guardrail, plus the optional card layer scripts/build_card.py renders from the same file (one JSON per scenario). Deliberately independent of any testing platform's own schema; whoever imports it maps it to their tool. Several of CLAUDE.md's binding rules are enforced here structurally rather than in prose: rule 1 (three boxes, three to six items each), rule 2 (one primary KPI, listed first), rule 3 (a guardrail exists), rule 4 (one variable, two variants), rule 8 (source is stated, an adapted scenario names its archive original), rule 10 (evidence level is stated). Cross-field rules a schema cannot express (pre-registration agrees with the scenario, ring placement matches the difference type, numbers only with known traffic, the mockup markup allowlist) are checked by scripts/validate_scenario_json.py, which also prints warnings (a rate with no denominator, a lagging guardrail with no window, a guardrail that is the complement of the primary); --strict turns those into errors. A scenario is valid without a card object: the card layer is added when the scenario is rendered.",
   "type": "object",
   "required": [
     "id",
@@ -211,7 +211,8 @@
       "items": {
         "$ref": "#/$defs/boxItem"
       },
-      "description": "Rule 1: the 'What to test' box. At least three items."
+      "description": "Rule 1: the 'What to test' box. Three to six items.",
+      "maxItems": 6
     },
     "dont_items": {
       "type": "array",
@@ -219,12 +220,13 @@
       "items": {
         "$ref": "#/$defs/boxItem"
       },
-      "description": "Rule 1: the 'Never do' box. At least three items."
+      "description": "Rule 1: the 'Never do' box. Three to six items.",
+      "maxItems": 6
     },
     "kpis": {
       "type": "array",
       "minItems": 3,
-      "description": "Rule 1, 2 and 3, enforced structurally: at least three items, exactly one primary and it comes first, at least one guardrail. Rendered as the KPI box: name as the bold label, question as the text, role as a pill.",
+      "description": "Rule 1, 2 and 3, enforced structurally: three to six items, exactly one primary and it comes first, at least one guardrail; each metric is listed once. Rendered as the KPI box: name as the bold label, question as the text, role as a pill. Every line carries its denominator, in the name (\"… (per assigned user)\", \"… (… başına)\") or in the denominator field; a count (\"Sayısı\") or a \"users who saw it\" denominator is an error on the primary and a warning elsewhere.",
       "items": {
         "type": "object",
         "required": [
@@ -248,6 +250,11 @@
           "question": {
             "type": "string",
             "description": "What this metric answers."
+          },
+          "denominator": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What the metric is divided by, when the name does not say it (e.g. 'assigned users', 'users who reached the payment step, logged in both arms')."
           }
         }
       },
@@ -281,7 +288,8 @@
           },
           "minContains": 1
         }
-      ]
+      ],
+      "maxItems": 6
     },
     "evidence": {
       "type": "object",
@@ -377,7 +385,7 @@
         "allocation",
         "decision_rule"
       ],
-      "description": "Optional. Decisions fixed before launch (ab-test-design's pre-registration block; validate a bare {\"preregistration\": {...}} with validate_scenario_json.py --prereg-only). The fields map onto the experiment-configuration fields common experimentation platforms ask for. Unknown numbers are null, never guessed (rule 5): planned_n_per_arm and duration_days may only be numbers when sample.traffic_known is true. Its variable, primary KPI and guardrail names must match the scenario's.",
+      "description": "Optional. Decisions fixed before launch (ab-test-design's pre-registration block). The normal path is to validate it inside the scenario's own JSON (validate_scenario_json.py <scenario.json>), where its variable, primary KPI and guardrail names are checked against the scenario's: every guardrail of the KPI box is pre-registered and nothing else is. A bare {\"preregistration\": {...}} can be validated with --prereg-only as the fallback when no scenario JSON exists. The fields map onto the experiment-configuration fields common experimentation platforms ask for. Unknown numbers are null, never guessed (rule 5): planned_n_per_arm and duration_days may only be numbers when sample.traffic_known is true.",
       "properties": {
         "hypothesis": {
           "type": "string",
@@ -405,13 +413,22 @@
                 "increase",
                 "decrease"
               ]
+            },
+            "read_after_days": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Follow-up window of a lagging primary (e.g. 'requests within 7 days of first open'): read only once that many days have passed for the last exposed cohort."
+            },
+            "denominator": {
+              "type": "string",
+              "minLength": 1
             }
           }
         },
         "guardrails": {
           "type": "array",
           "minItems": 1,
-          "description": "Rule 3 with numbers. A guardrail is either margin-based (a tolerated relative degradation, read as one-sided non-inferiority) or a pass/fail check with no margin (type 'check', e.g. an accessibility review). read_after_days marks a lagging guardrail (returns, 30-day refunds) that is read only once that many days have passed after exposure.",
+          "description": "Rule 3 with numbers. A guardrail is either margin-based (a tolerated relative degradation, read as one-sided non-inferiority) or a pass/fail check (type 'check' with a criterion saying what passing means, e.g. an accessibility review; no margin), never both. read_after_days marks a lagging guardrail (returns, 30-day refunds) that is read only once that many days have passed after exposure; the decision rule then says nothing ships before that window closes.",
           "items": {
             "oneOf": [
               {
@@ -446,6 +463,10 @@
                   "read_after_days": {
                     "type": "integer",
                     "minimum": 1
+                  },
+                  "denominator": {
+                    "type": "string",
+                    "minLength": 1
                   }
                 }
               },
@@ -453,7 +474,8 @@
                 "type": "object",
                 "required": [
                   "name",
-                  "type"
+                  "type",
+                  "criterion"
                 ],
                 "additionalProperties": false,
                 "properties": {
@@ -473,6 +495,10 @@
                   "read_after_days": {
                     "type": "integer",
                     "minimum": 1
+                  },
+                  "denominator": {
+                    "type": "string",
+                    "minLength": 1
                   }
                 }
               }
@@ -518,7 +544,7 @@
             "B"
           ],
           "additionalProperties": false,
-          "description": "Share of traffic per arm; must sum to 1 (checked by the validator).",
+          "description": "Share of traffic per arm; the keys are the variant ids (A and B) and the shares sum to 1 (checked by the validator). A third arm is a different design: one pre-registration block per comparison.",
           "properties": {
             "A": {
               "type": "number",
@@ -546,6 +572,19 @@
           ],
           "minimum": 1
         },
+        "trigger": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The trigger event of a triggered analysis (methodology.md → KPI denominator), logged at the same point in both arms, before the change is shown. Absent = the assigned population."
+        },
+        "pre_start_gates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "What must be closed before the test takes traffic: compliance sign-off on B's exact copy in a regulated flow, a pass/fail guardrail checked on B, a lagging window still to be verified from product terms."
+        },
         "decision_rule": {
           "type": "string",
           "minLength": 1
@@ -568,12 +607,12 @@
         "variant_b",
         "difference"
       ],
-      "description": "Optional visual layer consumed by scripts/build_card.py: the same JSON renders the card. Absent when the scenario is only being exported, not rendered.",
+      "description": "Optional visual layer consumed by scripts/build_card.py: the same JSON renders the card. Absent when the scenario is only being designed, reviewed or exported; added at render time.",
       "properties": {
         "variant_a": {
           "type": "string",
           "minLength": 1,
-          "description": "Mockup body of the control, raw markup built from the template's .r-* components."
+          "description": "Mockup body of the control, raw markup built from the template's .r-* components. Only the allowlisted inert tags and attributes pass (build_card.py: ALLOWED_TAGS / ALLOWED_ATTRS, every attribute value in double quotes, no comments, links, images, forms or scripts); anything else is refused, not cleaned."
         },
         "variant_b": {
           "type": "string",
@@ -605,7 +644,7 @@
         },
         "url": {
           "type": "string",
-          "description": "Address bar text (web) or the domain shown in the mobile address bar (phone-web)."
+          "description": "Address bar text (web) or the domain shown in the mobile address bar (phone-web). Required for those two frames."
         },
         "bottom_nav": {
           "type": "array",
@@ -613,12 +652,21 @@
             "type": "string",
             "minLength": 1
           },
-          "description": "phone only: the real app's tab labels. Absent or empty = no tab bar (never invent one)."
+          "description": "phone only: the real app's tab labels, a list of strings. Absent or empty = no tab bar (never invent one). Refused on phone-web and web, which draw no tab bar."
+        },
+        "bottom_nav_active": {
+          "type": [
+            "string",
+            "integer"
+          ],
+          "minLength": 1,
+          "minimum": 0,
+          "description": "The tab the screen belongs to, as that tab's label or its 0-based index in bottom_nav; drawn in the brand colour. The same tab is active in A and B. Ignored without bottom_nav."
         },
         "brand": {
           "type": "object",
           "additionalProperties": false,
-          "description": "Rule 12: brand colours taken from the shared screen or a brand guide. Absent = neutral palette.",
+          "description": "Rule 12: brand colours taken from the shared screen or a brand guide. Absent = neutral palette. A colour is #hex, rgb()/hsl() or a CSS colour name; any other word is refused by the validator and the builder (it would render a transparent button).",
           "properties": {
             "primary": {
               "type": "string",
@@ -672,7 +720,7 @@
             "type": "string",
             "minLength": 1
           },
-          "description": "Extra one-line notes under the card (e.g. 'The address bar URL was not visible; it is representative')."
+          "description": "Notes about the drawing only (what wasn't visible, masked or left out); never advice. One exception: a line starting 'Stronger alternative:' / 'Daha güçlü alternatif:' on a weak test the user explicitly asked for."
         }
       }
     }
