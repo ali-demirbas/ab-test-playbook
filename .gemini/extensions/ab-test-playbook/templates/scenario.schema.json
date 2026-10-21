@@ -515,11 +515,8 @@
     "card": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "variant_a",
-        "variant_b"
-      ],
-      "description": "Optional visual layer consumed by scripts/build_card.py: the same JSON renders the card, which shows the record's title and these two mockups and nothing else. Absent when the scenario is only being designed, reviewed or exported; added at render time.",
+      "required": [],
+      "description": "Optional visual layer consumed by scripts/build_card.py: the same JSON renders the card, which shows the record's title and the two mockups and nothing else. Absent when the scenario is only being designed, reviewed or exported; added at render time. The mockups come in one of two forms, exactly one (the validator checks): screen + change (the screen spec, compiled by scripts/screen_spec.py) or variant_a + variant_b (raw markup, for special cases).",
       "properties": {
         "variant_a": {
           "type": "string",
@@ -530,6 +527,23 @@
           "type": "string",
           "minLength": 1,
           "description": "Mockup body of the test variant; differs from variant_a in exactly one element."
+        },
+        "screen": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object"
+          },
+          "description": "Screen spec form (Contract 8), the default way to draw: the page once, as a list of nodes compiled by scripts/screen_spec.py ({\"header\": ..}, {\"h\": ..}, {\"field\": .., \"label\": ..}, {\"cta\": ..}, {\"band\": {\"items\": [..]}}, ..; node kinds in knowledge/mockup-style.md → Screen spec). Variant A is this screen; Variant B is this screen plus card.change. Either screen + change OR variant_a + variant_b: both at once are refused (validator and builder). Records that share a screen copy the same list, so their Variant A is byte-identical."
+        },
+        "change": {
+          "type": "object",
+          "description": "Exactly one operation on one node of card.screen, the tested element, with the ring's label: {\"op\": insert_after|insert_before|replace|remove|move_after|move_before|edit, \"target\": <node id>, ..}. insert_*: node + label (difference add); replace: node + label (+ label_a); remove: label (difference remove); move_*: to + label_a + label_b (difference move); edit: set {property: value} + label (difference change). label_pos below|above places the label."
+        },
+        "soft": {
+          "type": "array",
+          "maxItems": 2,
+          "description": "Screen spec form only: up to two node ids (or {\"id\": .., \"note\": ..}) drawn with the soft ring (.hl-soft) in both arms, the variable's linked consequence."
         },
         "difference": {
           "type": "string",

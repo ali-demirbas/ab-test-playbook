@@ -157,6 +157,8 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
+import screen_spec as ss  # noqa: E402  (ships next to this file; the screen spec compiler)
+
 DEVICES = ("phone", "phone-web", "web")
 DIFFERENCES = ("change", "add", "move", "remove")
 # The archive's "Fark:" line spells the type in Turkish; the schema accepts
@@ -437,6 +439,21 @@ def normalize(scenario, msg_lang=None):
     if not isinstance(card, dict):
         die(_t(*NO_CARD_MSG))
 
+    # Contract 8: the screen spec form (card.screen + card.change) compiles to
+    # the two mockup bodies here, before anything else reads them, so every
+    # gate below sees exactly the markup the card is drawn from. Both forms at
+    # once, or a spec the compiler can't draw, refuse the card.
+    screen_spec = False
+    form = ss.card_form(card)
+    if form in ("spec", "both") or "soft" in card:
+        a, b, problems = ss.compile_card(card, msg_lang or _MSG_LANG)
+        if problems:
+            die(_t("the screen spec was refused; nothing was drawn, fix the input:\n  ",
+                   "ekran tanımı reddedildi; hiçbir şey çizilmedi, girdiyi düzeltin:\n  ", msg_lang)
+                + "\n  ".join(problems))
+        card = dict(card, variant_a=a, variant_b=b)
+        screen_spec = True
+
     lang = scenario.get("lang") or "tr"
     if lang not in CARD_LANGS:
         die("lang must be one of %s, got %r" % ("/".join(CARD_LANGS), lang))
@@ -512,6 +529,8 @@ def normalize(scenario, msg_lang=None):
         "phone_scale": PHONE_SCALE_ATTR[phone_scale],
         "web_scale": web_scale,
         "inherited_contrast": [{"text": i["text"].strip(), "color": i["color"].lower()} for i in inherited],
+        # True when the two mockups were compiled from card.screen + card.change (screen_spec.py).
+        "screen_spec": screen_spec,
         # Layout fields (layout_field_problems checks them, apply_layout draws them).
         "stage_captions": card.get("stage_captions"),
         "mobile_toolbar": card.get("mobile_toolbar", False),
@@ -2908,7 +2927,7 @@ def stamp_problems(scenario, key, expected, lang="en"):
 def manifest_document(scenario, view, manifest, final_fp, record_fp, draft_path):
     """The JSON written next to a draft: what the mockup reviewer checks item by item."""
     numeric = view.get("numeric_change")
-    return {
+    doc = {
         "format": MANIFEST_FORMAT,
         "version": MANIFEST_VERSION,
         "draft": os.path.basename(draft_path),
@@ -2924,6 +2943,9 @@ def manifest_document(scenario, view, manifest, final_fp, record_fp, draft_path)
         "rings": manifest.get("rings", []),
         "changes": manifest.get("changes", []),
     }
+    if view.get("screen_spec"):
+        doc["screen_spec"] = True  # the mockups were compiled from card.screen + card.change
+    return doc
 
 
 GATES = {

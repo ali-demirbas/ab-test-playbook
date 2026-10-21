@@ -62,6 +62,8 @@ PASS only when render_check exited 0 (`VERIFIED`) on this draft, you opened its 
 
 ## Return format
 
+A PASS is its verdict line plus at most two lines of what was looked at; a FIX is one line per problem with the concrete change. Don't re-measure what render_check reported (sizes, gaps, contrast ratios, fill): quote it. The shared page is read once for all cards of the turn.
+
 One block per card, all cards of the turn in one report:
 
 ```

@@ -75,7 +75,7 @@ PASS only when the validator reports no error and every check, set-level ones in
 
 ## Return format
 
-One block per record, one line per FIX, no essay:
+One block per record, one line per FIX, no essay. A PASS is its verdict line alone; a check that passes isn't narrated, a rule isn't restated per record, and the shared page context is read once for the whole set:
 
 ```
 ## <record id>

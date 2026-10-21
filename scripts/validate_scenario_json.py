@@ -178,9 +178,11 @@ ARCHIVE_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__fi
 try:  # one source of truth for everything about the card: the builder's own rules
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import build_card  # noqa: E402
+    import screen_spec  # noqa: E402  (the screen spec compiler, Contract 8)
     from build_card import DIFFERENCE_ALIASES  # noqa: E402
 except ImportError:  # pragma: no cover - build_card ships next to this file
     build_card = None
+    screen_spec = None
     DIFFERENCE_ALIASES = {}
 
 # Keywords walk() applies. A keyword outside this list (and outside the two
@@ -1961,9 +1963,32 @@ def card_device(scenario, card):
     return "phone"
 
 
+def card_markup(card, lang="tr"):
+    """(variant_a, variant_b, problems): the two mockup bodies the card is drawn
+    from. The raw form gives them as written; the screen spec form (card.screen
+    + card.change) compiles them with screen_spec, so every check below sees
+    the same markup build_card.py draws. Problems are the spec's (or the
+    form's: both forms at once, half a form); the bodies are None then."""
+    if not isinstance(card, dict):
+        return None, None, []
+    if screen_spec is None:  # pragma: no cover - ships next to this file
+        return card.get("variant_a"), card.get("variant_b"), []
+    problems = screen_spec.form_problems(card, lang)
+    if problems:
+        return None, None, problems
+    if screen_spec.card_form(card) == "raw":
+        return card.get("variant_a"), card.get("variant_b"), []
+    a, b, problems = screen_spec.compile_card(card, lang)
+    if problems:
+        return None, None, problems
+    return a, b, []
+
+
 def _card_report(scenario, card, lang):
     """(errors, warnings) of the two mockups, from the builder's own function."""
-    a, b = card.get("variant_a"), card.get("variant_b")
+    a, b, problems = card_markup(card, lang)
+    if problems:
+        return problems, []
     diff = card_difference(scenario, card)
     # Both must be strings: the walker has already reported the wrong type, and
     # markup rules have nothing to say about a number.
@@ -2105,8 +2130,7 @@ def regulated_word(scenario):
     if word:
         return word.group(0)
     card = scenario.get("card") if isinstance(scenario.get("card"), dict) else {}
-    shown = " ".join(html.unescape(TAG_RE.sub(" ", card[k])) for k in ("variant_a", "variant_b")
-                     if isinstance(card.get(k), str))
+    shown = " ".join(html.unescape(TAG_RE.sub(" ", k)) for k in card_markup(card)[:2] if isinstance(k, str))
     word = REGULATED_MOCKUP_RE.search(shown) or REGULATED_CASED_RE.search(shown)
     return "%s (card)" % word.group(0) if word else None
 

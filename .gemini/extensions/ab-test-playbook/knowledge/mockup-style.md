@@ -1,6 +1,6 @@
 # Visual Language: Scenario Card and Mockup Rules
 
-**Core, read for every card:** The card · Frames · Ring and label · Realism level · Personal data is never copied · Numbers the mockup needs but must not invent (all above "# On demand": `awk '/^# On demand/{exit} 1' ${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md`).
+**Core, read for every card:** The card · Frames · Ring and label · Realism level · Screen spec · Personal data is never copied · Numbers the mockup needs but must not invent (all above "# On demand": `awk '/^# On demand/{exit} 1' ${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md`).
 **On demand, when the card needs it:** Components (`.r-*` markup) · Special cases (steppers, fold and sticky bar, stages, soft ring, carousels and dots, text buttons, modals, photo backgrounds) · Brand · Card layout · Draft and final card · render_check (`awk -v h='## <title>' 'index($0,h)==1{p=1;print;next} p&&/^##? /{exit} p' ${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md`).
 `ab-test-card`, the card template, `build_card.py` and `render_check.mjs` follow this spec.
 
@@ -54,6 +54,44 @@ Phone base 15px, web base 14px; headings 18-20px / 600; meta and help text 13px;
 - **`representative`** (no page, e.g. a generic archive scenario): a representative example; chat says so only when the user could take it for their own page.
 
 A finished-looking design draws comments on color and wording rather than "this flow is built wrong"; the ring with its label and the question-form title keep attention on the tested variable.
+
+## Screen spec
+
+The producer describes the screen, the builder draws it: `card.screen` is a node list, `card.change` one op naming the tested element; `build_card.py` compiles both arms from them, so A and B cannot differ anywhere else. Raw `card.variant_a`/`variant_b` markup stays for what the list can't express; both forms at once are refused. Overrides (`fg`, `bg`, `border`, `radius`, `height` as `#rrggbb`/px) become inline style identical in both arms; siblings get the template's 16px gap unless a node sets `mb`; the page's real spacing is copied with `mb`/`gap` only where it matters.
+
+| Node (one key names the kind; optional `id`) | Draws |
+|---|---|
+| `header` {logo true/"Text", nav [], tel, icons [{icon close/support/menu/search/back, label}], line false} | `.r-header` (+ `.r-logo`/`.r-nav`/`.r-tel`, icons as `role="img"`; `line: false` → no border) |
+| `h`, `sub`, `text` (+ align center/left) | `.r-h`, `.r-sub`, plain div |
+| `field` placeholder (+ label, select, value: never personal data) · `row` [fields] | `.r-label` + `.r-field` (`.empty`, `.select`) · `.r-row` |
+| `cta` text (+ style filled/outline/ghost, size sm) · `link` · `help` · `info` | `.r-cta` · `.r-link` · `.r-help` · `.r-info` |
+| `check`/`radio` text (+ on) · `chips`/`tabs` [{label, on}] · `steps` [{label, state}] · `progress` n | `.r-check`/`.r-radio(.on)` · `.r-chips`/`.r-tabs` · `.r-steps` · `.r-progress` |
+| `line` [label, value] (+ total) · `item` {name, meta, price} · `plan` {name, price, per, featured, badge, cta, cta_style, features} | `.r-line(.total)` · `.r-item` · `.r-plan` |
+| `badge` text (+ style warn/brand) · `banner` · `img` height · `divider` · `gap` px | `.r-badge` · `.r-banner` · `.ph.img` · `.r-divider` · spacer |
+| `band` {bg, items [], pad [top, bottom]} · `stack` {items [], gap} | full-bleed region · plain flex column |
+| `fold` · `stage` · `sticky` node (only with a fold) | `.r-fold` · `.r-stage-break` · `.r-sticky` |
+
+Change ops (exactly one; every op carries the ring `label`, `label_pos` above/below): `insert_after` / `insert_before` {target, node} · `replace` {target, node, label_a optional: rings A too} · `remove` {target}: ring on A, B genuinely empty · `move_after` / `move_before` {target, to, label_a, label_b}: ring in both arms · `edit` {target, set {key: value}}: one property of one node. `card.soft` names up to two ids wrapped in `.hl-soft`. Unknown kind, missing target, duplicate id or two changes stop the build; nothing falls back silently.
+
+Example, a quote form on a grey band, header without a line, test = a help line under the ID field:
+
+```json
+"screen": [
+  {"header": {"logo": true, "icons": [{"icon": "support", "label": "Destek"}, {"icon": "close", "label": "Kapat"}], "line": false}},
+  {"h": "Sağlık Sigortası"},
+  {"band": {"bg": "#f5f5f5", "items": [
+    {"text": "Teklif almak için aşağıdaki bilgileri eksiksiz doldurunuz.", "align": "center"},
+    {"field": "Adınız", "id": "adiniz", "fg": "#777879", "border": "#9a9b9d", "radius": 4, "height": 52, "mb": 10},
+    {"field": "Soyadınız", "fg": "#777879", "border": "#9a9b9d", "radius": 4, "height": 52, "mb": 10},
+    {"field": "T.C. Kimlik Numaranız", "id": "tckn", "fg": "#777879", "border": "#9a9b9d", "radius": 4, "height": 52, "mb": 10},
+    {"field": "Cep Telefonu", "fg": "#777879", "border": "#9a9b9d", "radius": 4, "height": 52, "mb": 10},
+    {"field": "E-Posta", "id": "eposta", "fg": "#777879", "border": "#9a9b9d", "radius": 4, "height": 52}
+  ]}}
+],
+"change": {"op": "insert_after", "target": "tckn", "node": {"help": "Teklifinizi hazırlamak için bu bilgiye ihtiyaç duyuyoruz."}, "label": "Gerekçe satırı eklendi", "label_pos": "below"}
+```
+
+The five placeholders are below the contrast floor on the page itself: they go in `card.inherited_contrast` as today.
 
 ## Personal data is never copied
 
