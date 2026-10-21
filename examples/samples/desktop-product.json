@@ -1,0 +1,74 @@
+{
+  "id": "product-detail-shipping-returns-near-price-01",
+  "title": "Kargo ve iade bilgisini fiyatın hemen altına taşımak satışı artırır mı?",
+  "problem": "Ürün sayfalarında kargo ücreti ve iade süresi sıkça açıklamanın altında kalır; sayfanda da öyleyse fiyatı görüp “ya beğenmezsem” diye düşünen ziyaretçi bu bilgiyi karar anında görmüyor olabilir (kontrol edilecek varsayım).",
+  "mechanism": "Kargo ve iade bilgisi fiyatın hemen altına taşınınca ziyaretçi kargo ücretini ve vazgeçerse ne olacağını karar anında görür, bu da iade kaygısıyla ertelenen satın almaları azaltabilir.",
+  "variable": "Kargo-iade bloğunun konumu",
+  "variants": [
+    {
+      "id": "A",
+      "description": "Kargo ve iade bloğu ürün açıklamasının altında, sayfanın alt bölümünde"
+    },
+    {
+      "id": "B",
+      "description": "Aynı blok aynı metinle fiyatın hemen altında, “Sepete ekle”nin üstünde"
+    }
+  ],
+  "difference": "move",
+  "primary_kpi": {
+    "name": "Dönüşüm Oranı (CR)",
+    "denominator": "Teste atanan ziyaretçi (atama ürün sayfası açılınca, iki kolda aynı tetik)",
+    "direction": "increase"
+  },
+  "guardrail": {
+    "name": "İade Oranı (30 gün)",
+    "kind": "metric",
+    "denominator": "Tamamlanan sipariş",
+    "direction": "must_not_increase"
+  },
+  "invariants": [
+    "Kargo ücreti, ücretsiz kargo eşiği ve iade süresi iki kolda da aynı metin ve rakamla yazılır.",
+    "“Sepete ekle” iki kolda da aynı adımla ürünü sepete ekler.",
+    "Sepette ve ödemede gösterilen kargo ücreti iki kolda da aynı hesapla çıkar."
+  ],
+  "warnings": [
+    {
+      "type": "market",
+      "text": "İade beklentisi pazara göre değişir; ücretsiz iadenin standart sayıldığı pazarlarda bu blok bir ayrıştırıcı değil asgari şarttır, bu yüzden TR sonucu başka bir pazara taşınmaz."
+    }
+  ],
+  "source": "adapted",
+  "adapted_from": "Kargo ve iade bilgisini fiyatın yakınına taşımak satışı artırır mı?",
+  "source_note": "Arşiv senaryosu bir masaüstü ürün sayfasına uyarlandı: blok açıklamanın altından fiyatın hemen altına taşınıyor, metni ve koşulları aynı kalıyor.",
+  "evidence": {
+    "level": "archive",
+    "note": "Arşivde derlenmiş bir test fikrine dayanıyor, bir test sonucu değil."
+  },
+  "priority": {
+    "tier": "medium",
+    "rationale": "Satın alma kararının verildiği ürün sayfasında fiyatın yanındaki bir kaygıyı hedefliyor ve yalnızca bir bloğun yerini değiştirmek küçük bir şablon işi, ama kanıt bu sayfanın verisi değil arşiv örüntüsü."
+  },
+  "lang": "tr",
+  "stage": "product-detail",
+  "device": "web",
+  "market": "TR",
+  "objection": "Güven",
+  "card": {
+    "difference": "move",
+    "device": "web",
+    "url": "magaza.example/filtre-kahve-makinesi",
+    "mockup_basis": "representative",
+    "variant_a": "<div class=\"r-header\"><span class=\"r-logo\">Mağaza</span><span class=\"r-nav\"><span>Elektronik</span><span>Ev ve Yaşam</span><span>Mutfak</span><span>Kampanyalar</span></span><span>Hesabım</span><span>Sepetim</span></div>\n<div class=\"r-row\" style=\"align-items:flex-start;gap:20px\">\n  <div class=\"ph img\" style=\"height:200px\"></div>\n  <div style=\"display:flex;flex-direction:column;gap:10px\">\n    <div class=\"r-meta\">Mutfak Aletleri › Kahve Makineleri</div>\n    <div class=\"r-h\">Zamanlayıcılı Filtre Kahve Makinesi, 1,2 L, Paslanmaz Çelik</div>\n    <div><span class=\"r-stars\">★★★★☆</span> <span class=\"r-meta\">4,4 (312 değerlendirme)</span></div>\n    <div style=\"margin-bottom:16px\"><span class=\"r-now\">2.499 TL</span> <span class=\"r-per\">KDV dahil</span></div>\n    <div class=\"r-cta\" style=\"margin-top:6px\">Sepete ekle</div>\n  </div>\n</div>\n<div class=\"r-tabs\"><span class=\"on\">Ürün açıklaması</span><span>Teknik özellikler</span><span>Değerlendirmeler (312)</span></div>\n<div class=\"r-sub\" style=\"margin-bottom:16px\">10 fincana kadar kahveyi tek seferde demler; ısıtıcı tabla kahveyi 40 dakika sıcak tutar, damla durdurma özelliği demleme sırasında sürahiyi almanızı sağlar.</div>\n<div class=\"r-card hl\" data-note=\"Kargo-iade sayfa altında\" style=\"max-width:320px\">\n  <div class=\"r-line\"><span>Kargo</span><b>1.500 TL üzeri ücretsiz</b></div>\n  <div class=\"r-line\"><span>İade</span><b>14 gün içinde ücretsiz</b></div>\n</div>",
+    "variant_b": "<div class=\"r-header\"><span class=\"r-logo\">Mağaza</span><span class=\"r-nav\"><span>Elektronik</span><span>Ev ve Yaşam</span><span>Mutfak</span><span>Kampanyalar</span></span><span>Hesabım</span><span>Sepetim</span></div>\n<div class=\"r-row\" style=\"align-items:flex-start;gap:20px\">\n  <div class=\"ph img\" style=\"height:200px\"></div>\n  <div style=\"display:flex;flex-direction:column;gap:10px\">\n    <div class=\"r-meta\">Mutfak Aletleri › Kahve Makineleri</div>\n    <div class=\"r-h\">Zamanlayıcılı Filtre Kahve Makinesi, 1,2 L, Paslanmaz Çelik</div>\n    <div><span class=\"r-stars\">★★★★☆</span> <span class=\"r-meta\">4,4 (312 değerlendirme)</span></div>\n    <div style=\"margin-bottom:16px\"><span class=\"r-now\">2.499 TL</span> <span class=\"r-per\">KDV dahil</span></div>\n    <div class=\"r-card hl\" data-note=\"Kargo-iade fiyatın altında\" style=\"max-width:320px\">\n      <div class=\"r-line\"><span>Kargo</span><b>1.500 TL üzeri ücretsiz</b></div>\n      <div class=\"r-line\"><span>İade</span><b>14 gün içinde ücretsiz</b></div>\n    </div>\n    <div class=\"r-cta\" style=\"margin-top:6px\">Sepete ekle</div>\n  </div>\n</div>\n<div class=\"r-tabs\"><span class=\"on\">Ürün açıklaması</span><span>Teknik özellikler</span><span>Değerlendirmeler (312)</span></div>\n<div class=\"r-sub\" style=\"margin-bottom:16px\">10 fincana kadar kahveyi tek seferde demler; ısıtıcı tabla kahveyi 40 dakika sıcak tutar, damla durdurma özelliği demleme sırasında sürahiyi almanızı sağlar.</div>"
+  },
+  "review": {
+    "scenario_critic": {
+      "verdict": "PASS",
+      "fingerprint": "3343b7e34e7e269823ab8fe3a606f47899f88bea745e7c86ae1ed58ec175760d"
+    },
+    "mockup_reviewer": {
+      "verdict": "PASS",
+      "fingerprint": "57d5f2aab068a81130f417db8eaf10dc0f62a6268de0f8b0d2f208dd8fe90386"
+    }
+  }
+}

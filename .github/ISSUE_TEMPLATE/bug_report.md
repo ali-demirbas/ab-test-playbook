@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: A skill broke a binding rule, a script returned a wrong number, or a card rendered wrong
+about: A skill broke a binding rule, a validator or the card builder gave a wrong verdict (refused a valid input or let a bad one through), or a card rendered wrong
 title: "[bug] "
 labels: bug
 ---
@@ -16,10 +16,11 @@ labels: bug
 - Plugin version (`.claude-plugin/plugin.json`):
 - `python3 --version`:
 - The prompt you gave, or the exact command for a script bug, e.g.
-  `python3 scripts/analyze_results.py significance --control-visitors 5000 --control-conversions 250 --variant-visitors 5000 --variant-conversions 290`
+  `python3 scripts/validate_scenario_json.py --strict my-scenario.json` or
+  `python3 scripts/build_card.py --draft --template templates/scenario-card.html --scenario my-scenario.json --out card.html`
 
 **Output**
-<!-- Paste the script JSON or the chat output. For a card, attach the HTML file or a screenshot. -->
+<!-- Paste the script output or the chat output. For a card, attach the HTML file or a screenshot. -->
 
 **Before you submit**
 - [ ] I removed real customer data, URLs I can't share and personal information from everything pasted above.

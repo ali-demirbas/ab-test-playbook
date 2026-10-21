@@ -1,0 +1,83 @@
+{
+  "id": "saas-b2b-demo-form-department-field-01",
+  "title": "Talep formundan Departman alanını kaldırmak nitelikli fırsatları artırır mı?",
+  "problem": "B2B demo formları sıkça satışın ilk görüşmede öğrenebileceği bir Departman seçimi ister; formunda da öyleyse, listede rolünü bulamayan karar verici (ör. genel müdür) gönderimden önce takılıyor olabilir (kontrol edilecek varsayım).",
+  "mechanism": "Rolüne uyan seçeneği olmayan Departman listesi kalkınca bu karar verici takılmadan gönderir ve satışın zaten nitelikli saydığı bu talepler ilk görüşmeye ulaşır, bu da nitelikli fırsatları artırabilir.",
+  "variable": "Talep formundaki alan sayısı",
+  "variants": [
+    {
+      "id": "A",
+      "description": "Demo talep formu beş alanlı: Ad Soyad, İş e-postası, Şirket adı, Şirket büyüklüğü ve Departman"
+    },
+    {
+      "id": "B",
+      "description": "Aynı form Departman alanı olmadan dört alanlı; kalan alanlar aynı sırada, aynı etiketle ve aynı zorunlulukta"
+    }
+  ],
+  "difference": "remove",
+  "primary_kpi": {
+    "name": "Nitelikli Fırsat Oranı (30 gün)",
+    "denominator": "Teste atanan ziyaretçi (atama demo talep sayfası açılınca, iki kolda aynı tetik)",
+    "direction": "increase"
+  },
+  "guardrail": {
+    "name": "Hedef Profil Dışı Talep Oranı",
+    "kind": "metric",
+    "denominator": "Teste atanan ziyaretçi",
+    "direction": "must_not_increase"
+  },
+  "invariants": [
+    "Kalan dört alanın etiketi, sırası, zorunluluğu ve doğrulama kuralı iki kolda aynıdır.",
+    "Gönderilen talep iki kolda da aynı CRM kaydına ve aynı satış sırasına düşer.",
+    "KVKK aydınlatma satırı ve iletişim izni kutusu iki kolda da aynı yerde ve işaretsiz durur.",
+    "Talebin hedef profile uyup uymadığı iki kolda da satış ekibinin aynı ön eleme ölçütleriyle, Departman yanıtına bakılmadan belirlenir."
+  ],
+  "warnings": [
+    {
+      "type": "feasibility",
+      "text": "Departman CRM’de ya da satış atama kuralında zorunlu kullanılıyorsa bu kural alana bağlı olmadan çalışacak hâle getirilmeden B kurulmaz; bu doğrulanmadan test başlamaz."
+    },
+    {
+      "type": "accessibility",
+      "text": "Geçmeli: alan kaldırıldıktan sonra kalan alanlara klavyeyle sırayla ulaşılır, ekran okuyucu her alanı etiketiyle okur, dokunma alanı en az 44×44 pt ve metin kontrastı en az 4.5:1 kalır."
+    },
+    {
+      "type": "regulation",
+      "text": "Form iletişim izni kutusu ve KVKK aydınlatma satırı taşıdığı ve B toplanan kişisel veriyi değiştirdiği için B’nin form metni ve aydınlatma metniyle uyumu uyum onayından geçmeden teste trafik açılmaz."
+    }
+  ],
+  "source": "adapted",
+  "adapted_from": "Form alan sayısını azaltmak talep sayısını artırır mı?",
+  "source_note": "Arşiv senaryosu bir B2B demo talep formuna uyarlandı: hassas olmayan ve satış için şart olmayan tek bir alan, Departman, kaldırılıyor; telefon gibi hassas alanlara dokunulmuyor.",
+  "evidence": {
+    "level": "archive",
+    "note": "Arşivde derlenmiş bir test fikrine dayanıyor, bir test sonucu değil."
+  },
+  "priority": {
+    "tier": "high",
+    "rationale": "Talebin gönderildiği son adımda doğrudan iş sonucuna dokunuyor ve tek bir alanı kaldırmak küçük bir form işi, ama kanıt bu sayfanın verisi değil arşiv örüntüsü ve önce CRM kuralının bu alana bağlı olmadığı doğrulanmalı."
+  },
+  "lang": "tr",
+  "stage": "saas-b2b",
+  "device": "web",
+  "market": "TR",
+  "objection": "Çaba",
+  "card": {
+    "difference": "remove",
+    "device": "web",
+    "url": "ikpanel.example/demo-talebi",
+    "mockup_basis": "representative",
+    "variant_a": "<div class=\"r-header\"><span class=\"r-logo\">İK Panel</span><span class=\"r-nav\"><span>Ürün</span><span>Çözümler</span><span>Fiyatlandırma</span><span>Kaynaklar</span></span><span>Giriş yap</span></div>\n<div class=\"r-row\" style=\"align-items:flex-start;gap:20px\">\n  <div style=\"flex:0 0 40%;display:flex;flex-direction:column;gap:10px\">\n    <span class=\"r-badge\" style=\"align-self:flex-start\">Ücretsiz demo</span>\n    <div class=\"r-h\">Bordro, izin ve mesai takibini tek panelden yönetin</div>\n    <div class=\"r-sub\">Şirketinize uygun kurulumu 30 dakikalık bir görüşmede birlikte planlayalım.</div>\n    <ul class=\"r-plan-feat\">\n      <li>Bordro hesaplama ve e-bordro gönderimi</li>\n      <li>İzin ve mesai taleplerinin takibi</li>\n      <li>Türkçe destek ve kurulum</li>\n    </ul>\n  </div>\n  <div class=\"r-card\">\n    <div class=\"r-h\">Demo talep edin</div>\n    <div class=\"r-row\"><div><div class=\"r-label\">Ad Soyad</div><div class=\"r-field empty\">Adınız ve soyadınız</div></div><div><div class=\"r-label\">İş e-postası</div><div class=\"r-field empty\">E-posta adresiniz</div></div></div>\n    <div class=\"r-row\" style=\"margin-bottom:22px\"><div><div class=\"r-label\">Şirket adı</div><div class=\"r-field empty\">Şirketinizin adı</div></div><div><div class=\"r-label\">Şirket büyüklüğü</div><div class=\"r-field select empty\">Seçin</div></div></div>\n    <div class=\"hl\" data-note=\"Alan kaldırıldı\"><div class=\"r-label\">Departman</div><div class=\"r-field select empty\">Seçin</div></div>\n    <div class=\"r-check\" style=\"margin-top:6px\">Ürün haberlerini e-postayla almak istiyorum.</div>\n    <div class=\"r-help\">Kişisel verileriniz KVKK Aydınlatma Metni kapsamında işlenir.</div>\n    <div class=\"r-cta\">Demo talep et</div>\n  </div>\n</div>",
+    "variant_b": "<div class=\"r-header\"><span class=\"r-logo\">İK Panel</span><span class=\"r-nav\"><span>Ürün</span><span>Çözümler</span><span>Fiyatlandırma</span><span>Kaynaklar</span></span><span>Giriş yap</span></div>\n<div class=\"r-row\" style=\"align-items:flex-start;gap:20px\">\n  <div style=\"flex:0 0 40%;display:flex;flex-direction:column;gap:10px\">\n    <span class=\"r-badge\" style=\"align-self:flex-start\">Ücretsiz demo</span>\n    <div class=\"r-h\">Bordro, izin ve mesai takibini tek panelden yönetin</div>\n    <div class=\"r-sub\">Şirketinize uygun kurulumu 30 dakikalık bir görüşmede birlikte planlayalım.</div>\n    <ul class=\"r-plan-feat\">\n      <li>Bordro hesaplama ve e-bordro gönderimi</li>\n      <li>İzin ve mesai taleplerinin takibi</li>\n      <li>Türkçe destek ve kurulum</li>\n    </ul>\n  </div>\n  <div class=\"r-card\">\n    <div class=\"r-h\">Demo talep edin</div>\n    <div class=\"r-row\"><div><div class=\"r-label\">Ad Soyad</div><div class=\"r-field empty\">Adınız ve soyadınız</div></div><div><div class=\"r-label\">İş e-postası</div><div class=\"r-field empty\">E-posta adresiniz</div></div></div>\n    <div class=\"r-row\" style=\"margin-bottom:22px\"><div><div class=\"r-label\">Şirket adı</div><div class=\"r-field empty\">Şirketinizin adı</div></div><div><div class=\"r-label\">Şirket büyüklüğü</div><div class=\"r-field select empty\">Seçin</div></div></div>\n    <div class=\"r-check\" style=\"margin-top:6px\">Ürün haberlerini e-postayla almak istiyorum.</div>\n    <div class=\"r-help\">Kişisel verileriniz KVKK Aydınlatma Metni kapsamında işlenir.</div>\n    <div class=\"r-cta\">Demo talep et</div>\n  </div>\n</div>"
+  },
+  "review": {
+    "scenario_critic": {
+      "verdict": "PASS",
+      "fingerprint": "13c59872b522e12047a86bb54441fd9f0bdb55d56e4def6a822a6cce63495fcd"
+    },
+    "mockup_reviewer": {
+      "verdict": "PASS",
+      "fingerprint": "1e440e98c99dcf74546943756143fc2b9e7a144c140dc57f89210d37cc5fe627"
+    }
+  }
+}

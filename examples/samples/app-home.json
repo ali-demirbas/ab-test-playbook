@@ -1,0 +1,86 @@
+{
+  "id": "finance-pension-recommendation-slide-button-01",
+  "title": "Öneri slaytına vaadi adlandıran bir buton eklemek katkı payı artırımını yükseltir mi?",
+  "problem": "Ana ekranın otomatik kayan karuselindeki “Size özel katkı payı önerimiz hazır” slaytında belirgin bir eylem öğesi yoksa müşteri öneriyi nereden açacağını bilemeyebilir (kontrol edilecek varsayım).",
+  "mechanism": "Slayta vaadi adlandıran bir buton eklenince slaytın açılabildiği ve açılınca ne çıkacağı görünür olur, bu da öneriyi açıp artırımı tamamlamak isteyen müşterinin önündeki belirsizliği azaltabilir.",
+  "variable": "Öneri slaytındaki eylem butonu",
+  "variants": [
+    {
+      "id": "A",
+      "description": "Otomatik kayan karuseldeki öneri slaytı yalnızca başlık ve kısa metin taşıyor; slayta dokununca öneri ekranı açılıyor ama bunu gösteren bir öğe yok"
+    },
+    {
+      "id": "B",
+      "description": "Aynı slayt, metnin altında “Önerilen katkı payını gör” butonuyla; buton, slayta dokununca açılan öneri ekranının aynısını açıyor"
+    }
+  ],
+  "difference": "add",
+  "primary_kpi": {
+    "name": "Katkı Payı Artırma Oranı (30 gün)",
+    "denominator": "Teste atanan, giriş yapmış müşteri (atama ana ekran açılınca, iki kolda aynı tetik)",
+    "direction": "increase"
+  },
+  "guardrail": {
+    "name": "Artırımı Geri Alma Oranı (90 gün)",
+    "kind": "metric",
+    "denominator": "Katkı payını artıran müşteri",
+    "direction": "must_not_increase"
+  },
+  "invariants": [
+    "Slayta dokunmak iki kolda da aynı öneri ekranını açar; B’deki buton da yalnızca bu ekranı açar.",
+    "Öneri ekranındaki tutar iki kolda da müşterinin kendi sözleşme verisinden aynı hesapla çıkar.",
+    "Artırım onayı ve bilgilendirme metni iki kolda da aynı adımlarla gösterilir.",
+    "Karuselin geçiş süresi ve odak öneri slaytındayken durması iki kolda aynıdır."
+  ],
+  "warnings": [
+    {
+      "type": "regulation",
+      "text": "Bireysel emeklilik akışında olduğu için butonun ve slaytın metni yayından önce uyum ekibinin onayından geçer; slayta tutar, oran ya da getiri yazılmaz, buton artırım onayının yerine geçmez."
+    },
+    {
+      "type": "accessibility",
+      "text": "Geçmeli: buton klavyeyle ulaşılır, ekran okuyucuda “Önerilen katkı payını gör” adıyla okunur, dokunma alanı en az 44×44 pt / 48×48 dp, kontrast en az 4.5:1, dokununca odak öneri başlığına geçer, karusel iki kolda da odakta durdurulur."
+    }
+  ],
+  "source": "adapted",
+  "adapted_from": "Kişisel öneri vaat eden slayta vaadi adlandıran bir buton eklemek işe yarar mı?",
+  "source_note": "Arşiv senaryosu temsilî bir emeklilik uygulamasının ana ekranına uyarlandı; buton metni “Önerilen katkı payını gör” oldu, slaytın başlığı, metni ve sırası aynı kaldı.",
+  "evidence": {
+    "level": "archive",
+    "note": "Arşivde derlenmiş bir test fikrine dayanıyor, bir test sonucu değil."
+  },
+  "priority": {
+    "tier": "medium",
+    "rationale": "Öneriden artırıma giden yolun girişini etkiliyor ama native uygulamaya buton eklemek sürüm ve mağaza onayı isteyen orta ölçekli bir iş, kanıt arşiv örüntüsü ve yayından önce uyum onayı gerekiyor."
+  },
+  "lang": "tr",
+  "stage": "finance-pension",
+  "device": "phone",
+  "market": "TR",
+  "objection": "Netlik",
+  "card": {
+    "difference": "add",
+    "device": "phone",
+    "mockup_basis": "representative",
+    "bottom_nav": [
+      "Ana Sayfa",
+      "Ürünlerim",
+      "Hesapla",
+      "Fırsatlar",
+      "Profil"
+    ],
+    "bottom_nav_active": "Ana Sayfa",
+    "variant_a": "<div><div class=\"r-sub\">İyi günler</div><div class=\"r-h\">Hoş geldiniz</div></div>\n<div class=\"ph hero\">\n  <div class=\"r-h\">Size özel katkı payı önerimiz hazır</div>\n  <div class=\"r-sub\" style=\"margin-bottom:18px\">Emeklilik hedefinize ve bugünkü katkı payınıza göre hazırladık.</div>\n  <div style=\"display:flex;gap:5px;margin-top:4px\"><span style=\"width:16px;height:5px;border-radius:3px;background:#fff\"></span><span style=\"width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,.45)\"></span><span style=\"width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,.45)\"></span></div>\n</div>\n<div class=\"r-h\">Ürünlerim</div>\n<div class=\"r-card\">\n  <div class=\"r-item\"><div class=\"r-item-body\"><div class=\"r-name\">Bireysel Emeklilik Planı</div><div class=\"r-meta\">Aktif · Aylık ödeme talimatı var</div></div><span class=\"r-meta\">›</span></div>\n  <div class=\"r-divider\"></div>\n  <div class=\"r-item\"><div class=\"r-item-body\"><div class=\"r-name\">Otomatik Katılım</div><div class=\"r-meta\">İşvereniniz üzerinden</div></div><span class=\"r-meta\">›</span></div>\n</div>",
+    "variant_b": "<div><div class=\"r-sub\">İyi günler</div><div class=\"r-h\">Hoş geldiniz</div></div>\n<div class=\"ph hero\">\n  <div class=\"r-h\">Size özel katkı payı önerimiz hazır</div>\n  <div class=\"r-sub\" style=\"margin-bottom:18px\">Emeklilik hedefinize ve bugünkü katkı payınıza göre hazırladık.</div>\n  <div class=\"hl\" data-note=\"Buton eklendi\">\n    <div class=\"r-cta ghost\">Önerilen katkı payını gör</div>\n  </div>\n  <div style=\"display:flex;gap:5px;margin-top:4px\"><span style=\"width:16px;height:5px;border-radius:3px;background:#fff\"></span><span style=\"width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,.45)\"></span><span style=\"width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,.45)\"></span></div>\n</div>\n<div class=\"r-h\">Ürünlerim</div>\n<div class=\"r-card\">\n  <div class=\"r-item\"><div class=\"r-item-body\"><div class=\"r-name\">Bireysel Emeklilik Planı</div><div class=\"r-meta\">Aktif · Aylık ödeme talimatı var</div></div><span class=\"r-meta\">›</span></div>\n  <div class=\"r-divider\"></div>\n  <div class=\"r-item\"><div class=\"r-item-body\"><div class=\"r-name\">Otomatik Katılım</div><div class=\"r-meta\">İşvereniniz üzerinden</div></div><span class=\"r-meta\">›</span></div>\n</div>"
+  },
+  "review": {
+    "scenario_critic": {
+      "verdict": "PASS",
+      "fingerprint": "e4d21165a7c4392bbd53132e6e67894c0de68ec8b35e7f91b7a5e941cd7de1d4"
+    },
+    "mockup_reviewer": {
+      "verdict": "PASS",
+      "fingerprint": "093ff249c2fecf805e8069c1d3d1341c4e0dc52abf4081528565704f3e067cf6"
+    }
+  }
+}

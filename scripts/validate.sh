@@ -66,7 +66,7 @@ for f in skills/*/SKILL.md; do
     # the same as having none at all.
     cat=$(echo "$fm" | sed -n 's/^  category:[[:space:]]*//p' | head -1)
     case "$cat" in
-      router|recommend|generate|audit|analyze|render) ;;
+      router|recommend|generate|audit|render) ;;
       *) err "$f: invalid metadata.category '$cat'" ;;
     esac
   else
@@ -113,11 +113,8 @@ else
 fi
 
 echo "== 5. Scenario JSON against the schema =="
-for j in examples/*.json; do
+for j in examples/*.json examples/samples/*.json; do
   [ -e "$j" ] || continue
-  # scenario-card-input.json is the CARD builder's input shape, not a scenario
-  # definition — it is exercised by section 6 instead.
-  [ "$(basename "$j")" = "scenario-card-input.json" ] && continue
   if python3 scripts/validate_scenario_json.py "$j" >/dev/null 2>&1; then
     ok "$j conforms to templates/scenario.schema.json"
   else
@@ -125,16 +122,55 @@ for j in examples/*.json; do
   fi
 done
 
-echo "== 6. Card builder produces a card from the template =="
-if python3 scripts/build_card.py \
-     --template templates/scenario-card.html \
-     --scenario examples/scenario-card-input.json \
-     --out /tmp/abtest-validate-card.html >/dev/null 2>&1; then
-  ok "build_card.py builds and self-verifies against drift"
-  rm -f /tmp/abtest-validate-card.html
-else
-  err "build_card.py failed — the template and the builder have diverged"
-fi
+echo "== 6. Card builder produces the reviewed cards from the template =="
+# A card is delivered only as a FINAL build, which needs both review stamps in
+# the record (scenario-critic: the record's fingerprint; mockup-reviewer: the
+# fingerprint of the final card's bytes, printed by the draft build). Every
+# shipped record carries both, so each must build as a final card, and the
+# published demo card must be byte for byte what the builder makes today: a
+# template or builder change that alters a reviewed card fails here until the
+# card is reviewed again. Then the gates themselves: an unreviewed record, and a
+# reviewed record whose card changed after review, are refused as finals (exit
+# 1) and an existing output is left as it was.
+CARD_TMP=$(mktemp -d) || exit 1
+for pair in "examples/scenario.json:docs/demo/scenario-card.html" \
+            "examples/samples/desktop-product.json:docs/demo/sample-desktop-product.html" \
+            "examples/samples/app-home.json:docs/demo/sample-app-home.html" \
+            "examples/samples/saas-form.json:docs/demo/sample-saas-form.html"; do
+  src=${pair%%:*}; demo=${pair#*:}; out="$CARD_TMP/$(basename "$demo")"
+  if python3 scripts/build_card.py --template templates/scenario-card.html --scenario "$src" --out "$out" \
+       >"$out.log" 2>&1; then
+    if cmp -s "$out" "$demo"; then
+      ok "$src builds as a final card (both review stamps match) and equals $demo"
+    else
+      err "$src builds, but $demo differs from today's build — rebuild the demo card from its record"
+    fi
+  else
+    err "a final build of $src was refused — the template, the builder or the record changed after review: $(tail -1 "$out.log")"
+  fi
+done
+python3 -c 'import json, sys
+d = json.load(open("examples/scenario.json", encoding="utf-8"))
+d.pop("review", None)
+json.dump(d, open(sys.argv[1], "w", encoding="utf-8"), ensure_ascii=False)
+d = json.load(open("examples/scenario.json", encoding="utf-8"))
+for k in ("variant_a", "variant_b"):  # the same edit in both arms: no new A/B difference, only a changed card
+    d["card"][k] = d["card"][k].replace("Ara toplam", "Ara Toplam")
+json.dump(d, open(sys.argv[2], "w", encoding="utf-8"), ensure_ascii=False)' "$CARD_TMP/unreviewed.json" "$CARD_TMP/changed.json"
+for case_name in unreviewed changed; do
+  if [ "$case_name" = unreviewed ]; then want="missing review stamp"; else want="review.mockup_reviewer"; fi
+  printf 'OLD' > "$CARD_TMP/$case_name.html"
+  python3 scripts/build_card.py --template templates/scenario-card.html --scenario "$CARD_TMP/$case_name.json" \
+    --out "$CARD_TMP/$case_name.html" >"$CARD_TMP/$case_name.log" 2>&1
+  code=$?
+  if [ "$code" = 1 ] && grep -q "$want" "$CARD_TMP/$case_name.log" \
+     && grep -q "was NOT updated" "$CARD_TMP/$case_name.log" && [ "$(cat "$CARD_TMP/$case_name.html")" = OLD ]; then
+    ok "a final build of the $case_name record is refused (exit 1, \"$want\") and the existing card is left untouched"
+  else
+    err "a final build of the $case_name record was not refused as it must be (exit $code) — the review gate is open"
+  fi
+done
+rm -rf "$CARD_TMP"
 
 echo "== 7. Internal links (markdown + published HTML) =="
 python3 - <<'PY' || FAIL=1
@@ -297,12 +333,13 @@ echo "== 11. Vocabulary agrees across schema, validator and builder =="
 # The same closed sets are spelled out in more than one place: the schema's
 # enums, validate_scenario_json's rule checks and build_card's constants (the
 # devices it can frame, the difference types whose ring placement it enforces,
-# the KPI roles it draws pills for, the source/evidence tags and languages its
-# footer and dictionary print). Duplicated vocabulary drifts silently — a
-# device added to the schema alone would validate and then fail to render; a
-# role added to the builder alone would render and never be validated.
+# the mockup bases it writes into the manifest, the ring label positions, and
+# the languages its <html lang> and draft ribbon know). Duplicated vocabulary
+# drifts silently — a device added to the schema alone would validate and then
+# fail to render.
 python3 - <<'PY' || FAIL=1
 import json
+import re
 import sys
 
 sys.path.insert(0, "scripts")
@@ -326,43 +363,40 @@ def same(label, schema_values, builder_values):
 
 same("device types (scenario.device)", props["device"]["enum"], bc.DEVICES)
 same("device types (card.device)", card["device"]["enum"], bc.DEVICES)
-same("KPI roles", props["kpis"]["items"]["properties"]["role"]["enum"], bc.KPI_ROLES)
-same("sources", props["source"]["enum"], bc.SOURCES)
-same("evidence levels", props["evidence"]["properties"]["level"]["enum"], bc.EVIDENCE_LEVELS)
-same("ICE tiers", props["ice"]["properties"]["tier"]["enum"], bc.ICE_TIERS)
-same("languages", props["lang"]["enum"], bc.L10N.keys())
+same("languages", props["lang"]["enum"], bc.CARD_LANGS)
+same("draft ribbon languages", props["lang"]["enum"], bc.DRAFT_BANNER)
 same("mockup bases", card["mockup_basis"]["enum"], bc.MOCKUP_BASES)
 same("ring label positions", card["note_pos"]["enum"], bc.NOTE_POSITIONS)
 # card.difference lists the English types plus their Turkish archive spellings
 # (the archive's "Fark:" line); the builder maps each alias to a type.
 same("difference types", card["difference"]["enum"], set(bc.DIFFERENCES) | set(bc.DIFFERENCE_TR))
+same("difference types (record)", props["difference"]["enum"], bc.DIFFERENCES)
 for alias, target in bc.DIFFERENCE_ALIASES.items():
     if target not in bc.DIFFERENCES:
         print("FAIL: build_card maps difference alias %r to unknown type %r" % (alias, target))
         failed = True
 
-# Every language prints every word the card frame needs.
-needed = set(bc.L10N["tr"])
-for lang, words in bc.L10N.items():
-    if set(words) != needed:
-        print("FAIL: build_card L10N[%r] keys differ from L10N['tr']: %s" % (lang, sorted(set(words) ^ needed)))
-        failed = True
-    for group, keys in (("role", bc.KPI_ROLES), ("source", bc.SOURCES),
-                        ("evidence", bc.EVIDENCE_LEVELS), ("ice", bc.ICE_TIERS)):
-        missing = set(keys) - set(words[group])
-        if missing:
-            print("FAIL: build_card L10N[%r][%r] has no label for %s" % (lang, group, sorted(missing)))
-            failed = True
-
+# Schema and validator: the KPI roles and guardrail kinds the rules read.
 for role in ("primary", "guardrail"):
     if '"%s"' % role not in validator and "'%s'" % role not in validator:
         print("FAIL: validator does not mention KPI role %r defined in the schema" % role)
         failed = True
+for kind in (b["properties"]["kind"]["const"] for b in props["guardrail"]["oneOf"]):
+    if '"%s"' % kind not in validator:
+        print("FAIL: validator does not mention guardrail kind %r" % kind)
+        failed = True
+# The warning type a regulated-looking record must carry (rule 11) exists in the schema.
+warning_types = props["warnings"]["items"]["properties"]["type"]["enum"]
+m = re.search(r'^REGULATION = "([a-z_]+)"$', validator, re.M)
+if not m or m.group(1) not in warning_types:
+    print("FAIL: validator's REGULATION warning type %r is not in the schema's warning types %s"
+          % (m.group(1) if m else None, warning_types))
+    failed = True
 
 if failed:
     sys.exit(1)
-print("  ok: devices %s, KPI roles, sources, evidence levels, difference types and languages %s"
-      " agree across schema, validator and builder" % (sorted(bc.DEVICES), sorted(bc.L10N)))
+print("  ok: devices %s, difference types, mockup bases, label positions and languages %s agree across schema,"
+      " validator and builder" % (sorted(bc.DEVICES), sorted(bc.CARD_LANGS)))
 PY
 
 echo "== 12. Skill description contract (sibling refs + 'Use when') =="
@@ -419,7 +453,7 @@ echo "== 13. Stated counts match the archive and CLAUDE.md =="
 # the validator's own TOPLAM line and the highest numbered rule in CLAUDE.md.
 # The patterns are deliberately narrow (a number directly before "scenario",
 # "senaryo" or "rules", the badge, "archive of N"): per-turn counts such as
-# "1-5 scenarios" are excluded by the lookbehind, a phrase like "5 full
+# "1-3 scenarios" are excluded by the lookbehind, a phrase like "5 full
 # scenarios" never matches, and single-digit numbers are skipped outright (they
 # are per-turn counts or "five rules it will not bend", never a total), so a hit
 # is always a claim about the total.

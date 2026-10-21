@@ -29,7 +29,7 @@ Değişken: … · Fark: …
 objection it answers, one of the six lenses: Trust / Price / Fit / Timing / Effort / Clarity. "More eye-catching" is not a mechanism. -->
 
 **Evidence level**
-<!-- your own test data / an archive precedent / industry observation / intuition -->
+<!-- your own test data / an archive pattern (a curated idea, not a test result) / industry observation / intuition. Don't call it "tested" or "proven" unless it is your own data. -->
 
 **Test edilmesi gerekenler (What to test)**: 5 items, each `Label: question?`, at least one device or segment question
 1.

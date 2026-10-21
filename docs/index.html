@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ab-test-playbook — A/B test engine for Claude Code</title>
-<meta name="description" content="A/B test engine for Claude Code: suggests, designs and audits test scenarios, and renders each one as a ready HTML card. 221 curated scenarios, a real stats engine, and a methodology that refuses dark patterns.">
+<meta name="description" content="A/B test engine for Claude Code: suggests, designs and audits test scenarios, and renders each one as a ready HTML card. 221 curated scenarios, adversarial review, and a methodology that refuses dark patterns.">
 <link rel="canonical" href="https://ali-demirbas.github.io/ab-test-playbook/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ali-demirbas.github.io/ab-test-playbook/">
 <meta property="og:title" content="ab-test-playbook — A/B testing and CRO for Claude Code">
-<meta property="og:description" content="221 experiment scenarios, single-variable test design, plan auditing, real z-test statistics, and a rendered HTML card per scenario.">
+<meta property="og:description" content="221 experiment scenarios, single-variable test design, plan auditing, and a rendered HTML card per scenario.">
 <meta property="og:image" content="https://ali-demirbas.github.io/ab-test-playbook/preview-card.png">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Markdown alternates. The rel=alternate pattern is the same one RSS has used
@@ -66,7 +66,10 @@
     background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
     padding: .75rem; margin: 1rem 0;
   }
-  .demo iframe { width: 100%; height: 760px; border: 0; border-radius: 3px; background: #fff; }
+  /* The card is a fixed 1600 × 900 page; it is scaled to the column, keeping 16:9. */
+  .demo-frame { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 3px; background: #f4f5f7; }
+  .demo-frame iframe { position: absolute; top: 0; left: 0; width: 1600px; height: 900px; border: 0;
+    transform: scale(var(--s, .4975)); transform-origin: 0 0; }
   .demo-note { font-size: .84rem; color: var(--muted); margin: .6rem .25rem 0; }
   .rule-list li strong { color: var(--navy); }
   footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); font-size: .88rem; color: var(--muted); }
@@ -78,24 +81,34 @@
   <header>
     <span class="tag">Claude Code plugin</span>
     <h1>ab-test-playbook</h1>
-    <p class="lede">An A/B test engine for Claude Code. It suggests test scenarios, designs them against a written methodology, audits plans you already have, interprets the numbers you paste in, and renders every scenario as a single-file HTML card.</p>
+    <p class="lede">An A/B test engine for Claude Code. It suggests test scenarios from a curated archive, designs them for your page against a written methodology, audits plans you already have, and renders every scenario as a single-file HTML card.</p>
   </header>
 
   <h2>What a scenario card looks like</h2>
-  <p>Rendered below with no install and no build step: this is the real output of <code>scripts/build_card.py</code> run against the shipped example, not a mockup of one.</p>
+  <p>Rendered below with no install and no build step: this is the real output of <code>scripts/build_card.py</code> run against a sample record, not a mockup of one.</p>
 
   <div class="demo">
-    <iframe src="demo/scenario-card.html" title="Example scenario card: does an open coupon field increase cart abandonment?" loading="lazy"></iframe>
-    <p class="demo-note">Two mockups differing in exactly one thing, the tested element boxed in red, and the three mandatory boxes. <a href="demo/scenario-card.html">Open full size</a>.</p>
+    <div class="demo-frame">
+      <iframe src="demo/scenario-card.html" title="Example scenario card: does moving the coupon field behind an “I have a discount code” link increase revenue?" loading="lazy"></iframe>
+    </div>
+    <p class="demo-note">The test's question, then Variant A and Variant B side by side, large, with the changed element ringed in red and named in a few words. That is all a card shows: the record behind it (the problem, the mechanism, the primary KPI, the guardrail, evidence and priority) stays in the scenario JSON. <a href="demo/scenario-card.html">Open full size</a>. The same card on other screen types: <a href="demo/sample-desktop-product.html">desktop product page</a> · <a href="demo/sample-app-home.html">app home screen</a> · <a href="demo/sample-saas-form.html">demo-request form</a>.</p>
   </div>
+  <script>
+    // Fit the fixed-size card to the column; without script it stays at the default scale.
+    for (const box of document.querySelectorAll('.demo-frame')) {
+      const fit = () => box.style.setProperty('--s', box.clientWidth / 1600);
+      if ('ResizeObserver' in window) new ResizeObserver(fit).observe(box);
+      fit();
+    }
+  </script>
 
   <h2>What makes it opinionated</h2>
   <ul class="rule-list">
     <li><strong>One variable.</strong> A variant pair changes exactly one thing. If you insist on more, the output says the result cannot be attributed.</li>
     <li><strong>One primary KPI, always a guardrail.</strong> Five metrics of equal weight is not a measurement plan. Every scenario names the metric that decides, and at least one that must not break.</li>
     <li><strong>No dark patterns, and protections are not test subjects.</strong> Fake scarcity, hidden totals and uncloseable modals are refused. So is treating bot checks, identity verification or legal consent steps as friction to remove.</li>
-    <li><strong>Evidence is labelled.</strong> Every proposal states whether it rests on your own data, an archive precedent, a sector observation, or intuition — and says so when it is weak.</li>
-    <li><strong>No sample promises without traffic.</strong> Duration and significance are not estimated from thin air.</li>
+    <li><strong>Evidence is labelled.</strong> Every proposal states whether it rests on your own data, an archive pattern (a curated idea, not a test result), a sector observation, or intuition — and says so when it is weak.</li>
+    <li><strong>No statistics.</strong> It proposes, designs, audits and visualizes tests; sample size, duration, significance and the winner come from your testing tool's own reporting, never from a guess.</li>
   </ul>
 
   <h2>Install</h2>
@@ -103,15 +116,17 @@
 /plugin marketplace add ali-demirbas/ab-test-playbook
 /plugin install ab-test-playbook@ab-test-playbook</code></pre>
 
-  <p>Then, inside Claude Code: <code>/ab-test suggest</code>, <code>/ab-test design</code>, <code>/ab-test audit</code>, <code>/ab-test results</code>, <code>/ab-test card</code>. A bare <code>/ab-test</code> shows a short menu with one example prompt for each.</p>
+  <p>Then, inside Claude Code: <code>/ab-test suggest</code>, <code>/ab-test design</code>, <code>/ab-test audit</code>, <code>/ab-test card</code>. A bare <code>/ab-test</code> shows a short menu with one example prompt for each.</p>
 
-  <p><strong>Skills only, limited:</strong> <code>npx skills add ali-demirbas/ab-test-playbook --all</code> copies the six skill instructions but not the binding rules, the scenario archive, the scripts or the review agents, so archive suggestions, the statistics engine and card rendering do not work. Use the plugin install above for the full engine. Requires <code>python3</code> 3.9 or newer on PATH; the scripts use the standard library only.</p>
+  <p><strong>Skills only, limited:</strong> <code>npx skills add ali-demirbas/ab-test-playbook --all</code> copies the five skill instructions but not the binding rules, the scenario archive, the scripts or the review agents, so archive suggestions, scenario validation and card rendering do not work. Use the plugin install above for the full engine. Requires <code>python3</code> 3.9 or newer on PATH; the scripts use the standard library only.</p>
 
   <h2>What is inside</h2>
   <ul>
     <li><strong>221 curated scenarios</strong> across journey stages (e-commerce, mobile app, SaaS, and regulated finance, insurance and pension flows), each already carrying the three boxes.</li>
-    <li><strong>A real stats engine</strong> — z-test with exact fallback and a directional verdict (a significant loser is never called a win), A/B/n, guardrail non-inferiority, sample size, SRM, continuous metrics with CUPED, a Bayesian view, all stdlib-only.</li>
+    <li><strong>Short proposals.</strong> At most three strong ones per turn, each a compact record (the problem, a one-sentence mechanism, the variable, the primary KPI, the guardrail, evidence and priority) with a card that shows only the comparison; chat shows a title and one tag line, and the three boxes come on request.</li>
+    <li><strong>A plan audit</strong> — confounds, a proxy primary, mismatched denominators, guardrails that measure nothing, missing compliance or accessibility gates and dark patterns, caught before the test takes traffic.</li>
     <li><strong>Adversarial review</strong> — a methodology critic reads every generated scenario, and a mockup reviewer checks the two variants differ in exactly one thing, before anything reaches you.</li>
+    <li><strong>Gated delivery</strong> — code refuses what it can check (a difference outside the ring, a changed number, an added button without accessibility criteria, a revenue win that could hide user harm), and the final card builds only with both reviewers' stamps matching exactly what they reviewed.</li>
     <li><strong>A portable schema</strong> — a test definition independent of any experimentation platform.</li>
   </ul>
 

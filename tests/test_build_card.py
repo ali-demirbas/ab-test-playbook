@@ -2,23 +2,22 @@
 """build_card.py için unit testler. Bağımlılıksız (unittest).
 
 Bu testler kart üretiminin sessizce bozulduğu noktalara karşı regresyon
-korumasıdır: kaçırılmamış metin yüzünden bozulan markup, kaçırmadan ÖNCE
-uygulanan bold etiketi, şablondaki geliştirici yorumunun da doldurulması,
-mockup markup'ının yanlışlıkla kaçırılması ve sabit iskeletin sürüklenmesi.
+korumasıdır: kaçırılmamış başlık yüzünden bozulan markup, şablondaki geliştirici
+yorumunun da doldurulması, mockup markup'ının yanlışlıkla kaçırılması ve sabit
+iskeletin (çerçeveler dahil) sürüklenmesi.
 """
 import os
 import sys
 import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "scripts"))
-from build_card import build, render_item, render_list, self_verify, fixed_lines  # noqa: E402
-import json  # noqa: E402
+from build_card import build, self_verify, fixed_lines  # noqa: E402
 
 REPO_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 REAL_TEMPLATE = os.path.join(REPO_ROOT, "templates", "scenario-card.html")
 
 # Gerçek şablonun küçük bir taklidi: aynı yerleştiricileri ve aynı yapıyı taşır,
-# ama testleri 180 satır CSS'e bağlamaz.
+# ama testleri 200 satır CSS'e bağlamaz.
 FAKE_TEMPLATE = """<!doctype html>
 <html>
 <head><title>{{TITLE}}</title></head>
@@ -26,9 +25,10 @@ FAKE_TEMPLATE = """<!doctype html>
 <div class="card">
   <!-- Web senaryosunda bu iskeleti kullan:
        <div class="browser-screen">{{VARIANT_A_SCREEN}}</div> -->
-  <div class="mockups">
+  <h1 class="title">{{TITLE}}</h1>
+  <div class="stage">
     <div class="variant">
-      <span class="pill">Variant A</span>
+      <span class="pill pill-a">Variant A</span>
       <div class="phone">
         <div class="statusbar"><span>12:41</span></div>
         <div class="screen">
@@ -38,7 +38,7 @@ FAKE_TEMPLATE = """<!doctype html>
       </div>
     </div>
     <div class="variant">
-      <span class="pill">Variant B</span>
+      <span class="pill pill-b">Variant B</span>
       <div class="phone">
         <div class="statusbar"><span>12:41</span></div>
         <div class="screen">
@@ -48,38 +48,20 @@ FAKE_TEMPLATE = """<!doctype html>
       </div>
     </div>
   </div>
-  <div class="copy">
-    <h1>{{TITLE}}</h1>
-    <p class="desc">{{DESC}}</p>
-    <div class="box test"><ul>
-        {{TEST_ITEMS}}
-    </ul></div>
-    <div class="box kpi"><ul>
-        {{KPI_ITEMS}}
-    </ul></div>
-    <div class="box dont"><ul>
-        {{DONT_ITEMS}}
-    </ul></div>
-  </div>
 </div>
 </body>
 </html>
 """
 
 
-def make_scenario(**over):
+def make_scenario(title="Kupon alanı katlanınca dönüşüm artar mı?", device="phone", **card):
+    """A minimal scenario record as build() reads it: the title, the device and the card."""
     base = {
-        "title": "Kupon alanı katlanınca dönüşüm artar mı?",
-        "desc": "Sepette açık duran kupon alanı indirim arayışını tetikliyor.",
-        "device": "phone",
-        "test_items": ["Kupon alanının katlanmış hâli"],
-        "kpi_items": [{"label": "Birincil KPI", "text": "sepet → ödeme tamamlama"}],
-        "dont_items": ["Aynı turda ödeme adımını değiştirme"],
         "variant_a": '<div class="r-h">Sipariş özeti</div>',
         "variant_b": '<div class="r-h">Sipariş özeti</div>',
     }
-    base.update(over)
-    return base
+    base.update(card)
+    return {"title": title, "device": device, "card": base}
 
 
 class TestEscaping(unittest.TestCase):
@@ -90,30 +72,21 @@ class TestEscaping(unittest.TestCase):
         self.assertIn("CTA &lt; 3 kelime olmalı mı?", out)
         self.assertNotIn("CTA < 3 kelime", out)
 
-    def test_ampersand_in_item_is_escaped(self):
-        out = build(FAKE_TEMPLATE, make_scenario(test_items=["kargo & iade metni"]))
-        self.assertIn("kargo &amp; iade metni", out)
+    def test_ampersand_in_title_is_escaped(self):
+        out = build(FAKE_TEMPLATE, make_scenario(title="Kargo & iade metni dönüşümü artırır mı?"))
+        self.assertIn("Kargo &amp; iade metni", out)
 
-    def test_injected_tag_in_text_renders_as_text(self):
-        out = build(FAKE_TEMPLATE, make_scenario(desc="<script>alert(1)</script>"))
+    def test_injected_tag_in_the_title_renders_as_text(self):
+        out = build(FAKE_TEMPLATE, make_scenario(title="<script>alert(1)</script>"))
         self.assertNotIn("<script>", out)
-        self.assertIn("&lt;script&gt;", out)
-
-    def test_bold_label_is_applied_after_escaping(self):
-        # SKILL.md'nin sırası: önce içerik kaçırılır, sonra biçimlendirme eklenir.
-        # Ters sırada bir <b> etiketi de kaçırılır ve bold görünmez; ya da daha
-        # kötüsü, etiket içeriği tag olarak sızar.
-        item = {"label": "<img src=x>", "text": "açıklama"}
-        rendered = render_item(item)
-        self.assertTrue(rendered.startswith("<li><b>&lt;img src=x&gt;:</b>"))
-        self.assertNotIn("<img", rendered)
+        self.assertEqual(out.count("&lt;script&gt;alert(1)&lt;/script&gt;"), 2)  # <title> and the h1
 
 
 class TestScreenMarkup(unittest.TestCase):
     """Mockup bölgesi üretkendir: ham markup olarak geçmeli, kaçırılmamalı."""
 
     def test_variant_markup_is_inserted_raw(self):
-        markup = '<div class="hl" data-note="kupon alanı"><div class="r-field"></div></div>'
+        markup = '<div class="hl" data-note="Kupon alanı"><div class="r-field"></div></div>'
         out = build(FAKE_TEMPLATE, make_scenario(variant_a=markup))
         self.assertIn(markup, out)
         self.assertNotIn("&lt;div class=&quot;hl&quot;", out)
@@ -131,7 +104,9 @@ class TestDeveloperComment(unittest.TestCase):
     def test_comment_placeholder_is_not_half_filled(self):
         # Yorum silinmeseydi içindeki {{VARIANT_A_SCREEN}} de dolar ve teslim
         # edilen kartın içine yarı doldurulmuş bir örnek blok sızardı.
-        out = build(FAKE_TEMPLATE, make_scenario(variant_a="<b>AAA</b>"))
+        # B'de halkalı başka bir öğe: A ile B'nin farkı halkanın içinde kalır.
+        out = build(FAKE_TEMPLATE, make_scenario(variant_a="<b>AAA</b>",
+                                                 variant_b='<div class="hl" data-note="Yeni"><b>BBB</b></div>'))
         self.assertEqual(out.count("<b>AAA</b>"), 1)
 
 
@@ -213,7 +188,7 @@ class TestBottomNav(unittest.TestCase):
 
 class TestLeftoverPlaceholders(unittest.TestCase):
     def test_unknown_placeholder_is_reported(self):
-        tpl = FAKE_TEMPLATE.replace("{{DESC}}", "{{DESC}} {{FOOTER_NOTE}}")
+        tpl = FAKE_TEMPLATE.replace('<h1 class="title">{{TITLE}}</h1>', '<h1 class="title">{{TITLE}}</h1> {{FOOTER_NOTE}}')
         with self.assertRaises(SystemExit):
             build(tpl, make_scenario())
 
@@ -221,17 +196,27 @@ class TestLeftoverPlaceholders(unittest.TestCase):
 class TestSelfVerify(unittest.TestCase):
     def test_drift_is_detected(self):
         built = build(FAKE_TEMPLATE, make_scenario())
-        # Sabit bölgeden bir kutu iskeleti düşerse sürüklenme sayılır.
-        drifted = built.replace('<div class="box dont"><ul>', "")
+        # Sabit iskeletten bir satır düşerse sürüklenme sayılır.
+        drifted = built.replace('  <div class="stage">', "  <div>")
         with self.assertRaises(SystemExit):
             self_verify(drifted, FAKE_TEMPLATE, "phone")
 
-    def test_mockup_region_is_excluded_from_drift(self):
-        # Mockup iskeleti device'a göre meşru biçimde değişir (phone -> browser);
-        # oradaki bir farkın sürüklenme sayılmaması bilinçli bir karardır.
+    def test_frames_and_pills_are_checked_too(self):
+        # Çerçeve iskeleti artık sürüklenme denetiminin dışında değil: fixed_lines
+        # şablonu kartın cihaz çerçevesine çevirip öyle karşılaştırır.
         built = build(FAKE_TEMPLATE, make_scenario())
-        swapped = built.replace('<span class="pill">Variant B</span>', "")
-        self_verify(swapped, FAKE_TEMPLATE, "phone")  # yükselmemeli
+        with self.assertRaises(SystemExit):
+            self_verify(built.replace('<span class="pill pill-b">Variant B</span>', ""), FAKE_TEMPLATE, "phone")
+        with self.assertRaises(SystemExit):
+            self_verify(built.replace('<div class="statusbar">', '<div>'), FAKE_TEMPLATE, "phone")
+
+    def test_the_frame_is_the_one_the_card_was_built_with(self):
+        web = build(FAKE_TEMPLATE, make_scenario(device="web", url="site.example"))
+        self_verify(web, FAKE_TEMPLATE, "web")  # yükselmemeli
+        with self.assertRaises(SystemExit):
+            self_verify(web, FAKE_TEMPLATE, "phone")  # the phone skeleton is not in a web card
+        nav = build(FAKE_TEMPLATE, make_scenario(bottom_nav=["Ana Sayfa", "Hesabım"]))
+        self_verify(nav, FAKE_TEMPLATE, "phone", bottom_nav=True)  # yükselmemeli
 
     def test_clean_build_passes(self):
         built = build(FAKE_TEMPLATE, make_scenario())
@@ -272,13 +257,18 @@ class TestSelfVerify(unittest.TestCase):
         # Ordinary copy like "based on = ..." or a class named "button-on" is
         # not an event handler.
         a = '<div class="r-h button-on">Fiyat karşılaştırması ekranda mı? Based on = fiyat</div>'
-        built = build(FAKE_TEMPLATE, make_scenario(variant_a=a))
+        built = build(FAKE_TEMPLATE, make_scenario(variant_a=a, variant_b=a))
         self_verify(built, FAKE_TEMPLATE, "phone", variants=(a, a))  # should not raise
 
     def test_fixed_lines_skips_placeholder_and_comment_lines(self):
         lines = fixed_lines(FAKE_TEMPLATE)
         self.assertFalse(any("{{" in ln for ln in lines))
         self.assertFalse(any("<!--" in ln for ln in lines))
+
+    def test_fixed_lines_follow_the_device_frame(self):
+        self.assertIn('        <div class="browser-bar">', fixed_lines(FAKE_TEMPLATE, "web"))
+        self.assertNotIn('        <div class="statusbar"><span>12:41</span></div>', fixed_lines(FAKE_TEMPLATE, "web"))
+        self.assertIn('        <div class="statusbar"><span>12:41</span></div>', fixed_lines(FAKE_TEMPLATE, "phone-web"))
 
 
 class TestRealTemplate(unittest.TestCase):
@@ -293,8 +283,7 @@ class TestRealTemplate(unittest.TestCase):
     def test_builds_and_self_verifies_phone(self):
         built = build(self.template, make_scenario())
         self_verify(built, self.template, "phone")
-        self.assertIn("Kupon alanı katlanınca", built)
-        self.assertIn("Test Edilmesi Gerekenler", built)
+        self.assertIn('<h1 class="title">Kupon alanı katlanınca dönüşüm artar mı?</h1>', built)
 
     def test_builds_and_self_verifies_phone_web(self):
         built = build(self.template, make_scenario(device="phone-web", url="https://www.magaza.example/sepet"))
@@ -309,16 +298,6 @@ class TestRealTemplate(unittest.TestCase):
     def test_no_placeholder_survives(self):
         built = build(self.template, make_scenario())
         self.assertNotIn("{{", built)
-
-
-class TestRenderList(unittest.TestCase):
-    def test_empty_list_renders_empty(self):
-        self.assertEqual(render_list([]), "")
-
-    def test_plain_and_labelled_items_mix(self):
-        out = render_list(["düz madde", {"label": "Etiket", "text": "açıklama"}])
-        self.assertIn("<li>düz madde</li>", out)
-        self.assertIn("<li><b>Etiket:</b> açıklama</li>", out)
 
 
 if __name__ == "__main__":

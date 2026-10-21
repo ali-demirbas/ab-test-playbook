@@ -1,37 +1,38 @@
 # ab-test-playbook
 
-> An A/B testing and CRO engine that runs inside Claude Code. It suggests experiment scenarios from a curated archive of 221 (e-commerce, mobile app, SaaS/B2B, and regulated finance, insurance and private-pension flows), designs new single-variable tests for a page you share, audits an existing test plan for methodological flaws, runs real statistics on results you paste in (SRM check, z-test with Fisher exact fallback read against the pre-declared direction, Holm correction for A/B/n, guardrail non-inferiority, sample size and power, Welch/bootstrap/CUPED for revenue metrics, a Bayesian view), and renders every scenario as a self-contained HTML card. Open source, MIT, stdlib-only.
+> An A/B testing and CRO engine that runs inside Claude Code. It suggests experiment scenarios from a curated archive of 221 (e-commerce, mobile app, SaaS/B2B, and regulated finance, insurance and private-pension flows), designs new single-variable tests for a page you share, audits an existing test plan for methodological, UX and ethics flaws, and renders every scenario as a self-contained 16:9 HTML card that shows only the comparison: the test's question, Variant A and B side by side, the changed element ringed and named. Each proposal is a short structured record (title, problem, one-sentence mechanism, variable, A/B difference, primary KPI with its denominator, guardrail, source and evidence, priority, and a warning only when needed), kept in its JSON (the card prints only its title, chat only a one-line tag), at most three strong ones per turn by default; the archive keeps its three-box format, and a proposal gets the three boxes only when the user asks for detail. It doesn't analyze results or compute sample size, duration, significance or a winner; the user's testing tool reports those. Open source, MIT, stdlib-only.
 
-The playbook is opinionated on purpose. Five rules it will not bend: one variable per variant pair; exactly one primary KPI plus at least one guardrail that must not degrade (every measured guardrail has a margin; pass/fail guardrails carry a criterion); no dark patterns and no treating security or consent steps as removable friction; every proposal states its evidence level (your own data, an archive precedent, a sector observation, or intuition); and no sample-size or duration promise without real traffic numbers.
+The playbook is opinionated on purpose. Five rules it will not bend: one variable per variant pair; exactly one primary KPI plus at least one guardrail that measures an independent harm (an accessibility guardrail is a pass/fail check with a criterion); no dark patterns and no treating security or consent steps as removable friction; every proposal states its evidence level (your own data, an archive pattern, a sector observation, or intuition; an archive pattern is a curated idea, never presented as tested); and no sample-size, duration or significance claims at all.
+
+Delivery is gated: the validator and the card builder refuse what code can check (a difference outside the ring, a changed number, an interactive addition without accessibility criteria, a revenue primary that could hide user harm, personal-data values), two review agents check what code can't, and the final card builds only when both reviews' fingerprint stamps match the content.
 
 Install in Claude Code with `/plugin marketplace add ali-demirbas/ab-test-playbook` followed by `/plugin install ab-test-playbook@ab-test-playbook`. Needs `python3` 3.9 or newer; the scripts use the standard library only. A skills-only install through the skills CLI is limited: it omits the rules, archive and scripts.
 
 ## Core documentation
 
-- [README](https://github.com/ali-demirbas/ab-test-playbook/blob/main/README.md): what it does, install, usage, and a worked session from screenshot to decision
+- [README](https://github.com/ali-demirbas/ab-test-playbook/blob/main/README.md): what it does, install, usage, and a worked session from screenshot to card
 - [Binding rules (CLAUDE.md)](https://github.com/ali-demirbas/ab-test-playbook/blob/main/CLAUDE.md): the 19 non-negotiable rules every skill obeys
 - [Architecture](https://github.com/ali-demirbas/ab-test-playbook/blob/main/docs/architecture.md): where judgement lives versus where enforcement lives, and why review is split across two agents
-- [FAQ](https://github.com/ali-demirbas/ab-test-playbook/blob/main/FAQ.md): common questions about scope, statistics and usage
-- [Methodology](https://github.com/ali-demirbas/ab-test-playbook/blob/main/knowledge/methodology.md): experiment design, ICE prioritisation, significance and sample-size reasoning
+- [FAQ](https://github.com/ali-demirbas/ab-test-playbook/blob/main/FAQ.md): common questions about scope, guardrails, priority and usage
+- [Methodology](https://github.com/ali-demirbas/ab-test-playbook/blob/main/knowledge/methodology.md): experiment design, KPI and guardrail rules, variable isolation, priority tiers and fit
 
 ## Questions it answers
 
 - What A/B tests should I run on an e-commerce checkout, cart, or product detail page?
 - How do I write an A/B test hypothesis that states a mechanism rather than a guess?
 - Which metrics belong in a test as guardrails, and why is one primary KPI mandatory?
-- How many visitors do I need for statistical significance, and how long will the test take?
-- Is my traffic split broken (sample ratio mismatch), and what is the probability that the variant beats control?
+- Is my variant a dark pattern, or does it change a regulated display?
 - What mistakes invalidate an A/B test result before it even starts?
 - How do I prioritise which CRO experiments to run first?
 - Is my existing test plan set up correctly, or does it have a confound?
-- My variant is significant but worse, or my guardrail came back inconclusive: what is the decision?
 - What can I test inside an insurance, pension or credit flow without touching regulated copy?
 
 ## Reference
 
-- [Scenario schema](https://github.com/ali-demirbas/ab-test-playbook/blob/main/templates/scenario.schema.json): a platform-agnostic test definition, portable to any experimentation tool
+- [Scenario schema](https://github.com/ali-demirbas/ab-test-playbook/blob/main/templates/scenario.schema.json): the compact scenario record, a platform-agnostic test definition portable to any experimentation tool
 - [Scenario archive](https://github.com/ali-demirbas/ab-test-playbook/tree/main/knowledge/scenarios): 221 curated scenarios grouped by journey stage, in 13 files, including finance, insurance and private pension
-- [Examples](https://github.com/ali-demirbas/ab-test-playbook/tree/main/examples): one scenario carried end to end, definition through rendered card, plus a results walkthrough with real script output and an audit of a flawed plan
+- [Examples](https://github.com/ali-demirbas/ab-test-playbook/tree/main/examples): sample scenario records carried end to end, definition through rendered card, plus an audit of a flawed test proposal
+- [Sample cards](https://github.com/ali-demirbas/ab-test-playbook/tree/main/docs/demo): the rendered sample cards on different screen types
 - [Live card demo](https://ali-demirbas.github.io/ab-test-playbook/): the real output of the card builder, no install
 
 ## Optional

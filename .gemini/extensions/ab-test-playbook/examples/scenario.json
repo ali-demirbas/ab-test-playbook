@@ -1,25 +1,9 @@
 {
   "id": "cart-checkout-coupon-field-01",
-  "title": "Açık kupon kodu alanı sepet terkini artırır mı?",
-  "stage": "cart-checkout",
-  "lang": "tr",
-  "source": "archive",
-  "objection": "Fiyat",
-  "ice": {
-    "tier": "medium",
-    "impact": 6,
-    "confidence": 5,
-    "ease": 8
-  },
-  "rationale": "Görünür bir kupon kutusu, kodu olmayan kullanıcıyı “indirim arayayım” diye siteden çıkarabilir. Kodu bağlantı arkasına almak bu kaçağı kapatabilir ama kampanya kullanımını düşürebilir.",
+  "title": "Kupon alanını “İndirim kodum var” bağlantısının arkasına almak geliri artırır mı?",
+  "problem": "Sepette açık duran kupon kutusu, kodu olmayan kullanıcıyı “indirim arayayım” diye siteden çıkarabilir.",
+  "mechanism": "Kupon alanı “İndirim kodum var” bağlantısının arkasına alınınca kodu olmayan kullanıcıya eksik bir indirim daha az hatırlatılır ve kod aramak için sepetten çıkma nedeni zayıflar, kodu olan kullanıcı ise alanı bağlantıdan açar.",
   "variable": "Kupon kodu alanının görünürlüğü",
-  "hypothesis": {
-    "change": "Kupon alanı açık kutu yerine “İndirim kodum var” bağlantısının arkasına alınır.",
-    "mechanism": "Açık kutu, kodu olmayan kullanıcıya elinde eksik bir şey olduğunu hatırlatır ve kod aramak için siteden çıkmasına yol açar; bağlantı arkasındaki alan bu hatırlatmayı yapmaz, kodu olan kullanıcı ise aramayı sürdürür.",
-    "expected_direction": "increase"
-  },
-  "device": "phone-web",
-  "market": "TR",
   "variants": [
     {
       "id": "A",
@@ -30,102 +14,60 @@
       "description": "Kupon alanı “İndirim kodum var” bağlantısının arkasında"
     }
   ],
-  "test_items": [
+  "difference": "change",
+  "primary_kpi": {
+    "name": "Ziyaretçi Başına Gelir (RPV)",
+    "denominator": "Teste atanan ziyaretçi (atama sepet sayfasına ulaşınca, iki kolda aynı tetik)",
+    "direction": "increase"
+  },
+  "guardrail": {
+    "name": "Kuponlu Sipariş Veren Ziyaretçi Oranı",
+    "kind": "metric",
+    "denominator": "Teste atanan ziyaretçi",
+    "direction": "must_not_decrease"
+  },
+  "invariants": [
+    "Geçerli bir kod iki kolda da aynı adımla uygulanır.",
+    "İndirim iki kolda da aynı hesapla ara toplama ve toplam tutara yansır.",
+    "Geçersiz ya da süresi dolmuş bir kod iki kolda da aynı hata mesajını alır."
+  ],
+  "warnings": [
     {
-      "label": "Kaçak",
-      "text": "Kupon alanını bağlantı arkasına almak terk oranını düşürüyor mu?"
-    },
-    {
-      "label": "Segment",
-      "text": "Yeni ve dönen kullanıcıda kupon arama davranışı farklı mı?"
-    },
-    {
-      "label": "Sonraki test",
-      "text": "Bağlantı kazanırsa, “İndirim kodum var” ile “Kupon kullan” metni ayrı bir testte fark yaratıyor mu?"
-    },
-    {
-      "label": "Kampanya",
-      "text": "Kampanya dönemlerinde etki tersine dönüyor mu?"
+      "type": "accessibility",
+      "text": "Yeni “İndirim kodum var” bağlantısı klavyeyle erişilebilir olmalı, ekran okuyucuda bu adla okunmalı, açılınca odağı kupon alanına taşımalı, dokunma alanı en az 44×44 pt ve metin kontrastı en az 4.5:1 olmalı."
     }
   ],
-  "kpis": [
-    {
-      "name": "Ziyaretçi Başına Gelir (RPV)",
-      "role": "primary",
-      "question": "Kaçak kapanırken indirim kullanımındaki değişim toplam geliri artırıyor mu?"
-    },
-    {
-      "name": "Sipariş Tamamlama Oranı",
-      "role": "secondary",
-      "question": "Kupon kutusu kaçağı kapanıyor mu?"
-    },
-    {
-      "name": "Kupon Kullanım Oranı",
-      "role": "guardrail",
-      "question": "Kuponu olan kullanıcı alanı bulabilmeli, kullanım çökmemeli."
-    },
-    {
-      "name": "Kampanya Katılımı",
-      "role": "guardrail",
-      "question": "Aktif kampanya performansı çökmemeli."
-    }
-  ],
-  "dont_items": [
-    "Kupon alanını tamamen kaldırmayın; kodu olan kullanıcı öfkelenir.",
-    "Geçersiz kod hatasını belirsiz bırakmayın.",
-    "Kodu olan kullanıcının alanı bulamayıp indirimsiz ödemesini gelir kazancı saymayın.",
-    "Aynı testte hem konumu hem metni değiştirmeyin."
-  ],
+  "source": "adapted",
+  "adapted_from": "Açık kupon kodu alanı sepet terkini artırır mı?",
   "evidence": {
     "level": "archive",
-    "note": "Arşivde sepet-ödeme aşamasında emsali var; bu sayfanın kendi verisiyle doğrulanmadı."
+    "note": "Arşivde derlenmiş bir test fikrine dayanıyor, bir test sonucu değil."
   },
-  "sample": {
-    "traffic_known": false
+  "priority": {
+    "tier": "medium",
+    "rationale": "Ödeme öncesi son adımda sepetten çıkışı hedefliyor ama kod kullanımını düşürebilir, kanıt bu sayfanın verisi değil arşiv örüntüsü ve kupon kutusunu bir bağlantının arkasına almak küçük bir arayüz işi."
   },
-  "preregistration": {
-    "hypothesis": "Kupon alanını “İndirim kodum var” bağlantısının arkasına almak, kodu olmayan kullanıcının kod aramak için siteden çıkmasını azaltarak ziyaretçi başına geliri artırır.",
-    "variable": "Kupon kodu alanının görünürlüğü",
-    "primary_kpi": {
-      "name": "Ziyaretçi Başına Gelir (RPV)",
-      "direction": "increase"
-    },
-    "guardrails": [
-      {
-        "name": "Kupon Kullanım Oranı",
-        "direction": "must_not_decrease",
-        "margin_relative": 0.1
-      },
-      {
-        "name": "Kampanya Katılımı",
-        "direction": "must_not_decrease",
-        "margin_relative": 0.05
-      }
-    ],
-    "mde": null,
-    "alpha": 0.05,
-    "power": 0.8,
-    "alternative": "two-sided",
-    "allocation": {
-      "A": 0.5,
-      "B": 0.5
-    },
-    "planned_n_per_arm": null,
-    "duration_days": null,
-    "decision_rule": "RPV önceden belirlenen yönde anlamlı artarsa ve iki guardrail de marjı içinde kalırsa yayına al; aksi hâlde kontrolde kal.",
-    "segments": [
-      "device",
-      "new_vs_returning"
-    ]
-  },
-  "history": {
-    "tested_before": false
-  },
+  "lang": "tr",
+  "stage": "cart-checkout",
+  "device": "phone-web",
+  "market": "TR",
+  "objection": "Fiyat",
   "card": {
     "difference": "change",
     "url": "magaza.example/sepet",
     "mockup_basis": "representative",
-    "variant_a": "<div class=\"r-h\">Sepetim</div>\n          <div class=\"r-item\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Kadife Ceket</div>\n              <div class=\"r-meta\">Beden M · 1 adet</div>\n            </div>\n            <div class=\"r-price\">890 TL</div>\n          </div>\n          <div class=\"hl\" data-note=\"kupon alanı açık\">\n            <div class=\"r-label\">Kupon kodunuz</div>\n            <div class=\"r-field empty\">Kodu buraya girin</div>\n          </div>\n          <div class=\"r-line\"><span>Ara toplam</span><span>890 TL</span></div>\n          <div class=\"r-line total\"><span>Toplam</span><span>890 TL</span></div>\n          <div class=\"r-cta\">Ödemeye geç</div>",
-    "variant_b": "<div class=\"r-h\">Sepetim</div>\n          <div class=\"r-item\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Kadife Ceket</div>\n              <div class=\"r-meta\">Beden M · 1 adet</div>\n            </div>\n            <div class=\"r-price\">890 TL</div>\n          </div>\n          <div class=\"hl\" data-note=\"bağlantı olarak\">\n            <div class=\"r-link\">İndirim kodum var</div>\n          </div>\n          <div class=\"r-line\"><span>Ara toplam</span><span>890 TL</span></div>\n          <div class=\"r-line total\"><span>Toplam</span><span>890 TL</span></div>\n          <div class=\"r-cta\">Ödemeye geç</div>"
+    "variant_a": "<div class=\"r-h\">Sepetim</div>\n          <div class=\"r-item\" style=\"margin-bottom:20px\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Kadife Ceket</div>\n              <div class=\"r-meta\">Beden M · 1 adet</div>\n            </div>\n            <div class=\"r-price\">890 TL</div>\n          </div>\n          <div class=\"hl\" data-note=\"Kupon alanı açık\">\n            <div class=\"r-label\">Kupon kodunuz</div>\n            <div class=\"r-field empty\">Kodu buraya girin</div>\n          </div>\n          <div class=\"r-line\"><span>Ara toplam</span><span>890 TL</span></div>\n          <div class=\"r-line total\"><span>Toplam</span><span>890 TL</span></div>\n          <div class=\"r-cta\">Ödemeye geç</div>",
+    "variant_b": "<div class=\"r-h\">Sepetim</div>\n          <div class=\"r-item\" style=\"margin-bottom:20px\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Kadife Ceket</div>\n              <div class=\"r-meta\">Beden M · 1 adet</div>\n            </div>\n            <div class=\"r-price\">890 TL</div>\n          </div>\n          <div class=\"r-link hl\" data-note=\"Kupon bağlantıda\" style=\"align-self:flex-start;line-height:44px\">İndirim kodum var</div>\n          <div class=\"r-line\"><span>Ara toplam</span><span>890 TL</span></div>\n          <div class=\"r-line total\"><span>Toplam</span><span>890 TL</span></div>\n          <div class=\"r-cta\">Ödemeye geç</div>",
+    "phone_scale": 1.4
+  },
+  "review": {
+    "scenario_critic": {
+      "verdict": "PASS",
+      "fingerprint": "ddf25059338974b919c017bd28f81392b107f1fdf440a04181192a05f3a0bd0b"
+    },
+    "mockup_reviewer": {
+      "verdict": "PASS",
+      "fingerprint": "6507d4b47ead643c9da78588a1a8cd44994354999117268dd07d8730c95d7381"
+    }
   }
 }

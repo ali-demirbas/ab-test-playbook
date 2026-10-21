@@ -1,9 +1,9 @@
 # Audit example: a flawed plan, reviewed
 
 What `/ab-test audit` returns for a plan with most of the common faults in it at
-once. The plan and its numbers are fictional; the script outputs are real runs
-of `scripts/analyze_results.py` on those numbers, trimmed to the fields the
-audit cites.
+once. The plan is fictional. The audit reviews the proposal itself (UX, CRO,
+methodology, ethics, privacy, regulation, accessibility and feasibility); it
+doesn't read the plan's numbers.
 
 ## The plan the user brought
 
@@ -28,55 +28,11 @@ python3 scripts/validate_input.py plan.md
 
 Nothing instruction-shaped in it, so it is audited as data.
 
-## The numbers the audit runs
-
-**SRM** on the day-5 split:
-
-```bash
-python3 scripts/analyze_results.py srm --control-visitors 18200 --variant-visitors 17350
-```
-
-```json
-{"observed_split": 0.51195, "chi2": 20.3235, "p_value": 7e-06, "srm_detected": true}
-```
-
-**The "won on mobile" claim**, checked the way it has to be checked, as an
-interaction rather than two separate tests. This is shown to explain the method
-problem only; with an SRM, none of these numbers is read as a result.
-
-```bash
-python3 scripts/analyze_results.py interaction \
-  --seg1 9000:270,8600:309 --seg2 9200:368,8750:362 \
-  --seg1-name mobile --seg2-name desktop
-```
-
-```json
-{
-  "segments": [
-    {"name": "mobile", "relative_lift_pct": 19.77},
-    {"name": "desktop", "relative_lift_pct": 3.43}
-  ],
-  "interaction_relative": {"ratio_of_rate_ratios": 1.15797, "p_value": 0.18004, "is_significant": false},
-  "effect_differs": false,
-  "scale_dependent": false,
-  "decision_code": "no_evidence_of_difference",
-  "decision": "no evidence the effect differs between segments"
-}
-```
-
-Separately, mobile alone gives p = 0.027 and desktop alone p = 0.64, which is
-exactly the "significant in one, not the other" pattern chance produces.
-
 ## What the audit says
 
 **[Blocking] Two variables in one variant.** B adds the banner *and* rewrites
 the hero button. Any difference can't be attributed to either. Fix: keep the
 button copy identical in both arms; test the copy separately.
-
-**[Blocking] Sample ratio mismatch.** 51.2 / 48.8 on 35,550 visitors is not
-noise (chi-square p = 0.000007). Results from this run aren't trustworthy.
-Fix: find where variant users are lost (a client-side tag that fails to load,
-assignment logged together with exposure), fix it, restart.
 
 **[Blocking] Different denominators.** "Banner clicks / banner views" exists
 only in B, since A has no banner, so the two arms are not measured on the same
@@ -92,27 +48,18 @@ change behavior. Suggested: "Showing free 30-day returns on the homepage
 answers the fit objection (what if it doesn't fit?) earlier, so more visitors
 start shopping; we'd learn whether returns anxiety blocks first purchases."
 
-**[Serious] Picking the best of four segments.** "Ship to whichever of mobile,
-desktop, new or returning wins" is four chances at a false winner. The
-interaction run above shows the mobile/desktop gap is not evidence of a real
-difference (p = 0.18). Fix: declare one decision segment before launch, or
-decide on the overall result and treat segments as exploratory, testing a
-segment difference only with `interaction`.
+**[Serious] Segments aren't named in advance.** "Ship to whichever of mobile,
+desktop, new or returning wins" picks the breakdown after the fact. Name the
+breakdowns you will look at before launch (device and new vs returning are the
+usual pair). Which segment wins, and whether to ship, is decided in your testing
+tool, not in this playbook.
 
-**[Serious] Guardrail without a number, and not an independent harm.** "Must
-not get worse" can't be decided, and once the primary is orders per homepage
-visitor, cart abandonment is a step that primary already contains: it can't
-degrade while the primary improves. A free-returns promise has an obvious cost
-the primary can't see: returns. Proposal (to confirm): return rate within 30
-days of delivery, per order, must not rise more than 5% relative, tested
-one-sided (`--guardrail-direction must_not_increase`) and read 30 days after the
-last order of the test; the ship decision waits for that window.
-
-**[Serious] Stopping on an early look.** "Day 5 so far … (significant!)" on a
-7-day plan with no planned sample is peeking: checking repeatedly and reacting
-when significance appears inflates the false-positive rate. Fix: fix the sample
-per arm before launch and read the result once, when it is reached
-(`significance --planned-n` flags an early look).
+**[Serious] The guardrail isn't an independent harm.** Once the primary is
+orders per homepage visitor, cart abandonment is a step that primary already
+contains: it can't degrade while the primary improves. A free-returns promise
+has an obvious cost the primary can't see: returns. Proposal (to confirm):
+"Return rate within 30 days of delivery (per order) must not rise", with the
+window written into the KPI's name.
 
 **[Serious] No accessibility check.** B adds a tappable banner. It needs a
 pass/fail check on B before launch (keyboard and screen-reader reachable, an
@@ -127,20 +74,22 @@ market, which the plan doesn't state. Needs verifying before any traffic.
 Needs verifying: whether the tag hides the page until assignment, and whether
 exposure is logged separately from assignment.
 
-**[Improvement] Duration.** Seven days misses weekly cycles; plan at least two
-full weeks, sized with `samplesize` once the primary metric is fixed.
-
 **[Serious] No "never do" list.** The plan doesn't state what would
 invalidate it (rule 1). Written up as a finding; the plan is not rewritten into
 the three boxes for the user.
 
+**Not checked: the plan's numbers.** The day-5 counts, the "significant" claim,
+the 50/50 split and the 7-day duration are outside this playbook's scope: it
+proposes, designs, audits and visualizes A/B tests, and doesn't analyze results
+or compute sample size, duration, significance or a winner. Read them in your
+testing tool's own report.
+
 ## Decision
 
-**Can this test run as-is? No.** Three blocking problems (two variables, SRM,
-unequal denominators) each invalidate the result on their own. It can run once
-the button copy is equalised, the assignment bug behind the SRM is fixed, both
-arms are measured per homepage visitor with orders as the primary, the
-guardrail is an independent harm with a margin and a follow-up window, the
-sample is fixed in advance and read once, and either one segment is
-pre-declared or segments are read as exploratory. Restart the count from day 1
-after the fix.
+**Can this test run as-is? No.** Two blocking problems (two variables, unequal
+denominators) each invalidate the comparison on their own. It can run once the
+button copy is equalised, both arms are measured per homepage visitor with
+orders as the primary, the guardrail is an independent harm with its follow-up
+window in its name, the accessibility check and the returns-policy check are
+closed before launch, the flicker question is answered, and the segments to
+look at are named in advance.

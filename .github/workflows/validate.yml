@@ -25,10 +25,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Run unit tests (stats engine, validators, card builder, schema, example outputs)
-        # tests/test_examples_doc.py re-runs every analyze_results.py command quoted
-        # in examples/*.md and compares the JSON printed next to it, so "real
-        # script output" in the docs cannot drift from the engine.
+      - name: Run unit tests (validators, card builder, schema, shipped examples)
         run: python -m unittest discover -s tests -v
 
   # Same two ends of the supported range as the unit tests: the validators and

@@ -3,83 +3,146 @@
 template and substituting ONLY the placeholder regions — the cp-then-edit
 mechanism CLAUDE.md mandates, done in code so it is correct every run.
 
+The card is the comparison and nothing else: the record's title (a question) at
+the top, then Variant A and Variant B side by side in a device frame each, the
+ring (.hl) around the changed element and its short label. None of the record's
+other text (problem, KPI, guardrail, evidence, priority, warnings, invariants,
+detail) is written into the card; what the user needs of it lives in the chat.
+
 Why a script rather than hand-editing:
 
-  1. **Escaping is a correctness bug, not a style preference.** The card's text
-     fields are interpolated straight into markup. A scenario titled
-     "CTA < 3 kelime olmalı mı?" or a KPI item mentioning "kargo & iade"
-     silently produces broken or unexpected tags. ab-test-card/SKILL.md already
-     warns about this in prose; prose cannot enforce it. Here it is enforced:
-     every text field goes through html.escape() before it reaches the template,
-     and the bold label is applied AFTER escaping (the order SKILL.md specifies),
-     so a label can never inject a tag.
+  1. **Escaping is a correctness bug, not a style preference.** The title is
+     interpolated straight into markup; "CTA < 3 kelime olmalı mı?" would break
+     it. Every text value (title, address, tab labels) goes through
+     html.escape() before it reaches the template.
 
   2. **The template's developer comment documents the same structure as the
      live skeleton.** A naive string replace would fill the comment too and ship
      a half-substituted example block inside the delivered card. This tool
      strips the comment first, then substitutes.
 
-  3. **Retyping ~250 lines of fixed CSS per card is the pipeline's largest time
-     cost and its main drift risk.** After writing, this tool self-verifies that
-     every fixed line of the template survived unchanged and refuses to emit a
-     card that drifted.
+  3. **Retyping ~200 lines of fixed CSS per card is the pipeline's largest time
+     cost and its main drift risk.** After building, this tool self-verifies
+     that every fixed line of the template (for the card's device frame)
+     survived unchanged and refuses to emit a card that drifted.
 
-Input: ONE JSON per scenario. Two shapes are accepted.
-
-  * The scenario shape (templates/scenario.schema.json, the canonical one — see
-    examples/scenario.json). The card reads:
-        title, rationale (→ description), lang, test_items, dont_items,
-        kpis[{name, role, question}]  (→ KPI box, with a role pill per item),
-        source / adapted_from / evidence.level / objection / ice (→ footer tags),
-        card{variant_a, variant_b, difference, device, url, bottom_nav,
-             bottom_nav_active, brand, brand_note, mockup_basis, note_pos,
-             shift_note_a, shift_note_b, footer_notes}
-    This shape is validated against the schema first (validate_scenario_json):
-    a scenario with errors is refused, its warnings are printed and the card is
-    still built. A scenario without a `card` object is a valid scenario but not
-    a renderable one; the builder says so.
-  * The legacy flat shape (kept working): title, desc, test_items, kpi_items,
-    dont_items, variant_a, variant_b, device, url, bottom_nav at the top level.
-    Any card field may also sit at the top level in this shape. It has no
-    schema; the builder checks the three boxes itself (at least three real
-    items each).
+Input: ONE scenario record (templates/scenario.schema.json; see
+examples/scenario.json). The card reads title and lang (→ <html lang>), and
+card{variant_a, variant_b, difference (the record's; when both are given they
+must be equal, the card never overrides the record), device (else the
+record's), url, bottom_nav, bottom_nav_active, brand, note_pos, phone_scale,
+mobile_toolbar, stage_captions}; mockup_basis is
+metadata for the mockup reviewer (written into the manifest, never drawn). The
+gates also read variable, numeric_change and warnings, a critical item in
+`assumptions` makes the card conditional (below), and the review gates read
+review{scenario_critic, mockup_reviewer} (never drawn on the card). The
+record is validated against the schema first (validate_scenario_json): a record
+with errors is refused; its warnings are printed and don't block. A record
+without a `card` object is a valid record but not a renderable one; the builder
+says so.
 
   device:     phone      native app screen; a tab bar only via bottom_nav (a
                          list of strings), its active tab via bottom_nav_active
                          (that tab's label or 0-based index)
               phone-web  mobile browser: status bar + address bar (lock + domain
                          from url), never a tab bar
-              web        desktop browser frame; wider mockups, 580px text column
+              web        desktop browser frame filling its column
   difference: change | add | move | remove (Turkish değiştir | ekle | taşı | kaldır
               accepted). The ring (.hl) placement is enforced — see ring_problems().
-  lang:       tr (default) | en. Box headers, role pills and footer labels come
-              from L10N below; <html lang> follows.
+              card.difference that differs from the record's is refused
+              (difference_problems): the card would show another test than
+              the one reviewed. A move is drawn as a move, also below the
+              first view or to a later screen (layout markers below; only the
+              ring moves). Each arm's label says where the element is in that
+              arm; the element's content is identical.
+  layout:     phone and phone-web only. A bare <div class="r-fold"></div> at
+              the top level of a screen splits it: what comes before is the
+              first view (in the phone), what comes after is drawn under the
+              phone as a continuation sheet (.below). Both arms or neither.
+              <div class="r-sticky">one element</div> before the fold is a bar
+              pinned to the bottom of the first view; a pinned element is
+              drawn this way, never inside the page flow. A bare
+              <div class="r-stage-break"></div> splits a screen into two
+              stages, drawn as two small phones with card.stage_captions.
+              card.mobile_toolbar (phone-web) draws the browser's bottom
+              toolbar, the same in both arms. .hl-soft marks a linked
+              consequence of the variable (at most two per arm, next to a .hl).
+  lang:       tr (default) | en: <html lang> and the draft ribbon.
   brand:      {"primary": "#c9392b", "on_primary": "#fff", "name": "Marka"} →
               CSS variables used by .r-cta, .r-header, .r-logo, .r-tabs …
               Without it the neutral palette stays. A colour is #hex, rgb()/
               hsl() or one of the CSS colour names; anything else is refused.
 
-Text fields (title, description, each item's label/text, notes, tags, tab labels,
-url) are ESCAPED. `variant_a` / `variant_b` are raw markup produced by the model
-for the mockup region and are inserted verbatim — that region is generative by
-design, only its surrounding skeleton is fixed. Because it is raw, it passes an
-ALLOWLIST first (parse_markup): a closed set of inert tags and attributes, every
+`variant_a` / `variant_b` are raw markup produced by the model for the mockup
+region and are inserted verbatim — that region is generative by design, only
+its surrounding skeleton is fixed. Because it is raw, it passes an ALLOWLIST
+first (parse_markup): a closed set of inert tags and attributes, every
 attribute value double-quoted, no comments, balanced tags, screened inline CSS.
 A mockup that needs anything else is refused with a message naming the tag or
 attribute; nothing is cleaned or rewritten.
 
+Mechanical quality gates (code checks what code can check; the reviewers
+check the rest, and delivery needs both):
+
+  * A/B diff. The two mockups are parsed and aligned. Any difference outside
+    the rings refuses the card; every change inside the rings is listed in a
+    diff manifest for mockup-reviewer (text, numbers, components, modifier
+    classes, attributes and inline styles, each with its ring label).
+  * Numbers. A price, amount, percentage, count or rating that differs
+    between A and B, inside or outside a ring, refuses the card unless the
+    record says why in `numeric_change`.
+  * Accessibility. B adding an interactive component (or more of one) refuses
+    the card unless the record carries an accessibility warning with the
+    criteria that element needs.
+  * Regulation and manipulation (heuristic keyword lists, see the constants):
+    legal or mandatory text in A missing or changed in B (rule 11), security
+    or verification text in A missing in B (rule 6), a consent box unticked
+    in A and ticked in B, or shown in A and removed in B (rule 6).
+  * Personal data. Values shaped like a TCKN, a TR IBAN, a card number, an
+    e-mail address or a mobile number refuse the card; masks ("•••") and
+    all-zero placeholders pass.
+
+What a browser shows (size, clipping, ring and label overlap, font size,
+contrast, A/B alignment) is measured by scripts/render_check.mjs, not here.
+
+Conditional card. A record with at least one critical assumption
+(`assumptions[].type == "critical"`) builds a conditional card: the final
+bytes carry an amber ribbon ("KOŞULLU · doğrulama gerekli" / "CONDITIONAL ·
+needs verification") at the card's top-left corner and <meta
+name="abtest-status" content="conditional">; the build summary (draft and
+stamped build) says "conditional card (not implementation-ready)". It is never
+a final card. A record without one builds exactly as before.
+
+Review gates. A draft (--draft) needs the scenario-critic stamp whose
+fingerprint equals the record's (validate_scenario_json.record_fingerprint);
+it writes the final card's HTML plus a draft ribbon overlaid on the card and
+two meta tags, writes <out>.manifest.json and prints the final card's
+fingerprint (of a conditional card: of its conditional bytes). A final build (the default) needs both stamps: scenario-critic =
+the record's fingerprint, mockup-reviewer = the sha256 of the exact bytes it is
+about to write. Everything is built in memory and written only when every gate
+passed.
+
 Usage:
-  build_card.py --template templates/scenario-card.html \
-                --scenario scenario.json \
+  build_card.py --template templates/scenario-card.html \\
+                --scenario scenario.json \\
+                --out abtest-card-kupon-alani.draft.html --draft [--lang tr]
+  build_card.py --template templates/scenario-card.html \\
+                --scenario scenario.json \\
                 --out abtest-card-kupon-alani.html [--lang tr]
 
---lang  language of the builder's own messages (en, the default, or tr).
+--draft  build the review draft (ribbon, meta tags, manifest) instead of the
+         final card.
+--lang   language of the builder's own messages (en, the default, or tr).
 
-Exit: 0 = built and self-verified (warnings, if any, go to stderr as
-"build_card: warning: ..."), 2 = usage error / invalid input / drift detected.
+Exit: 0 = written and self-verified (warnings, if any, go to stderr as
+"build_card: warning: ..."), 1 = refused by a gate (the message names it;
+nothing was written and an existing --out is left untouched), 2 = usage error
+or unreadable input.
 """
 import argparse
+import collections
 import difflib
+import hashlib
 import html
 import json
 import os
@@ -87,63 +150,29 @@ import re
 import sys
 from html.parser import HTMLParser
 
+# validate_scenario_json ships next to this file and is imported lazily below.
+# Put this directory on the path so that also works under `python3 -I`, whose
+# isolated mode leaves the script's own directory off sys.path.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+if _HERE not in sys.path:
+    sys.path.insert(0, _HERE)
+
 DEVICES = ("phone", "phone-web", "web")
 DIFFERENCES = ("change", "add", "move", "remove")
 # The archive's "Fark:" line spells the type in Turkish; the schema accepts
 # those spellings, and the builder also forgives a missing Turkish letter.
 DIFFERENCE_TR = {"değiştir": "change", "ekle": "add", "taşı": "move", "kaldır": "remove"}
 DIFFERENCE_ALIASES = dict(DIFFERENCE_TR, degistir="change", tasi="move", kaldir="remove")
-KPI_ROLES = ("primary", "guardrail", "secondary")
-ROLE_ALIASES = {"birincil": "primary", "ikincil": "secondary"}
-SOURCES = ("archive", "adapted", "generated")
-EVIDENCE_LEVELS = ("user_data", "archive", "sector", "intuition")
-ICE_TIERS = ("high", "medium", "low")
 MOCKUP_BASES = ("shared_page", "described", "representative")
 NOTE_POSITIONS = ("above", "below")
+# The phone frame is drawn 1.2× (fills its column); 1 keeps it at 420px so a tall screen fits the stage,
+# 1.4 enlarges a short screen that would leave most of the stage empty.
+PHONE_SCALES = (1.2, 1, 1.4)
+PHONE_SCALE_ATTR = {1.2: "1.2", 1: "1", 1.4: "1.4"}
+# The card's own language: <html lang> and the draft ribbon. The title is
+# already in the user's language (rule 7); the pills say "Variant A/B" in both.
+CARD_LANGS = ("tr", "en")
 
-# Every word the card itself prints, per language. The scenario's own text is
-# already in the user's language (rule 7); these are the frame around it.
-# Turkish values start with a capital and use no em-dash (house style).
-L10N = {
-    "tr": {
-        "h_test": "Test Edilmesi Gerekenler",
-        "h_kpi": "Takip edilecek ana KPI’lar",
-        "h_dont": "Yapılmaması Gerekenler",
-        "role": {"primary": "Birincil", "guardrail": "Guardrail", "secondary": "İkincil"},
-        "tag_source": "Kaynak", "tag_evidence": "Kanıt", "tag_objection": "İtiraz", "tag_ice": "ICE",
-        "source": {"archive": "Arşivden", "adapted": "Arşivden uyarlandı",
-                   "generated": "Bu sayfa için üretildi"},
-        "evidence": {"user_data": "Kendi verin", "archive": "Arşiv emsali",
-                     "sector": "Sektör gözlemi", "intuition": "Sezgi"},
-        "ice": {"high": "Yüksek", "medium": "Orta", "low": "Düşük"},
-        "brand_neutral": "Nötr palet kullanıldı; marka kılavuzunu (logo, renkler) gönderirsen kartı yeniden markalarım.",
-        "brand_screen": "Renkleri ekran görüntüsünden aldım; resmî kılavuzu gönderirsen kartı güncellerim.",
-        "basis_described": "Sayfanın tarifinden yeniden çizildi; gerçek sayfa farklı görünebilir.",
-        "basis_representative": "Temsilî örnek; gerçek bir sitenin ekranı değildir.",
-    },
-    "en": {
-        "h_test": "What to Test",
-        "h_kpi": "Primary KPIs to Track",
-        "h_dont": "Never Do",
-        "role": {"primary": "Primary", "guardrail": "Guardrail", "secondary": "Secondary"},
-        "tag_source": "Source", "tag_evidence": "Evidence", "tag_objection": "Objection", "tag_ice": "ICE",
-        "source": {"archive": "From archive", "adapted": "Adapted from archive",
-                   "generated": "Generated for this page"},
-        "evidence": {"user_data": "Your own data", "archive": "Archive precedent",
-                     "sector": "Industry observation", "intuition": "Intuition"},
-        "ice": {"high": "High", "medium": "Medium", "low": "Low"},
-        "brand_neutral": "Neutral palette used; send your brand guide (logo, colours) and I’ll rebrand the card.",
-        "brand_screen": "I took the colours from the screenshot; send the official guide and I’ll update the card.",
-        "basis_described": "Rebuilt from your description; the real page may look different.",
-        "basis_representative": "Representative example, not a real site’s screen.",
-    },
-}
-
-LIST_PLACEHOLDERS = {
-    "{{TEST_ITEMS}}": "test_items",
-    "{{KPI_ITEMS}}": "kpi_items",
-    "{{DONT_ITEMS}}": "dont_items",
-}
 SCREEN_PLACEHOLDERS = {
     "{{VARIANT_A_SCREEN}}": "variant_a",
     "{{VARIANT_B_SCREEN}}": "variant_b",
@@ -304,13 +333,6 @@ def warn(msg):
 
 # ---------------------------------------------------------------- input shape
 
-def _pick(scenario, card, key, default=None):
-    """A card field lives in `card` (scenario shape) or at the top level (flat)."""
-    if key in card:
-        return card[key]
-    return scenario.get(key, default)
-
-
 def normalize_difference(value):
     if value in (None, ""):
         return None
@@ -326,134 +348,161 @@ def normalize_difference(value):
         % ("/".join(DIFFERENCES), value))
 
 
-def normalize_role(value):
-    if value in (None, ""):
+DIFF_KEYS = {"change": "change", "add": "add", "move": "move", "remove": "remove"}
+DIFF_KEYS.update(DIFFERENCE_ALIASES)
+
+# card.difference no longer overrides the record's difference: the critic
+# reviewed the record's, and a card drawn as another type (a move drawn as an
+# added or a removed element) shows the user a different test than the one
+# reviewed. The hint says how to draw the record's type.
+DIFF_MSG = {
+    "mismatch": ("card.difference '{card}' differs from the record's difference '{record}': the card would misrepresent "
+                 "the variable the record states and the critic reviewed, so it is refused. The card draws the record's "
+                 "difference: drop card.difference or set it to '{record}'. {hint}",
+                 "card.difference '{card}', kaydın difference değeri '{record}' ile aynı değil: kart, kaydın söylediği ve "
+                 "eleştirmenin incelediği değişkeni yanlış gösterir, bu yüzden reddedilir. Kart kaydın farkını çizer: "
+                 "card.difference alanını kaldırın ya da '{record}' yapın. {hint}"),
+    "move": ("To draw a move: ring the same element in both arms, with identical content and a label that says "
+             "where it is in that arm, at its old place in A and its new place in B. A move below the first view or "
+             "to a pinned bar: both arms split the screen with <div class=\"r-fold\"></div> at the same place; A "
+             "rings the element in the continuation, B rings it in the first view, a pinned element inside "
+             "<div class=\"r-sticky\"></div> before the fold. A move to a later screen: both arms split the screen "
+             "with <div class=\"r-stage-break\"></div> (card.stage_captions names the two stages), B rings the "
+             "element in the second stage.",
+             "Taşıma şöyle çizilir: aynı öğeye iki kolda da aynı içerikle halka çizin, etiket öğenin o koldaki yerini "
+             "söyler; A'da eski yerinde, B'de yeni yerinde. İlk ekranın altına ya da sabit bara taşıma: iki kol da "
+             "ekranı aynı yerde <div class=\"r-fold\"></div> ile böler; A öğeyi devamında, B ilk ekranda halkalar, "
+             "sabit öğe kıvrımdan önce <div class=\"r-sticky\"></div> içinde. Sonraki ekrana taşıma: iki kol da "
+             "ekranı <div class=\"r-stage-break\"></div> ile böler (card.stage_captions iki aşamayı adlandırır), B "
+             "öğeyi ikinci aşamada halkalar."),
+    "add": ("To draw an addition: ring the new element in Variant B only; A has no ring.",
+            "Ekleme şöyle çizilir: halka yalnızca B'deki yeni öğede; A'da halka yok."),
+    "remove": ("To draw a removal: ring the element in Variant A only (labelled); B is genuinely empty in its place.",
+               "Kaldırma şöyle çizilir: halka yalnızca A'daki öğede (etiketli); B'de o alan gerçekten boş."),
+    "change": ("To draw a change: ring the changed element in Variant B (ringing its old state in A is allowed).",
+               "Değiştirme şöyle çizilir: B'de değişen öğeye halka çizin (A'daki eski hâline halka çizmek serbest)."),
+}
+
+
+def _difference_key(value):
+    """change/add/move/remove for a known spelling, else None (never dies)."""
+    if not isinstance(value, str) or not value.strip():
         return None
-    low = str(value).strip().lower()
-    low = ROLE_ALIASES.get(low, low)
-    if low not in KPI_ROLES:
-        die("KPI role must be one of %s, got %r" % ("/".join(KPI_ROLES), value))
-    return low
+    return DIFF_KEYS.get(value.strip().lower())
 
 
-def normalize(scenario):
-    """Fold either input shape into one flat view the renderer works from."""
+def difference_problems(scenario, lang="en"):
+    """card.difference against the record's difference. Returns [] or one problem.
+
+    Shared with validate_scenario_json.py. Silent when either side is missing
+    (then the other one is the card's difference) or not a known spelling
+    (the schema reports that); one problem when both are known and differ.
+    """
+    if not isinstance(scenario, dict) or not isinstance(scenario.get("card"), dict):
+        return []
+    card_value, record_value = scenario["card"].get("difference"), scenario.get("difference")
+    card_diff, record_diff = _difference_key(card_value), _difference_key(record_value)
+    if card_diff is None or record_diff is None or card_diff == record_diff:
+        return []
+    idx = 1 if lang == "tr" else 0
+    return [DIFF_MSG["mismatch"][idx].format(card=card_value, record=record_value, hint=DIFF_MSG[record_diff][idx])]
+
+
+NO_CARD_MSG = ("the record has no `card` object. It can be a valid record as it is (validate_scenario_json.py "
+               "checks it without one), but a card needs card.variant_a and card.variant_b (and a difference, the "
+               "card's or the record's): add `card` at render time",
+               "kayıtta `card` nesnesi yok. Kayıt bu hâliyle geçerli olabilir (validate_scenario_json.py onu kartsız "
+               "da denetler), ama kart için card.variant_a ve card.variant_b (ve kartın ya da kaydın difference "
+               "değeri) gerekir: `card` nesnesini çizim aşamasında ekleyin")
+
+
+def normalize(scenario, msg_lang=None):
+    """The scenario record → the flat view the renderer and the gates work from.
+
+    Only the title and the card fields reach the card; variable,
+    numeric_change and warnings are read by the gates, mockup_basis goes into
+    the manifest, a critical assumption makes the card conditional. The
+    card's difference is the record's: card.difference may repeat it (in any
+    accepted spelling) but never overrides it (difference_problems). `msg_lang`
+    is the language of the messages (default: --lang).
+    """
     if not isinstance(scenario, dict):
         die("scenario must be a JSON object")
-    card = scenario.get("card") if isinstance(scenario.get("card"), dict) else {}
+    card = scenario.get("card")
+    if not isinstance(card, dict):
+        die(_t(*NO_CARD_MSG))
 
-    lang = scenario.get("lang") or card.get("lang") or "tr"
-    if lang not in L10N:
-        die("lang must be one of %s, got %r" % ("/".join(sorted(L10N)), lang))
+    lang = scenario.get("lang") or "tr"
+    if lang not in CARD_LANGS:
+        die("lang must be one of %s, got %r" % ("/".join(CARD_LANGS), lang))
 
     device = card.get("device") or scenario.get("device") or "phone"
     if device == "both":
         die("device 'both' has no single frame to draw: pick phone (native app), "
             "phone-web (mobile browser) or web (desktop browser) for the card, "
-            "and state the audience in the setup spec")
+            "and state the audience in the setup notes")
     if device not in DEVICES:
         die("device must be one of %s, got %r" % ("/".join(DEVICES), device))
 
-    if isinstance(scenario.get("kpis"), list):
-        kpi_items = []
-        for k in scenario["kpis"]:
-            if not isinstance(k, dict):
-                die("each kpis[] entry must be an object with name and role")
-            kpi_items.append({"label": k.get("name", ""), "text": k.get("question", ""),
-                              "role": k.get("role")})
-    else:
-        kpi_items = scenario.get("kpi_items", [])
-
-    desc = scenario["desc"] if "desc" in scenario else scenario.get("rationale", "")
-
-    evidence = scenario.get("evidence")
-    if isinstance(evidence, dict):
-        evidence = evidence.get("level")
-
-    basis = _pick(scenario, card, "mockup_basis")
+    basis = card.get("mockup_basis")
     if basis is None and isinstance(scenario.get("variants"), list):
         current = any(isinstance(v, dict) and v.get("is_current") for v in scenario["variants"])
         basis = "shared_page" if current else "representative"
     if basis is not None and basis not in MOCKUP_BASES:
         die("mockup_basis must be one of %s, got %r" % ("/".join(MOCKUP_BASES), basis))
 
-    note_pos = _pick(scenario, card, "note_pos") or "above"
+    note_pos = card.get("note_pos") or "above"
     if note_pos not in NOTE_POSITIONS:
         die("note_pos must be 'above' or 'below', got %r" % note_pos)
 
-    has_note_key = "brand_note" in card or "brand_note" in scenario
+    phone_scale = card.get("phone_scale", 1.2)
+    if isinstance(phone_scale, bool) or phone_scale not in PHONE_SCALES:
+        die("card.phone_scale must be 1, 1.2 (default) or 1.4, got %r" % (phone_scale,))
+    if phone_scale != 1.2 and device not in ("phone", "phone-web"):
+        die("card.phone_scale applies to a phone frame (device phone or phone-web), not %r" % device)
+
+    mismatch = difference_problems(scenario, msg_lang or _MSG_LANG)
+    if mismatch:
+        die(mismatch[0])
+    difference = card.get("difference")
+    if difference in (None, ""):
+        difference = scenario.get("difference")
     return {
         "lang": lang,
         "device": device,
         "title": scenario.get("title", ""),
-        "desc": desc,
-        "test_items": scenario.get("test_items", []),
-        "kpi_items": kpi_items,
-        "dont_items": scenario.get("dont_items", []),
-        "variant_a": _pick(scenario, card, "variant_a", ""),
-        "variant_b": _pick(scenario, card, "variant_b", ""),
-        "url": _pick(scenario, card, "url", "") or "",
-        "bottom_nav": _pick(scenario, card, "bottom_nav"),
-        "bottom_nav_active": _pick(scenario, card, "bottom_nav_active"),
+        "variant_a": card.get("variant_a", ""),
+        "variant_b": card.get("variant_b", ""),
+        "url": card.get("url", "") or "",
+        "bottom_nav": card.get("bottom_nav"),
+        "bottom_nav_active": card.get("bottom_nav_active"),
         "variable": scenario.get("variable"),
-        "difference": normalize_difference(_pick(scenario, card, "difference")),
-        "shift_note_a": _pick(scenario, card, "shift_note_a"),
-        "shift_note_b": _pick(scenario, card, "shift_note_b"),
-        "brand": _pick(scenario, card, "brand"),
-        "brand_note": _pick(scenario, card, "brand_note"),
-        "has_brand_note": has_note_key,
+        "difference": normalize_difference(difference),
+        "brand": card.get("brand"),
         "mockup_basis": basis,
         "note_pos": note_pos,
-        "footer_notes": _pick(scenario, card, "footer_notes") or [],
-        "source": scenario.get("source"),
-        "adapted_from": scenario.get("adapted_from"),
-        "evidence": evidence,
-        "objection": scenario.get("objection"),
-        "ice": scenario.get("ice"),
+        "phone_scale": PHONE_SCALE_ATTR[phone_scale],
+        # Layout fields (layout_field_problems checks them, apply_layout draws them).
+        "stage_captions": card.get("stage_captions"),
+        "mobile_toolbar": card.get("mobile_toolbar", False),
+        # Variant B's description: read by the pinned-element heuristic, never drawn.
+        "change_text": variant_description(scenario, "B"),
+        # Read by the mechanical gates (mockup_report), never drawn.
+        "numeric_change": scenario.get("numeric_change"),
+        "warnings": scenario.get("warnings") if isinstance(scenario.get("warnings"), list) else [],
+        "kpi_names": [k.get("name") for k in (scenario.get("primary_kpi"), scenario.get("guardrail"))
+                      if isinstance(k, dict) and isinstance(k.get("name"), str) and k.get("name").strip()],
+        # Never drawn as text: a count > 0 adds the conditional ribbon and meta (conditional_html).
+        "critical_assumptions": len(critical_assumptions(scenario)),
     }
 
 
-# ------------------------------------------------------------------ the boxes
-
-def render_item(item, lang="tr"):
-    """One <li>. Accepts a plain string, or {"label": ..., "text": ..., "role": ...}.
-
-    Escaping happens before the <b> wrapper is added, never after: a label of
-    '<script>' must render as visible text, not as a tag. SKILL.md states this
-    order in prose; this function is where it is actually guaranteed.
-
-    A label is always followed by a colon (added when the label lacks one) so the
-    archive's "Label: question?" format survives whatever the input wrote. A
-    `role` (KPI items) renders as a pill before the label.
-    """
-    if isinstance(item, str):
-        return "<li>%s</li>" % escape(item)
-    if not isinstance(item, dict):
-        # A None, a number or a nested list used to be printed as its Python
-        # repr ("None", "['x']") inside the delivered card.
-        die(_t("box items must be a string or {label, text}, got %r",
-               "kutu maddeleri metin ya da {label, text} olmalı, gelen %r") % (item,))
-    label = str(item.get("label", "") or "").strip()
-    text = str(item.get("text", "") or "").strip()
-    role = normalize_role(item.get("role"))
-    pill = ""
-    if role:
-        pill = '<span class="role role-%s">%s</span> ' % (role, escape(L10N[lang]["role"][role]))
-    if label:
-        shown = escape(label)
-        if not label.endswith((":", "?", "：", "!")):
-            shown += ":"
-        body = "<b>%s</b>" % shown
-        if text:
-            body += " " + escape(text)
-        return "<li>%s%s</li>" % (pill, body)
-    return "<li>%s%s</li>" % (pill, escape(text))
-
-
-def render_list(items, indent="        ", lang="tr"):
-    if not items:
-        return ""
-    return ("\n" + indent).join(render_item(i, lang) for i in items)
+def variant_description(scenario, vid):
+    """The description of variant `vid` in the record's `variants`, or None."""
+    for v in scenario.get("variants") or ():
+        if isinstance(v, dict) and v.get("id") == vid and isinstance(v.get("description"), str):
+            return v["description"]
+    return None
 
 
 # ------------------------------------------------------------- device frames
@@ -482,7 +531,7 @@ def to_browser_skeleton(text):
             '          <span class="browser-dot"></span>'
             '<span class="browser-dot"></span>'
             '<span class="browser-dot"></span>\n'
-            '          <span class="browser-url">{{URL}}</span>\n'
+            '          <span class="browser-url"><span class="lock"></span>{{URL}}</span>\n'
             "        </div>\n"
             '        <div class="browser-screen">%s</div>\n'
             "      </div>" % m.group(1)
@@ -595,6 +644,123 @@ def apply_mobile_address_bar(text):
     return out
 
 
+def apply_frame(text, device, bottom_nav=False):
+    """The template's phone skeleton turned into the card's device frame.
+
+    The frame helpers leave their user text as placeholders ({{URL}},
+    {{DOMAIN}}, {{BOTTOM_NAV}}) for build()'s single substitution pass; the
+    drift check (fixed_lines) applies the same transformation, so the frame's
+    skeleton is checked line by line like the rest of the template.
+    """
+    if device == "web":
+        return to_browser_skeleton(text)
+    if device == "phone-web":
+        return apply_mobile_address_bar(text)
+    return apply_bottom_nav(text, bottom_nav)
+
+
+# ------------------------------------------------------------- layout (S1, S2)
+#
+# What the screens' layout markers and the layout fields ask of the frame,
+# applied to the frame skeleton BEFORE the single substitution pass (like
+# apply_frame), so fixed_lines() can apply the same transformation and the drift
+# check still covers every fixed line. A card without markers or fields gets
+# its frame unchanged.
+
+PHONE_BLOCK_RE = re.compile(r'(?ms)^([ \t]*)<div class="phone">\n.*?\{\{VARIANT_([AB])_SCREEN\}\}.*?^\1</div>\n')
+SCREEN_CLOSE_RE = re.compile(r"(\{\{VARIANT_[AB]_SCREEN\}\}\n([ \t]*)</div>\n)")
+TOOLBAR_HTML = ('<div class="m-toolbar"><div class="mt-row"><span class="mt-back"></span><span class="mt-fwd"></span>'
+                '<span class="mt-share"></span><span class="mt-tabs"></span></div><div class="m-home"><span></span></div></div>')
+STAGE_PLACEHOLDERS = ("SCREEN", "STAGE_TWO")
+STAGE_CAPTIONS = ("{{STAGE_CAP_ONE}}", "{{STAGE_CAP_TWO}}")
+
+
+def layout_of(view):
+    """The layout a built card draws: {"fold", "sticky", "stages", "toolbar"}
+    (stages: 1 = one screen). Read from the screens' markers and the fields."""
+    fold = sticky = breaks = 0
+    for key in ("variant_a", "variant_b"):
+        f, b, st = layout_markers(view.get(key) or "")
+        fold, breaks, sticky = max(fold, f), max(breaks, b), max(sticky, st)
+    return {"fold": bool(fold), "sticky": bool(sticky), "stages": breaks + 1,
+            "toolbar": view.get("device") == "phone-web" and view.get("mobile_toolbar") is True}
+
+
+def apply_layout(text, layout=None):
+    """The frame skeleton with the layout's pieces: the browser toolbar inside
+    each phone, the pinned bar's padding on each screen, the continuation sheet
+    after each phone ({{VARIANT_X_BELOW}}), or each phone repeated per stage
+    ({{VARIANT_X_STAGE_TWO}}, captions {{STAGE_CAP_...}}). No layout: unchanged."""
+    if not layout or not (layout.get("fold") or layout.get("sticky") or layout.get("toolbar")
+                          or layout.get("stages", 1) > 1):
+        return text
+
+    def block(m):
+        indent, arm, body = m.group(1), m.group(2), m.group(0)
+        if layout.get("toolbar"):
+            body = SCREEN_CLOSE_RE.sub(lambda s: "%s%s%s\n" % (s.group(1), s.group(2), TOOLBAR_HTML), body, count=1)
+        if layout.get("sticky"):
+            body = body.replace('<div class="screen">', '<div class="screen has-sticky">', 1)
+        if layout.get("fold"):
+            body += "%s{{VARIANT_%s_BELOW}}\n" % (indent, arm)
+        stages = layout.get("stages", 1)
+        if stages > 1:
+            cols = []
+            for k in range(stages):
+                phone = body.replace("{{VARIANT_%s_SCREEN}}" % arm, "{{VARIANT_%s_%s}}" % (arm, STAGE_PLACEHOLDERS[k]))
+                cols.append('%s<div class="stage-col"><div class="stage-cap">%s</div>\n%s%s</div>\n'
+                            % (indent, STAGE_CAPTIONS[k], phone, indent))
+            arrow = '%s<span class="stage-arrow" aria-hidden="true">→</span>\n' % indent
+            body = '%s<div class="stages">\n%s%s</div>\n' % (indent, arrow.join(cols), indent)
+        return body
+
+    out, n = PHONE_BLOCK_RE.subn(block, text)
+    if n != 2:
+        die("template does not expose two .phone blocks for the card's layout (found %d)" % n)
+    return out
+
+
+def layout_values(view, layout):
+    """The placeholders apply_layout() leaves, and the two screens split at
+    their markers: {placeholder: value}. The markup halves go in raw (the
+    allowlist already passed the whole screen); captions are escaped."""
+    values = {}
+    for arm, key in (("A", "variant_a"), ("B", "variant_b")):
+        markup = view[key]
+        if layout.get("fold"):
+            first, rest = markup.split(FOLD_TAG, 1)
+            values["{{VARIANT_%s_SCREEN}}" % arm] = first
+            values["{{VARIANT_%s_BELOW}}" % arm] = (
+                '<div class="below"><div class="below-cap">%s</div><div class="below-screen">%s</div></div>'
+                % (escape(BELOW_CAPTION.get(view["lang"], BELOW_CAPTION["en"])), rest))
+        elif layout.get("stages", 1) > 1:
+            parts = markup.split(BREAK_TAG)
+            for k, part in enumerate(parts):
+                values["{{VARIANT_%s_%s}}" % (arm, STAGE_PLACEHOLDERS[k])] = part
+    if layout.get("stages", 1) > 1:
+        for k, caption in enumerate(view.get("stage_captions") or []):
+            values[STAGE_CAPTIONS[k]] = escape(caption)
+    return values
+
+
+def frame_values(view):
+    """The escaped values of the placeholders apply_frame() leaves."""
+    device = view["device"]
+    if device == "web":
+        return {"{{URL}}": escape(view["url"])}
+    if device == "phone-web":
+        return {"{{DOMAIN}}": escape(domain_of(view["url"]))}
+    labels = bottom_nav_labels(view["bottom_nav"])
+    if not labels:
+        return {}
+    return {"{{BOTTOM_NAV}}": bottom_nav_html(labels, view["bottom_nav_active"])}
+
+
+def has_bottom_nav(view):
+    """A tab bar is drawn: a native phone frame whose record names its tabs."""
+    return view["device"] == "phone" and bool(bottom_nav_labels(view["bottom_nav"]))
+
+
 # ------------------------------------------------- parsing the mockup markup
 
 MARKUP_MSG = {
@@ -647,6 +813,28 @@ def _mm(key, lang, **kw):
     return (tr if lang == "tr" else en).format(**kw)
 
 
+# The soft ring and the layout markers (CONTRACT 7, S1-S3). A layout marker is
+# a bare <div> at the top level of a screen; the builder splits the screen's
+# markup at its exact spelling, so the marker itself is never drawn.
+SOFT_CLASS = "hl-soft"
+RING_CLASSES = ("hl", SOFT_CLASS)
+MAX_SOFT = 2
+FOLD_CLASS, STICKY_CLASS, BREAK_CLASS = "r-fold", "r-sticky", "r-stage-break"
+FOLD_TAG = '<div class="r-fold"></div>'
+BREAK_TAG = '<div class="r-stage-break"></div>'
+MARKER_TAGS = {FOLD_CLASS: FOLD_TAG, BREAK_CLASS: BREAK_TAG}
+# Two stages fit a 728px column side by side at the stage phones' zoom with text
+# of at least 12px; a third would not.
+MAX_STAGES = 2
+LAYOUT_DEVICES = ("phone", "phone-web")
+BELOW_CAPTION = {"tr": "Kaydırınca görünen kısım", "en": "Below the first screen"}
+# A move whose B side is described as pinned must draw the pinned bar
+# (.r-sticky), not an element in the page flow. Turkish stems match as word
+# starts (sabitlenmiş, yapışkan bar), the English words as whole words.
+PINNED_STEMS = ("sabit", "sabitlen", "yapışkan")
+PINNED_WORDS = ("sticky", "pinned", "fixed")
+
+
 class Node:
     """One element of a parsed mockup body."""
 
@@ -661,6 +849,11 @@ class Node:
     def is_ring(self):
         return "hl" in self.classes
 
+    @property
+    def is_soft(self):
+        """A soft ring (.hl-soft): a linked consequence of the variable, not the variable."""
+        return SOFT_CLASS in self.classes
+
     def key(self, ring_blind=False):
         """Structural identity. ring_blind drops the ring's own class and label
         so a ringed element compares equal to its un-ringed twin."""
@@ -668,7 +861,7 @@ class Node:
         if ring_blind:
             attrs.pop("data-note", None)
             attrs.pop("data-pos", None)
-            attrs["class"] = " ".join(c for c in self.classes if c != "hl")
+            attrs["class"] = " ".join(c for c in self.classes if c not in RING_CLASSES)
             if not attrs["class"]:
                 del attrs["class"]
         return (self.tag, tuple(sorted(attrs.items())),
@@ -885,8 +1078,6 @@ RING_MSG = {
                  "fark 'kaldır': A'daki öğeye halka çizin (A'da .hl yok)"),
     "remove_b": ("difference 'remove': Variant B leaves that area genuinely empty, so B carries no ring (found {b} .hl in B)",
                  "fark 'kaldır': B'de o alan gerçekten boş kalır, B'de halka olmaz (B'de {b} .hl var)"),
-    "remove_note": ("difference 'remove': shift_note_b is required (one line under B saying the content below moved up)",
-                    "fark 'kaldır': shift_note_b zorunlu (B'nin altında, alttaki içeriğin yukarı kaydığını söyleyen tek satır)"),
     "move": ("difference 'move': ring the element in both variants (found {a} in A, {b} in B)",
              "fark 'taşı': öğeye iki varyantta da halka çizin (A'da {a}, B'de {b} var)"),
     "change": ("difference 'change': ring the changed element in Variant B (found no .hl in B)",
@@ -894,7 +1085,7 @@ RING_MSG = {
 }
 
 
-def _ring_placement(difference, a, b, shift_note_b, lang):
+def _ring_placement(difference, a, b, lang):
     keys = []
     if difference == "add":
         if b < 1:
@@ -906,8 +1097,6 @@ def _ring_placement(difference, a, b, shift_note_b, lang):
             keys.append("remove_a")
         if b:
             keys.append("remove_b")
-        if not (shift_note_b and str(shift_note_b).strip()):
-            keys.append("remove_note")
     elif difference == "move":
         if a < 1 or b < 1:
             keys.append("move")
@@ -918,12 +1107,12 @@ def _ring_placement(difference, a, b, shift_note_b, lang):
     return [RING_MSG[k][idx].format(a=a, b=b) for k in keys]
 
 
-def ring_problems(difference, variant_a, variant_b, shift_note_b=None, lang="en"):
+def ring_problems(difference, variant_a, variant_b, lang="en"):
     """Where the ring must sit for each kind of difference (mockup-style.md).
 
     add    → the new element exists only in B, so only B can carry a ring
-    remove → the element exists only in A; B is genuinely empty there, and a
-             shift note under B says the content below moved up
+    remove → the element exists only in A, ringed and labelled there; B is
+             genuinely empty in its place
     move   → the same element in two places: ringed in both
     change → ringed in B (ringing the old state in A too is allowed)
 
@@ -933,12 +1122,12 @@ def ring_problems(difference, variant_a, variant_b, shift_note_b=None, lang="en"
     """
     if not difference:
         return []
-    return _ring_placement(difference, hl_count(variant_a), hl_count(variant_b), shift_note_b, lang)
+    return _ring_placement(difference, hl_count(variant_a), hl_count(variant_b), lang)
 
 
 CARD_MSG = {
-    "ring_label": ("ring in {v} has no data-note label (two or three words saying what changed)",
-                   "{v} varyantındaki halkanın data-note etiketi yok (neyin değiştiğini söyleyen iki üç kelime)"),
+    "ring_label": ("ring in {v} has no data-note label (two to four words saying what changed)",
+                   "{v} varyantındaki halkanın data-note etiketi yok (neyin değiştiğini söyleyen iki ila dört kelime)"),
     "ring_box": ("ring in {v} carries inline {prop}: a ring must not push content; give the spacing to the "
                  "children, and if the label collides use data-pos=\"below\" or card.note_pos",
                  "{v} varyantındaki halka satır içi {prop} taşıyor: halka içeriği itmemeli; boşluğu çocuk öğelere "
@@ -951,24 +1140,35 @@ CARD_MSG = {
                    "(mockup-style.md); put it on the element inside",
                    "{v} varyantındaki halka satır içi {prop} taşıyor: halka sarmalayıcısı kendi biçimini eklemez "
                    "(mockup-style.md); içteki öğeye yazın"),
-    "label_long": ("ring label in {v} is {n} words (“{note}”); keep it to two or three",
-                   "{v} varyantındaki halka etiketi {n} kelime (“{note}”); iki üç kelimede tutun"),
+    "label_long": ("ring label in {v} is {n} words (“{note}”); keep it to two to four",
+                   "{v} varyantındaki halka etiketi {n} kelime (“{note}”); iki ila dört kelimede tutun"),
+    "label_case": ("ring label in {v} starts with a lowercase letter (“{note}”); a Turkish label starts with a "
+                   "capital letter",
+                   "{v} varyantındaki halka etiketi küçük harfle başlıyor (“{note}”); Türkçe etiket büyük harfle "
+                   "başlar"),
     "multi_ring": ("{n} rings in {v}: one change applied to {n} elements gets one ring around the group; "
                    "{n} rings read as {n} variables",
                    "{v} varyantında {n} halka var: {n} öğeye uygulanan tek değişiklik grubun etrafında tek halka alır; "
                    "{n} halka {n} değişken gibi okunur"),
-    "move_diff": ("difference 'move': the ringed element differs between A and B; only its position may change "
-                  "(same content, same label)",
-                  "fark 'taşı': halkalı öğe A ile B arasında farklı; yalnızca yeri değişebilir "
-                  "(aynı içerik, aynı etiket)"),
+    "move_content": ("difference 'move': the ringed element's content differs between A and B ({what}); only its "
+                     "position may change, a changed copy, size or style is a second variable",
+                     "fark 'taşı': halkalı öğenin içeriği A ile B arasında farklı ({what}); yalnızca yeri "
+                     "değişebilir, değişen metin, boyut ya da biçim ikinci bir değişkendir"),
     "outside": ("A and B differ outside any ring ({where}: {na} node(s) in A, {nb} in B), e.g. {what}; a second "
-                "variable, or a linked consequence the ring label or a shift note must name",
+                "variable is refused, and a linked consequence of the variable belongs inside the ring (one ring "
+                "around the group, its label naming the consequence)",
                 "A ile B halkanın dışında da farklı ({where}: A'da {na}, B'de {nb} düğüm), ör. {what}; ikinci bir "
-                "değişken ya da halka etiketinin veya kayma notunun adını koyması gereken bağlı bir sonuç"),
-    "colour_b": ("inline colour only in Variant B: {vals}; a colour that exists only in B is a second variable "
-                 "unless colour is what the test changes",
-                 "yalnızca B varyantında geçen satır içi renk: {vals}; yalnızca B'de olan renk, test rengi "
-                 "değiştirmiyorsa ikinci bir değişkendir"),
+                "değişken reddedilir, değişkenin bağlı bir sonucu halkanın içine alınır (grubun etrafında tek halka, "
+                "etiketi sonucu adlandırır)"),
+    "colour_b": ("inline colour only in Variant B, inside the ring: {vals}; a colour that exists only in B is a "
+                 "second variable unless colour is what the test changes (the manifest lists it for the reviewer)",
+                 "yalnızca B varyantında, halkanın içinde geçen satır içi renk: {vals}; yalnızca B'de olan renk, "
+                 "test rengi değiştirmiyorsa ikinci bir değişkendir (manifest gözden geçiren için listeler)"),
+    "colour_b_outside": ("inline colour only in Variant B on an element outside the ring: {vals}; a colour change "
+                         "outside the ring is a second variable, whatever the test changes",
+                         "yalnızca B varyantında, halkanın dışındaki bir öğede geçen satır içi renk: {vals}; "
+                         "halkanın dışındaki renk değişikliği, test neyi değiştirirse değiştirsin ikinci bir "
+                         "değişkendir"),
 }
 
 RING_PUSH_RE = re.compile(r"(?:^|;)\s*(margin|padding)(?:-[a-z-]+)?\s*:", re.IGNORECASE)
@@ -1029,56 +1229,533 @@ def inline_colours(root):
 def _describe(k):
     if isinstance(k, str):
         return "“%s”" % k[:50]
-    return ("<%s %s>" % (k.tag, " ".join('%s="%s"' % kv for kv in sorted(k.attrs.items()))))[:110]
+    tag = ("<%s %s>" % (k.tag, " ".join('%s="%s"' % kv for kv in sorted(k.attrs.items()))))[:110]
+    text = _node_text(k)
+    return "%s “%s”" % (tag, text[:50]) if text else tag
+
+
+# ------------------------------------------------------- the A/B diff
+#
+# The two mockups are aligned level by level. Un-ringed nodes are aligned
+# first and become anchors; what lies between two anchors is a "span" on each
+# side. A span may differ only where a ring explains it:
+#
+#   * rings only (on either side or both): an element added, removed or moved
+#   * loose nodes on one side against ring(s) on the other, and no ring on the
+#     loose side: the element's old state in A against its ringed state in B
+#     (or the other way round)
+#   * one un-ringed node against one un-ringed node with the same tag and
+#     attributes: the difference is deeper, the walk goes into it
+#
+# Anything else is a difference outside the rings and refuses the card. A ring
+# region that passes becomes material for the manifest (what changed inside it).
+#
+# One structural wrapper counts as part of its ring: an added (or removed)
+# modal is drawn as <div class="r-overlay"><div class="r-modal hl" …>…</div>
+# </div> (mockup-style.md: the ring goes around .r-modal, the dimming is its
+# linked consequence). An .r-overlay whose only content is that one ring is
+# treated as ringed; an overlay with anything else in it (text, a second
+# element, a ring that isn't the modal) stays an ordinary node, so nothing else
+# that differs outside the rings gets through.
+# The pinned bar is the second one: <div class="r-sticky"> whose only child is
+# one ring stands for that ring, so a bar that exists only in B around the
+# moved element is the move itself, not a difference outside the ring. A bar
+# with anything else in it stays an ordinary node.
+# A soft ring (.hl-soft) covers what differs inside it like a ring does (the
+# variable's linked consequence, listed as "linked" in the manifest), but it
+# never counts for the ring placement rules and never stands for the variable.
+# Aligning the loose nodes first matters for 'move': a ringed element that
+# trades places with its neighbour must not steal the neighbour's match.
+
+def _overlay_ring(node):
+    """The ring an .r-overlay only wraps, else None.
+
+    The overlay qualifies when it isn't a ring itself and its whole content is
+    one ring around .r-modal: the modal ringed itself (class "r-modal hl") or a
+    bare ring wrapper whose only content is the modal."""
+    if not isinstance(node, Node) or node.is_ring or "r-overlay" not in node.classes or len(node.kids) != 1:
+        return None
+    ring = node.kids[0]
+    if not isinstance(ring, Node) or not ring.is_ring:
+        return None
+    if "r-modal" in ring.classes:
+        return ring
+    if (ring.classes == ["hl"] and len(ring.kids) == 1 and isinstance(ring.kids[0], Node)
+            and "r-modal" in ring.kids[0].classes):
+        return ring
+    return None
+
+
+def _sticky_ring(node):
+    """The ring an .r-sticky bar only wraps, else None: the bar isn't a ring
+    itself, carries nothing but class="r-sticky", and its whole content is one
+    ring (.hl)."""
+    if (not isinstance(node, Node) or node.is_ring or node.tag != "div"
+            or node.attrs != {"class": STICKY_CLASS}):
+        return None
+    kids = _solid_kids(node)
+    if len(kids) == 1 and isinstance(kids[0], Node) and kids[0].is_ring:
+        return kids[0]
+    return None
+
+
+def _ring_node(k):
+    """The ring node that stands for k: k itself, or the ring an overlay or a
+    pinned bar wraps."""
+    if isinstance(k, Node) and k.is_ring:
+        return k
+    return _overlay_ring(k) or _sticky_ring(k)
+
+
+def _mark_node(k):
+    """The ring or soft ring that stands for k, else None."""
+    ring = _ring_node(k)
+    if ring is None and isinstance(k, Node) and k.is_soft:
+        return k
+    return ring
+
+
+def _ringed(k):
+    return _mark_node(k) is not None
+
+
+def _soft_only(nodes):
+    """Every marked node in `nodes` is a soft ring (and there is one)."""
+    marks = [_mark_node(n) for n in nodes]
+    marks = [m for m in marks if m is not None]
+    return bool(marks) and all(m.is_soft and not m.is_ring for m in marks)
+
+
+def _rkey(k):
+    return k.key(True) if isinstance(k, Node) else k
+
+
+def _same_shell(x, y):
+    return isinstance(x, Node) and isinstance(y, Node) and x.tag == y.tag and x.attrs == y.attrs
+
+
+def _span(sa, sb, path, start, regions, outside):
+    if not sa and not sb:
+        return
+    if all(_ringed(k) for k in sa + sb):
+        regions.append((list(sa), list(sb)))
+        return
+    sm = difflib.SequenceMatcher(None, [_rkey(k) for k in sa], [_rkey(k) for k in sb], autojunk=False)
+    for op, i1, i2, j1, j2 in sm.get_opcodes():
+        ma, mb = sa[i1:i2], sb[j1:j2]
+        if op == "equal":
+            if any(_ringed(k) for k in ma + mb):
+                regions.append((list(ma), list(mb)))  # a ring around content that is the same in A and B
+            continue
+        rings_a = [k for k in ma if _ringed(k)]
+        rings_b = [k for k in mb if _ringed(k)]
+        loose_a = [k for k in ma if not _ringed(k)]
+        loose_b = [k for k in mb if not _ringed(k)]
+        if len(loose_a) == 1 and len(loose_b) == 1 and _same_shell(loose_a[0], loose_b[0]):
+            _compare(loose_a[0], loose_b[0], "%s > %s[%d]" % (path, loose_a[0].tag, start + i1), regions, outside)
+            if rings_a or rings_b:
+                regions.append((rings_a, rings_b))
+            continue
+        covered_a = not loose_a or (rings_b and not loose_b and not rings_a)
+        covered_b = not loose_b or (rings_a and not loose_a and not rings_b)
+        if covered_a and covered_b:
+            regions.append((list(ma), list(mb)))
+            continue
+        if _has_soft(ma + mb) and _soft_span(loose_a, loose_b, rings_a, rings_b, path, start + i1, regions, outside):
+            continue
+        loose = [k for k in (loose_b if not covered_b else []) + (loose_a if not covered_a else [])]
+        outside.append(("%s, child %d" % (path, start + i1), len(ma), len(mb), _describe(loose[0])))
+
+
+def _has_soft(nodes):
+    """A soft ring among `nodes` or anywhere inside them."""
+    return any(isinstance(k, Node) and (k.is_soft or any(n.is_soft for n in _walk(k))) for k in nodes)
+
+
+def _shell(k):
+    return (k.tag, tuple(sorted(k.attrs.items()))) if isinstance(k, Node) else ("#text", k)
+
+
+def _soft_span(loose_a, loose_b, rings_a, rings_b, path, start, regions, outside):
+    """A stretch the plain rules refuse, when a soft ring is in it: the variable
+    (a ring) next to an element whose linked consequence sits deeper (a soft
+    ring inside a card both arms draw). Un-ringed nodes with the same shell on
+    both sides are paired and compared inside (strictly, as everywhere); what
+    is left must be covered by the rings exactly as above. Only cards that use
+    .hl-soft reach this; every other card's diff is unchanged. True when the
+    stretch is explained (its regions and inner differences recorded)."""
+    sm = difflib.SequenceMatcher(None, [_shell(k) for k in loose_a], [_shell(k) for k in loose_b], autojunk=False)
+    pairs = []
+    for i, j, n in sm.get_matching_blocks():
+        pairs.extend((loose_a[i + t], loose_b[j + t]) for t in range(n))
+    if not pairs:
+        return False
+    paired = {id(x) for pair in pairs for x in pair}
+    rest_a = [k for k in loose_a if id(k) not in paired]
+    rest_b = [k for k in loose_b if id(k) not in paired]
+    covered_a = not rest_a or (rings_b and not rest_b and not rings_a)
+    covered_b = not rest_b or (rings_a and not rest_a and not rings_b)
+    if not (covered_a and covered_b):
+        return False
+    for x, y in pairs:
+        _compare(x, y, "%s > %s[%d]" % (path, x.tag, start), regions, outside)
+    if rest_a or rest_b or rings_a or rings_b:
+        regions.append((rest_a + rings_a, rest_b + rings_b))
+    return True
+
+
+def _compare(a, b, path="screen", regions=None, outside=None):
+    """Align two parsed mockups (or two nodes with the same shell).
+
+    Returns (regions, outside): `regions` are the ring regions as (A nodes,
+    B nodes), the material of the manifest; `outside` the differences no ring
+    explains, as (where, nodes in A, nodes in B, example).
+    """
+    regions = [] if regions is None else regions
+    outside = [] if outside is None else outside
+    ka, kb = a.kids, b.kids
+    la = [i for i, k in enumerate(ka) if not _ringed(k)]
+    lb = [j for j, k in enumerate(kb) if not _ringed(k)]
+    sm = difflib.SequenceMatcher(None, [_rkey(ka[i]) for i in la], [_rkey(kb[j]) for j in lb], autojunk=False)
+    anchors = []
+    for i, j, n in sm.get_matching_blocks():
+        anchors.extend((la[i + t], lb[j + t]) for t in range(n))
+    anchors.append((len(ka), len(kb)))
+    pa = pb = -1
+    for ai, bj in anchors:
+        _span(ka[pa + 1:ai], kb[pb + 1:bj], path, pa + 1, regions, outside)
+        pa, pb = ai, bj
+    return regions, outside
 
 
 def _outside_ring_diff(a, b, path="screen"):
-    """Differences between two parsed mockups that no ring covers.
-
-    The children of A and B are aligned on ring-blind structural keys; a region
-    that differs must consist of ringed nodes (the tested element), or be a
-    like-for-like pair that can be looked into. Anything else is reported.
-    Returns [(where, nodes in A, nodes in B, example)].
-    """
-    def ringed(k):
-        return isinstance(k, Node) and k.is_ring
-
-    def key(k):
-        return k.key(True) if isinstance(k, Node) else k
-
-    ka, kb = a.kids, b.kids
-    found = []
-    sm = difflib.SequenceMatcher(None, [key(k) for k in ka], [key(k) for k in kb], autojunk=False)
-    for op, i1, i2, j1, j2 in sm.get_opcodes():
-        if op == "equal":
-            continue
-        ma, mb = ka[i1:i2], kb[j1:j2]
-        if all(ringed(k) for k in ma + mb):
-            continue  # ring against ring, or a ring that exists on one side only (add, remove, move)
-        if len(ma) == 1 and len(mb) == 1 and (ringed(ma[0]) or ringed(mb[0])):
-            continue  # the element in A against its ringed state in B
-        if (len(ma) == 1 and len(mb) == 1 and isinstance(ma[0], Node) and isinstance(mb[0], Node)
-                and ma[0].tag == mb[0].tag and ma[0].attrs == mb[0].attrs):
-            found += _outside_ring_diff(ma[0], mb[0], "%s > %s[%d]" % (path, ma[0].tag, i1))
-            continue
-        loose = [k for k in mb + ma if not ringed(k)]
-        found.append(("%s, child %d" % (path, i1), len(ma), len(mb), _describe(loose[0])))
-    return found
+    """Differences between two parsed mockups that no ring covers."""
+    return _compare(a, b, path)[1]
 
 
-def card_problems(difference, variant_a, variant_b, shift_note_b=None, lang="en",
-                  variable=None, classes=None):
-    """Everything that can be read off the two mockup bodies.
+def _is_wrapper_ring(node):
+    """A ring that only wraps (class "hl" and nothing else of its own)."""
+    return isinstance(node, Node) and node.is_ring and node.classes == ["hl"]
+
+
+def _solid_kids(node):
+    return [k for k in node.kids if not (isinstance(k, str) and not k.strip())]
+
+
+def _ring_content_key(node):
+    """What a moved element is, wrapper or not: its ring-blind content. A
+    pinned bar around the ring (.r-sticky) is looked through: the bar is the
+    pinned state's own drawing, the element inside it is what moved."""
+    node = _sticky_ring(node) or node
+    if _is_wrapper_ring(node):
+        return tuple(_rkey(k) for k in node.kids)
+    return (_rkey(node),)
+
+
+def _in_ring(node):
+    while node is not None:
+        if isinstance(node, Node) and (node.is_ring or node.is_soft):
+            return True
+        node = node.parent
+    return False
+
+
+# ------------------------------------------------- layout markers and soft rings
+
+LAYOUT_MSG = {
+    "marker_bare": ("{v}: write the {what} exactly as {tag} (a bare marker: no other class, attribute, spacing or "
+                    "content)",
+                    "{v}: {what} tam olarak {tag} biçiminde yazılır (yalın işaret: başka sınıf, nitelik, boşluk ya da "
+                    "içerik yok)"),
+    "marker_top": ("{v}: .{cls} must be a direct child of the screen, not inside another element or a ring",
+                   "{v}: .{cls} doğrudan ekranın çocuğu olmalı, başka bir öğenin ya da halkanın içinde değil"),
+    "marker_many": ("{v}: {n} .{cls} in one screen; at most {most}",
+                    "{v}: bir ekranda {n} .{cls} var; en fazla {most}"),
+    "fold_one_arm": ("only Variant {has} has a .r-fold: the fold is drawn in both arms or in neither (both show a first "
+                     "view and its continuation, split at the same place)",
+                     "yalnızca {has} varyantında .r-fold var: kıvrım iki kolda da çizilir ya da hiçbirinde (ikisi de "
+                     "ilk ekranı ve devamını aynı yerden bölünmüş gösterir)"),
+    "fold_empty": ("{v}: nothing {side} the .r-fold; the first view and the continuation both show content",
+                   "{v}: .r-fold {side_tr} hiçbir şey yok; ilk ekran da devamı da içerik gösterir"),
+    "breaks": ("Variant A has {a} .r-stage-break, Variant B {b}: both arms show the same number of stages",
+               "A varyantında {a}, B varyantında {b} .r-stage-break var: iki kol da aynı sayıda aşama gösterir"),
+    "stage_empty": ("{v}: stage {n} is empty; every stage shows its screen",
+                    "{v}: {n}. aşama boş; her aşama kendi ekranını gösterir"),
+    "fold_stages": ("{v}: .r-fold and .r-stage-break don't mix: a screen either continues below its first view or is "
+                    "split into stages",
+                    "{v}: .r-fold ile .r-stage-break birlikte kullanılmaz: ekran ya ilk görünümün altında devam eder "
+                    "ya da aşamalara bölünür"),
+    "sticky_attrs": ("{v}: .r-sticky takes class=\"r-sticky\" only (no other class, style or attribute; the ring goes "
+                     "on the element inside)",
+                     "{v}: .r-sticky yalnızca class=\"r-sticky\" taşır (başka sınıf, style ya da nitelik yok; halka "
+                     "içteki öğeye çizilir)"),
+    "sticky_content": ("{v}: .r-sticky holds exactly one element (the pinned element, ringed when it is the variable) "
+                       "and no loose text",
+                       "{v}: .r-sticky tam olarak bir öğe taşır (sabit öğe; değişken oysa halkalı), çıplak metin "
+                       "taşımaz"),
+    "sticky_fold": ("{v}: .r-sticky is the bar at the bottom of the first view: the screen needs a .r-fold and the "
+                    "bar comes before it",
+                    "{v}: .r-sticky ilk ekranın altındaki bardır: ekranda bir .r-fold olmalı ve bar ondan önce gelir"),
+    "pinned": ("difference 'move': {where} says the element is pinned (“{word}”) but Variant B has no .r-sticky: a "
+               "pinned element is drawn as a bar at the bottom of the first view (.r-sticky with .r-fold), not inside "
+               "the page flow",
+               "fark 'taşı': {where_tr} öğenin sabit olduğunu söylüyor (“{word}”) ama B varyantında .r-sticky yok: "
+               "sabit öğe sayfa akışının içinde değil, ilk ekranın altında bir bar olarak çizilir (.r-sticky ve "
+               ".r-fold)"),
+    "soft_alone": (".hl-soft marks a linked consequence of the variable: the card also needs a .hl around the "
+                   "variable itself",
+                   ".hl-soft değişkenin bağlı bir sonucunu işaretler: kartta değişkenin kendisinin etrafında da bir "
+                   ".hl olmalı"),
+    "soft_many": ("{v}: {n} .hl-soft rings; at most {most} per arm (more read as more variables)",
+                  "{v}: {n} .hl-soft halka var; kol başına en fazla {most} (fazlası fazla değişken gibi okunur)"),
+    "soft_nested": ("{v}: a .hl-soft sits next to the ring, never inside or around a ring (.hl or .hl-soft)",
+                    "{v}: .hl-soft halkanın yanında durur, hiçbir halkanın (.hl ya da .hl-soft) içinde ya da "
+                    "etrafında değil"),
+    "soft_both": ("{v}: an element is either the variable (.hl) or a linked consequence (.hl-soft), not both",
+                  "{v}: bir öğe ya değişkendir (.hl) ya bağlı sonuçtur (.hl-soft), ikisi birden değil"),
+    "soft_box": ("soft ring in {v} carries inline {prop}: a ring must not push content; give the spacing to the "
+                 "children",
+                 "{v} varyantındaki yumuşak halka satır içi {prop} taşıyor: halka içeriği itmemeli; boşluğu çocuk "
+                 "öğelere verin"),
+    "soft_case": ("soft ring label in {v} starts with a lowercase letter (“{note}”); a Turkish label starts with a "
+                  "capital letter",
+                  "{v} varyantındaki yumuşak halka etiketi küçük harfle başlıyor (“{note}”); Türkçe etiket büyük "
+                  "harfle başlar"),
+    "device": ("{what} draws a phone screen: only valid with device phone or phone-web, not '{device}'",
+               "{what} telefon ekranı çizer: yalnızca device phone ya da phone-web ile kullanılır, '{device}' ile "
+               "değil"),
+    "captions_missing": ("the screens have {n} stages: card.stage_captions needs {n} short captions, one per stage, "
+                         "the same in both arms",
+                         "ekranlarda {n} aşama var: card.stage_captions her aşama için bir tane olmak üzere {n} kısa "
+                         "başlık ister, iki kolda aynı"),
+    "captions_count": ("card.stage_captions has {got} caption(s) for {n} stage(s); give one per stage",
+                       "card.stage_captions {n} aşama için {got} başlık taşıyor; her aşamaya bir başlık yazın"),
+    "captions_unused": ("card.stage_captions is given but the screens have no .r-stage-break",
+                        "card.stage_captions verilmiş ama ekranlarda .r-stage-break yok"),
+    "captions_item": ("card.stage_captions: every caption is a short non-empty text, got {got!r}",
+                      "card.stage_captions: her başlık kısa ve boş olmayan bir metindir, gelen {got!r}"),
+    "captions_case": ("card.stage_captions: “{text}” starts with a lowercase letter; a Turkish caption starts with a "
+                      "capital letter",
+                      "card.stage_captions: “{text}” küçük harfle başlıyor; Türkçe başlık büyük harfle başlar"),
+    "toolbar": ("card.mobile_toolbar draws a mobile browser's bottom toolbar: only valid with device 'phone-web', "
+                "not '{device}'",
+                "card.mobile_toolbar mobil tarayıcının alt araç çubuğunu çizer: yalnızca device 'phone-web' ile "
+                "kullanılır, '{device}' ile değil"),
+    "toolbar_type": ("card.mobile_toolbar must be true or false, got {got!r}",
+                     "card.mobile_toolbar true ya da false olmalı, gelen {got!r}"),
+}
+WHAT_NAMES = {
+    FOLD_CLASS: ("fold", "kıvrım"),
+    BREAK_CLASS: ("stage break", "aşama ayracı"),
+}
+
+
+def _lm(key, lang, **kw):
+    en, tr = LAYOUT_MSG[key]
+    return (tr if lang == "tr" else en).format(**kw)
+
+
+def _top_level(root, cls):
+    """Every node with class `cls` under root, split into (top-level, nested)."""
+    top, nested = [], []
+    for node in _walk(root):
+        if cls in node.classes:
+            (top if node.parent is root else nested).append(node)
+    return top, nested
+
+
+def _split_kids(root, cls):
+    """The root's children as runs between its top-level `cls` markers."""
+    runs = [[]]
+    for k in root.kids:
+        if isinstance(k, Node) and cls in k.classes and k.parent is root:
+            runs.append([])
+        else:
+            runs[-1].append(k)
+    return runs
+
+
+def layout_markers(markup):
+    """What a screen's markup asks of the layout: (folds, stage breaks, pinned
+    bars), counted on the parsed tree (0s when the markup doesn't parse)."""
+    root, _ = parse_markup(markup)
+    if root is None:
+        return 0, 0, 0
+    return tuple(sum(1 for n in _walk(root) if cls in n.classes) for cls in (FOLD_CLASS, BREAK_CLASS, STICKY_CLASS))
+
+
+def layout_problems(trees, raws, lang="en", card_lang=None, layout=None):
+    """The rules of .r-fold, .r-stage-break and .r-sticky (and, with `layout`,
+    the card fields that go with them). Returns (errors, warnings)."""
+    errors, warnings = [], []
+    counts = {}
+    for (field, name), raw in zip((("variant_a", "A"), ("variant_b", "B")), raws):
+        root = trees[field]
+        c = counts[name] = {}
+        for cls, most in ((FOLD_CLASS, 1), (BREAK_CLASS, MAX_STAGES - 1)):
+            top, nested = _top_level(root, cls)
+            c[cls] = len(top) + len(nested)
+            if nested:
+                errors.append(_lm("marker_top", lang, v=name, cls=cls))
+            what = WHAT_NAMES[cls][1 if lang == "tr" else 0]
+            bare = all(n.tag == "div" and n.attrs == {"class": cls} and not n.kids for n in top + nested)
+            if not bare or str(raw).count(MARKER_TAGS[cls]) != c[cls]:
+                errors.append(_lm("marker_bare", lang, v=name, what=what, tag=MARKER_TAGS[cls]))
+            if c[cls] > most:
+                errors.append(_lm("marker_many", lang, v=name, n=c[cls], cls=cls, most=most))
+        if c[FOLD_CLASS] and c[BREAK_CLASS]:
+            errors.append(_lm("fold_stages", lang, v=name))
+        if c[FOLD_CLASS] == 1 and not _top_level(root, FOLD_CLASS)[1]:
+            first, rest = _split_kids(root, FOLD_CLASS)
+            for side, side_tr, run in (("before", "öncesinde", first), ("after", "sonrasında", rest)):
+                if not [k for k in run if not (isinstance(k, Node) and STICKY_CLASS in k.classes)]:
+                    errors.append(_lm("fold_empty", lang, v=name, side=side, side_tr=side_tr))
+        if c[BREAK_CLASS] and not _top_level(root, BREAK_CLASS)[1]:
+            for n, run in enumerate(_split_kids(root, BREAK_CLASS), 1):
+                if not run:
+                    errors.append(_lm("stage_empty", lang, v=name, n=n))
+        # The pinned bar: top level, before the screen's fold, one element in it, nothing of its own.
+        top, nested = _top_level(root, STICKY_CLASS)
+        c[STICKY_CLASS] = len(top) + len(nested)
+        if nested:
+            errors.append(_lm("marker_top", lang, v=name, cls=STICKY_CLASS))
+        if c[STICKY_CLASS] > 1:
+            errors.append(_lm("marker_many", lang, v=name, n=c[STICKY_CLASS], cls=STICKY_CLASS, most=1))
+        for bar in top + nested:
+            if bar.tag != "div" or bar.attrs != {"class": STICKY_CLASS}:
+                errors.append(_lm("sticky_attrs", lang, v=name))
+            kids = _solid_kids(bar)
+            if len(kids) != 1 or not isinstance(kids[0], Node):
+                errors.append(_lm("sticky_content", lang, v=name))
+        if top:
+            kids = [k for k in root.kids if isinstance(k, Node)]
+            folds = [i for i, k in enumerate(kids) if FOLD_CLASS in k.classes]
+            if not folds or any(kids.index(bar) > folds[0] for bar in top):
+                errors.append(_lm("sticky_fold", lang, v=name))
+    if bool(counts["A"][FOLD_CLASS]) != bool(counts["B"][FOLD_CLASS]):
+        errors.append(_lm("fold_one_arm", lang, has="A" if counts["A"][FOLD_CLASS] else "B"))
+    breaks_a, breaks_b = counts["A"][BREAK_CLASS], counts["B"][BREAK_CLASS]
+    if breaks_a != breaks_b:
+        errors.append(_lm("breaks", lang, a=breaks_a, b=breaks_b))
+    if layout is not None:
+        errors += layout_field_problems(layout, max(breaks_a, breaks_b),
+                                        any(counts[v][c] for v in "AB" for c in (FOLD_CLASS, STICKY_CLASS)),
+                                        lang, card_lang)
+    return errors, warnings
+
+
+def layout_field_problems(layout, breaks, folded, lang="en", card_lang=None):
+    """card.stage_captions and card.mobile_toolbar against the screens and the
+    device. `breaks` is the number of stage breaks per screen, `folded` whether
+    a screen has a fold or a pinned bar."""
+    out = []
+    device = layout.get("device")
+    if device not in LAYOUT_DEVICES:
+        if folded:
+            out.append(_lm("device", lang, what=".r-fold / .r-sticky", device=device))
+        if breaks:
+            out.append(_lm("device", lang, what=".r-stage-break", device=device))
+    toolbar = layout.get("mobile_toolbar", False)
+    if toolbar is not None and not isinstance(toolbar, bool):
+        out.append(_lm("toolbar_type", lang, got=toolbar))
+    elif toolbar and device != "phone-web":
+        out.append(_lm("toolbar", lang, device=device))
+    captions = layout.get("stage_captions")
+    if captions in (None, []):
+        if breaks:
+            out.append(_lm("captions_missing", lang, n=breaks + 1))
+        return out
+    if not isinstance(captions, list):
+        out.append(_lm("captions_item", lang, got=captions))
+        return out
+    if not breaks:
+        out.append(_lm("captions_unused", lang))
+        return out
+    if len(captions) != breaks + 1:
+        out.append(_lm("captions_count", lang, got=len(captions), n=breaks + 1))
+    for text in captions:
+        if not isinstance(text, str) or not text.strip():
+            out.append(_lm("captions_item", lang, got=text))
+        elif card_lang == "tr" and text.strip()[:1].islower():
+            out.append(_lm("captions_case", lang, text=text))
+    return out
+
+
+def soft_problems(trees, ring_lists, lang="en", card_lang=None):
+    """The soft ring's rules: next to a .hl in the card, at most MAX_SOFT per
+    arm, never nested with a ring, no margin or padding of its own."""
+    out = []
+    any_soft = False
+    for field, name in (("variant_a", "A"), ("variant_b", "B")):
+        softs = [n for n in _walk(trees[field]) if n.is_soft]
+        any_soft = any_soft or bool(softs)
+        if len(softs) > MAX_SOFT:
+            out.append(_lm("soft_many", lang, v=name, n=len(softs), most=MAX_SOFT))
+        for soft in softs:
+            if soft.is_ring:
+                out.append(_lm("soft_both", lang, v=name))
+                continue
+            up, nested = soft.parent, False
+            while isinstance(up, Node) and up.tag != "#root":
+                nested = nested or up.is_ring or up.is_soft
+                up = up.parent
+            if nested or any(n.is_ring or n.is_soft for n in _walk(soft)):
+                out.append(_lm("soft_nested", lang, v=name))
+            push = RING_PUSH_RE.search(soft.attrs.get("style") or "")
+            if push:
+                out.append(_lm("soft_box", lang, v=name, prop=push.group(1).lower()))
+            note = (soft.attrs.get("data-note") or "").strip()
+            if card_lang == "tr" and note[:1].islower():
+                out.append(_lm("soft_case", lang, v=name, note=note))
+    if any_soft and not (ring_lists["A"] or ring_lists["B"]):
+        out.insert(0, _lm("soft_alone", lang))
+    seen, unique = set(), []
+    for text in out:
+        if text not in seen:
+            seen.add(text)
+            unique.append(text)
+    return unique
+
+
+def pinned_problems(difference, tree_a, tree_b, rings_b, variable=None, change_text=None, lang="en"):
+    """Heuristic (PINNED_RE): a move whose B side is described as pinned is drawn
+    with the pinned bar (.r-sticky), never as an element in the page flow. Silent
+    when A draws the bar (the move takes a pinned element into the flow)."""
+    if difference != "move" or any(STICKY_CLASS in n.classes for t in (tree_a, tree_b) for n in _walk(t)):
+        return []
+    sources = [("the ring label in B", "B'deki halka etiketi", r.attrs.get("data-note") or "") for r in rings_b]
+    sources += [("the variable", "değişken", variable or ""), ("Variant B's description", "B'nin tanımı",
+                                                                change_text or "")]
+    for where, where_tr, text in sources:
+        m = PINNED_RE.search(_fold(text)) if isinstance(text, str) else None
+        if m:
+            return [_lm("pinned", lang, where=where, where_tr=where_tr, word=m.group(0))]
+    return []
+
+
+def card_problems(difference, variant_a, variant_b, lang="en", variable=None, classes=None, card_lang=None,
+                  change_text=None, layout=None):
+    """Everything that can be read off the two mockup bodies' markup.
 
     Returns (errors, warnings). Errors refuse the card: markup outside the
     allowlist, ring placement against the difference type, a ring without a
     label, a ring that carries its own margin or padding, a class that is not a
     template component (only when `classes`, the template's own class names, is
-    given). Warnings are for the reviewer: a long label, several rings, a
-    'move' whose element changed, a difference no ring covers, a colour that
-    exists only in B.
+    given), any difference between A and B outside the rings, a colour that
+    exists only in B on an element outside the ring, and a 'move' whose
+    element changed, the layout markers' rules (layout_problems), the soft
+    rings' rules (soft_problems) and a pinned element drawn in the page flow
+    (pinned_problems). Warnings are for the reviewer: a long label, several
+    rings, a colour only in B inside the ring when colour isn't the variable.
 
-    Shared with validate_scenario_json.py, so the two never disagree.
+    `change_text` is Variant B's description (the pinned heuristic reads it
+    next to `variable` and B's ring labels); `layout` the card's layout
+    fields ({"device", "stage_captions", "mobile_toolbar"}), checked only when
+    given (the builder gives them).
+
+    Shared with validate_scenario_json.py, so the two never disagree. The
+    record-dependent gates (numbers, accessibility, regulation, personal data)
+    are mockup_report()'s.
     """
     errors, warnings, trees = [], [], {}
     for field, markup in (("variant_a", variant_a), ("variant_b", variant_b)):
@@ -1086,7 +1763,7 @@ def card_problems(difference, variant_a, variant_b, shift_note_b=None, lang="en"
         errors += ["%s: %s" % (field, p) for p in problems]
         trees[field] = root
     if difference:
-        errors += _ring_placement(difference, hl_count(variant_a), hl_count(variant_b), shift_note_b, lang)
+        errors += _ring_placement(difference, hl_count(variant_a), hl_count(variant_b), lang)
     if trees["variant_a"] is None or trees["variant_b"] is None:
         return errors, warnings
 
@@ -1101,6 +1778,9 @@ def card_problems(difference, variant_a, variant_b, shift_note_b=None, lang="en"
                 errors.append(_cm("ring_label", lang, v=name))
             elif len(note.split()) > 4:
                 warnings.append(_cm("label_long", lang, v=name, n=len(note.split()), note=note))
+            # card_lang is the card's own language (the record's lang); lang only picks the message language.
+            if card_lang == "tr" and note[:1].islower():
+                errors.append(_cm("label_case", lang, v=name, note=note))
             push = RING_PUSH_RE.search(style)
             if push:
                 errors.append(_cm("ring_box", lang, v=name, prop=push.group(1).lower()))
@@ -1117,25 +1797,627 @@ def card_problems(difference, variant_a, variant_b, shift_note_b=None, lang="en"
                         if text not in errors:
                             errors.append(text)
 
+    # A move's labels say where the element sits in each arm ("Kaydırınca görünüyor" / "Ekranın altında sabit"),
+    # so they may differ; every ring still needs one (above). Only the element itself must be identical.
     if difference == "move" and ring_lists["A"] and ring_lists["B"]:
-        ka = sorted(repr(r.key(True)) for r in ring_lists["A"])
-        kb = sorted(repr(r.key(True)) for r in ring_lists["B"])
-        na = sorted((r.attrs.get("data-note") or "").strip() for r in ring_lists["A"])
-        nb = sorted((r.attrs.get("data-note") or "").strip() for r in ring_lists["B"])
-        if ka != kb or na != nb:
-            warnings.append(_cm("move_diff", lang))
+        ka = sorted(repr(_ring_content_key(r)) for r in ring_lists["A"])
+        kb = sorted(repr(_ring_content_key(r)) for r in ring_lists["B"])
+        if ka != kb:
+            changed = _region_changes(ring_lists["A"], ring_lists["B"])
+            what = "; ".join(_change_text(c) for c in changed[:3]) or "-"
+            errors.append(_cm("move_content", lang, what=what))
+
+    lay_errors, lay_warnings = layout_problems(trees, (variant_a, variant_b), lang, card_lang, layout)
+    errors += lay_errors
+    warnings += lay_warnings
+    errors += soft_problems(trees, ring_lists, lang, card_lang)
+    errors += pinned_problems(difference, trees["variant_a"], trees["variant_b"], ring_lists["B"], variable,
+                              change_text, lang)
 
     for where, na, nb, what in _outside_ring_diff(trees["variant_a"], trees["variant_b"]):
-        warnings.append(_cm("outside", lang, where=where, na=na, nb=nb, what=what))
+        errors.append(_cm("outside", lang, where=where, na=na, nb=nb, what=what))
 
     labels = " ".join((r.attrs.get("data-note") or "") for r in ring_lists["A"] + ring_lists["B"])
-    if not COLOUR_TOPIC_RE.search("%s %s" % (variable or "", labels)):
-        in_a = set(inline_colours(trees["variant_a"]))
-        only_b = [c for c in inline_colours(trees["variant_b"]) if c not in in_a]
-        if only_b:
-            vals = ", ".join(only_b[:4]) + (" (+%d)" % (len(only_b) - 4) if len(only_b) > 4 else "")
-            warnings.append(_cm("colour_b", lang, vals=vals))
+    in_a = set(inline_colours(trees["variant_a"]))
+    only_b_outside, only_b_inside = [], []
+    for node in _walk(trees["variant_b"]):
+        for value in COLOUR_VALUE_RE.findall(node.attrs.get("style") or ""):
+            v = _norm_colour(value)
+            if v in in_a:
+                continue
+            bucket = only_b_inside if _in_ring(node) else only_b_outside
+            if v not in bucket:
+                bucket.append(v)
+
+    def listed(vals):
+        return ", ".join(vals[:4]) + (" (+%d)" % (len(vals) - 4) if len(vals) > 4 else "")
+
+    if only_b_outside:
+        errors.append(_cm("colour_b_outside", lang, vals=listed(only_b_outside)))
+    if only_b_inside and not COLOUR_TOPIC_RE.search("%s %s" % (variable or "", labels)):
+        warnings.append(_cm("colour_b", lang, vals=listed(only_b_inside)))
     return errors, warnings
+
+
+# ------------------------------------------------------------- the manifest
+#
+# Every change inside the rings, as flat items a reviewer can tick off one by
+# one. Each item names its ring (the label), the variant whose ring it is, the
+# kind of change and the two sides:
+#
+#   {"ring": "Kupon alanı bağlantıda", "variant": "B", "kind": "text", "change": "changed", "a": "…", "b": "…"}
+#   kind  text       a text node (a/b: the strings)
+#         number     a numeric token (a/b: the tokens as written)
+#         component  an r-* (or ph/img/hero) class (value: the class; a/b: counts)
+#         class      a modifier class on a component (element, value; a/b: counts); a class that
+#                    moves between siblings is listed on each element it leaves or reaches ("at": its text)
+#         attribute  an attribute or inline style (element, attribute; a/b: values)
+#   change  added | removed | changed
+
+MANIFEST_FORMAT = "ab-test-playbook/diff-manifest"
+MANIFEST_VERSION = 1
+RING_OWN_ATTRS = ("class", "data-note", "data-pos")
+
+
+def _elem_sig(node):
+    comps = [c for c in node.classes if c not in RING_CLASSES and (c.startswith(COMPONENT_PREFIX) or c in COMPONENT_WORDS)]
+    return node.tag + "".join("." + c for c in comps)
+
+
+def _facts(nodes):
+    """Texts (in order, each with the element it sits in), component counts,
+    modifier counts and attributes of nodes."""
+    texts, comps, mods, attrs = [], collections.Counter(), collections.Counter(), collections.Counter()
+
+    def visit(k, where="#root"):
+        if isinstance(k, str):
+            texts.append((where, k))
+            return
+        sig = _elem_sig(k)
+        for c in k.classes:
+            if c in RING_CLASSES:
+                continue
+            if c.startswith(COMPONENT_PREFIX) or c in COMPONENT_WORDS:
+                comps[c] += 1
+            else:
+                mods[(sig, c)] += 1
+        wrapper = _is_wrapper_ring(k)
+        for name, value in sorted(k.attrs.items()):
+            if name in RING_OWN_ATTRS or (wrapper and name == "style"):
+                continue
+            attrs[(sig, name, value)] += 1
+        for kid in k.kids:
+            visit(kid, sig)
+
+    for n in nodes:
+        visit(n)
+    return texts, comps, mods, attrs
+
+
+def _seq_changes(kind, seq_a, seq_b):
+    """(element, value) sequences → changes. Inside a replaced stretch a value
+    is paired with the next one in the same kind of element ("Uygula" on a
+    button against "Kodu kullan" on a button); the rest are added or removed."""
+    out = []
+    sm = difflib.SequenceMatcher(None, seq_a, seq_b, autojunk=False)
+    for op, i1, i2, j1, j2 in sm.get_opcodes():
+        if op == "equal":
+            continue
+        xa, xb = list(seq_a[i1:i2]), list(seq_b[j1:j2])
+        pairs, rest_b = [], list(xb)
+        for ea in xa:
+            match = next((eb for eb in rest_b if eb[0] == ea[0]), None)
+            if match is not None:
+                rest_b.remove(match)
+            pairs.append((ea, match))
+        pairs += [(None, eb) for eb in rest_b]
+        for ea, eb in pairs:
+            change = "changed" if ea and eb else ("added" if ea is None else "removed")
+            out.append({"kind": kind, "change": change, "element": (ea or eb)[0],
+                        "a": ea[1] if ea else None, "b": eb[1] if eb else None})
+    return out
+
+
+def _count_changes(kind, ca, cb, element=None):
+    out = []
+    for key in sorted(set(ca) | set(cb)):
+        if ca[key] == cb[key]:
+            continue
+        item = {"kind": kind, "change": "added" if cb[key] > ca[key] else "removed"}
+        if element is not None:
+            item["element"], item["value"] = key
+        else:
+            item["value"] = key
+        item["a"], item["b"] = ca[key], cb[key]
+        out.append(item)
+    return out
+
+
+def _elements(nodes):
+    """Every element under `nodes` in document order: (signature, its modifier
+    classes, its text)."""
+    out = []
+
+    def visit(k):
+        if isinstance(k, Node):
+            mods = frozenset(c for c in k.classes if c not in RING_CLASSES
+                             and not (c.startswith(COMPONENT_PREFIX) or c in COMPONENT_WORDS))
+            out.append((_elem_sig(k), mods, _short(_node_text(k), 40)))
+            for kid in k.kids:
+                visit(kid)
+
+    for n in nodes:
+        visit(n)
+    return out
+
+
+def _moved_class_changes(nodes_a, nodes_b, counted):
+    """A modifier class that moves between siblings (.on from one chip, radio or
+    tab to another) keeps its count, so _count_changes() can't see it. The
+    elements are aligned by signature, position by position; a modifier that
+    differs on an aligned pair is listed on that element ("at": its text),
+    unless the count already reported it for that element kind (`counted`)."""
+    ea, eb = _elements(nodes_a), _elements(nodes_b)
+    out = []
+    sm = difflib.SequenceMatcher(None, [e[0] for e in ea], [e[0] for e in eb], autojunk=False)
+    for i, j, n in sm.get_matching_blocks():
+        for t in range(n):
+            (sig, mods_a, text_a), (_, mods_b, text_b) = ea[i + t], eb[j + t]
+            for cls in sorted(mods_a ^ mods_b):
+                if (sig, cls) in counted:
+                    continue
+                added = cls in mods_b
+                out.append({"kind": "class", "change": "added" if added else "removed", "element": sig,
+                            "value": cls, "at": text_b if added else text_a, "a": int(not added), "b": int(added)})
+    return out
+
+
+def _region_changes(nodes_a, nodes_b):
+    ta, ca, ma, aa = _facts(nodes_a)
+    tb, cb, mb, ab = _facts(nodes_b)
+    out = _seq_changes("text", ta, tb)
+    out += _seq_changes("number", _numbers_in(ta), _numbers_in(tb))
+    out += _count_changes("component", ca, cb)
+    counted = _count_changes("class", ma, mb, element=True)
+    out += counted
+    out += _moved_class_changes(nodes_a, nodes_b, {(c["element"], c["value"]) for c in counted})
+    only_a, only_b = aa - ab, ab - aa
+    groups = collections.OrderedDict()
+    for (sig, name, value), n in sorted(only_a.items()):
+        groups.setdefault((sig, name), ([], []))[0].extend([value] * n)
+    for (sig, name, value), n in sorted(only_b.items()):
+        groups.setdefault((sig, name), ([], []))[1].extend([value] * n)
+    for (sig, name), (va, vb) in groups.items():
+        for k in range(max(len(va), len(vb))):
+            a = va[k] if k < len(va) else None
+            b = vb[k] if k < len(vb) else None
+            change = "changed" if a is not None and b is not None else ("added" if a is None else "removed")
+            out.append({"kind": "attribute", "change": change, "element": sig, "attribute": name, "a": a, "b": b})
+    return out
+
+
+def _region_label(nodes_a, nodes_b):
+    labels = []
+    for node in list(nodes_b) + list(nodes_a):
+        if _ringed(node):
+            note = (_mark_node(node).attrs.get("data-note") or "").strip()
+            if note and note not in labels:
+                labels.append(note)
+    side_a, side_b = any(_ringed(n) for n in nodes_a), any(_ringed(n) for n in nodes_b)
+    variant = "A+B" if side_a and side_b else ("B" if side_b else "A")
+    return " / ".join(labels), variant
+
+
+def ring_regions(regions):
+    """Tag each ring region added / removed / changed / moved / linked.
+
+    A region whose only marks are soft rings is "linked" (the variable's
+    consequence). A ring region that holds rings on one side only is an added
+    (B) or a removed (A) element, unless an A-only and a B-only region hold
+    the same content: that pair is one moved element and is merged (a pinned
+    bar around the element is looked through, _ring_content_key).
+    """
+    out, a_only, b_only = [], [], []
+    for na, nb in regions:
+        if _soft_only(list(na) + list(nb)):
+            out.append(("linked", na, nb))
+        elif na and not nb and all(_ringed(n) for n in na):
+            a_only.append(na)
+        elif nb and not na and all(_ringed(n) for n in nb):
+            b_only.append(nb)
+        else:
+            out.append(("changed", na, nb))
+    for na in a_only:
+        key = sorted(repr(_ring_content_key(n)) for n in na)
+        match = next((nb for nb in b_only if sorted(repr(_ring_content_key(n)) for n in nb) == key), None)
+        if match is not None:
+            b_only.remove(match)
+            out.append(("moved", na, match))
+        else:
+            out.append(("removed", na, []))
+    out += [("added", [], nb) for nb in b_only]
+    return out
+
+
+def manifest_entries(regions):
+    """Ring regions from _compare() → (rings, changes) for the manifest.
+
+    rings:   [{"ring": n, "label", "variant": "A"|"B"|"A+B",
+               "kind": "added"|"removed"|"changed"|"moved"|"linked"|"unchanged", "changes": count}]
+    changes: [{"ring": n, "label", "kind", "change", "a", "b", ...}] (see above)
+    """
+    rings_out, changes = [], []
+    for n, (kind, na, nb) in enumerate(ring_regions(regions), 1):
+        label, variant = _region_label(na, nb)
+        if kind == "moved":  # the pinned bar is the moved element's drawing, not a change of it
+            items = _region_changes([_sticky_ring(k) or k for k in na], [_sticky_ring(k) or k for k in nb])
+        else:
+            items = _region_changes(na, nb)
+        if kind == "changed" and not items:
+            kind = "unchanged"
+        rings_out.append({"ring": n, "label": label, "variant": variant, "kind": kind, "changes": len(items)})
+        for item in items:
+            entry = {"ring": n, "label": label}
+            entry.update(item)
+            changes.append(entry)
+    return rings_out, changes
+
+
+def _change_text(item):
+    """One manifest item as a short line (messages)."""
+    what = " ".join(str(x) for x in (item.get("element"), item.get("attribute") or item.get("value")) if x)
+    return "%s %s %s: %r → %r" % (item["kind"], item["change"], what, item.get("a"), item.get("b"))
+
+
+# --------------------------------------------- numbers, a11y, regulation, PII
+#
+# These gates read the record as well as the mockups (numeric_change,
+# warnings), so they live here and not in card_problems(), which the validator
+# shares. Every keyword list below is a HEURISTIC: it catches the common shapes
+# of a problem, and what it can't see is the reviewers' to catch. A miss is
+# never proof that a mockup is clean.
+
+# A numeric token as a mockup prints it: grouped thousands in either
+# convention ("1.299", "1,299.00", "1.299,90"), a plain number with an optional
+# decimal part ("890", "4,5", "4.5"), a percentage either side ("%20", "20%").
+# Not glued to a word ("A4", "x2" are not counts); the whole run of digits is
+# one token ("1.2345" is one number, not "1.234" and "5").
+_NUM_CORE = r"\d{1,3}(?:[.,  ]\d{3})+(?:[.,]\d+)?(?!\d)|\d+(?:[.,]\d+)?(?!\d)"
+NUMBER_RE = re.compile(r"(?<!\w)(%\s?)?(" + _NUM_CORE + r")(\s?%)?")
+
+
+def number_tokens(text):
+    """The numeric tokens of one text, as written (spacing around % removed)."""
+    out = []
+    for m in NUMBER_RE.finditer(text or ""):
+        out.append(("%" if m.group(1) else "") + m.group(2) + ("%" if m.group(3) else ""))
+    return out
+
+
+def _numbers_of(texts):
+    """Numeric tokens of (element, text) pairs, values only."""
+    return [value for _, value in _numbers_in(texts)]
+
+
+def _numbers_in(texts):
+    """Numeric tokens of (element, text) pairs, each with its element."""
+    out = []
+    for where, t in texts:
+        out.extend((where, n) for n in number_tokens(t))
+    return out
+
+
+# Interactive components (CONTRACT: r-cta, r-link, r-field, r-check, r-radio,
+# r-chip, r-tabs, r-search, r-overlay, r-modal). B adding one, or more of one,
+# needs an accessibility warning whose criteria fit that element.
+INTERACTIVE_COMPONENTS = ("r-cta", "r-link", "r-field", "r-check", "r-radio", "r-chip", "r-tabs", "r-search",
+                          "r-overlay", "r-modal")
+DIALOG_COMPONENTS = ("r-overlay", "r-modal")
+# The criteria themselves (touch target, contrast, keyboard, screen reader; for
+# a dialog also focus and close) are the validator's A11Y_BASE / A11Y_MODAL,
+# read through accessibility_criteria(): one definition, so the record check
+# and the mockup check can never ask for different things.
+
+# Rule 11: legal or mandatory text. A text node in A that contains one of these
+# must reach B unchanged (a regulated display changed → the variant is held).
+LEGAL_TERMS = ("KVKK", "aydınlatma", "açık rıza", "gizlilik", "cayma", "faiz", "toplam maliyet", "yıllık maliyet",
+               "sözleşme", "ön bilgilendirme", "koşulları", "terms", "privacy", "APR", "right of withdrawal")
+# Rule 6: security and verification controls. B showing fewer of these than A
+# means a protection was weakened or removed.
+AUTH_TERMS = ("doğrula", "SMS kodu", "CAPTCHA", "şifre", "parola", "iki adımlı", "tek kullanımlık", "güvenlik kodu",
+              "robot değilim", "verification code", "password", "two-factor", "2FA", "OTP", "CVV", "CVC",
+              "3D Secure", "not a robot")
+# Rule 6: a consent checkbox (r-check whose text reads as consent or as having
+# read a legal notice) that A leaves unticked must not be ticked (.on) in B, and
+# one that A shows must not be gone in B. Word starts, like the lists above
+# ("onay veriyorum", "kabul ediyorum", "açık rıza", "okudum"/"okuduğumu").
+CONSENT_TERMS = ("onay", "rıza", "açık rıza", "kabul", "izin", "izn", "okudu", "aydınlatma", "consent", "agree",
+                 "accept", "I have read")
+# Whole words: "read" (not "ready"), "ileti" with its suffixes ("ticari
+# elektronik iletiler") but not "iletişim" (contact details, no consent).
+# A marketing opt-in worded as a wish ("Ürün haberlerini e-postayla almak
+# istiyorum", "I want to receive offers") is a consent box too.
+CONSENT_WORDS = (r"(?<!\w)read(?!\w)|(?<!\w)ileti(?!ş)|almak\s+isti(?:yorum|yoruz)|gönderilmesini\s+isti"
+                 r"|(?<!\w)receive\b|(?<!\w)subscribe")
+
+
+def _fold(text):
+    """Case- and dotted/dotless-i-insensitive form of TR or EN text."""
+    return (str(text).replace("İ", "i").replace("I", "i").lower().replace("ı", "i").replace("̇", ""))
+
+
+def _term_re(terms):
+    """One regex for a keyword list, on folded text: an acronym (all capitals)
+    matches as a whole word, any other term as a word start (Turkish suffixes:
+    "sözleşmesi", "KVKK’nın")."""
+    parts = []
+    for term in terms:
+        folded = re.escape(_fold(term))
+        parts.append(r"(?<!\w)%s(?!\w)" % folded if term.isupper() else r"(?<!\w)%s" % folded)
+    return re.compile("|".join(parts))
+
+
+LEGAL_RE = _term_re(LEGAL_TERMS)
+PINNED_RE = re.compile("|".join([r"(?<!\w)%s\w*" % re.escape(_fold(t)) for t in PINNED_STEMS]
+                                + [r"(?<!\w)%s(?!\w)" % re.escape(t) for t in PINNED_WORDS]))
+CONSENT_RE = re.compile(_term_re(CONSENT_TERMS).pattern + "|" + CONSENT_WORDS)
+
+# Rule 15: values shaped like personal data. A mask ("•••", "****") breaks the
+# digit runs these need, so it never matches; an all-zero placeholder matches
+# and is let through by PII_PLACEHOLDER below.
+PII_PATTERNS = (
+    ("iban", re.compile(r"(?<![A-Za-z0-9])TR\s?\d{2}(?:\s?\d{4}){5}\s?\d{2}(?!\d)", re.IGNORECASE)),
+    ("card", re.compile(r"(?<!\d)\d{4}([ -]?)\d{4}\1\d{4}\1\d{4}(?!\d)")),
+    ("mobile", re.compile(r"(?<![\d+])(?:\+?90[\s-]?)?\(?0?5\d{2}\)?[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}(?!\d)")),
+    ("tckn", re.compile(r"(?<!\d)[1-9]\d{10}(?!\d)")),
+    ("email", re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+")),
+)
+# Reserved for documentation (RFC 2606 / 6761): an address there is a
+# placeholder, never a person's.
+EMAIL_PLACEHOLDER_RE = re.compile(r"@(?:[\w-]+\.)*(?:example\.(?:com|net|org)|[\w-]+\.(?:example|test|invalid|localhost))$",
+                                  re.IGNORECASE)
+
+
+def _pii_placeholder(kind, value):
+    digits = re.sub(r"\D", "", value)
+    if kind == "email":
+        return bool(EMAIL_PLACEHOLDER_RE.search(value))
+    if kind == "mobile":
+        return set(digits[-7:]) == {"0"}  # the subscriber number all zero: "0500 000 00 00"
+    if kind == "iban":
+        return set(digits[2:]) <= {"0"}  # after the check digits
+    return set(digits[4:]) <= {"0"}  # card: "0000 0000 0000 0000"
+
+
+def _mask(value):
+    """Enough of a match to find it, not enough to read it."""
+    keep = re.sub(r"\s", "", value)
+    if len(keep) <= 4:
+        return "•" * len(keep)
+    return keep[:2] + "•" * (len(keep) - 4) + keep[-2:]
+
+
+GATE_MSG = {
+    "numbers": ("numbers differ between A and B (only in A: {a}; only in B: {b}): a price, amount, percentage, count "
+                "or rating that changes between the arms is a second variable, unless the record says why in "
+                "`numeric_change`",
+                "sayılar A ile B arasında farklı (yalnızca A'da: {a}; yalnızca B'de: {b}): kollar arasında değişen "
+                "bir fiyat, tutar, yüzde, adet ya da puan ikinci bir değişkendir; kayıt nedenini `numeric_change` "
+                "alanında söylemedikçe"),
+    "a11y_none": ("B adds an interactive element ({what}) and the record has no accessibility warning (rule 3): add a "
+                  "warnings item of type accessibility whose pass/fail criteria fit the element ({need})",
+                  "B etkileşimli bir öğe ekliyor ({what}) ve kayıtta erişilebilirlik uyarısı yok (kural 3): öğeye "
+                  "uyan geçti/kaldı ölçütleriyle accessibility türünde bir warnings maddesi ekleyin ({need})"),
+    "a11y_missing": ("B adds an interactive element ({what}); the accessibility warning lacks: {missing} (rule 3; "
+                     "criteria for this element: {need})",
+                     "B etkileşimli bir öğe ekliyor ({what}); erişilebilirlik uyarısında eksik: {missing} (kural 3; "
+                     "bu öğenin ölçütleri: {need})"),
+    "legal": ("rule 11: legal or mandatory text in A is missing or changed in B (“{text}”); a variant that changes a "
+              "regulated display is held until the market's rule is verified, it isn't rendered",
+              "kural 11: A'daki yasal ya da zorunlu metin B'de yok ya da değişmiş (“{text}”); düzenlemeye tabi bir "
+              "gösterimi değiştiren varyant, pazarın kuralı doğrulanana dek bekletilir, çizilmez"),
+    "auth": ("rule 6: B drops security or verification text that A shows (“{term}”: {na} in A, {nb} in B); security "
+             "and compliance controls aren't test subjects",
+             "kural 6: B, A'nın gösterdiği güvenlik ya da doğrulama metnini düşürüyor (“{term}”: A'da {na}, B'de "
+             "{nb}); güvenlik ve uyum denetimleri test konusu yapılmaz"),
+    "consent": ("rule 6: a consent box that A leaves unticked is ticked in B (“{text}”); a pre-ticked consent is a "
+                "dark pattern and is refused",
+                "kural 6: A'da işaretsiz duran onay kutusu B'de işaretli (“{text}”); önceden işaretlenmiş onay "
+                "karanlık bir örüntüdür ve reddedilir"),
+    "consent_removed": ("rule 6: B removes a consent box that A shows (“{text}”); legal consent is a compliance "
+                        "control, never a test subject: the scenario is not produced, and improving the consent step "
+                        "is the compliance team's work",
+                        "kural 6: B, A'nın gösterdiği onay kutusunu kaldırıyor (“{text}”); yasal onay bir uyum "
+                        "denetimidir, test konusu yapılmaz: senaryo üretilmez, onay adımını iyileştirmek uyum "
+                        "ekibinin işidir"),
+    "metadata": ("{field}: the mockup shows the record's own metadata (“{text}”); the card shows only the title, the "
+                 "two mockups and the ring labels, and a KPI, guardrail, evidence or priority line is never drawn into "
+                 "a mockup (rule 9)",
+                 "{field}: mockup kaydın kendi bilgisini gösteriyor (“{text}”); kart yalnızca başlığı, iki mockup'ı ve "
+                 "halka etiketlerini gösterir, KPI, guardrail, kanıt ya da öncelik satırı mockup'a çizilmez (kural 9)"),
+    "pii": ("{field}: a value shaped like personal data ({kind}: “{masked}”); rule 15: personal data never reaches a "
+            "card. Draw the field empty with its label, mask the value (“•••”) or use an all-zero placeholder",
+            "{field}: kişisel veri biçiminde bir değer ({kind}: “{masked}”); kural 15: kişisel veri karta asla "
+            "taşınmaz. Alanı etiketiyle boş çizin, değeri maskeleyin (“•••”) ya da sıfırlı bir yer tutucu kullanın"),
+}
+PII_KIND = {
+    "en": {"tckn": "TCKN", "iban": "IBAN", "card": "card number", "email": "e-mail address", "mobile": "mobile number"},
+    "tr": {"tckn": "TCKN", "iban": "IBAN", "card": "kart numarası", "email": "e-posta adresi", "mobile": "cep telefonu"},
+}
+
+
+def _gm(key, lang, **kw):
+    en, tr = GATE_MSG[key]
+    return (tr if lang == "tr" else en).format(**kw)
+
+
+def _short(text, n=60):
+    text = " ".join(str(text).split())
+    return text if len(text) <= n else text[:n - 1] + "…"
+
+
+def _node_text(node):
+    parts = []
+    for k in node.kids:
+        parts.append(k if isinstance(k, str) else _node_text(k))
+    return " ".join(p for p in parts if p)
+
+
+def _all_texts(root):
+    """Every text node under root, in order."""
+    return [text for _, text in _facts([root])[0]]
+
+
+def number_problems(tree_a, tree_b, numeric_change, lang="en"):
+    if isinstance(numeric_change, str) and numeric_change.strip():
+        return []
+    ca = collections.Counter(_numbers_of(_facts([tree_a])[0]))
+    cb = collections.Counter(_numbers_of(_facts([tree_b])[0]))
+    if ca == cb:
+        return []
+    only_a = ", ".join(sorted((ca - cb).elements())) or "-"
+    only_b = ", ".join(sorted((cb - ca).elements())) or "-"
+    return [_gm("numbers", lang, a=only_a, b=only_b)]
+
+
+def accessibility_criteria(dialog=False):
+    """validate_scenario_json's criteria: (TR label, EN label, compiled regex) each."""
+    import validate_scenario_json as vsj  # here, not at module level: the validator imports this module
+    return list(vsj.A11Y_BASE) + (list(vsj.A11Y_MODAL) if dialog else [])
+
+
+def accessibility_problems(tree_a, tree_b, warnings, lang="en"):
+    ca, cb = _facts([tree_a])[1], _facts([tree_b])[1]
+    added = [c for c in INTERACTIVE_COMPONENTS if cb[c] > ca[c]]
+    if not added:
+        return []
+    import validate_scenario_json as vsj
+    what = ", ".join("%s %d → %d" % (c, ca[c], cb[c]) for c in added)
+    criteria = accessibility_criteria(dialog=any(c in DIALOG_COMPONENTS for c in added))
+    label = 0 if lang == "tr" else 1
+    need = ", ".join(c[label] for c in criteria)
+    stated = vsj.warning_text({"warnings": warnings or []}, "accessibility")
+    if not stated:
+        return [_gm("a11y_none", lang, what=what, need=need)]
+    missing = [c[label] for c in criteria if not c[2].search(stated)]
+    if missing:
+        return [_gm("a11y_missing", lang, what=what, missing=", ".join(missing), need=need)]
+    return []
+
+
+def consent_boxes(root):
+    """Every consent checkbox under root: an r-check whose text reads as consent."""
+    return [n for n in _walk(root) if "r-check" in n.classes and CONSENT_RE.search(_fold(_node_text(n)))]
+
+
+def regulation_problems(tree_a, tree_b, lang="en"):
+    out = []
+    boxes_a, boxes_b = consent_boxes(tree_a), consent_boxes(tree_b)
+    # Rule 6, not rule 11: B shows fewer consent boxes than A, so a consent step is gone (not reworded, which
+    # keeps the count and stays a rule-11 hold below). Each A box whose text B lacks is reported as removed.
+    removed = []
+    if len(boxes_b) < len(boxes_a):
+        missing = (collections.Counter(_node_text(n) for n in boxes_a)
+                   - collections.Counter(_node_text(n) for n in boxes_b))
+        for node in boxes_a:
+            if missing[_node_text(node)] > 0:
+                missing[_node_text(node)] -= 1
+                removed.append(node)
+                out.append(_gm("consent_removed", lang, text=_short(_node_text(node))))
+    reported = collections.Counter(t for node in removed for t in _all_texts(node))
+    texts_a, texts_b = _all_texts(tree_a), _all_texts(tree_b)
+    legal_b = collections.Counter(texts_b)
+    for text, n in collections.Counter(t for t in texts_a if LEGAL_RE.search(_fold(t))).items():
+        if legal_b[text] < n - reported[text]:
+            out.append(_gm("legal", lang, text=_short(text)))
+    fa, fb = _fold(" \n ".join(texts_a)), _fold(" \n ".join(texts_b))
+    for term in AUTH_TERMS:
+        pattern = _term_re((term,))
+        na, nb = len(pattern.findall(fa)), len(pattern.findall(fb))
+        if nb < na:
+            out.append(_gm("auth", lang, term=term, na=na, nb=nb))
+
+    ticked_in_a = {_node_text(n) for n in boxes_a if "on" in n.classes}
+    for node in boxes_b:
+        if "on" in node.classes and _node_text(node) not in ticked_in_a:
+            out.append(_gm("consent", lang, text=_short(_node_text(node))))
+    return out
+
+
+# Words that only the record uses, never a page: a mockup that carries them is
+# the old card's text smuggled into the drawing.
+METADATA_RE = re.compile(r"\b(?:birincil\s+kpi|primary\s+kpi|guardrail|kanıt\s*:|evidence\s*:|öncelik\s*:|priority\s*:"
+                         r"|daha\s+güçlü\s+alternatif|stronger\s+alternative)", re.IGNORECASE)
+
+
+def metadata_problems(field, root, kpi_names, lang="en"):
+    """Rule 9: the record's KPI, guardrail, evidence or priority never reaches the drawing."""
+    out = []
+    for text in _all_texts(root):
+        folded = text.casefold()
+        hit = METADATA_RE.search(text)
+        name = next((n for n in kpi_names if n.casefold() in folded), None)
+        if hit or name:
+            out.append(_gm("metadata", lang, field=field, text=(hit.group(0) if hit else name)))
+            break
+    return out
+
+
+def pii_problems(field, root, lang="en"):
+    out, seen = [], set()
+    values = list(_all_texts(root))
+    for node in _walk(root):
+        for name, value in node.attrs.items():
+            if name not in ("class", "style") and value:
+                values.append(value)
+    for value in values:
+        taken = []  # spans already matched in this value: an IBAN is not also a card number
+        for kind, pattern in PII_PATTERNS:
+            for m in pattern.finditer(value):
+                hit = m.group(0)
+                if any(m.start() < e and s < m.end() for s, e in taken):
+                    continue
+                taken.append(m.span())
+                if _pii_placeholder(kind, hit) or (kind, hit) in seen:
+                    continue
+                seen.add((kind, hit))
+                out.append(_gm("pii", lang, field=field, kind=PII_KIND[lang if lang == "tr" else "en"][kind],
+                               masked=_mask(hit)))
+    return out
+
+
+def layout_fields(view):
+    """The card fields layout_field_problems() checks, from a normalized view."""
+    return {"device": view.get("device"), "stage_captions": view.get("stage_captions"),
+            "mobile_toolbar": view.get("mobile_toolbar", False)}
+
+
+def mockup_report(view, lang="en", classes=None):
+    """Every mechanical gate on the two mockups of one card.
+
+    Returns (errors, warnings, manifest): card_problems() (markup, rings, the
+    outside-ring diff, colour), plus the record-dependent gates (numbers,
+    accessibility, regulation and manipulation, personal data), and the
+    manifest of the changes inside the rings: {"rings": [...], "changes": [...]}.
+    """
+    a, b = view["variant_a"], view["variant_b"]
+    errors, warnings = card_problems(view["difference"], a, b, lang=lang, variable=view["variable"], classes=classes,
+                                     card_lang=view.get("lang"), change_text=view.get("change_text"),
+                                     layout=layout_fields(view))
+    manifest = {"rings": [], "changes": []}
+    tree_a, _ = parse_markup(a, lang)
+    tree_b, _ = parse_markup(b, lang)
+    if tree_a is None or tree_b is None:
+        return errors, warnings, manifest
+    errors += number_problems(tree_a, tree_b, view.get("numeric_change"), lang)
+    errors += accessibility_problems(tree_a, tree_b, view.get("warnings"), lang)
+    errors += regulation_problems(tree_a, tree_b, lang)
+    errors += pii_problems("variant_a", tree_a, lang) + pii_problems("variant_b", tree_b, lang)
+    errors += metadata_problems("variant_a", tree_a, view.get("kpi_names") or [], lang)
+    errors += metadata_problems("variant_b", tree_b, view.get("kpi_names") or [], lang)
+    regions, _ = _compare(tree_a, tree_b)
+    manifest["rings"], manifest["changes"] = manifest_entries(regions)
+    return errors, warnings, manifest
 
 
 COLOR_MSG = {
@@ -1159,7 +2441,7 @@ def color_problem(value, key="primary", lang="en"):
     return None
 
 
-# ---------------------------------------------------------- brand and footer
+# ---------------------------------------------------------------- brand
 
 def css_string(value):
     """A CSS string literal that cannot end the string or the <style> block."""
@@ -1194,154 +2476,64 @@ def brand_css(brand):
     return "  :root{%s}" % ";".join(decls)
 
 
-def ice_label(ice, lang):
-    if not ice:
-        return None
-    if isinstance(ice, str):
-        tier, nums = ice, None
-    elif isinstance(ice, dict):
-        tier = ice.get("tier")
-        parts = [ice.get(k) for k in ("impact", "confidence", "ease")]
-        nums = parts if all(isinstance(p, int) and not isinstance(p, bool) for p in parts) else None
-    else:
-        die("ice must be an object like {\"tier\": \"medium\", \"impact\": 7, \"confidence\": 4, \"ease\": 9}")
-    if tier not in ICE_TIERS:
-        die("ice.tier must be one of %s, got %r" % ("/".join(ICE_TIERS), tier))
-    label = L10N[lang]["ice"][tier]
-    if nums:
-        label += " (%d×%d×%d)" % tuple(nums)
-    return label
-
-
-def render_footer(view):
-    """Tags, brand note and mockup disclaimer: one muted block under the card."""
-    lang = view["lang"]
-    L = L10N[lang]
-    tags = []
-
-    source = view["source"]
-    if source:
-        if source not in SOURCES:
-            die("source must be one of %s, got %r" % ("/".join(SOURCES), source))
-        value = escape(L["source"][source])
-        if source == "adapted" and view["adapted_from"]:
-            value += " (“%s”)" % escape(view["adapted_from"])
-        tags.append((L["tag_source"], value))
-    if view["evidence"]:
-        if view["evidence"] not in EVIDENCE_LEVELS:
-            die("evidence level must be one of %s, got %r" % ("/".join(EVIDENCE_LEVELS), view["evidence"]))
-        tags.append((L["tag_evidence"], escape(L["evidence"][view["evidence"]])))
-    if view["objection"]:
-        tags.append((L["tag_objection"], escape(view["objection"])))
-    ice = ice_label(view["ice"], lang)
-    if ice:
-        tags.append((L["tag_ice"], escape(ice)))
-
-    lines = []
-    if tags:
-        lines.append('<div class="tags">%s</div>' % "".join(
-            "<span><b>%s:</b> %s</span>" % (escape(k), v) for k, v in tags))
-
-    if view["has_brand_note"]:
-        note = view["brand_note"]
-    else:
-        note = L["brand_screen"] if view["brand"] else L["brand_neutral"]
-    if note:
-        lines.append('<div class="foot-note">%s</div>' % escape(note))
-
-    basis = view["mockup_basis"]
-    if basis in ("described", "representative"):
-        lines.append('<div class="foot-note">%s</div>' % escape(L["basis_" + basis]))
-
-    notes = view["footer_notes"]
-    if isinstance(notes, str):
-        notes = [notes]
-    for n in notes:
-        if str(n).strip():
-            lines.append('<div class="foot-note">%s</div>' % escape(n))
-
-    if not lines:
-        return ""
-    return '<footer class="card-foot">\n    %s\n  </footer>' % "\n    ".join(lines)
-
-
-def shift_note(text):
-    if not text or not str(text).strip():
-        return ""
-    return '<div class="shift-note">%s</div>' % escape(text)
-
-
 # ------------------------------------------------------------------- building
 
-def build(template_text, scenario, warnings=None, lang=None):
-    """Fill the template from one scenario and return the card's HTML.
+def build(template_text, scenario, warnings=None, lang=None, manifest=None):
+    """Fill the template from one scenario record and return the card's HTML.
 
-    Dies (exit 2) on anything that must not reach a card. Non-blocking remarks
-    about the mockups are appended to `warnings` when a list is passed; main()
-    prints them. `lang` is the language of those messages (default: --lang).
+    Dies (exit 2) on anything that must not reach a card: every mechanical gate
+    of mockup_report() runs here, so no caller gets a card around them.
+    Non-blocking remarks about the mockups are appended to `warnings` when a
+    list is passed; main() prints them. When a dict is passed as `manifest` it
+    receives the inside-ring changes ({"rings": [...], "changes": [...]}).
+    `lang` is the language of the messages (default: --lang).
+
+    The title is the only text of the record that reaches the card (escaped);
+    the rest of the card is the two mockups and their frame. Nothing in the
+    HTML comes from `review`: the card's fingerprint is the sha256 of these
+    bytes, and a stamp that changed them would never match.
     """
     lang = lang or _MSG_LANG
-    view = normalize(scenario)
-    card_lang = view["lang"]
-    L = L10N[card_lang]
+    view = normalize(scenario, lang)
 
     for key in ("variant_a", "variant_b"):
         value = view[key]
         if value in (None, ""):
-            die(_t("scenario is missing required card field: %s",
-                   "senaryoda zorunlu kart alanı eksik: %s", lang) % key)
+            die(_t("scenario is missing required card field: card.%s",
+                   "senaryoda zorunlu kart alanı eksik: card.%s", lang) % key)
         if not isinstance(value, str) or not value.strip():
             die(_t("card field %s must be a non-empty string of markup, got %s",
                    "%s kart alanı boş olmayan bir işaretleme metni olmalı, gelen %s", lang)
                 % (key, type(value).__name__))
 
-    errors, notes = card_problems(view["difference"], view["variant_a"], view["variant_b"],
-                                  view["shift_note_b"], lang=lang, variable=view["variable"],
-                                  classes=component_classes(template_text))
+    errors, notes, found = mockup_report(view, lang=lang, classes=component_classes(template_text))
     if errors:
         die(_t("the mockup was refused; nothing was cleaned or rewritten, fix the input:\n  ",
                "mockup reddedildi; hiçbir şey temizlenmedi ya da yeniden yazılmadı, girdiyi düzeltin:\n  ", lang)
             + "\n  ".join(errors))
     if warnings is not None:
         warnings.extend(notes)
-
-    text = COMMENT_RE.sub("", template_text)
+    if manifest is not None:
+        manifest.update(found)
 
     # User text never goes into the template directly: the frame helpers leave a
     # placeholder and its value joins the one substitution pass below.
-    values = {}
-    device = view["device"]
-    if device == "web":
-        text = to_browser_skeleton(text)
-        values["{{URL}}"] = escape(view["url"])
-    elif device == "phone-web":
-        text = apply_mobile_address_bar(text)
-        values["{{DOMAIN}}"] = escape(domain_of(view["url"]))
-    else:
-        labels = bottom_nav_labels(view["bottom_nav"])
-        text = apply_bottom_nav(text, bool(labels))
-        if labels:
-            values["{{BOTTOM_NAV}}"] = bottom_nav_html(labels, view["bottom_nav_active"])
-
+    values = frame_values(view)
+    layout = layout_of(view)
+    text = apply_layout(apply_frame(COMMENT_RE.sub("", template_text), view["device"], has_bottom_nav(view)), layout)
     values.update({
         "{{TITLE}}": escape(view["title"]),
-        "{{DESC}}": escape(view["desc"]),
-        "{{LANG}}": card_lang,
-        "{{DEVICE}}": device,
+        "{{LANG}}": view["lang"],
+        "{{DEVICE}}": view["device"],
         "{{NOTE_POS}}": view["note_pos"],
-        "{{H_TEST}}": escape(L["h_test"]),
-        "{{H_KPI}}": escape(L["h_kpi"]),
-        "{{H_DONT}}": escape(L["h_dont"]),
-        "{{SHIFT_NOTE_A}}": shift_note(view["shift_note_a"]),
-        "{{SHIFT_NOTE_B}}": shift_note(view["shift_note_b"]),
-        "{{FOOTER}}": render_footer(view),
+        "{{PHONE_SCALE}}": view["phone_scale"],
         "{{BRAND_CSS}}": brand_css(view["brand"]),
     })
-    for ph, key in LIST_PLACEHOLDERS.items():
-        values[ph] = render_list(view[key], lang=card_lang)
-    # Screens go in raw: this is the generative region, checked above.
+    # Screens go in raw: this is the generative region, checked above. A screen
+    # with a fold or stage breaks goes in as its pieces (layout_values).
     for ph, key in SCREEN_PLACEHOLDERS.items():
         values[ph] = view[key]
+    values.update(layout_values(view, layout))
 
     # The template is checked BEFORE anything is filled in, so a "{{AD}}" inside
     # a title or a mockup is never mistaken for a placeholder of the template.
@@ -1349,17 +2541,23 @@ def build(template_text, scenario, warnings=None, lang=None):
     if unknown:
         die("template has placeholders this tool does not fill: %s" % ", ".join(unknown))
 
-    # Drop the line of a placeholder that fills with nothing (an absent shift
-    # note or footer) so the delivered source carries no whitespace-only line.
-    # Done on the template, not on the filled card: the mockups are inserted
-    # byte for byte and their own blank lines are not ours to remove.
+    # Drop the line of a placeholder that fills with nothing (no brand override)
+    # so the delivered source carries no whitespace-only line. Done on the
+    # template, not on the filled card: the mockups are inserted byte for byte
+    # and their own blank lines are not ours to remove.
     for ph, value in values.items():
         if value == "":
-            text = re.sub(r"(?m)^[ \t]+%s[ \t]*\n" % re.escape(ph), "", text)
+            text = re.sub(r"(?m)^[ \t]*%s[ \t]*\n" % re.escape(ph), "", text)
 
-    # One pass. Inserted text is never scanned again: a footer note that says
-    # "{{VARIANT_B_SCREEN}}" stays a footer note.
+    # One pass. Inserted text is never scanned again: a title that says
+    # "{{VARIANT_B_SCREEN}}" stays a title.
     text = PLACEHOLDER_RE.sub(lambda m: values[m.group(0)], text)
+
+    # A proposal resting on an unverified critical fact is delivered marked as
+    # such: the ribbon and the meta are part of the final bytes, so the mockup
+    # reviewer reviews (and its stamp approves) the card as the user sees it.
+    if view["critical_assumptions"]:
+        text = conditional_html(text, view["lang"])
 
     # After the strip, so it survives; before <html>, so it is the first thing
     # anyone reading the source sees. Case-insensitive on purpose: `<!doctype`
@@ -1374,60 +2572,37 @@ def build(template_text, scenario, warnings=None, lang=None):
     return text
 
 
-def strip_mockup_region(text):
-    """Drop everything between the mockups block and the copy block.
-
-    That region is the only part of the card whose *skeleton* legitimately
-    differs between builds: the device swaps the frame. Excluding it by
-    boundary — rather than by guessing which lines mention 'phone' — keeps the
-    drift check honest about everything else.
-    """
-    start = text.find('<div class="mockups">')
-    end = text.find('<div class="copy">')
-    if start == -1 or end == -1 or end < start:
-        return text
-    return text[:start] + text[end:]
-
-
-def fixed_lines(template_text):
+def fixed_lines(template_text, device="phone", bottom_nav=False, layout=None):
     """Lines of the template that must survive verbatim into the built card.
 
-    Excluded: placeholder lines (swappable by design: language, device, headers,
-    footer, brand override), developer comments (intentionally dropped), blank
-    lines, and the mockup region (device-dependent). Everything else — every CSS
-    rule, the box skeleton, the pills — is checked.
+    The template is first turned into the card's frame (apply_frame: the
+    device swaps the phone skeleton for a browser or adds the address bar, a
+    native phone keeps its tab bar only when the record names its tabs), so the
+    frames and the pills are checked like everything else. Excluded:
+    placeholder lines (language, device, title, the mockups, the brand
+    override), developer comments (intentionally dropped) and blank lines.
     """
-    stripped = strip_mockup_region(COMMENT_RE.sub("", template_text))
-    out = []
-    for line in stripped.splitlines():
-        if "{{" in line:
-            continue
-        if not line.strip():
-            continue
-        out.append(line)
-    return out
+    text = apply_layout(apply_frame(COMMENT_RE.sub("", template_text), device, bottom_nav), layout)
+    return [line for line in text.splitlines() if line.strip() and "{{" not in line]
 
 
-def self_verify(built_text, template_text, device=None, variants=None):
+def self_verify(built_text, template_text, device="phone", bottom_nav=False, variants=None, layout=None):
     """Refuse to emit a card that drifted from the template's fixed skeleton,
     or that carries executable markup.
 
-    `device` is accepted for call-site symmetry but no longer changes the check:
-    the device-dependent region is excluded structurally by fixed_lines().
+    `device` and `bottom_nav` name the frame the card was built with (the
+    view's device and has_bottom_nav()), `layout` its layout (layout_of());
+    fixed_lines() applies the same frame and layout.
 
     `variants` are the two raw mockup strings. The allowlist in build() is the
     gate; this is the second layer behind it. Tag-shaped patterns (<script,
     <iframe …) are searched in the whole built card, where escaped text can
     never match them. Scheme and handler patterns are searched inside the tags
     of the raw variants only, after entity decoding and with whitespace and
-    control characters removed: a box label or a line of mockup text saying
+    control characters removed: a title or a line of mockup text saying
     "JavaScript:" is ordinary text, a "jav&#x61;script:" in an attribute is not.
     """
-    haystack = strip_mockup_region(built_text)
-    missing = []
-    for line in fixed_lines(template_text):
-        if line not in haystack:
-            missing.append(line.strip())
+    missing = [line.strip() for line in fixed_lines(template_text, device, bottom_nav, layout) if line not in built_text]
     if missing:
         preview = "\n  ".join(missing[:5])
         die(
@@ -1457,9 +2632,9 @@ FRAME_MSG = {
                    "card.bottom_nav: yalnızca device 'phone' (yerel uygulama) ile kullanılır; '{device}' çerçevesinde "
                    "sekme çubuğu çizilmez"),
     "url": ("card.url: device '{device}' draws an address bar; give the domain (if it was not visible, use a "
-            "representative one and say so in footer_notes)",
-            "card.url: device '{device}' adres çubuğu çizer; alan adını yazın (görünmüyorsa temsilî bir adres yazıp "
-            "footer_notes'ta belirtin)"),
+            "representative one)",
+            "card.url: device '{device}' adres çubuğu çizer; alan adını yazın (görünmüyorsa temsilî bir adres "
+            "yazın)"),
     "nav_active": ("card.bottom_nav_active: {val!r} names no tab in bottom_nav; give a tab's label or its 0-based index",
                    "card.bottom_nav_active: {val!r} bottom_nav'daki hiçbir sekmeyle eşleşmiyor; sekmenin adını ya da "
                    "0 tabanlı sırasını yazın"),
@@ -1485,65 +2660,357 @@ def frame_problems(device, url, bottom_nav, bottom_nav_active=None, lang="en"):
     return out
 
 
-LEGACY_BOXES = ("test_items", "kpi_items", "dont_items")
-MIN_BOX_ITEMS = 3
-
-
-def is_scenario_shape(scenario):
-    """The canonical shape carries `kpis` and/or a `card` object; the legacy
-    flat shape carries kpi_items and the card fields at the top level."""
-    return isinstance(scenario.get("kpis"), list) or isinstance(scenario.get("card"), dict)
-
-
 def preflight(scenario, lang="en"):
     """What must hold before a card is built. Returns (errors, warnings).
 
-    The scenario shape goes through the same validator the skills run
-    (validate_scenario_json): the builder used to enforce ring counts only, so
-    empty boxes, four primary KPIs or a null list item all produced a card.
-    The legacy flat shape has no schema; its three boxes are checked here.
+    The record goes through the same validator the skills run
+    (validate_scenario_json), whatever its shape: only scenario records build.
+    A record without `card` gets one more error saying what a card needs.
     """
-    errors, warnings = [], []
-    if is_scenario_shape(scenario):
-        if not isinstance(scenario.get("card"), dict):
-            return [_t("the scenario has no `card` object. It can be a valid scenario as it is "
-                       "(validate_scenario_json.py checks it without one), but a card needs card.variant_a, "
-                       "card.variant_b and card.difference: add `card` at render time",
-                       "senaryoda `card` nesnesi yok. Senaryo bu hâliyle geçerli olabilir (validate_scenario_json.py "
-                       "onu kartsız da denetler), ama kart için card.variant_a, card.variant_b ve card.difference "
-                       "gerekir: `card` nesnesini çizim aşamasında ekleyin", lang)], warnings
-        # Imported here, not at module level: the validator imports this module.
-        import validate_scenario_json as vsj
-        schema = vsj.load_schema()
-        errors = vsj.validate(scenario, schema, lang)
-        warnings = vsj.lint(scenario, schema, lang, include_card=False)
-        return errors, warnings
-
-    for box in LEGACY_BOXES:
-        items = scenario.get(box)
-        if not isinstance(items, list) or len(items) < MIN_BOX_ITEMS:
-            have = len(items) if isinstance(items, list) else 0
-            errors.append(_t("%s: has %d item(s), a box needs at least %d",
-                             "%s: %d madde var, bir kutuda en az %d olmalı", lang) % (box, have, MIN_BOX_ITEMS))
-            continue
-        for i, item in enumerate(items):
-            if isinstance(item, str):
-                ok = bool(item.strip())
-            elif isinstance(item, dict):
-                ok = isinstance(item.get("text"), str) and bool(item["text"].strip())
-            else:
-                ok = False
-            if not ok:
-                errors.append(_t("%s[%d]: a box item is a non-empty string or {label, text} with a non-empty text, got %r",
-                                 "%s[%d]: kutu maddesi boş olmayan bir metin ya da metni dolu bir {label, text} olmalı, "
-                                 "gelen %r", lang) % (box, i, item))
-    device = scenario.get("device") or "phone"
-    errors += frame_problems(device, scenario.get("url"), scenario.get("bottom_nav"),
-                             scenario.get("bottom_nav_active"), lang)
-    if not scenario.get("difference"):
-        warnings.append(_t("no `difference` (change / add / move / remove): ring placement was not checked",
-                           "`difference` yok (change / add / move / remove): halka yerleşimi denetlenmedi", lang))
+    # Imported here, not at module level: the validator imports this module.
+    import validate_scenario_json as vsj
+    schema = vsj.load_schema()
+    errors = vsj.validate(scenario, schema, lang)
+    warnings = vsj.lint(scenario, schema, lang, include_card=False)
+    if not isinstance(scenario.get("card"), dict):
+        errors.append(_t(*NO_CARD_MSG, lang=lang))
     return errors, warnings
+
+
+# ------------------------------------------------- fingerprints and review gates
+#
+# Two stamps in the record's `review`, each written only on a PASS:
+#   review.scenario_critic.fingerprint = record_fingerprint(record)
+#       (validate_scenario_json.py; the record without `review` and `card`)
+#   review.mockup_reviewer.fingerprint = sha256 of the exact bytes the final
+#       build writes (html_fingerprint of final_html()), printed by --draft
+# A draft needs the first, a final build both. Any edit after a review changes
+# the fingerprint it approved, by design: the edit goes back to that reviewer.
+
+REVIEWERS = {"scenario_critic": "scenario-critic", "mockup_reviewer": "mockup-reviewer"}
+FINGERPRINT_RE = re.compile(r"^[0-9a-f]{64}$")
+DRAFT_BANNER = {"tr": "TASLAK · incelenmedi", "en": "DRAFT · not reviewed"}
+# The draft marker is a tab hanging from the card's top edge at its right
+# corner, inside the card's 40px top padding: absolutely positioned, so it
+# overlays the card without moving anything in it (the draft lays out exactly
+# like the final card it stands for) and covers no content.
+DRAFT_RIBBON_STYLE = ("position:absolute;top:0;right:48px;z-index:20;padding:8px 14px;border-radius:0 0 8px 8px;"
+                      "background:#b42318;color:#ffffff;font:700 13px/1 -apple-system,\"Segoe UI\",Inter,Roboto,"
+                      "\"Helvetica Neue\",Arial,sans-serif;letter-spacing:.04em;white-space:nowrap;pointer-events:none")
+CARD_OPEN_RE = re.compile(r'<div class="card"[^>]*>\n')
+MANIFEST_SUFFIX = ".manifest.json"
+
+# A record with at least one critical assumption (`assumptions[].type ==
+# "critical"`: feasibility, legality or single-variable status rests on a fact
+# the user hasn't confirmed) builds a CONDITIONAL card. Unlike the draft
+# ribbon this one is part of the final card: the user sees that the proposal
+# waits on an answer. It hangs from the card's top edge at the LEFT corner, so
+# on the draft of a conditional card both ribbons show; like the draft ribbon
+# it is absolutely positioned inside the card's 40px top padding and moves
+# nothing. Light on purpose (a small amber note, not a second title): amber
+# text on a light amber surface with a thin amber border, 12px, 7.0:1. Once the
+# user confirms, the assumption leaves the record (critic again), and the card
+# builds without the ribbon.
+CONDITIONAL_BANNER = {"tr": "KOŞULLU · doğrulama gerekli", "en": "CONDITIONAL · needs verification"}
+CONDITIONAL_SUMMARY = "conditional card (not implementation-ready)"
+CONDITIONAL_META = '<meta name="abtest-status" content="conditional">\n'
+CONDITIONAL_RIBBON_STYLE = ("position:absolute;top:0;left:48px;z-index:20;padding:5px 10px;border:1px solid #fcd34d;"
+                            "border-top:0;border-radius:0 0 6px 6px;background:#fffbeb;color:#92400e;"
+                            "font:600 12px/1 -apple-system,\"Segoe UI\",Inter,Roboto,\"Helvetica Neue\",Arial,sans-serif;"
+                            "letter-spacing:.02em;white-space:nowrap;pointer-events:none")
+
+
+def critical_assumptions(scenario):
+    """The record's well-formed critical assumptions (`assumptions` items whose
+    type is "critical"). Tolerant: no field, or a field of another shape, is
+    none (the validator reports the shape)."""
+    items = scenario.get("assumptions") if isinstance(scenario, dict) else None
+    if not isinstance(items, list):
+        return []
+    return [a for a in items if isinstance(a, dict) and a.get("type") == "critical"]
+
+
+def is_conditional(scenario):
+    """True when the record's card is built as a conditional card."""
+    return bool(critical_assumptions(scenario))
+
+
+def conditional_html(text, card_lang="tr"):
+    """A filled card plus the conditional ribbon and <meta name="abtest-status"
+    content="conditional">: the meta closes <head>, the ribbon is its own line
+    right after the card's opening tag. Nothing else changes."""
+    head_end = text.find("</head>")
+    card = CARD_OPEN_RE.search(text)
+    if head_end < 0 or card is None or card.start() < head_end:
+        die("template has no <head>…</head> and <div class=\"card\">: the conditional ribbon and meta tag have "
+            "nowhere to go")
+    ribbon = '  <div id="abtest-conditional" role="note" style="%s">%s</div>\n' % (
+        escape(CONDITIONAL_RIBBON_STYLE), escape(CONDITIONAL_BANNER.get(card_lang, CONDITIONAL_BANNER["en"])))
+    text = text[:head_end] + CONDITIONAL_META + text[head_end:]
+    card = CARD_OPEN_RE.search(text)
+    return text[:card.end()] + ribbon + text[card.end():]
+
+
+def html_fingerprint(text):
+    """sha256 hex of the bytes a card file holds (UTF-8, written as is)."""
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def final_html(template_text, scenario, lang=None):
+    """The final card, built and self-verified in memory: (html, manifest, warnings).
+
+    Dies on anything a gate refuses. The draft and the final build both start
+    from this, so the bytes a mockup reviewer approves are the bytes the final
+    build writes.
+    """
+    warnings, manifest = [], {}
+    built = build(template_text, scenario, warnings=warnings, lang=lang, manifest=manifest)
+    view = normalize(scenario)
+    self_verify(built, template_text, view["device"], has_bottom_nav(view),
+                variants=(view["variant_a"], view["variant_b"]), layout=layout_of(view))
+    return built, manifest, warnings
+
+
+def final_fingerprint(template_text, scenario, lang=None):
+    """The fingerprint a mockup-reviewer stamp must carry for this record and template."""
+    return html_fingerprint(final_html(template_text, scenario, lang)[0])
+
+
+def draft_html(final_text, fingerprint, card_lang="tr"):
+    """The final card plus the draft ribbon and the two draft meta tags.
+
+    The ribbon is its own line right after the card's opening tag; the meta
+    tags close <head>. Nothing else of the final card changes. On a
+    conditional card the draft's metas go in just before the conditional
+    meta, so the first abtest-status a reader finds says "draft".
+    """
+    head_end = final_text.find("</head>")
+    card = CARD_OPEN_RE.search(final_text)
+    if head_end < 0 or card is None or card.start() < head_end:
+        die("template has no <head>…</head> and <div class=\"card\">: the draft ribbon and meta tags have "
+            "nowhere to go")
+    metas = ('<meta name="abtest-status" content="draft">\n'
+             '<meta name="abtest-final-fingerprint" content="%s">\n' % fingerprint)
+    ribbon = '  <div id="abtest-draft" role="status" style="%s">%s</div>\n' % (
+        escape(DRAFT_RIBBON_STYLE), escape(DRAFT_BANNER.get(card_lang, DRAFT_BANNER["en"])))
+    at = final_text.find(CONDITIONAL_META, 0, head_end)
+    at = head_end if at < 0 else at
+    text = final_text[:at] + metas + final_text[at:]
+    card = CARD_OPEN_RE.search(text)
+    return text[:card.end()] + ribbon + text[card.end():]
+
+
+def record_fingerprint_of(record):
+    """validate_scenario_json.record_fingerprint, the one definition of it."""
+    import validate_scenario_json as vsj  # here, not at module level: the validator imports this module
+    fn = getattr(vsj, "record_fingerprint", None)
+    if fn is None:
+        die("validate_scenario_json.py has no record_fingerprint(); the record's fingerprint can't be computed")
+    return fn(record)
+
+
+STAMP_MSG = {
+    "missing_critic": ("missing review stamp: review.scenario_critic. Run scenario-critic on the record; on PASS "
+                       "stamp {{\"verdict\": \"PASS\", \"fingerprint\": <what validate_scenario_json.py "
+                       "--fingerprint prints>}}",
+                       "inceleme damgası eksik: review.scenario_critic. Kaydı scenario-critic'e inceletin; PASS "
+                       "gelirse {{\"verdict\": \"PASS\", \"fingerprint\": <validate_scenario_json.py --fingerprint "
+                       "çıktısı>}} damgasını ekleyin"),
+    "missing_mockup": ("missing review stamp: review.mockup_reviewer. Build the draft (--draft), have mockup-reviewer "
+                       "review the draft and its manifest; on PASS stamp the final fingerprint the draft build printed",
+                       "inceleme damgası eksik: review.mockup_reviewer. Taslağı kurun (--draft), taslağı ve "
+                       "manifestini mockup-reviewer'a inceletin; PASS gelirse taslak kurulumunun yazdığı nihai parmak "
+                       "izini damgalayın"),
+    "verdict": ("review.{key}.verdict is {val!r}: only a PASS is ever stamped (FIX and RET go back to {name})",
+                "review.{key}.verdict değeri {val!r}: yalnızca PASS damgalanır (FIX ve RET {name} adımına geri döner)"),
+    "format": ("review.{key}.fingerprint must be a sha256 hex string (64 lowercase characters), got {val!r}",
+               "review.{key}.fingerprint bir sha256 onaltılık dizesi olmalı (64 küçük harf karakter), gelen {val!r}"),
+    "stale_critic": ("review.scenario_critic.fingerprint ({val}…) doesn't match the record: the record changed after "
+                     "scenario-critic reviewed it, so it goes back to scenario-critic",
+                     "review.scenario_critic.fingerprint ({val}…) kayıtla eşleşmiyor: kayıt scenario-critic "
+                     "incelemesinden sonra değişmiş, yeniden scenario-critic'e gider"),
+    "stale_mockup": ("review.mockup_reviewer.fingerprint ({val}…) doesn't match the card this build would write: the "
+                     "record's card, its text or the template changed after mockup-reviewer reviewed the draft; build "
+                     "a new draft and have it reviewed",
+                     "review.mockup_reviewer.fingerprint ({val}…) bu kurulumun yazacağı kartla eşleşmiyor: "
+                     "mockup-reviewer taslağı inceledikten sonra kaydın kartı, metni ya da şablon değişmiş; yeni bir "
+                     "taslak kurup inceletin"),
+}
+
+
+def _sm(msg_id, lang, **kw):
+    en, tr = STAMP_MSG[msg_id]
+    return (tr if lang == "tr" else en).format(**kw)
+
+
+def stamp_problems(scenario, key, expected, lang="en"):
+    """Why review.<key> doesn't approve `expected` (a fingerprint), or []."""
+    review = scenario.get("review")
+    stamp = review.get(key) if isinstance(review, dict) else None
+    if not isinstance(stamp, dict):
+        return [_sm("missing_critic" if key == "scenario_critic" else "missing_mockup", lang)]
+    if stamp.get("verdict") != "PASS":
+        return [_sm("verdict", lang, key=key, val=stamp.get("verdict"), name=REVIEWERS[key])]
+    fp = stamp.get("fingerprint")
+    if not isinstance(fp, str) or not FINGERPRINT_RE.match(fp):
+        return [_sm("format", lang, key=key, val=fp)]
+    if fp != expected:
+        return [_sm("stale_critic" if key == "scenario_critic" else "stale_mockup", lang, val=fp[:12])]
+    return []
+
+
+def manifest_document(scenario, view, manifest, final_fp, record_fp, draft_path):
+    """The JSON written next to a draft: what the mockup reviewer checks item by item."""
+    numeric = view.get("numeric_change")
+    return {
+        "format": MANIFEST_FORMAT,
+        "version": MANIFEST_VERSION,
+        "draft": os.path.basename(draft_path),
+        "id": scenario.get("id"),
+        "title": scenario.get("title"),
+        "variable": view.get("variable"),
+        "difference": view.get("difference"),
+        # What the mockups are drawn from: shared_page → compare A with the shared page.
+        "mockup_basis": view.get("mockup_basis"),
+        "numeric_change": numeric if isinstance(numeric, str) and numeric.strip() else None,
+        "record_fingerprint": record_fp,
+        "final_fingerprint": final_fp,
+        "rings": manifest.get("rings", []),
+        "changes": manifest.get("changes", []),
+    }
+
+
+GATES = {
+    "validator": ("record validation", "kayıt doğrulaması"),
+    "card": ("card checks", "kart denetimleri"),
+    "review": ("review stamps", "inceleme damgaları"),
+}
+
+
+def build_summary(built, view):
+    """The build's one-line summary; a conditional card says so."""
+    summary = "%d bytes, device=%s, lang=%s, difference=%s" % (
+        len(built.encode("utf-8")), view["device"], view["lang"], view["difference"] or "-")
+    n = view.get("critical_assumptions") or 0
+    if n:
+        summary += ", %s: %d critical assumption%s" % (CONDITIONAL_SUMMARY, n, "" if n == 1 else "s")
+    return summary
+
+
+class _Refused(Exception):
+    """A gate refused the build. `problems` are printed by main(); empty when
+    the refusing stage (a die() inside it) has printed its own message."""
+
+    def __init__(self, gate, problems=(), header=None):
+        Exception.__init__(self, gate)
+        self.gate, self.problems, self.header = gate, list(problems), header
+
+
+def _gate(gate, fn, *args, **kw):
+    """Run one stage; a die() inside it is a refusal at `gate`."""
+    try:
+        return fn(*args, **kw)
+    except SystemExit as exc:
+        if exc.code in (0, None):
+            raise
+        raise _Refused(gate)
+
+
+def _not_written(gate, paths, lang):
+    """The closing lines of every failure: which gate, and that nothing changed on disk."""
+    if gate is not None:
+        name = GATES[gate][1 if lang == "tr" else 0]
+        sys.stderr.write(_t("build_card: REFUSED at the “%s” gate; nothing was written.\n",
+                            "build_card: “%s” kapısında REDDEDİLDİ; hiçbir şey yazılmadı.\n", lang) % name)
+    for path in paths:
+        if os.path.exists(path):
+            sys.stderr.write(_t("build_card: %s already exists and was NOT updated.\n",
+                                "build_card: %s zaten var ve GÜNCELLENMEDİ.\n", lang) % path)
+
+
+def _write_all(files):
+    """Write every (path, text) or none: each goes to a temporary file in its
+    directory first, and all are moved into place only once all are written."""
+    import tempfile
+    # mkstemp creates the file 0600; a card is an ordinary file, so give it the
+    # permissions open() would (0666 minus the umask), or a local web server running
+    # as another user can't read it.
+    umask = os.umask(0)
+    os.umask(umask)
+    staged = []
+    try:
+        for path, text in files:
+            directory = os.path.dirname(os.path.abspath(path))
+            if not os.path.isdir(directory):
+                os.makedirs(directory, exist_ok=True)
+            fd, tmp = tempfile.mkstemp(dir=directory, prefix=".build_card-", suffix=".tmp")
+            with os.fdopen(fd, "wb") as fh:  # bytes: the fingerprint is of exactly these bytes
+                fh.write(text.encode("utf-8"))
+            os.chmod(tmp, 0o666 & ~umask)
+            staged.append((tmp, path))
+        for tmp, path in staged:
+            os.replace(tmp, path)
+    finally:
+        for tmp, _ in staged:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+
+
+def _run(args, lang):
+    for path in (args.template, args.scenario):
+        if not os.path.isfile(path):
+            die("no such file: %s" % path)
+    with open(args.template, encoding="utf-8") as fh:
+        template_text = fh.read()
+    with open(args.scenario, encoding="utf-8") as fh:
+        try:
+            scenario = json.load(fh)
+        except json.JSONDecodeError as exc:
+            die("scenario is not valid JSON: %s" % exc)
+    if not isinstance(scenario, dict) or not scenario.get("title"):
+        die("scenario is missing required field: title")
+
+    errors, warnings = preflight(scenario, lang)
+    if errors:
+        raise _Refused("validator", errors, header=_t(
+            "the scenario was refused (%d problem(s)):", "senaryo reddedildi (%d sorun):", lang) % len(errors))
+
+    built, manifest, notes = _gate("card", final_html, template_text, scenario, lang)
+    warnings += notes
+    view = normalize(scenario)
+    final_fp = html_fingerprint(built)
+
+    record_fp = _gate("validator", record_fingerprint_of, scenario)
+    problems = stamp_problems(scenario, "scenario_critic", record_fp, lang)
+    if not args.draft:
+        problems += stamp_problems(scenario, "mockup_reviewer", final_fp, lang)
+    if problems:
+        raise _Refused("review", problems, header=_t(
+            "the %s build was refused:" % ("draft" if args.draft else "final"),
+            "taslak kurulumu reddedildi:" if args.draft else "nihai kurulum reddedildi:", lang))
+
+    summary = build_summary(built, view)
+    if args.draft:
+        draft = draft_html(built, final_fp, view["lang"])
+        manifest_path = args.out + MANIFEST_SUFFIX
+        doc = manifest_document(scenario, view, manifest, final_fp, record_fp, args.out)
+        _write_all([(args.out, draft), (manifest_path, json.dumps(doc, ensure_ascii=False, indent=2) + "\n")])
+        print("draft: %s (%s%s)" % (args.out, summary, ", %d warning(s)" % len(warnings) if warnings else ""))
+        print("manifest: %s (%d change(s) inside %d ring(s))" % (manifest_path, len(doc["changes"]), len(doc["rings"])))
+        print("final fingerprint: %s" % final_fp)
+        stale = stamp_problems(scenario, "mockup_reviewer", final_fp, lang)
+        review = scenario.get("review") if isinstance(scenario.get("review"), dict) else {}
+        if stale and "mockup_reviewer" in review:
+            warnings.append(stale[0])
+    else:
+        _write_all([(args.out, built)])
+        print("built %s (%s%s)" % (args.out, summary, ", %d warning(s)" % len(warnings) if warnings else ""))
+        print("final fingerprint: %s" % final_fp)
+        print(_t("reviews: scenario-critic PASS, mockup-reviewer PASS (both stamps match)",
+                 "incelemeler: scenario-critic PASS, mockup-reviewer PASS (iki damga da eşleşiyor)", lang))
+    for note in warnings:
+        warn(note)
+    return 0
 
 
 def main(argv):
@@ -1552,47 +3019,26 @@ def main(argv):
     ap.add_argument("--template", required=True, help="path to templates/scenario-card.html")
     ap.add_argument("--scenario", required=True, help="JSON file describing the scenario")
     ap.add_argument("--out", required=True, help="path to write the card to")
+    ap.add_argument("--draft", action="store_true",
+                    help="build the review draft (ribbon, meta tags, <out>.manifest.json) instead of the final card")
     ap.add_argument("--lang", choices=("en", "tr"), default="en",
                     help="language of this tool's messages (default: en)")
     args = ap.parse_args(argv)
     _MSG_LANG = args.lang
-
-    for path in (args.template, args.scenario):
-        if not os.path.isfile(path):
-            die("no such file: %s" % path)
-
-    with open(args.template, encoding="utf-8") as fh:
-        template_text = fh.read()
-    with open(args.scenario, encoding="utf-8") as fh:
-        try:
-            scenario = json.load(fh)
-        except json.JSONDecodeError as exc:
-            die("scenario is not valid JSON: %s" % exc)
-
-    if not isinstance(scenario, dict) or not scenario.get("title"):
-        die("scenario is missing required field: title")
-
-    errors, warnings = preflight(scenario, args.lang)
-    if errors:
-        die(_t("the scenario was refused (%d problem(s)); no card was written:\n  - ",
-               "senaryo reddedildi (%d sorun); kart yazılmadı:\n  - ") % len(errors) + "\n  - ".join(errors))
-
-    built = build(template_text, scenario, warnings=warnings)
-    view = normalize(scenario)
-    self_verify(built, template_text, view["device"], variants=(view["variant_a"], view["variant_b"]))
-
-    out_dir = os.path.dirname(os.path.abspath(args.out))
-    if out_dir and not os.path.isdir(out_dir):
-        os.makedirs(out_dir, exist_ok=True)
-    with open(args.out, "w", encoding="utf-8") as fh:
-        fh.write(built)
-
-    for note in warnings:
-        warn(note)
-    print("built %s (%d bytes, device=%s, lang=%s, difference=%s%s)" % (
-        args.out, len(built.encode("utf-8")), view["device"], view["lang"],
-        view["difference"] or "-", ", %d warning(s)" % len(warnings) if warnings else ""))
-    return 0
+    lang = args.lang
+    paths = [args.out] + ([args.out + MANIFEST_SUFFIX] if args.draft else [])
+    try:
+        return _run(args, lang)
+    except _Refused as refusal:
+        if refusal.problems:
+            sys.stderr.write("build_card: %s\n  - %s\n" % (
+                refusal.header or _t("refused:", "reddedildi:", lang), "\n  - ".join(refusal.problems)))
+        _not_written(refusal.gate, paths, lang)
+        return 1
+    except SystemExit as exc:
+        if exc.code not in (0, None):
+            _not_written(None, paths, lang)
+        raise
 
 
 if __name__ == "__main__":

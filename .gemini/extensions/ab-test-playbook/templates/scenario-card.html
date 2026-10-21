@@ -6,205 +6,285 @@
 <title>{{TITLE}}</title>
 <style>
   :root{
-    --teal:#08616b; --amber:#6b3804; --navy:#17086b;
-    --body:rgba(0,0,0,.6); --ink:#111;
-    --red:#e62d37;
-    --brand:#ff6a00; --on-brand:#fff; --brand-name:"";
+    --text:#111827; --text-2:#374151; --muted:#6b7280;
+    --line:#e5e7eb; --line-2:#d1d5db; --surface:#ffffff; --surface-2:#f9fafb;
+    --link:#2563eb; --success:#15803d; --warning:#b45309; --ring:#e11d48;
+    --brand:#1f2937; --on-brand:#ffffff; --brand-name:"";
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--ink)}
-  .card{width:1600px;min-height:900px;display:flex;gap:36px;padding:44px;background:#fff}
-  /* sol sütun: mockup çifti + altında alt bilgi (metin sütunu daha uzun olduğunda boş kalan yeri kullanır) */
-  .left{flex:0 0 54%;min-width:0;display:flex;flex-direction:column;gap:16px}
+  html,body{background:#f4f5f7}
+  body{font-family:-apple-system,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--text);
+       -webkit-font-smoothing:antialiased}
 
-  /* ---- sol: mockup çifti ---- */
-  .mockups{flex:1 0 auto;min-width:0;display:flex;gap:28px;background:#f4f4f5;border-radius:28px;padding:56px 28px 28px;position:relative}
-  .variant{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;position:relative}
-  .pill{position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:#5cf679;color:#0b3512;font-weight:700;font-size:15px;
-        padding:7px 20px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.12);white-space:nowrap}
-  .phone{width:300px;max-width:100%;height:640px;background:#fff;border-radius:32px;box-shadow:0 16px 50px rgba(12,12,13,.10);
-         padding:14px 14px 0;display:flex;flex-direction:column;overflow:hidden;position:relative;margin-top:14px}
-  .statusbar{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:600;color:#111;padding:2px 6px 10px}
-  .sb-icons{display:flex;align-items:center;gap:5px}
-  .sig{display:inline-block;width:15px;height:9px;background:#111;clip-path:polygon(0 100%,100% 0,100% 100%)}
-  .batt{display:inline-block;position:relative;width:21px;height:10px;border:1.5px solid #111;border-radius:3px;padding:1px}
-  .batt::before{content:"";display:block;width:72%;height:100%;background:#111;border-radius:1px}
-  .batt::after{content:"";position:absolute;right:-4px;top:2px;width:2px;height:3.5px;background:#111;border-radius:0 1px 1px 0}
+  /* ---- kart: 1600 × 900, başlık + iki sütun ---- */
+  .card{position:relative;width:1600px;height:900px;overflow:hidden;padding:40px 48px;background:#f4f5f7;
+        display:flex;flex-direction:column;gap:28px}
+  .title{flex:0 0 auto;font-size:30px;line-height:1.25;font-weight:650;letter-spacing:-.01em;color:#111827}
+  /* Sahne başlığın altındaki alanın tamamı; iki sütun tek satırdır, satır içerik kadar uzun (en fazla
+     sahne) ve sahnede dikey ortalanır: A ile B hep aynı y'de başlar, kısa ekranda boşluk alta yığılmaz. */
+  .stage{flex:1 1 0;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+         grid-template-rows:minmax(0,max-content);align-content:center;column-gap:48px}
+  .variant{min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .pill{flex:0 0 auto;font-size:14px;font-weight:600;line-height:1;padding:7px 16px;border-radius:999px;white-space:nowrap}
+  /* İki hap aynı biçimdedir, yalnızca metin farklı: hiçbir kolda kazanan rengi yok. */
+  .pill-a,.pill-b{background:#ffffff;border:1px solid #d1d5db;color:#111827}
+
+  /* ---- telefon çerçevesi (device: phone, phone-web): ekran 420px, yükseklik = içerik ----
+     zoom:1.2 çerçeveyi bütün olarak 504px'e büyütür (oranlar korunur): telefon sütunun ~%70'ini kaplar,
+     değişken kolay okunur. İçerik en fazla ~590px (ölçeklenmiş ~710px) olabilir; aşarsa render_check hata verir. */
+  .phone{zoom:1.2;--fs:15px;--fs-sm:13px;--fs-ctl:14px;--fs-h:19px;--fs-lg:17px;--fs-xl:26px;--tap:44px;--tap-sm:44px;
+         flex:0 1 auto;min-height:0;width:420px;max-width:100%;display:flex;flex-direction:column;overflow:hidden;
+         background:#ffffff;border:1px solid #d1d5db;border-radius:36px;
+         box-shadow:0 1px 2px rgba(17,24,39,.05),0 12px 32px rgba(17,24,39,.08)}
+  /* card.phone_scale: 1 → çerçeve büyütülmez (420px): uzun bir form ya da ekran sahneye sığsın diye; varsayılan 1.2;
+     1.4 → kısa bir ekran sahnenin çoğunu boş bırakmasın diye büyütülür. Devam yaprağı (.below) aynı ölçekle çizilir. */
+  .card[data-phone-scale="1"] .phone{zoom:1}
+  .card[data-phone-scale="1.4"] .phone{zoom:1.4}
+  .statusbar{flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;padding:16px 30px 10px;
+             font-size:14px;font-weight:600;line-height:1;color:#111827}
+  .sb-icons{display:flex;align-items:center;gap:6px}
+  .sig{display:inline-block;width:17px;height:11px;background:#111827;clip-path:polygon(0 100%,100% 0,100% 100%)}
+  .batt{display:inline-block;position:relative;width:25px;height:12px;border:1.5px solid #111827;border-radius:4px;padding:1.5px}
+  .batt::before{content:"";display:block;width:75%;height:100%;background:#111827;border-radius:1.5px}
+  .batt::after{content:"";position:absolute;right:-4px;top:2.5px;width:2px;height:4px;background:#111827;border-radius:0 1px 1px 0}
   /* mobil tarayıcı adres çubuğu (device: phone-web) */
-  .m-addr{display:flex;align-items:center;justify-content:center;gap:5px;height:26px;margin:0 2px 10px;border-radius:9px;
-          background:#efeff1;font-size:10.5px;color:#3a3a40;flex:0 0 auto}
-  .lock{display:inline-block;position:relative;width:7px;height:6px;background:#55555c;border-radius:1.5px;margin-top:3px}
-  .lock::before{content:"";position:absolute;left:1px;top:-4px;width:5px;height:5px;border:1.3px solid #55555c;border-bottom:0;border-radius:3px 3px 0 0;box-sizing:border-box}
-  .screen{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;position:relative}
-  .ph{background:#e7e7ea;border-radius:8px}
-  .ph.img{height:120px;background:#dfe6ef}
-  .ph.hero{background:linear-gradient(135deg,#1d2b3a,#3b4f63);color:#fff;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px}
-  .ph.hero .r-h,.ph.hero .r-name,.ph.hero .r-price{color:#fff}
-  .ph.hero .r-sub,.ph.hero .r-meta,.ph.hero .r-help{color:rgba(255,255,255,.82)}
-  .bottomnav{display:flex;justify-content:space-around;border-top:1px solid #ececee;padding:10px 0 12px;margin-top:auto}
-  .bottomnav span{font-size:9px;color:#70707a}
+  .m-addr{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:7px;height:36px;margin:2px 16px 6px;
+          border-radius:12px;background:#f3f4f6;font-size:13px;color:#374151}
+  .lock{display:inline-block;position:relative;width:9px;height:7px;background:#4b5563;border-radius:1.5px;margin-top:4px}
+  .lock::before{content:"";position:absolute;left:1.5px;top:-5px;width:6px;height:6px;border:1.5px solid #4b5563;border-bottom:0;
+                border-radius:3px 3px 0 0;box-sizing:border-box}
+  .screen{flex:0 1 auto;min-height:0;overflow:hidden;position:relative;display:flex;flex-direction:column;gap:16px;
+          padding:14px 20px 20px;font-size:var(--fs);line-height:1.4;color:#111827}
+  /* Ekrandaki bloklar sığmayınca ezilmez, taşar (ve kesilir): taşma görünür kalır, render_check onu ölçer. */
+  .screen>*,.browser-screen>*{flex-shrink:0}
+  .bottomnav{flex:0 0 auto;display:flex;justify-content:space-around;border-top:1px solid #e5e7eb;padding:12px 8px 18px}
+  .bottomnav span{font-size:12px;font-weight:500;color:#6b7280}
   .bottomnav span.on{color:var(--brand);font-weight:700}
+  /* mobil tarayıcının alt araç çubuğu (card.mobile_toolbar, phone-web): iki kolda aynı, içerik değil çerçeve */
+  .m-toolbar{flex:0 0 auto;display:flex;flex-direction:column;border-top:1px solid #e5e7eb;background:#f9fafb}
+  .mt-row{display:flex;justify-content:space-around;align-items:center;height:44px;padding:0 24px}
+  .mt-row>span{position:relative;display:block;width:24px;height:24px}
+  .mt-back::before,.mt-fwd::before{content:"";position:absolute;top:7px;width:9px;height:9px;border-bottom:2px solid #4b5563}
+  .mt-back::before{left:8px;border-left:2px solid #4b5563;transform:rotate(45deg)}
+  .mt-fwd::before{left:5px;border-right:2px solid #4b5563;transform:rotate(-45deg)}
+  .mt-share::before{content:"";position:absolute;left:5px;top:9px;width:14px;height:12px;border:2px solid #4b5563;
+      border-top:0;border-radius:0 0 3px 3px}
+  .mt-share::after{content:"";position:absolute;left:11px;top:2px;width:2px;height:13px;background:#4b5563}
+  .mt-tabs::before,.mt-tabs::after{content:"";position:absolute;width:12px;height:12px;border:2px solid #4b5563;border-radius:3px}
+  .mt-tabs::before{left:4px;top:8px}
+  .mt-tabs::after{left:8px;top:4px;background:#f9fafb}
+  .m-home{display:flex;justify-content:center;align-items:center;height:22px}
+  .m-home>span{display:block;width:120px;height:5px;border-radius:3px;background:#111827}
+
+  /* ---- tarayıcı çerçevesi (device: web): sütun genişliği, yükseklik = içerik ---- */
+  .browser{--fs:14px;--fs-sm:13px;--fs-ctl:14px;--fs-h:18px;--fs-lg:16px;--fs-xl:24px;--tap:40px;--tap-sm:34px;
+           flex:0 1 auto;min-height:0;width:100%;display:flex;flex-direction:column;overflow:hidden;
+           background:#ffffff;border:1px solid #d1d5db;border-radius:14px;
+           box-shadow:0 1px 2px rgba(17,24,39,.05),0 12px 32px rgba(17,24,39,.08)}
+  .browser-bar{flex:0 0 auto;height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#f3f4f6;
+               border-bottom:1px solid #e5e7eb}
+  .browser-dot{width:11px;height:11px;border-radius:50%;background:#d1d5db}
+  .browser-url{flex:1;min-width:0;height:28px;margin-left:10px;display:flex;align-items:center;gap:7px;padding:0 12px;
+               background:#ffffff;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;color:#374151;
+               white-space:nowrap;overflow:hidden}
+  .browser-screen{flex:0 1 auto;min-height:0;overflow:hidden;position:relative;display:flex;flex-direction:column;gap:16px;
+                  padding:20px 24px 24px;font-size:var(--fs);line-height:1.45;color:#111827}
 
   /* ---- değişen öğe işareti ----
-     .hl değişen öğenin etrafına çizilir. Halka outline ile çizilir: kutu modeline
-     yer kaplamaz, bu yüzden halkalı ve halkasız varyant aynı hizada kalır.
-     Etiket halkanın dışına, sağ üst köşeye oturur; altta yer varsa data-pos="below". */
-  .hl{position:relative;border-radius:10px;outline:3px solid var(--red);outline-offset:4px;box-shadow:0 0 14px 3px rgba(230,45,55,.28)}
-  .hl[data-note]::after{content:attr(data-note);position:absolute;right:-7px;bottom:calc(100% + 7px);z-index:3;
-      background:var(--red);color:#fff;font-size:10.5px;font-weight:700;line-height:1;
-      padding:3px 7px;border-radius:5px;white-space:nowrap}
-  .hl[data-pos="below"]::after,.card[data-note-pos="below"] .hl:not([data-pos="above"])::after{bottom:auto;top:calc(100% + 7px)}
-  /* Mockup'ın altındaki tek satırlık not (kaldırma testinde B'de içeriğin yukarı kaydığı).
-     Ekranın İÇİNE değil, telefonun/tarayıcının ALTINA konur; build_card shift_note_a/b'den üretir. */
-  .shift-note{font-size:11.5px;color:#5a5a60;font-style:italic;text-align:center;margin-top:10px;max-width:100%}
+     Halka outline ile çizilir: yer kaplamaz, halkalı ve halkasız varyant aynı hizada kalır.
+     Parıltı ve dolgu yok. Etiket halkanın dışında, sağ üst köşesine oturur; data-pos="below"
+     (tek halka) ya da card.note_pos (tüm kart) onu alta alır. */
+  .hl{position:relative;border-radius:10px;outline:3px solid var(--ring);outline-offset:4px}
+  .hl[data-note]::after{content:attr(data-note);position:absolute;right:-7px;bottom:calc(100% + 4px);z-index:3;
+      background:var(--ring);color:#ffffff;font-size:12.5px;font-weight:600;line-height:1;letter-spacing:0;
+      padding:4px 9px;border-radius:999px;white-space:nowrap}
+  .hl[data-pos="below"]::after,.card[data-note-pos="below"] .hl:not([data-pos="above"])::after{bottom:auto;top:calc(100% + 4px)}
+  /* Yumuşak halka (.hl-soft): değişkenin bağlı sonucu, daha az vurgulu; etiketi beyaz zeminli çerçeveli hap. */
+  .hl-soft{position:relative;border-radius:10px;outline:2px dashed var(--ring);outline-offset:4px}
+  .hl-soft[data-note]::after{content:attr(data-note);position:absolute;right:-6px;bottom:calc(100% + 4px);z-index:3;
+      background:#ffffff;color:var(--ring);border:1px solid var(--ring);font-size:12px;font-weight:600;line-height:1;
+      padding:3px 8px;border-radius:999px;white-space:nowrap}
+  .hl-soft[data-pos="below"]::after,.card[data-note-pos="below"] .hl-soft:not([data-pos="above"])::after{bottom:auto;
+      top:calc(100% + 4px)}
 
-  /* ---- web/masaüstü mockup (device: web) ---- */
-  .browser{width:100%;max-width:560px;height:600px;background:#fff;border-radius:16px;box-shadow:0 16px 50px rgba(12,12,13,.10);
-            display:flex;flex-direction:column;overflow:hidden;position:relative;margin-top:14px}
-  .browser-bar{height:36px;background:#e8e8ea;display:flex;align-items:center;padding:0 14px;gap:6px;flex:0 0 auto}
-  .browser-dot{width:9px;height:9px;border-radius:50%;background:#d0d0d3}
-  .browser-url{flex:1;min-width:0;height:20px;background:#fff;border-radius:10px;margin-left:8px;overflow:hidden;white-space:nowrap;
-               display:flex;align-items:center;padding:0 10px;font-size:10px;color:#70707a}
-  .browser-screen{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;padding:16px;position:relative}
-  /* Web kartında mockup'lar genişler, metin sütunu sabit 580px kalır ve yazı biraz sıkılaşır:
-     iki masaüstü çerçeve yan yana sığar, kart yatay kalır, metin okunur. */
-  .card[data-device="web"] .left{flex:1 1 auto}
-  .card[data-device="web"] .mockups{padding:56px 20px 22px;gap:20px}
-  .card[data-device="web"] .copy{flex:0 0 580px;gap:16px}
-  .card[data-device="web"] h1{font-size:31px}
-  .card[data-device="web"] .desc{font-size:15px;line-height:1.45}
-  .card[data-device="web"] .box header{font-size:17px;padding:10px 20px}
-  .card[data-device="web"] .box ul{gap:5px;padding:12px 20px 14px}
-  .card[data-device="web"] .box li{font-size:14px;line-height:1.38}
+  /* ---- ilk ekran, sabit bar, devam yaprağı (phone, phone-web) ----
+     .r-fold ekranı böler: öncesi telefonda ilk ekran, sonrası telefonun altında devam yaprağı (.below).
+     .r-sticky ilk ekranın alt kenarına sabit bardır; bir kolda bar varsa iki kolun ilk ekranı da barın
+     yüksekliği kadar alt boşluk bırakır (.has-sticky), bar içeriği örtmez ve A ile B aynı hizada kalır.
+     Devam yaprağı varken telefon ezilmez (ilk ekran iki kolda aynı kalır); sahneye sığmayan yaprak kesilir
+     ve render_check bunu hata sayar: phone_scale 1 ya da daha kısa içerik. */
+  .r-fold,.r-stage-break{display:none}
+  .screen.has-sticky{padding-bottom:calc(var(--tap) + 56px)}
+  .r-sticky{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:10px 20px;background:var(--surface);
+            border-top:1px solid var(--line);box-shadow:0 -2px 8px rgba(17,24,39,.06)}
+  .card .screen .r-sticky .hl[data-note]::after{top:auto;bottom:calc(100% + 17px)}
+  .phone:has(+ .below){flex-shrink:0}
+  .below{zoom:1.2;--fs:15px;--fs-sm:13px;--fs-ctl:14px;--fs-h:19px;--fs-lg:17px;--fs-xl:26px;--tap:44px;--tap-sm:44px;
+         flex:0 1 auto;min-height:0;width:418px;max-width:100%;display:flex;flex-direction:column;gap:6px}
+  .card[data-phone-scale="1"] .below{zoom:1}
+  .card[data-phone-scale="1.4"] .below{zoom:1.4}
+  .below-cap{flex:0 0 auto;font-size:13px;font-weight:500;line-height:1.3;color:#4b5563;padding-left:2px}
+  .below-screen{flex:0 1 auto;min-height:0;overflow:hidden;position:relative;display:flex;flex-direction:column;gap:16px;
+                padding:14px 19px 20px;background:#ffffff;border:1px solid #e5e7eb;border-radius:0 0 14px 14px;
+                font-size:var(--fs);line-height:1.4;color:#111827}
+  .below-screen>*{flex-shrink:0}
+
+  /* ---- aşamalar (.r-stage-break + card.stage_captions): her aşama kendi küçük telefonunda, soldan sağa ----
+     Aşama telefonu sabit 0.8 ölçekle çizilir (iki telefon 728px sütuna 16px aralıkla sığar); metin
+     ölçeklenince de 12px'in altına inmesin diye taban ölçüler büyütülür. */
+  .stages{flex:0 1 auto;min-height:0;max-width:100%;display:flex;align-items:flex-start;justify-content:center;gap:16px}
+  .stage-col{flex:0 0 auto;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;gap:10px}
+  .stage-cap{font-size:14px;font-weight:600;line-height:1.3;color:#374151;text-align:center;max-width:336px}
+  .stage-arrow{align-self:center;font-size:22px;line-height:1;color:#6b7280}
+  .card .stage-col>.phone{zoom:.8;--fs:16px;--fs-sm:15px;--fs-ctl:15px;--fs-h:20px;--fs-lg:18px;--fs-xl:26px}
+  .stage-col .statusbar,.stage-col .m-addr,.stage-col .bottomnav span,.stage-col .r-steps,.stage-col .r-badge,
+  .stage-col .hl[data-note]::after,.stage-col .hl-soft[data-note]::after{font-size:15px}
+  .stage-col .r-info::before{width:19px;height:19px;line-height:19px;font-size:15px}
 
   /* ---- GERÇEKÇİ İÇERİK BİLEŞENLERİ ----
-     Kartlar tam gerçekçi seviyede üretilir (mockup-style.md → Gerçekçilik seviyesi):
-     metin, fiyat ve etiketler gerçek yazılır, gri kutu kullanılmaz.
-     .ph.* blokları yalnızca FOTOĞRAF yerine kullanılır (ürün görseli, avatar, hero arka planı). */
-  .r-h{font-size:13px;font-weight:700;color:#111;margin:2px 0 4px}
-  .r-sub{font-size:11px;color:#6a6a70}
-  .r-row{display:flex;gap:8px;align-items:flex-end}
+     Boyutlar çizildikleri boyuttur (ölçekleme yok). Çerçeve taban ölçüyü verir: --fs telefonda 15px,
+     web'de 14px; başlık 18-19px, yardım/meta 13px, hiçbir metin 12px'in altında değil; telefonda buton
+     ve alan en az 44px. .ph blokları yalnızca FOTOĞRAF yerine kullanılır. */
+  .ph{background:#e5e7eb;border-radius:10px}
+  .ph.img{height:150px}
+  .ph.hero{background:linear-gradient(135deg,#1f2937,#374151);color:#ffffff;border-radius:12px;padding:18px;
+           display:flex;flex-direction:column;gap:8px}
+  .ph.hero .r-h,.ph.hero .r-name,.ph.hero .r-price,.ph.hero .r-now{color:#ffffff}
+  .ph.hero .r-sub,.ph.hero .r-meta,.ph.hero .r-help{color:rgba(255,255,255,.88)}
+  .r-h{font-size:var(--fs-h);font-weight:600;line-height:1.3;color:#111827}
+  .r-sub{font-size:var(--fs-sm);line-height:1.45;color:#6b7280}
+  .r-row{display:flex;gap:12px;align-items:flex-end}
   .r-row>*{flex:1;min-width:0}
-  .r-card{border:1px solid #e4e4e8;border-radius:10px;padding:10px;background:#fff;display:flex;flex-direction:column;gap:8px}
-  .r-item{display:flex;gap:9px;align-items:center}
-  .r-thumb,.ph.img.r-thumb{width:42px;height:42px;border-radius:7px;background:#dfe6ef;flex:0 0 auto}
+  .r-card{border:1px solid #e5e7eb;border-radius:12px;padding:14px;background:#ffffff;display:flex;flex-direction:column;gap:10px}
+  .r-item{display:flex;gap:12px;align-items:center}
+  .r-thumb,.ph.img.r-thumb{width:52px;height:52px;border-radius:8px;background:#e5e7eb;flex:0 0 auto}
   .r-item-body{flex:1;min-width:0}
-  .r-name{font-size:12px;color:#111;font-weight:600}
-  .r-meta{font-size:10.5px;color:#70707a;margin-top:1px}
-  .r-price{font-size:13px;font-weight:700;color:#111;white-space:nowrap}
-  .r-old{font-size:11px;color:#8a8a90;text-decoration:line-through;margin-right:5px}
-  .r-now{font-size:14px;font-weight:800;color:#111}
-  .r-per{font-size:10.5px;color:#70707a;margin-left:2px}
-  .r-label{font-size:10.5px;color:#6a6a70;margin-bottom:3px}
-  .r-field{border:1px solid #dcdce0;border-radius:7px;padding:8px 10px;font-size:11.5px;color:#111;background:#fff;position:relative;min-height:32px}
-  .r-field.empty{color:#70707a}
-  .r-field.select{padding-right:24px}
-  .r-field.select::after{content:"";position:absolute;right:10px;top:50%;width:6px;height:6px;margin-top:-5px;
-      border-right:1.5px solid #55555c;border-bottom:1.5px solid #55555c;transform:rotate(45deg)}
-  .r-help{font-size:10px;color:#70707a;margin-top:3px}
-  .r-info{display:flex;gap:6px;align-items:flex-start;font-size:10.5px;color:#24466e;background:#eef4fb;border-radius:7px;padding:7px 9px}
-  .r-info::before{content:"i";flex:0 0 auto;width:13px;height:13px;border-radius:50%;background:#24466e;color:#fff;font-size:9px;font-weight:700;
-      font-style:italic;display:flex;align-items:center;justify-content:center;margin-top:1px}
-  .r-link{font-size:11.5px;color:#1b62d6;font-weight:600}
-  .r-line{display:flex;justify-content:space-between;font-size:11.5px;color:#5a5a60;padding:2px 0}
-  .r-line.total{font-size:13px;font-weight:700;color:#111;border-top:1px solid #ececee;margin-top:4px;padding-top:7px}
-  .r-cta{background:var(--brand);color:var(--on-brand);font-weight:700;font-size:13px;text-align:center;
-         padding:12px;border-radius:10px;border:1.5px solid var(--brand)}
-  .r-cta.outline{background:#fff;color:var(--brand)}
-  .r-cta.ghost{background:#fff;color:#111;border-color:#111}
-  .r-cta.sm{font-size:11.5px;padding:7px 10px;border-radius:8px}
-  .r-header{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid #ececee;font-size:10.5px;color:#3a3a40}
-  .r-header.filled{background:var(--brand);color:var(--on-brand);border-bottom:0;border-radius:8px}
-  .r-logo{font-size:13px;font-weight:800;color:var(--brand);white-space:nowrap}
+  .r-name{font-size:var(--fs);font-weight:600;color:#111827}
+  .r-meta{font-size:var(--fs-sm);color:#6b7280;margin-top:2px}
+  .r-price{font-size:var(--fs);font-weight:600;color:#111827;white-space:nowrap}
+  .r-old{font-size:var(--fs-sm);color:#6b7280;text-decoration:line-through;margin-right:6px}
+  .r-now{font-size:var(--fs-lg);font-weight:700;color:#111827}
+  .r-per{font-size:var(--fs-sm);font-weight:400;color:#6b7280;margin-left:2px}
+  .r-label{font-size:var(--fs-sm);font-weight:500;color:#374151;margin-bottom:6px}
+  .r-field{position:relative;display:flex;align-items:center;min-height:var(--tap);padding:0 12px;border:1px solid #d1d5db;
+           border-radius:8px;background:#ffffff;font-size:var(--fs);color:#111827}
+  .r-field.empty{color:#6b7280}
+  .r-field.select{padding-right:34px}
+  .r-field.select::after{content:"";position:absolute;right:14px;top:50%;width:7px;height:7px;margin-top:-6px;
+      border-right:1.5px solid #4b5563;border-bottom:1.5px solid #4b5563;transform:rotate(45deg)}
+  .r-help{font-size:var(--fs-sm);color:#6b7280;margin-top:6px}
+  .r-info{display:flex;gap:8px;align-items:flex-start;font-size:var(--fs-sm);line-height:1.45;color:#1e3a8a;background:#eff6ff;
+          border-radius:8px;padding:10px 12px}
+  .r-info::before{content:"i";flex:0 0 auto;width:16px;height:16px;border-radius:50%;background:#1e3a8a;color:#ffffff;
+      font-size:12px;font-weight:700;font-style:italic;line-height:16px;text-align:center;margin-top:1px}
+  .r-link{font-size:var(--fs);font-weight:600;color:var(--link)}
+  .r-line{display:flex;justify-content:space-between;gap:12px;font-size:var(--fs);color:#374151}
+  .r-line.total{font-size:var(--fs-lg);font-weight:700;color:#111827;border-top:1px solid #e5e7eb;padding-top:12px}
+  .r-cta{display:flex;align-items:center;justify-content:center;min-height:var(--tap);padding:0 18px;border-radius:10px;
+         border:1.5px solid var(--brand);background:var(--brand);color:var(--on-brand);font-size:var(--fs);font-weight:600;
+         text-align:center}
+  .r-cta.outline{background:#ffffff;color:var(--brand)}
+  .r-cta.ghost{background:#ffffff;color:#111827;border-color:#111827}
+  .r-cta.sm{min-height:var(--tap-sm);padding:0 12px;border-radius:8px;font-size:var(--fs-sm)}
+  .r-header{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #e5e7eb;font-size:var(--fs-sm);
+            color:#374151}
+  .r-header.filled{background:var(--brand);color:var(--on-brand);border-bottom:0;border-radius:10px;padding:10px 12px}
+  .r-logo{font-size:var(--fs-lg);font-weight:700;color:var(--brand);white-space:nowrap}
   .r-logo:empty::before{content:var(--brand-name)}
   .r-header.filled .r-logo{color:var(--on-brand)}
-  .r-nav{display:flex;gap:10px;flex:1;min-width:0;overflow:hidden;white-space:nowrap}
-  .r-tel{font-weight:700;white-space:nowrap;margin-left:auto}
-  .r-tabs{display:flex;gap:2px;border-bottom:1px solid #e4e4e8}
-  .r-tabs span{font-size:11px;color:#6a6a70;padding:7px 9px;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
-  .r-tabs span.on{color:#111;font-weight:700;border-bottom-color:var(--brand)}
-  .r-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .r-nav{display:flex;gap:14px;flex:1;min-width:0;overflow:hidden;white-space:nowrap}
+  .r-tel{font-weight:600;white-space:nowrap;margin-left:auto}
+  .r-tabs{display:flex;border-bottom:1px solid #e5e7eb}
+  .r-tabs span{font-size:var(--fs-ctl);color:#6b7280;padding:10px 12px;border-bottom:2px solid transparent;margin-bottom:-1px;
+               white-space:nowrap}
+  .r-tabs span.on{color:#111827;font-weight:600;border-bottom-color:var(--brand)}
+  .r-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .r-grid.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .r-tile{border:1px solid #e4e4e8;border-radius:10px;padding:9px;display:flex;flex-direction:column;gap:5px;background:#fff}
-  .r-plan{border:1px solid #e4e4e8;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;background:#fff}
+  .r-tile{border:1px solid #e5e7eb;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;background:#ffffff}
+  .r-plan{border:1px solid #e5e7eb;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;background:#ffffff}
   .r-plan.featured{border:2px solid var(--brand)}
-  .r-plan-name{font-size:12px;font-weight:700;color:#111}
-  .r-plan-price{font-size:20px;font-weight:800;color:#111}
-  .r-plan-feat{list-style:none;display:flex;flex-direction:column;gap:3px;font-size:10.5px;color:#4a4a50}
-  .r-plan-feat li::before{content:"✓ ";color:#1c7a34;font-weight:700}
-  .r-steps{display:flex;gap:4px;font-size:9.5px;color:#8a8a90}
-  .r-steps span{flex:1;min-width:0;border-top:3px solid #e4e4e8;padding-top:4px;white-space:nowrap;overflow:hidden}
-  .r-steps span.done{border-top-color:#9ec9a6;color:#4a4a50}
-  .r-steps span.on{border-top-color:var(--brand);color:#111;font-weight:700}
-  .r-progress{height:6px;border-radius:3px;background:#e4e4e8;overflow:hidden}
+  .r-plan-name{font-size:var(--fs);font-weight:600;color:#111827}
+  .r-plan-price{font-size:var(--fs-xl);font-weight:700;line-height:1.2;color:#111827}
+  .r-plan-feat{list-style:none;display:flex;flex-direction:column;gap:4px;font-size:var(--fs-sm);color:#374151}
+  .r-plan-feat li::before{content:"✓ ";color:var(--success);font-weight:700}
+  .r-steps{display:flex;gap:6px;font-size:12px;color:#6b7280}
+  .r-steps span{flex:1;min-width:0;border-top:3px solid #e5e7eb;padding-top:6px;white-space:nowrap;overflow:hidden}
+  .r-steps span.done{border-top-color:var(--success);color:#374151}
+  .r-steps span.on{border-top-color:var(--brand);color:#111827;font-weight:600}
+  .r-progress{height:8px;border-radius:4px;background:#e5e7eb;overflow:hidden}
   .r-progress>i{display:block;height:100%;background:var(--brand)}
-  .r-check,.r-radio{display:flex;gap:7px;align-items:flex-start;font-size:11px;color:#3a3a40}
-  .r-check::before,.r-radio::before{content:"";flex:0 0 auto;width:13px;height:13px;border:1.5px solid #9a9aa2;background:#fff;margin-top:1px}
-  .r-check::before{border-radius:3px}
+  .r-check,.r-radio{display:flex;gap:10px;align-items:flex-start;font-size:var(--fs-ctl);line-height:1.45;color:#374151}
+  .r-check::before,.r-radio::before{content:"";flex:0 0 auto;width:20px;height:20px;border:1.5px solid #6b7280;background:#ffffff}
+  .r-check::before{border-radius:5px}
   .r-radio::before{border-radius:50%}
-  .r-check.on::before{background:var(--brand);border-color:var(--brand);box-shadow:inset 0 0 0 2px #fff}
-  .r-radio.on::before{border-color:var(--brand);box-shadow:inset 0 0 0 3px #fff;background:var(--brand)}
-  .r-chips{display:flex;flex-wrap:wrap;gap:6px}
-  .r-chip{font-size:10.5px;color:#3a3a40;border:1px solid #dcdce0;border-radius:999px;padding:4px 9px;background:#fff;white-space:nowrap}
-  .r-chip.on{border-color:var(--brand);color:var(--brand);font-weight:700}
-  .r-search{position:relative;border:1px solid #dcdce0;border-radius:999px;padding:8px 12px 8px 30px;font-size:11.5px;color:#70707a;background:#fff}
-  .r-search::before{content:"";position:absolute;left:12px;top:50%;width:7px;height:7px;margin-top:-6px;border:1.5px solid #70707a;border-radius:50%}
-  .r-search::after{content:"";position:absolute;left:19px;top:50%;width:5px;height:1.5px;margin-top:3px;background:#70707a;transform:rotate(45deg)}
-  .r-suggest{border:1px solid #e4e4e8;border-radius:10px;background:#fff;box-shadow:0 8px 20px rgba(0,0,0,.08);display:flex;flex-direction:column;margin-top:-6px}
-  .r-suggest>*{font-size:11px;color:#3a3a40;padding:7px 12px;border-top:1px solid #f0f0f2}
+  .r-check.on::before{background:var(--brand);border-color:var(--brand);box-shadow:inset 0 0 0 3px #ffffff}
+  .r-radio.on::before{border-color:var(--brand);background:var(--brand);box-shadow:inset 0 0 0 4px #ffffff}
+  .r-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .r-chip{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border:1px solid #d1d5db;border-radius:999px;
+          background:#ffffff;font-size:var(--fs-ctl);color:#374151;white-space:nowrap}
+  .r-chip.on{border-color:var(--brand);color:var(--brand);font-weight:600}
+  .r-search{position:relative;display:flex;align-items:center;min-height:var(--tap);padding:0 16px 0 42px;border:1px solid #d1d5db;
+            border-radius:999px;background:#ffffff;font-size:var(--fs);color:#6b7280}
+  .r-search::before{content:"";position:absolute;left:16px;top:50%;width:11px;height:11px;margin-top:-8px;border:2px solid #6b7280;
+      border-radius:50%}
+  .r-search::after{content:"";position:absolute;left:27px;top:50%;width:6px;height:2px;margin-top:5px;background:#6b7280;
+      transform:rotate(45deg)}
+  .r-suggest{display:flex;flex-direction:column;margin-top:-8px;border:1px solid #e5e7eb;border-radius:12px;background:#ffffff;
+             box-shadow:0 8px 20px rgba(17,24,39,.08)}
+  .r-suggest>*{font-size:var(--fs-ctl);color:#374151;padding:11px 16px;border-top:1px solid #f3f4f6}
   .r-suggest>*:first-child{border-top:0}
-  .r-overlay{position:absolute;inset:0;z-index:2;background:rgba(17,17,17,.45);display:flex;align-items:center;justify-content:center;padding:14px}
-  .r-modal{background:#fff;border-radius:12px;padding:14px;width:100%;display:flex;flex-direction:column;gap:8px;box-shadow:0 12px 30px rgba(0,0,0,.2)}
-  .r-banner{background:var(--brand);color:var(--on-brand);font-size:10.5px;font-weight:600;padding:7px 10px;border-radius:8px}
-  .r-badge{display:inline-block;background:#eaf7ec;color:#1c7a34;font-size:10px;font-weight:700;
-           padding:3px 8px;border-radius:999px}
-  .r-badge.warn{background:#fff3e6;color:#a55600}
+  .r-overlay{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:20px;
+             background:rgba(17,24,39,.5)}
+  .r-modal{width:100%;display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:16px;background:#ffffff;
+           box-shadow:0 16px 40px rgba(17,24,39,.25)}
+  .r-banner{background:var(--brand);color:var(--on-brand);font-size:var(--fs-sm);font-weight:600;padding:10px 12px;border-radius:10px}
+  .r-badge{display:inline-block;padding:4px 10px;border-radius:999px;background:#f0fdf4;color:var(--success);font-size:12px;
+           font-weight:600;line-height:1.2}
+  .r-badge.warn{background:#fffbeb;color:var(--warning)}
   .r-badge.brand{background:var(--brand);color:var(--on-brand)}
-  .r-stars{font-size:11px;color:#b06f00;letter-spacing:1px}
-  .r-divider{height:1px;background:#ececee;margin:2px 0}
-
-  /* ---- sağ: metin sütunu ---- */
-  .copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px}
-  h1{font-size:40px;line-height:1.15;font-weight:800;letter-spacing:-.5px}
-  .desc{font-size:17px;line-height:1.5;color:#3a3a3f}
-  .box{border-radius:16px;box-shadow:0 10px 26px rgba(0,0,0,.05);border:1px solid #ededf0;overflow:hidden}
-  .box header{padding:12px 20px;font-size:19px;font-weight:800}
-  .box.test header{background:linear-gradient(90deg,#a5f6ff,#cbf9ff);color:var(--teal)}
-  .box.kpi  header{background:linear-gradient(90deg,#ffe3a5,#ffe5cb);color:var(--amber)}
-  .box.dont header{background:linear-gradient(90deg,#d9cfff,#e9dcff);color:var(--navy)}
-  .box ul{list-style:none;padding:14px 22px 18px;display:flex;flex-direction:column;gap:7px}
-  .box li{font-size:15.5px;line-height:1.4;color:var(--body);padding-left:16px;position:relative}
-  .box li::before{content:"•";position:absolute;left:0;color:var(--body)}
-  .box li b{color:rgba(0,0,0,.78)}
-  .role{display:inline-block;font-size:11px;font-weight:700;line-height:1;padding:3px 8px;border-radius:999px;vertical-align:2px;margin-right:5px;white-space:nowrap}
-  .role-primary{background:var(--amber);color:#fff}
-  .role-guardrail{background:#fde2e1;color:#9b1c1c}
-  .role-secondary{background:#ececef;color:#55555c}
-
-  /* ---- alt bilgi (sol sütunda, mockup'ların altında): etiketler, marka notu, mockup açıklaması ---- */
-  .card-foot{padding:0 6px;display:flex;flex-direction:column;gap:4px;font-size:13px;line-height:1.45;color:#5a5a60}
-  .card-foot .tags{display:flex;flex-wrap:wrap;gap:4px 18px;color:#3a3a3f}
-  .card-foot .tags b{color:#111}
+  .r-stars{font-size:var(--fs-sm);color:var(--warning);letter-spacing:1px}
+  .r-divider{height:1px;background:#e5e7eb}
 {{BRAND_CSS}}
 </style>
 </head>
 <body>
-<div class="card" data-device="{{DEVICE}}" data-note-pos="{{NOTE_POS}}">
+<div class="card" data-device="{{DEVICE}}" data-note-pos="{{NOTE_POS}}" data-phone-scale="{{PHONE_SCALE}}">
   <!-- Bu yorum yalnızca şablonu okuyan için; build_card.py teslim edilen karttan siler.
 
-       KARTI ELLE DOLDURMA. Senaryo tek bir JSON'dur (templates/scenario.schema.json);
-       scripts/build_card.py yerleştiricileri doldurur, metni kaçırır, cihaz çerçevesini seçer:
-         device: phone      → telefon çerçevesi + durum çubuğu; sekme çubuğu YALNIZCA card.bottom_nav ile (yerel uygulama),
-                              ekranın ait olduğu sekme card.bottom_nav_active ile (sekmenin adı ya da 0 tabanlı sırası)
-         device: phone-web  → telefon çerçevesi + durum çubuğu + mobil adres çubuğu (kilit + card.url'deki alan adı), sekme çubuğu yok
-         device: web        → tarayıcı çerçevesi (üç nokta + adres çubuğu), mockup'lar geniş, metin sütunu 580px
+       KARTI ELLE DOLDURMA. Senaryo tek bir JSON kaydıdır (templates/scenario.schema.json);
+       scripts/build_card.py yerleştiricileri doldurur, başlığı kaçırır, cihaz çerçevesini seçer.
+       Kart karşılaştırmanın kendisidir: üstte kaydın başlığı (soru), altında iki sütun; her sütunda
+       "Variant A" / "Variant B" hapı ve cihaz çerçevesi. Kaydın başka hiçbir metni karta yazılmaz.
+
+       KART  1600 × 900 sabit, iç boşluk 40px 48px. Başlık en fazla 2 satır. Sütun genişliği 728px,
+             sütunlar arası 48px; çerçeveler ortalanır ve ÜSTTEN hizalanır (A ile B aynı y'de başlar).
+       ÇERÇEVELER  (yükseklik = içerik; en fazla sahne yüksekliği, taşan içerik kesilir ve
+                    render_check.mjs bunu hata sayar: ekranın ilgili kısmını çizin)
+         device: phone      → 420px telefon + durum çubuğu; sekme çubuğu YALNIZCA card.bottom_nav ile
+                              (yerel uygulama), içeriğin hemen altında; etkin sekme card.bottom_nav_active
+         device: phone-web  → aynı telefon + mobil adres çubuğu (kilit + card.url'deki alan adı), sekme çubuğu yok;
+                              card.mobile_toolbar: true → ekranın altında tarayıcı araç çubuğu ve ev çizgisi (iki kolda aynı)
+         device: web        → sütunu dolduran tarayıcı (üç nokta + adres çubuğu, card.url)
+         card.url  kullanıcının verdiği adres aynen; adres verilmemiş, tarif edilen sayfa için temsilî
+                   <ad>.example (ör. magaza.example/sepet)
+         card.phone_scale  1 (uzun ekran), 1.2 (varsayılan), 1.4 (kısa ekran sahneyi doldursun)
+       ÖLÇÜ  telefonda taban 15px, web'de 14px; başlık 18-19px; yardım/meta 13px; 12px altı yok;
+             telefonda buton (.r-cta) ve alan (.r-field) en az 44px.
 
        DEĞİŞEN ÖĞE (.hl) ve card.difference:
-         change → halka B'de (A'da isteğe bağlı)      add  → halka yalnızca B'deki yeni öğede
-         move   → halka hem A'da hem B'de             remove → halka yalnızca A'da, B'de alan gerçekten boş + card.shift_note_b
-       Aynı değişiklik tekrarlanan N öğeye uygulanıyorsa (altı kartın altı butonu) N halka değil,
-       grubun etrafına TEK halka çizilir: <div class="hl" data-note="butonlar dolu"> …altı kart… </div>
-       Etiket bir öğeyi örtüyorsa: data-pos="below" (tek halka) ya da card.note_pos: "below" (tüm kart).
+         change → halka B'de (A'da isteğe bağlı)      add    → halka yalnızca B'deki yeni öğede
+         move   → halka hem A'da hem B'de             remove → halka yalnızca A'da ("kaldırıldı" gibi bir
+                                                               etiketle), B'de o alan gerçekten boş
+       Aynı değişiklik tekrarlanan N öğeye uygulanıyorsa N halka değil, grubun etrafına TEK halka:
+         <div class="hl" data-note="Butonlar dolu"> …altı kart… </div>
+       Değişkenin bağlı sonucu (ör. değişen toplam) kendi kesikli, sönük halkasını alır; halka sayılmaz:
+         <div class="hl-soft" data-note="Toplam güncellenir"><div class="r-line total">…</div></div>
+         yalnızca kartta bir .hl varken, kol başına en fazla 2, halkanın içinde ya da etrafında değil;
+         içindeki sayı farkı yine numeric_change ister.
+       Etiket (data-note, 2-4 kelime) halkanın sağ üst köşesinin dışına oturur; bir öğeyi örtüyorsa
+       data-pos="below" (tek halka) ya da card.note_pos: "below" (tüm kart).
+       NEFES PAYI: halka çevresindeki öğeleri örtmez (halka öğenin 7px dışına çizilir); etiket
+       halkanın üstünde ~31px yer ister. Ekranın üst kenarındaki bir öğenin etiketi alta alınır.
 
        BİLEŞENLER (yalnızca CSS; işaretleme örnekleri):
          Başlık çubuğu   <div class="r-header"><span class="r-logo">Marka</span><span class="r-nav"><span>Ürünler</span><span>Kampanyalar</span></span><span class="r-tel">0850 000 00 00</span></div>
@@ -223,9 +303,21 @@
          Açılır pencere  <div class="r-overlay"><div class="r-modal">…</div></div> (ekranın üstünü kaplar)
          Arama           <div class="r-search">Nereye gidiyorsun?</div><div class="r-suggest"><div>Antalya</div><div>İzmir</div></div>
          Fotoğraflı hero <div class="ph hero"><div class="r-h">Başlık</div><div class="r-sub">…</div></div> (koyu zemin, beyaz metin)
+         Görsel yeri     <div class="ph img"></div> (150px; yüksekliği style="height:…" ile değişir)
          Kampanya şeridi <div class="r-banner">4 taksit imkânı</div> (marka renginde dolu şerit)
          Rozet, fiyat    .r-badge (.warn, .brand) · <span class="r-old">1.200 TL</span><span class="r-now">990 TL</span><span class="r-per">/ay</span>
-         Kalemler        .r-item/.r-thumb/.r-item-body/.r-name/.r-meta/.r-price · .r-line, .r-line.total · .r-card · .r-divider · .r-stars · .r-link
+         Kalemler        .r-item/.r-thumb/.r-item-body/.r-name/.r-meta/.r-price · .r-line, .r-line.total · .r-card · .r-divider · .r-stars · .r-link · .r-h · .r-sub
+
+       ÇERÇEVE İŞARETLERİ (phone, phone-web; ekranın doğrudan çocuğu, yalın yazılır, iki kolda aynı yerde):
+         İlk ekran       <div class="r-fold"></div>: öncesi telefonda ilk ekran, sonrası telefonun altında
+                         "Kaydırınca görünen kısım" yaprağı. Bir kolda varsa iki kolda da.
+         Sabit bar       <div class="r-sticky"><div class="hl" data-note="Ekranın altında sabit"><div class="r-cta">Ödemeye geç</div></div></div>
+                         ilk ekranın alt kenarına sabit; yalnızca .r-fold'dan önce, içinde tek öğe. Sabit
+                         (yapışkan) bir öğe sayfa akışına gri bar olarak çizilmez, hep böyle çizilir.
+                         Sabitleme testi bir taşımadır: A butonu devam yaprağında, B bu barda halkalar.
+         Aşamalar        <div class="r-stage-break"></div> ekranı iki aşamaya böler (sonraki adım, açılan
+                         ekran); card.stage_captions her aşamanın kısa başlığı, ör. ["Sepet", "Ödeme"].
+                         Her aşama kendi küçük telefonunda, soldan sağa, arada →.
 
        İŞARETLEME İZİN LİSTESİYLE SINIRLIDIR; build_card.py listede olmayanı temizlemez, kartı reddeder:
          etiketler  div span p b strong i em u s small sup sub br hr ul ol li
@@ -233,12 +325,12 @@
          yok        yorum, bağlantı (href), görsel/kaynak (src), form, betik, olay işleyici (on…=), style içinde url(), dış stil içe aktarma, position:fixed
          .hl sarmalayıcısı satır içi margin ya da padding taşımaz (halka içeriği itmez); r-… sınıfları yalnızca burada tanımlı olanlardır.
 
-       İÇERİK GERÇEK YAZILIR (mockup-style.md → Gerçekçilik seviyesi). Alanlara girilmiş kişisel veri
+       İÇERİK GERÇEK YAZILIR (mockup-style.md → Realism level). Alanlara girilmiş kişisel veri
        (ad, e-posta, telefon, kimlik/kart numarası) asla taşınmaz; alan boş varsayılan hâliyle çizilir. -->
-  <div class="left">
-  <div class="mockups">
+  <h1 class="title">{{TITLE}}</h1>
+  <div class="stage">
     <div class="variant">
-      <span class="pill">Variant A</span>
+      <span class="pill pill-a">Variant A</span>
       <div class="phone">
         <div class="statusbar"><span>12:41</span><span class="sb-icons"><span class="sig"></span><span class="batt"></span></span></div>
         <div class="screen">
@@ -246,10 +338,9 @@
         </div>
         <div class="bottomnav"><span>Anasayfa</span><span>Keşfet</span><span>Favoriler</span><span>Sepet</span><span>Profil</span></div>
       </div>
-      {{SHIFT_NOTE_A}}
     </div>
     <div class="variant">
-      <span class="pill">Variant B</span>
+      <span class="pill pill-b">Variant B</span>
       <div class="phone">
         <div class="statusbar"><span>12:41</span><span class="sb-icons"><span class="sig"></span><span class="batt"></span></span></div>
         <div class="screen">
@@ -257,35 +348,6 @@
         </div>
         <div class="bottomnav"><span>Anasayfa</span><span>Keşfet</span><span>Favoriler</span><span>Sepet</span><span>Profil</span></div>
       </div>
-      {{SHIFT_NOTE_B}}
-    </div>
-  </div>
-  {{FOOTER}}
-  </div>
-
-  <div class="copy">
-    <h1>{{TITLE}}</h1>
-    <p class="desc">{{DESC}}</p>
-
-    <div class="box test">
-      <header>{{H_TEST}}</header>
-      <ul>
-        {{TEST_ITEMS}}
-      </ul>
-    </div>
-
-    <div class="box kpi">
-      <header>{{H_KPI}}</header>
-      <ul>
-        {{KPI_ITEMS}}
-      </ul>
-    </div>
-
-    <div class="box dont">
-      <header>{{H_DONT}}</header>
-      <ul>
-        {{DONT_ITEMS}}
-      </ul>
     </div>
   </div>
 </div>

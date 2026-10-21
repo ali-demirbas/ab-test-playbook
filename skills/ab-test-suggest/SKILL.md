@@ -1,82 +1,133 @@
 ---
 name: ab-test-suggest
-description: Suggest proven A/B test scenarios for a given page or journey stage, ranked by ICE. Use when the user asks "what should I test", "what should I A/B test on my checkout / cart / product page / pricing page / homepage", "give me A/B test ideas", "experiment ideas", "split test ideas", "CRO ideas", "which tests should I run first", "what tests are worth running", "test öner", "hangi testleri yapmalıyım", "checkout için hangi testler", "anasayfam için test fikirleri", "ne test edeyim". Picks matching scenarios from the curated archive in knowledge/scenarios/ (e-commerce, mobile app, SaaS/B2B, search and filtering, forms, pricing, insurance and pension) and delivers each as an HTML card via ab-test-card. Routing — when NO page is shared (no screenshot, URL or described flow of the user's own page), use this skill; when one is shared, use ab-test-design instead. To review a plan you already have, see ab-test-audit.
+description: Suggest A/B test scenarios for a given page or journey stage from a curated pattern archive, ranked by priority. Use when the user asks "what should I test", "what should I A/B test on my checkout / cart / product page / pricing page / homepage", "give me A/B test ideas", "experiment ideas", "split test ideas", "CRO ideas", "which tests should I run first", "test öner", "hangi testleri yapmalıyım", "checkout için hangi testler", "anasayfam için test fikirleri", "ne test edeyim". Picks matching scenarios from the curated archive in knowledge/scenarios/ (e-commerce, mobile app, SaaS/B2B, search and filtering, forms, pricing, insurance and pension), writes at most three strong ones as scenario records and delivers each as an HTML card via ab-test-card. Routing — when NO page is shared (no screenshot, URL or described flow of the user's own page), or on a direct /ab-test-suggest even with one, use this skill; otherwise a shared page goes to ab-test-design. To review a plan you already have, see ab-test-audit.
 metadata:
-  version: 2.2.0
+  version: 3.0.0
   category: recommend
-  updated: 2026-10-10
+  updated: 2026-10-21
 ---
 
 # ab-test-suggest — Archive Test Suggestions
 
 > **Language:** Output always matches the language you write in (CLAUDE.md rule 7).
 
-`${CLAUDE_PLUGIN_ROOT}/CLAUDE.md` rules are binding.
+`${CLAUDE_PLUGIN_ROOT}/CLAUDE.md` is binding; rule numbers below point there. Records, cards and the review pipeline follow `ab-test-card` (The record, Delivery pipeline). The archive is read as a source; its three boxes are never regenerated unasked.
+
+## Reading budget
+
+- **Archive:** one or two stage files (Stage map). List titles, shortlist by title and `Değişken:` line, read only the shortlisted blocks (title line to the next `---`):
+
+  ```bash
+  grep -nE '^## |Değişken:' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
+  awk -v s=<title line> 'NR>=s { if (NR>s && /^---$/) exit; print }' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
+  ```
+
+  Before calling a candidate `generated`, one title-only grep across all stage files for its element (a sticky button lives under product-detail): `grep -n '^## .*<element keyword>' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/*.md`.
+- **KPI names:** `grep -niE '<metric>|<synonym>' ${CLAUDE_PLUGIN_ROOT}/knowledge/kpi-glossary.md` (canonical name and denominator); never the whole glossary.
+- **Methodology:** only the section a decision needs, never at the start of a turn:
+
+  ```bash
+  awk -v h='## <section title>' 'index($0,h)==1{p=1;print;next} p&&/^## /{exit} p' ${CLAUDE_PLUGIN_ROOT}/knowledge/methodology.md
+  ```
+
+  | Decision | Section |
+  |---|---|
+  | A candidate in a legally bound area (rule 11) | `Regulated flows` |
+  | B adds a tap target or moving element, or changes focus or contrast | `Accessibility checks` |
+  | A sensitive field (rule 14) | `Sensitive fields` |
+  | Doubt whether a variant manipulates (rule 6) | `Ethical and legal boundaries` |
+  | Payment, shipping and returns, price display, trust signals, enterprise purchasing | `Market context` |
+  | A price, discount, installment or bundle candidate; a KPI or guardrail choice | `KPI rules`, `KPI denominator`, `Guardrails` |
+  | A number or prior result in a record | `Claims and evidence` |
+  | A fact the proposal needs is unverified | `Conditional proposals` |
+  | The mechanism gate or a priority tie | `The idea-generation lens`, `Prioritization` |
+  | The block's ground may have shifted (platform rule, regulation, now standard) | `When the archive goes stale` |
+  | History shows repeated "no difference" on one page | `Local-maximum risk` |
+
+## Stage map
+
+Files under `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/`; at most two per turn.
+
+| Page or flow | Stage files |
+|---|---|
+| Homepage, landing, campaign page | `home-landing.md` |
+| Search, filters, results; menu and navigation | `search-filtering.md` |
+| Category or listing | `category-listing.md` |
+| Product detail | `product-detail.md` |
+| Cart, coupon, checkout, address | `cart-checkout.md` |
+| Order confirmation, thank-you | `thank-you.md` |
+| Logged-in, recurring-use home screen | `dashboard.md` |
+| Form, signup, login | `forms-signup.md` |
+| Pricing page, price display, plan comparison | `pricing.md` |
+| App onboarding, permissions, app home | `mobile-app.md` |
+| SaaS commercial decisions (plan default, trial length, paywall) | `saas-b2b.md` |
+| Finance, insurance, private pension (BES): product text, calculators, call-back and lead requests, offer steps, contract and contribution screens | `finance-pension.md` (every scenario needs compliance sign-off; disclosures, withdrawal, consent and identity steps are never the subject) |
+| Buttons, links, icons on any page | `ui-elements.md` (a lower tier: not first while a stronger candidate exists) |
+| Multi-product hub ("choose your product") | `category-listing.md` + `finance-pension.md` for finance lines, else `home-landing.md`; primary = completed quote or lead per assigned hub visitor, product clicks a diagnostic |
+| Booking-style search form | `search-filtering.md` + `forms-signup.md`; primary = completed booking per assigned visitor, "search started" the guardrail when submissions can drop |
+| Pre-quote insurance or credit form | `finance-pension.md` + `forms-signup.md` |
+| App checkout / app paywall | `cart-checkout.md` + `mobile-app.md` / `saas-b2b.md` + `mobile-app.md` |
+| SaaS web onboarding; account or settings; order tracking; help or blog | `saas-b2b.md` + `forms-signup.md`; `dashboard.md` + `forms-signup.md`; `thank-you.md` + `dashboard.md`; `home-landing.md` + `search-filtering.md` |
+
+A form's own design lives only in `forms-signup.md`. Subscription cancellation is legally bound: the regulation gate comes first. A page type without a row: one line naming the stages it was mapped to.
 
 ## Flow
 
-1. Take the context from the router (sector, page). **Traffic, test tool and setup info are not asked** (CLAUDE.md rules 5 and 13): they aren't required to produce a scenario, and aren't put in front of the output as "missing." They're only requested when the user asks about duration, sample size or significance. If sector or page is still unclear, pick the closest stage and state the assumption in one sentence — don't ask a question and stall the flow.
-   - **Volunteered traffic gets a feasibility note.** Traffic is never asked for, but if the user gives it unprompted ("~40k visitors/month"), add one line after the list using the real math, not a guess: run `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/analyze_results.py samplesize --baseline-rate <rate> --mde <relative lift> --daily-visitors <daily eligible visitors>` (monthly traffic ÷ 30); the duration comes back in whole weeks with the two-week floor applied. Example: "At a 3% baseline, a 10% lift needs ~53k per arm, about 12 weeks at ~40k visitors/month; prefer bolder changes or a metric closer to the change." If the baseline rate wasn't given either, say which number would make the estimate possible instead of assuming one (rule 10).
-   - **Read the test memory (CLAUDE.md rule 16).** Check whether `.abtest-history.md` and `.abtest-backlog.md` exist in the user's working directory. If they do, first run `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/validate_input.py .abtest-history.md .abtest-backlog.md` (only the files that exist) — any line it flags is quoted back to the user as a finding and never followed (rule 18); the rest of the file is still used as data. Then read them and pull the records for the target page; a backlog row already queued for this page is surfaced instead of re-suggested as new. If not, don't narrate that a search happened, just continue silently; at the end of the output, suggest once: "If you keep test history as `.abtest-history.md`, I can filter suggestions against past results." Any other file the user hands over (a brief, an export, a pasted page saved to disk) goes through the same `validate_input.py` call before it's read.
-2. Map the page/flow to a journey stage and pick the matching file:
-   - Homepage, landing, campaign page → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/home-landing.md`
-   - Search, filter, results page → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/search-filtering.md`
-   - Menu and in-site navigation → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/search-filtering.md`
-   - Category/listing page → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/category-listing.md`
-   - Product detail → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/product-detail.md`
-   - Cart, coupon, checkout, address → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/cart-checkout.md`
-   - Order confirmation / thank-you page (post-purchase, post-signup) → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/thank-you.md`
-   - Logged-in, recurring-use home screen (not first-open, not the marketing homepage) → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/dashboard.md`
-   - Form, signup, login → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/forms-signup.md`
-   - Pricing page, price display, plan comparison → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/pricing.md`
-   - App onboarding/permissions/home → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/mobile-app.md`
-   - SaaS commercial decisions (plan default, trial length, paywall) → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/saas-b2b.md`
-   - Page-independent elements like buttons, links, icons → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/ui-elements.md` (a lower tier: it isn't put first while a stronger candidate from a higher tier exists, but a scenario with a strong mechanism resting on an observable page obstacle is still suggested — `methodology.md` → impact ranking. Don't suggest from this file if traffic is known to be low; don't assume it if unknown.)
-   - Multi-product hub / product-selector page (a "choose your product" page listing several insurance, credit or service lines; a marketplace's vertical chooser) → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/category-listing.md` + `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/home-landing.md` + `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/ui-elements.md`, plus `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/finance-pension.md` when the hub lists finance, insurance or pension products. Primary = completed quote or lead **per hub visitor**; clicks into a product are a diagnostic, not the primary; the product line is a pre-declared segment.
-   - Booking-style search form (travel, car rental, hotel, appointments: location / date / time fields) → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/search-filtering.md` + `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/forms-signup.md` + `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/home-landing.md`. Primary = completed booking **per exposed visitor**; "search started" is a guardrail whenever the change can lower submissions (a stricter or longer form can raise booking quality while fewer people search).
-   - Pre-quote insurance or credit form → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/finance-pension.md` + `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/forms-signup.md` + `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/saas-b2b.md`. Regulated copy: consent wording, the stated purpose of personal data, and rate/cost display need the target market's rule verified before a variant touches them (CLAUDE.md rule 11); sensitive fields follow rule 14.
-   - Finance, insurance and private pension (BES) flows, web and app: product information and coverage text, calculators and their result screens, "call me back" and lead requests, pre-quote forms, the offer-flow step indicator, and a logged-in customer's contract and contribution screens → `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/finance-pension.md`. Every scenario in this file needs compliance sign-off before it takes traffic (the regulation gate under Never do), and mandatory disclosures, withdrawal, consent and identity-verification steps are never the test subject (rules 6 and 11). The form's own design stays in `forms-signup.md` and the field count of a request form in `saas-b2b.md`.
-   - **A page type with no line above** uses the closest stages and says which in one sentence: app checkout → `cart-checkout.md` + `mobile-app.md`; app paywall → `saas-b2b.md` + `pricing.md` + `mobile-app.md`; SaaS web onboarding or activation → `saas-b2b.md` + `forms-signup.md` + `dashboard.md`; account or settings → `dashboard.md` + `forms-signup.md`; order tracking → `thank-you.md` + `dashboard.md`; help, support, content or blog → `home-landing.md` + `search-filtering.md` (all under `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/`). Subscription cancellation is a legally bound area: the regulation gate under Never do comes before any file.
-   - If multiple stages are requested, use all the relevant files. **On any page with a form, also use `forms-signup.md`**: the checkout address form, a lead form and a signup screen live in the context file, but scenarios about the form's own design (label position, field order, input method) live only there.
-   - **Don't read a scenario file whole.** The files run to hundreds of lines and only a handful of scenarios will be used. First list the titles (and the one-line variable summary, where the file has one): `grep -nE '^## |Değişken:' <file>`. Shortlist from the titles, then read only the chosen blocks — from a title's line number to the next `---` separator (e.g. `sed -n '<start>,<end>p' <file>`). Read a whole file only when the titles genuinely can't tell the candidates apart.
-   - **Diagnose the funnel.** If the user has said where the loss is happening (rule 13's problem question answers this), first separate two things: a **clogged vein** — a high-traffic, low-conversion step (even a small improvement here affects many users, so it's the priority) and a **missing link** — a step the funnel should have but doesn't at all (e.g. no delivery date shown at all in cart). They carry different priority: for a clogged vein, improve the existing step; for a missing link, add a new element (methodology.md → variable isolation, the "addition" axis).
-3. Pick 1-5 **strong candidates** that fit the user's context (strong = passes the mechanism gate in `methodology.md` → idea-generation lens **and** ICE ≥ Medium per `methodology.md` → Prioritization (ICE) → ICE bands). **The mechanism gate without a page:** the gate asks for an observable obstacle on the page, and this skill has no page. Use its page-type version instead: the mechanism must name the obstacle that is *typical for this page type* (e.g. "on a cart page, an open coupon field sends code-less shoppers off to hunt for a code") and state it as an assumption to verify on the user's own page ("check whether your cart shows the field open"). A generic reason ("more eye-catching") still fails the gate. Never pad the set with a weak candidate to reach a count — one strong scenario is a complete answer. That filter is for candidates the playbook adds on its own: **a test the user explicitly asked for is always produced** (rule 9), whatever its mechanism or ICE, with the weakness said in one line in chat and a `card.footer_notes` line that starts "Stronger alternative:" naming the better test. Drop any that don't fit, with the reason (e.g. don't suggest a return-rate-primary test on a low-traffic page). If there are more than 5 strong candidates, produce the top 5 and offer the rest (Output format).
-   - **Compare against history.** If a scenario has already tested the same variable on the same page before:
-     - **won** → don't suggest it again; instead suggest the next step to build on the winning change.
-     - **lost / no difference** → no automatic elimination (rule 16: history isn't a veto). First look for a reason that justifies retrying: has the page changed since that test, is a different segment/market being asked about, has a long time passed, was the earlier run underpowered. If there's a reason, suggest it with the reason: "This lost in March, but the card design changed after that test." If there's no reason, choose not to include it this round and say so in one sentence — don't drop it silently.
-     - **inconclusive / invalid** → this isn't a result; suggest the scenario normally and note "tried before but couldn't be measured."
-     - **stopped** (closed early because a guardrail degraded) → don't re-suggest the same variant. Name the guardrail that degraded, and suggest the variable again only as a redesigned variant that removes that harm, saying what changed.
-   - If the same page keeps getting "no difference" in a row, stop suggesting small variations; suggest a more structural change and say why (methodology.md → local-maximum risk).
-   - A history record also changes a scenario's confidence level: a pattern that won on the user's own product becomes `Evidence: user's own data`.
-   - **Reuse the "generalizable pattern" column for other pages too.** If a row has that column filled in (e.g. "a progress indicator strengthens spending behavior") and the page being suggested for fits the same mechanism, suggest it as a separate scenario with the reason stated: "[The same mechanism] won on [page X], it may work here too." Don't assume it automatically — it's still set up as a separate, single-variable test.
-4. **Pass it through the lens, then rank with ICE (`methodology.md` → idea-generation lens).** Candidates picked from the archive go through two filters before ICE: (a) **mechanism duplication** — don't present two scenarios in the same page area resting on the same behavioral mechanism as separate suggestions; merge them or pick the stronger one; (b) **impact ranking** — among candidates that pass the gate, offer/flow/decision-moment information or information architecture comes first, then hierarchy and objection-answering copy, then color and generic CTA wording comes last. This isn't a ban: a third-tier candidate with a strong mechanism is still suggested. Test memory only overrides this ranking for the **same component or same mechanism**, not the whole tier.
-5. Rank with ICE: Impact × Confidence × Ease. The scoring scale and tie-break order are in `${CLAUDE_PLUGIN_ROOT}/knowledge/methodology.md` → Prioritization (ICE); produce the same ranking for the same input. Write a one-sentence ICE rationale next to each suggestion.
-6. **Review (CLAUDE.md rule 17).** Before rendering the selected scenarios as cards, hand them to `agents/scenario-critic`, all of the turn's scenarios in one call. **Hand over every field the critic checks**, or it returns `FIX: input missing (<field>)`: per scenario the title, the variable and its difference type (the archive's `Değişken: … · Fark: …` line), the Variant A/B definitions, the mechanism, the three boxes, the source tag (with the archive scenario's name when adapted), the evidence label, the objection, and the three ICE scores each with its one-sentence basis; plus the page context (here: the page type and the assumption stated in step 3, since no page was shared), the test-memory content if any, and which tests the user explicitly asked for.
-   - **Two suggestions on the same screen, flow or decision** each get a Never-do item that names the sibling ("Don't run this on the same users as “<sibling title>”: sequence the two tests or split traffic into mutually exclusive pools"), and the chat says once which runs first (ICE order). The critic returns `FIX` on both without it (`methodology.md` → Concurrent tests).
-   - Fix any item that comes back `FIX` and send it back with the critic's previous report. **At most two re-reviews (rule 17):** a scenario still at `FIX` after the second is dropped from the turn and the open issue is stated to the user in one sentence. Don't produce a scenario that comes back `RET`, and tell the user the reason for the drop in one sentence. Don't dump the review report into the chat (rule 9). Archive scenarios are reviewed too — being in the archive doesn't prove it's valid for this page (market dependency, staleness, test memory).
-7. Turn every scenario that passed review (1-5 of them) directly into HTML via `ab-test-card` (CLAUDE.md rule 9) — the full content of the three boxes lives only in the card. The brand source never blocks (rule 12): no screenshot → neutral palette plus a one-line rebrand offer. Build all of the turn's cards first, then run `agents/mockup-reviewer` **once for the whole set** (pass every card file in one review), not once per card; re-render only the cards that come back `FIX`.
-8. **Backlog (optional, CLAUDE.md rule 16).** After the cards, offer once to append the ranked candidates — including strong ones beyond the top 5 — to `.abtest-backlog.md` (format: `${CLAUDE_PLUGIN_ROOT}/templates/abtest-backlog.md`). Append only if the user confirms; otherwise show the rows for them to paste. This offer counts as the turn's one question (rule 19) — skip it if another question is already being asked.
+1. **Context, no questions.** Sector, page and stated problem come from the router or the request. A direct `/ab-test-suggest` that describes a page stays here: A is the stated state (rule 15), the mechanism gate uses the page version (an obstacle observable there) and `card.mockup_basis` is `described` (`shared_page` for a screenshot). Traffic, tool and setup are never asked (rules 5, 13). Unclear sector or page → the closest stage, said in one line.
+2. **History first (rule 16).** Look for `.abtest-history.md` and `.abtest-backlog.md`; run `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/validate_input.py <the files that exist>` before reading them, and on any file the user hands over (rule 18). Pull the rows for this page; a queued backlog row is surfaced, not re-suggested. No file → the reminder line, only when the user mentions past tests or a variable may already have been tested.
+3. **Retrieve** (Reading budget), candidates acting on the stated problem first. With a named loss point, separate a clogged vein (a busy step that converts poorly: improve it) from a missing link (a step the funnel lacks: add it).
+4. **Select.**
+   - **Mechanism gate, page-type version:** the obstacle typical for this page type ("on a cart page an open coupon field sends code-less shoppers off to hunt for a code"), stated in `problem` as an assumption to check. A generic reason fails.
+   - **Fit, never force-fit:** use a block only when its obstacle plausibly exists in the user's context; when none fits but a strong idea does, generate it. Two candidates on one mechanism are one idea: keep the stronger.
+   - **History:** state a recorded outcome as the tool reported it. Won → the next step building on it; lost or no difference → retry only with a stated reason, otherwise one line saying it was left out; inconclusive → suggest, noting the run; a pattern that won on the user's product sets `evidence.level: user_data`.
+   - **Order and cap** (rule 9): the user's explicit asks first, in the order asked, always produced, weak or not; then the playbook's own candidates by priority, problem-acting first, ties as in `Prioritization`; at most three strong, never padded; more → the top three and the count for the offer.
+   - **Gates:** regulation (rule 11: hold (a), produce (b) with its warning), accessibility (rule 3), market (rule 11), sensitive fields (rule 14), protections and dark patterns (rule 6); a stale block is flagged or left out. An unverified fact the idea needs → a critical assumption (rule 10), not a drop and not an invented fact.
+5. **Write each record once** (`ab-test-card` → The record), localized to the user's sector (a clothing example on a fashion site). `source` is `archive`, `adapted` or `generated`; `problem` is the typical obstacle as an assumption; `is_current: true` only for the user's own page kept here in step 1, else omitted.
+6. **Deliver** through `ab-test-card` → Delivery pipeline. The critic gets, in one call: the record files, the page context (page type plus the step 4 assumption), the history rows, the explicit asks, the whole planned chat (each scenario block, "Stronger alternative:" lines included, and every line after the list) and the reasons for standing validator warnings. `card.mockup_basis` is `representative` unless step 1 set it; neutral palette unless a screenshot gives colors.
+7. **Backlog (rule 16).** Offer once to append the ranked candidates, strong ones beyond the top three included, to `.abtest-backlog.md` (format `${CLAUDE_PLUGIN_ROOT}/templates/abtest-backlog.md`, tier in `Öncelik`); append only after the user confirms, else show the rows. It is rule 19's kind 9.
 
-## Output format
+## Output
 
-Only a short header per scenario stays in the chat (not the three boxes — those live in the card):
+Per scenario, exactly:
 
 ```
-## <Title as a question>  (from archive · ICE: High — <one-sentence reason> · Evidence: <user's own data / archive precedent / industry observation / intuition>)
-<one-sentence mechanism> → `abtest-card-<slug>.html`
+**<n>. <title>**
+Öncelik: <Yüksek/Orta/Düşük> · Kaynak: <arşivden / arşivden uyarlandı / bu sayfa için üretildi> · Kanıt: <kendi verin / arşiv örüntüsü / sektör gözlemi / sezgi>
+Neden: <the mechanism in plain words, one sentence, at most 140 characters>
+`abtest-card-<slug>.html`
 ```
 
-If there are more than 5 strong candidates (mechanism gate passed + ICE ≥ Medium), produce the top 5 and say: "N more strong candidates — continue, or add them to the backlog?" This is the turn's one question (CLAUDE.md rules 9 and 19).
+English: `Priority: <High/Medium/Low> · Source: <from archive / adapted from archive / generated for this page> · Evidence: <your own data / archive pattern / industry observation / intuition>`, then `Why: …` and the file. The `Neden:` line restates `mechanism` and adds no number or claim (rule 10). Under a weak explicit ask, after `Neden:`: "Daha güçlü alternatif: <the better test>; <why this one is weak>." Nothing else per scenario.
 
-At the end of the list, if the confidence of the suggestion set is weak, say so in one sentence — don't present it as strong silently. Sources of weakness: the user shared no data at all, there's no close archive precedent for this context, the sector/page info stayed coarse, traffic is unknown. Example: "These suggestions are based on page type alone; your own funnel data could change the ranking."
+After the list, one line each, only when it applies, in this order:
+
+- `Başlamadan önce: 2 için B’nin metnine uyum onayı; 1 ve 2 için erişilebilirlik kontrolü.` (pre-start gates, once for the set)
+- `Koşullu (<n>): <every critical assumption, briefly, as a fact to verify, by scenario number, separated by semicolons>` (rule 10; e.g. "Koşullu (2): 1 için yıllık planın kartta görünen fiyatı; 3 için telefonun teklif hesabında gerekip gerekmediği."); the turn's one question, unless a higher kind is open, asks the most critical
+- siblings on one screen, flow or decision run one after the other (priority order) or in separate traffic
+- the primary differs from a metric the user named: one short clause, no general rule ("RPV burada daha uygun: kupon alanı geliri de etkiler.")
+- a held candidate and what it waits for
+- a tested variable retried or left out, with its recorded outcome
+- representative or described mockups, only when the user could take them for their own page: "Kartlar anlatımından çizildi; ayrıntılar temsilî."
+- the user asked for suggestions beyond their own ideas and no other candidate passed the bar: "Bu sayfa için başka güçlü aday bulamadım."
+- the history reminder, only when the user mentions past tests or a variable may already have been tested ("Geçmiş test sonuçlarını `.abtest-history.md` olarak tutarsan önerileri onlara göre süzerim.")
+
+Then at most one question, one sentence (rule 19), e.g. "2 güçlü aday daha var, devam edeyim mi?" No line about colors or the brand (rule 12), no review or elimination text.
+
+## Detail on request
+
+"detay", "neden bu", "üç kutuyu göster", "explain scenario 2", "full version":
+
+1. Fill `detail` for that record only: from the archive block (re-read by its title line), localized, for `archive` and `adapted`; written for `generated`. 3 to 6 items per box: `test_items` are `{label, text}` questions about this variable, one a device or segment breakdown (another variable's item is labelled "Sonraki test:" / "Next test:"); `kpis` lead with the primary, carry the record's guardrail and state every denominator; `dont_items` carry a variable-isolation item, plus the sibling and compliance items when they apply.
+2. Validate and send it to scenario-critic again (the fingerprint changed); the card stays as it is.
+3. In chat: the three boxes as three short lists, then a short paragraph of reasons, not a restatement: the problem, why the mechanism can work here, what the evidence rests on, why this KPI and guardrail, what would invalidate the test, what a win and a loss would teach.
+
+Why a candidate was left out, and what the critic found, are given the same way, only when asked.
 
 ## Never do
 
-- Suggest a market-dependent scenario without saying so (CLAUDE.md rule 11). In the archive the dependency is written as a "Pazar notu" line under the scenario; pass it along, and treat any scenario that touches payment, shipping and returns, price display, trust signals or enterprise purchasing as market-dependent **whether or not it carries that line**. If the user's target market is unknown, don't hold the turn for it: deliver the scenario with a one-line market-dependency note ("assumes a market where installments are standard; confirm yours") and ask the market question as the turn's single question, subject to rule 19's priority order.
-- Skip the regulation gate (rule 11). The legally bound areas are rule 11's full list: discount display, consent flows, subscription cancellation, credit cost and rate display, insurance or pension offer and contract steps, and copy that states why personal data is collected or how it is used. Two cases. (a) **B changes a regulated display itself** (legal text, a mandatory disclosure, consent wording, a price, rate, cost or return figure, data-purpose copy): the scenario is held, not produced, until the target market's rule is verified; say in one line which rule and ask the sign-off question (rule 19). (b) **B sits inside a regulated flow but leaves every regulated display untouched** (navigation, ordering, explanatory copy that promises nothing): it is produced, with compliance sign-off as a pre-start gate, written as one Never-do item ("Don't start before compliance has approved B's exact copy") and said in one line in chat. A mandatory notice missing from the page is a compliance finding, never a test.
-- Silently suggest a scenario whose validity has expired: if a platform rule, regulation or standardization shifted the scenario's ground, say so or don't suggest it at all (`${CLAUDE_PLUGIN_ROOT}/knowledge/methodology.md` → Archive staleness).
-- Copy archive text without adapting it to the user's context — localize the examples to the sector/product (e.g. a clothing example, not "Wireless Headphones," on a fashion site).
-- Produce more than five scenarios without asking; state the count and offer the rest (rule 9).
-- Pad the set with a weak candidate (fails the mechanism gate or ICE below Medium) to reach a count; or the reverse, refuse or silently drop a test the user explicitly asked for. An asked test is produced with its weakness stated and a "Stronger alternative:" footer note (rule 9).
-- Write the full content of the three boxes as chat text in addition to the card (rule 9) — only if the user explicitly asks for a text version, write it separately.
-- List scenario titles and ask "which one should I expand" (CLAUDE.md rule 13); give the selected ones directly as cards.
+- Read a whole archive file, the whole glossary, or a methodology section no decision needs.
+- Repeat the record in chat beyond the four lines, or regenerate the three boxes unasked (rule 9).
+- Produce more than three without the offer, pad with a weak candidate, or drop a test the user asked for (rule 9).
+- Force-fit an archive scenario, or present two proposals on one mechanism.
+- Skip the regulation gate or a market or accessibility warning (rules 3, 11).
+- List titles and ask "which one should I expand" (rule 13).

@@ -2,7 +2,7 @@
 """v2.2 kart denetimleri için unit testler. Bağımlılıksız (unittest).
 
 Kapsam: mockup gövdesi için izin listesi (allowlist) temizleyicisi, yerleştirici
-yeniden tarama hatası, "JavaScript" etiketi, marka rengi, sekme çubuğu ve etkin
+yeniden tarama hatası, "JavaScript" başlığı, marka rengi, sekme çubuğu ve etkin
 sekme, halka kuralları (boşluk, etiket, renk uyarısı), şema doğrulamasının
 üretimden önce çalışması ve uyarı kanalı.
 """
@@ -18,12 +18,12 @@ import unittest
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "scripts"))
 import build_card as bc  # noqa: E402
-from build_card import build, self_verify, render_item, hl_count  # noqa: E402
+import validate_scenario_json as vsj  # noqa: E402
+from build_card import build, self_verify, hl_count  # noqa: E402
 
 REPO_ROOT = os.path.join(HERE, "..")
 TEMPLATE_PATH = os.path.join(REPO_ROOT, "templates", "scenario-card.html")
 EXAMPLE = os.path.join(REPO_ROOT, "examples", "scenario.json")
-LEGACY_EXAMPLE = os.path.join(REPO_ROOT, "examples", "scenario-card-input.json")
 
 with open(TEMPLATE_PATH, encoding="utf-8") as _fh:
     TEMPLATE = _fh.read()
@@ -34,27 +34,67 @@ def example():
         return json.load(fh)
 
 
+def detailed():
+    """The shipped example with the detailed view the user can ask for."""
+    sc = example()
+    sc["detail"] = {
+        "test_items": [{"label": "Kaçak", "text": "Kupon alanını bağlantı arkasına almak terk oranını düşürüyor mu?"},
+                       {"label": "Segment", "text": "Yeni ve dönen kullanıcıda kupon arama davranışı farklı mı?"},
+                       {"label": "Kampanya", "text": "Kampanya dönemlerinde etki tersine dönüyor mu?"}],
+        "kpis": [{"name": "Ziyaretçi Başına Gelir (RPV)", "role": "primary", "question": "Toplam gelir artıyor mu?"},
+                 {"name": "Sipariş Tamamlama Oranı", "role": "secondary", "question": "Kaçak kapanıyor mu?"},
+                 {"name": "Kupon Kullanım Oranı", "role": "guardrail", "question": "Kullanım çökmemeli."}],
+        "dont_items": ["Kupon alanını tamamen kaldırmayın.", "Geçersiz kod hatasını belirsiz bırakmayın.",
+                       "Aynı testte hem konumu hem metni değiştirmeyin."],
+    }
+    return sc
+
+
 def with_b(extra):
     sc = example()
     sc["card"]["variant_b"] += "\n" + extra
     return sc
 
 
+def with_both(extra):
+    """The same element added to both mockups: no difference between the arms."""
+    sc = example()
+    sc["card"]["variant_a"] += "\n" + extra
+    sc["card"]["variant_b"] += "\n" + extra
+    return sc
+
+
+A11Y_FULL = {"type": "accessibility",
+             "text": "Yeni öğe klavyeyle erişilebilir, ekran okuyucuda adıyla okunur, dokunma alanı en az 44×44 pt "
+                     "ve metin kontrastı en az 4.5:1 olur."}
+
+
+def stamped(sc, mockup=True):
+    """The record with the reviewers' PASS stamps, computed the way the gates compute them."""
+    sc = copy.deepcopy(sc)
+    sc["review"] = {"scenario_critic": {"verdict": "PASS", "fingerprint": vsj.record_fingerprint(sc)}}
+    if mockup:
+        sc["review"]["mockup_reviewer"] = {"verdict": "PASS", "fingerprint": bc.final_fingerprint(TEMPLATE, sc)}
+    return sc
+
+
+RECORD_KEYS = ("title", "lang", "device", "difference", "variable", "variants", "warnings", "numeric_change")
+
+
 def flat(**over):
-    base = {
+    """A minimal record as build() reads it. Record fields (title, device,
+    warnings …) go to the top level, everything else into `card`."""
+    rec = {
         "title": "Kupon alanı katlanınca dönüşüm artar mı?",
-        "desc": "Açıklama.",
-        "test_items": ["Birinci madde", "İkinci madde", "Üçüncü madde"],
-        "kpi_items": [{"label": "RPV", "text": "artıyor mu?", "role": "primary"},
-                      {"label": "İade Oranı", "text": "artmamalı", "role": "guardrail"},
-                      {"label": "AOV", "text": "değişiyor mu?", "role": "secondary"}],
-        "dont_items": ["Bir şey yapmayın", "İkinci şeyi yapmayın", "Üçüncüyü yapmayın"],
         "difference": "change",
-        "variant_a": '<div class="r-h">Sepet</div>',
-        "variant_b": '<div class="hl" data-note="yeni"><div class="r-h">Sepet</div></div>',
+        "card": {
+            "variant_a": '<div class="r-h">Sepet</div>',
+            "variant_b": '<div class="hl" data-note="Yeni"><div class="r-h">Sepet</div></div>',
+        },
     }
-    base.update(over)
-    return base
+    for key, value in over.items():
+        (rec if key in RECORD_KEYS else rec["card"])[key] = value
+    return rec
 
 
 def die_text(fn, *args, **kw):
@@ -77,11 +117,14 @@ def run_main(scenario, *extra):
             json.dump(scenario, fh, ensure_ascii=False)
         out, err = io.StringIO(), io.StringIO()
         code = 0
+        msg_lang = bc._MSG_LANG  # main() sets it from --lang; later tests must not inherit it
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
             try:
                 code = bc.main(["--template", TEMPLATE_PATH, "--scenario", src, "--out", dst] + list(extra))
             except SystemExit as exc:
                 code = exc.code
+            finally:
+                bc._MSG_LANG = msg_lang
         built = None
         if os.path.isfile(dst):
             with open(dst, encoding="utf-8") as fh:
@@ -205,6 +248,8 @@ class TestAllowlist(unittest.TestCase):
 
     def test_real_component_markup_passes(self):
         # Every component the template's developer comment documents.
+        ring = ('<div class="hl" data-note="Yeni" data-pos="below" style="align-self:flex-start">'
+                '<div class="r-cta sm outline" style="display:flex;gap:8px;color:#0b4dc2">Devam</div></div>')
         markup = (
             '<div class="r-header"><span class="r-logo">Marka</span><span class="r-nav"><span>Ürünler</span></span>'
             '<span class="r-tel">0850 000 00 00</span></div>'
@@ -216,24 +261,21 @@ class TestAllowlist(unittest.TestCase):
             '<div class="r-progress"><i style="width:40%"></i></div>'
             '<div class="r-info">Bilgi <b>kalın</b> <strong>güçlü</strong> <em>eğik</em><br>satır</div>'
             '<p class="r-sub">Kargo &amp; iade · 3 &lt; 5</p>'
-            '<div class="hl" data-note="yeni" data-pos="below" style="align-self:flex-start">'
-            '<div class="r-cta sm outline" style="display:flex;gap:8px;color:#0b4dc2">Devam</div></div>'
         )
-        sc = flat(difference="add", variant_b=markup)
+        # A is the same screen without the added button: the only difference sits in the ring.
+        sc = flat(difference="add", variant_a=markup, variant_b=markup + ring, warnings=[A11Y_FULL])
         built = build(TEMPLATE, sc)
-        self.assertIn(markup, built)
+        self.assertIn(markup + ring, built)
 
     def test_literal_less_than_in_text_is_text(self):
-        build(TEMPLATE, flat(variant_a='<div class="r-h">3 < 5 ve 5 > 3</div>'))
+        text = '<div class="r-h">3 < 5 ve 5 > 3</div>'
+        build(TEMPLATE, flat(variant_a=text, variant_b='<div class="hl" data-note="Yeni">%s</div>' % text))
 
     def test_markup_is_inserted_byte_for_byte(self):
-        for path in (EXAMPLE, LEGACY_EXAMPLE):
-            with open(path, encoding="utf-8") as fh:
-                sc = json.load(fh)
-            card = sc.get("card", sc)
-            built = build(TEMPLATE, sc)
-            self.assertIn(card["variant_a"], built)
-            self.assertIn(card["variant_b"], built)
+        sc = example()
+        built = build(TEMPLATE, sc)
+        self.assertIn(sc["card"]["variant_a"], built)
+        self.assertIn(sc["card"]["variant_b"], built)
 
     def test_whitespace_only_lines_inside_a_mockup_survive(self):
         markup = '<div class="r-h">Sepet</div>\n   \n<div class="r-sub">Alt</div>'
@@ -255,7 +297,7 @@ class TestAllowlist(unittest.TestCase):
 
 class TestRingCounting(unittest.TestCase):
     def test_unquoted_class_counts_as_a_ring(self):
-        self.assertEqual(hl_count("<div class=hl data-note=eski>x</div>"), 1)
+        self.assertEqual(hl_count("<div class=hl data-note=Eski>x</div>"), 1)
 
     def test_data_class_is_not_a_ring(self):
         self.assertEqual(hl_count('<div data-class="hl">x</div>'), 0)
@@ -266,26 +308,26 @@ class TestRingCounting(unittest.TestCase):
 
     def test_add_with_a_ring_smuggled_into_a_is_refused(self):
         sc = example()
-        sc["card"]["difference"] = "add"
+        sc["card"]["difference"] = sc["difference"] = "add"  # contract 5: the card can't override the record
         sc["card"]["variant_a"] = sc["card"]["variant_a"].replace(
-            'class="hl" data-note="kupon alanı açık"', "class=hl data-note=eski")
+            'class="hl" data-note="Kupon alanı açık"', "class=hl data-note=Eski")
         die_text(build, TEMPLATE, sc)
 
     def test_data_class_ring_in_b_is_refused(self):
         sc = example()
-        sc["card"]["variant_b"] = sc["card"]["variant_b"].replace('class="hl"', 'data-class="hl"')
+        sc["card"]["variant_b"] = sc["card"]["variant_b"].replace('class="r-link hl"', 'class="r-link" data-class="hl"')
         die_text(build, TEMPLATE, sc)
 
 
 class TestPlaceholders(unittest.TestCase):
     """Doldurulan metin yeniden taranmaz: tek geçişte yerleştirme."""
 
-    def test_footer_note_with_screen_token_does_not_paste_the_mockup(self):
+    def test_title_with_a_screen_token_does_not_paste_the_mockup(self):
         sc = example()
-        sc["card"]["footer_notes"] = ["Not: {{VARIANT_B_SCREEN}}"]
+        sc["title"] = "Not: {{VARIANT_B_SCREEN}} mı?"
         built = build(TEMPLATE, sc)
-        self.assertIn("Not: {{VARIANT_B_SCREEN}}", built)
-        self.assertEqual(built.count('class="hl"'), 2)
+        self.assertIn("Not: {{VARIANT_B_SCREEN}} mı?", built)
+        self.assertEqual(built.count('hl" data-note="'), 2)  # one ring per arm (B's ring sits on the link itself)
 
     def test_title_with_a_template_variable_builds(self):
         sc = example()
@@ -294,14 +336,14 @@ class TestPlaceholders(unittest.TestCase):
         self.assertIn("{{AD}} ile hitap", built)
 
     def test_mockup_text_with_a_template_variable_builds(self):
-        built = build(TEMPLATE, with_b('<div class="r-sub">Merhaba {{FIRST_NAME}}, sepetin seni bekliyor</div>'))
+        built = build(TEMPLATE, with_both('<div class="r-sub">Merhaba {{FIRST_NAME}}, sepetin seni bekliyor</div>'))
         self.assertIn("Merhaba {{FIRST_NAME}},", built)
 
     def test_known_placeholder_names_in_text_stay_text(self):
         sc = example()
-        sc["rationale"] = "Açıklama {{TITLE}} ve {{KPI_ITEMS}} içeriyor."
+        sc["title"] = "Başlık {{TITLE}} ve {{LANG}} içeriyor mu?"
         built = build(TEMPLATE, sc)
-        self.assertIn("Açıklama {{TITLE}} ve {{KPI_ITEMS}} içeriyor.", built)
+        self.assertIn('<h1 class="title">Başlık {{TITLE}} ve {{LANG}} içeriyor mu?</h1>', built)
 
     def test_url_and_tab_labels_are_not_rescanned(self):
         built = build(TEMPLATE, flat(device="web", url="site.example/{{VARIANT_B_SCREEN}}"))
@@ -310,29 +352,31 @@ class TestPlaceholders(unittest.TestCase):
         self.assertIn("<span>{{TITLE}}</span>", built)
 
     def test_unknown_template_placeholder_is_still_reported(self):
-        tpl = TEMPLATE.replace("{{DESC}}", "{{DESC}} {{FOOTER_NOTE}}")
+        tpl = TEMPLATE.replace('<h1 class="title">{{TITLE}}</h1>', '<h1 class="title">{{TITLE}}</h1> {{FOOTER_NOTE}}')
         msg = die_text(build, tpl, flat())
         self.assertIn("{{FOOTER_NOTE}}", msg)
 
 
 class TestOrdinaryTextIsNotRefused(unittest.TestCase):
-    def test_label_javascript_builds(self):
+    def test_title_javascript_builds(self):
         sc = example()
-        sc["test_items"][0] = {"label": "JavaScript", "text": "Betik yükü azalınca etkileşim süresi kısalıyor mu?"}
-        code, _, err, built = run_main(sc)
+        sc["title"] = "JavaScript: betik yükü azalınca etkileşim süresi kısalır mı?"
+        code, _, err, built = run_main(stamped(sc))
         self.assertEqual(code, 0, err)
-        self.assertIn("<b>JavaScript:</b>", built)
+        self.assertIn('<h1 class="title">JavaScript: betik yükü', built)
 
     def test_text_mentioning_handlers_builds(self):
         sc = example()
-        sc["rationale"] = 'Sayfada onclick="..." ile açılan pencere ve javascript: bağlantıları var.'
-        code, _, err, built = run_main(sc)
+        sc["problem"] = "Sayfada onclick=“...” ile açılan pencere ve javascript: bağlantıları var."
+        sc["mechanism"] = "B’de <script> ve <img onerror=x> diye yazılan metin yalnızca metin olarak kalır."
+        code, _, err, built = run_main(stamped(sc))
         self.assertEqual(code, 0, err)
+        self.assertNotIn("onclick", built)  # the record's text never reaches the card
 
     def test_mockup_text_is_ordinary_text_too(self):
         text = ('<div class="r-sub">JavaScript: açık · Online = kart · onay = evet</div>'
                 '<div class="r-sub">Örnek: &lt;script&gt;alert(1)&lt;/script&gt; ve &lt;a href="javascript:x"&gt;</div>')
-        code, _, err, built = run_main(with_b(text))
+        code, _, err, built = run_main(stamped(with_both(text)))
         self.assertEqual(code, 0, err)
         self.assertIn(text, built)
 
@@ -424,7 +468,7 @@ class TestBottomNav(unittest.TestCase):
         del sc["card"]["url"]
         sc["card"]["bottom_nav"] = self.NAV
         sc["card"]["bottom_nav_active"] = "Ürünlerim"
-        code, _, err, built = run_main(sc)
+        code, _, err, built = run_main(stamped(sc))
         self.assertEqual(code, 0, err)
         self.assertEqual(built.count('<span class="on">Ürünlerim</span>'), 2)
 
@@ -433,25 +477,25 @@ class TestRingRules(unittest.TestCase):
     def test_ring_with_inline_margin_is_refused(self):
         sc = example()
         sc["card"]["variant_b"] = sc["card"]["variant_b"].replace(
-            'class="hl" data-note="bağlantı olarak"',
-            'class="hl" data-note="bağlantı olarak" style="margin-bottom:20px"')
+            'style="align-self:flex-start;line-height:44px"',
+            'style="align-self:flex-start;line-height:44px;margin-bottom:20px"')
         msg = die_text(build, TEMPLATE, sc)
         self.assertIn("margin", msg)
         self.assertIn("must not push content", msg)
 
     def test_ring_with_inline_padding_is_refused(self):
-        b = '<div class="hl" data-note="yeni" style="display:flex;padding:6px"><div class="r-h">Sepet</div></div>'
+        b = '<div class="hl" data-note="Yeni" style="display:flex;padding:6px"><div class="r-h">Sepet</div></div>'
         msg = die_text(build, TEMPLATE, flat(variant_b=b))
         self.assertIn("padding", msg)
 
     def test_ring_with_layout_neutral_style_is_accepted(self):
-        b = ('<div class="hl" data-note="yeni" style="align-self:flex-start;display:flex;flex-direction:column;gap:8px">'
+        b = ('<div class="hl" data-note="Yeni" style="align-self:flex-start;display:flex;flex-direction:column;gap:8px">'
              '<div class="r-h">Sepet</div></div>')
         build(TEMPLATE, flat(variant_b=b))
 
     def test_margin_message_in_turkish(self):
         errors, _ = bc.card_problems("change", '<div class="r-h">S</div>',
-                                     '<div class="hl" data-note="x" style="margin:4px"><div class="r-h">S</div></div>',
+                                     '<div class="hl" data-note="X" style="margin:4px"><div class="r-h">S</div></div>',
                                      lang="tr")
         self.assertTrue(any("içeriği itmemeli" in e for e in errors), errors)
 
@@ -463,104 +507,165 @@ class TestRingRules(unittest.TestCase):
         msg = die_text(build, TEMPLATE, flat(variant_a='<div class="r-ctaa">Devam</div>'))
         self.assertIn("r-ctaa", msg)
 
-    def test_colour_only_in_b_warns(self):
+    def test_colour_only_in_b_outside_the_ring_is_refused(self):
+        # Stage 3: was a warning and the card was built.
         sc = example()
         sc["card"]["variant_b"] = sc["card"]["variant_b"].replace(
             '<div class="r-cta">', '<div class="r-cta" style="background:#0a7f3f;border-color:#0a7f3f;color:#fff">')
-        warnings = []
-        build(TEMPLATE, sc, warnings=warnings)
-        self.assertTrue(any("only in Variant B" in w and "#0a7f3f" in w for w in warnings), warnings)
+        msg = die_text(build, TEMPLATE, sc)
+        self.assertIn("inline colour only in Variant B on an element outside the ring: #0a7f3f", msg)
 
-    def test_colour_test_does_not_warn_about_colour(self):
+    def test_colour_outside_the_ring_is_refused_even_in_a_colour_test(self):
         sc = example()
         sc["variable"] = "Ödeme butonunun rengi"
         sc["card"]["variant_b"] = sc["card"]["variant_b"].replace(
             '<div class="r-cta">', '<div class="r-cta" style="background:#0a7f3f">')
+        self.assertIn("outside the ring", die_text(build, TEMPLATE, sc))
+
+    def test_colour_only_in_b_inside_the_ring_warns(self):
+        sc = example()
+        sc["card"]["variant_b"] = sc["card"]["variant_b"].replace(
+            'line-height:44px">', 'line-height:44px;color:#0a7f3f">')
+        warnings = []
+        build(TEMPLATE, sc, warnings=warnings)
+        self.assertTrue(any("only in Variant B, inside the ring" in w and "#0a7f3f" in w for w in warnings), warnings)
+
+    def test_colour_test_does_not_warn_about_colour_inside_the_ring(self):
+        sc = example()
+        sc["variable"] = "Bağlantının rengi"
+        sc["card"]["variant_b"] = sc["card"]["variant_b"].replace(
+            'line-height:44px">', 'line-height:44px;color:#0a7f3f">')
         warnings = []
         build(TEMPLATE, sc, warnings=warnings)
         self.assertFalse(any("only in Variant B" in w for w in warnings), warnings)
 
     def test_shared_colours_do_not_warn(self):
         a = '<div class="r-h" style="color:#0B4DC2">Sepet</div>'
-        b = '<div class="hl" data-note="yeni"><div class="r-h" style="color: #0b4dc2">Sepetim</div></div>'
+        b = '<div class="hl" data-note="Yeni"><div class="r-h" style="color: #0b4dc2">Sepetim</div></div>'
         warnings = []
         build(TEMPLATE, flat(variant_a=a, variant_b=b), warnings=warnings)
         self.assertEqual([w for w in warnings if "only in Variant B" in w], [])
 
-    def test_shipped_examples_build_without_warnings(self):
-        for path in (EXAMPLE, LEGACY_EXAMPLE):
-            with open(path, encoding="utf-8") as fh:
-                sc = json.load(fh)
-            warnings = []
-            build(TEMPLATE, sc, warnings=warnings)
-            self.assertEqual(warnings, [], path)
+    def test_shipped_example_builds_without_warnings(self):
+        warnings = []
+        build(TEMPLATE, example(), warnings=warnings)
+        self.assertEqual(warnings, [])
+
+    def test_lowercase_turkish_label_is_refused(self):
+        sc = example()
+        sc["card"]["variant_b"] = sc["card"]["variant_b"].replace("Kupon bağlantıda", "kupon alanı bağlantıda")
+        msg = die_text(build, TEMPLATE, sc)
+        self.assertIn("lowercase", msg)
+        self.assertIn("“kupon alanı bağlantıda”", msg)
+
+    def test_dotted_i_label_is_refused_and_capital_i_passes(self):
+        sc = example()
+        sc["card"]["variant_b"] = sc["card"]["variant_b"].replace("Kupon bağlantıda", "indirim bağlantıda")
+        die_text(build, TEMPLATE, sc)
+        sc["card"]["variant_b"] = sc["card"]["variant_b"].replace("indirim bağlantıda", "İndirim bağlantıda")
+        build(TEMPLATE, sc)
+
+    def test_lowercase_label_is_allowed_on_an_english_card(self):
+        sc = example()
+        sc["card"]["variant_b"] = sc["card"]["variant_b"].replace("Kupon bağlantıda", "coupon behind link")
+        errors, _ = bc.card_problems(sc["card"]["difference"], sc["card"]["variant_a"], sc["card"]["variant_b"],
+                                     card_lang="en")
+        self.assertFalse([e for e in errors if "lowercase" in e], errors)
+        errors, _ = bc.card_problems(sc["card"]["difference"], sc["card"]["variant_a"], sc["card"]["variant_b"],
+                                     card_lang="tr")
+        self.assertTrue([e for e in errors if "lowercase" in e], errors)
 
     def test_long_label_warns(self):
         sc = example()
         sc["card"]["variant_b"] = sc["card"]["variant_b"].replace(
-            "bağlantı olarak", "kupon alanı artık yalnızca bir bağlantı olarak duruyor")
+            "Kupon bağlantıda", "Kupon alanı artık yalnızca bir bağlantı olarak duruyor")
         warnings = []
         build(TEMPLATE, sc, warnings=warnings)
         self.assertTrue(any("label" in w for w in warnings), warnings)
 
     def test_several_rings_in_one_variant_warn(self):
-        b = ('<div class="hl" data-note="bir"><div class="r-h">A</div></div>'
-             '<div class="hl" data-note="iki"><div class="r-h">B</div></div>')
+        b = ('<div class="hl" data-note="Bir"><div class="r-h">A</div></div>'
+             '<div class="hl" data-note="İki"><div class="r-h">B</div></div>')
         warnings = []
         build(TEMPLATE, flat(variant_a='<div class="r-h">A</div><div class="r-h">B</div>', variant_b=b), warnings=warnings)
         self.assertTrue(any("2 rings" in w for w in warnings), warnings)
 
-    def test_move_with_a_different_element_warns(self):
+    def test_move_with_a_different_element_is_refused(self):
+        # Stage 3: a moved element whose content changed was a warning; it is a second variable.
         sc = example()
-        sc["card"]["difference"] = "move"
-        warnings = []
-        build(TEMPLATE, sc, warnings=warnings)
-        self.assertTrue(any("move" in w for w in warnings), warnings)
+        sc["card"]["difference"] = sc["difference"] = "move"  # contract 5: the card can't override the record
+        msg = die_text(build, TEMPLATE, sc)
+        self.assertIn("difference 'move': the ringed element's content differs", msg)
 
-    def test_difference_outside_the_ring_warns(self):
+    def test_move_with_the_same_element_builds_and_lists_no_change(self):
+        cta = '<div class="hl" data-note="Taşındı"><div class="r-cta">Ödemeye geç</div></div>'
+        a = cta + '<div class="r-h">Sepetim</div>'
+        b = '<div class="r-h">Sepetim</div>' + cta
+        manifest = {}
+        build(TEMPLATE, flat(difference="move", variant_a=a, variant_b=b), manifest=manifest)
+        self.assertEqual(manifest["changes"], [])
+        self.assertEqual([r["kind"] for r in manifest["rings"]], ["moved"])
+
+    def test_difference_outside_the_ring_is_refused(self):
+        # Stage 3: was a warning and the card was built.
         sc = example()
         sc["card"]["variant_b"] = sc["card"]["variant_b"].replace("Ödemeye geç", "Hemen öde")
-        warnings = []
-        build(TEMPLATE, sc, warnings=warnings)
-        self.assertTrue(any("outside" in w for w in warnings), warnings)
+        msg = die_text(build, TEMPLATE, sc)
+        self.assertIn("A and B differ outside any ring", msg)
+        self.assertIn("Hemen öde", msg)
 
 
 class TestValidationBeforeBuild(unittest.TestCase):
     """main() şemayı çalıştırır; hatalı senaryodan kart çıkmaz."""
 
-    def refused(self, scenario, fragment):
-        code, _, err, built = run_main(scenario)
-        self.assertEqual(code, 2, err)
+    def refused(self, scenario, fragment, *extra):
+        # Stage 3: a refusal is exit 1 and names its gate (was exit 2).
+        code, _, err, built = run_main(scenario, *extra)
+        self.assertEqual(code, 1, err)
         self.assertIsNone(built)
         self.assertIn(fragment, err)
+        self.assertIn("REFUSED at the", err)
 
-    def test_shipped_examples_build(self):
-        for path in (EXAMPLE, LEGACY_EXAMPLE):
-            with open(path, encoding="utf-8") as fh:
-                sc = json.load(fh)
-            code, out, err, built = run_main(sc)
-            self.assertEqual(code, 0, err)
-            self.assertIn("built", out)
+    def test_shipped_example_builds(self):
+        # The record as a final card once both stamps match.
+        code, out, err, built = run_main(stamped(example()))
+        self.assertEqual(code, 0, err)
+        self.assertIn("built", out)
 
     def test_empty_boxes_are_refused(self):
+        sc = detailed()
+        sc["detail"] = {"test_items": [], "dont_items": [], "kpis": []}
+        self.refused(sc, "detail.test_items")
+
+    def test_old_record_fields_are_refused(self):
         sc = example()
-        sc["test_items"], sc["dont_items"], sc["kpis"] = [], [], []
-        self.refused(sc, "test_items")
+        sc["kpis"] = [{"name": "RPV", "role": "primary"}]
+        self.refused(sc, "unknown field 'kpis'")
 
     def test_four_primaries_are_refused(self):
-        sc = example()
-        sc["kpis"] = [dict(k, role="primary") for k in sc["kpis"]]
+        sc = detailed()
+        sc["detail"]["kpis"] = [dict(k, role="primary") for k in sc["detail"]["kpis"]]
         self.refused(sc, "rule 2")
 
     def test_missing_difference_is_refused(self):
         sc = example()
         del sc["card"]["difference"]
+        del sc["difference"]
         self.refused(sc, "difference")
 
-    def test_non_string_items_are_refused(self):
+    def test_card_without_difference_uses_the_record_difference(self):
         sc = example()
-        sc["test_items"] = [None, 5, ["x"], {"label": "", "text": ""}]
-        self.refused(sc, "test_items[0]")
+        del sc["card"]["difference"]
+        code, out, err, built = run_main(stamped(sc))
+        self.assertEqual(code, 0, err)
+        self.assertIn("difference=change", out)
+        sc["difference"] = "add"  # the record's type now sets the ring rule, and A carries a ring
+        self.refused(sc, "difference 'add'")
+
+    def test_non_string_items_are_refused(self):
+        sc = detailed()
+        sc["detail"]["test_items"] = [None, 5, ["x"], {"label": "", "text": ""}]
+        self.refused(sc, "detail.test_items[0]")
 
     def test_scenario_without_card_gets_a_clear_message(self):
         sc = example()
@@ -571,56 +676,34 @@ class TestValidationBeforeBuild(unittest.TestCase):
         self.assertNotIn("Traceback", err)
 
     def test_messages_follow_lang(self):
-        sc = example()
-        sc["kpis"] = [dict(k, role="primary") for k in sc["kpis"]]
+        sc = detailed()
+        sc["detail"]["kpis"] = [dict(k, role="primary") for k in sc["detail"]["kpis"]]
         code, _, err, _ = run_main(sc, "--lang", "tr")
-        self.assertEqual(code, 2)
+        self.assertEqual(code, 1)
         self.assertIn("kural 2", err)
+        self.assertIn("kapısında REDDEDİLDİ", err)
 
     def test_warnings_are_printed_and_do_not_block(self):
         sc = example()
         sc["card"]["variant_b"] = sc["card"]["variant_b"].replace(
-            '<div class="r-cta">', '<div class="r-cta" style="background:#0a7f3f">')
-        code, _, err, built = run_main(sc)
+            'line-height:44px">', 'line-height:44px;color:#0a7f3f">')
+        code, _, err, built = run_main(stamped(sc))
         self.assertEqual(code, 0, err)
         self.assertIsNotNone(built)
         self.assertIn("build_card: warning:", err)
-        self.assertIn("only in Variant B: #0a7f3f", err)
+        self.assertIn("only in Variant B, inside the ring: #0a7f3f", err)
         # A warning is printed once, not once per layer that noticed it.
         self.assertEqual(err.count("only in Variant B"), 1)
 
-    def test_legacy_shape_needs_three_real_items_per_box(self):
-        self.refused(flat(dont_items=["Bir", "İki"]), "dont_items")
-        self.refused(flat(test_items=["Bir", "", "Üç"]), "test_items")
-        self.refused(flat(kpi_items=[None, 5, ["x"]]), "kpi_items")
-
-    def test_legacy_shape_without_difference_warns(self):
-        sc = flat()
-        del sc["difference"]
-        code, _, err, built = run_main(sc)
-        self.assertEqual(code, 0, err)
-        self.assertIn("warning", err)
-        self.assertIn("difference", err)
-
     def test_tab_bar_on_a_browser_frame_is_refused(self):
-        self.refused(flat(device="phone-web", url="site.example", bottom_nav=["Ana Sayfa"]), "bottom_nav")
         sc = example()
         sc["card"]["bottom_nav"] = ["Ana Sayfa", "Ürünlerim"]
         self.refused(sc, "bottom_nav")
 
     def test_browser_frame_without_url_is_refused(self):
-        self.refused(flat(device="web"), "url")
         sc = example()
         del sc["card"]["url"]
         self.refused(sc, "card.url")
-
-
-class TestRenderItem(unittest.TestCase):
-    def test_non_text_item_is_refused(self):
-        for bad in (None, 5, ["x"]):
-            with self.subTest(repr(bad)):
-                msg = die_text(render_item, bad)
-                self.assertIn("box items", msg)
 
 
 class TestSkillClaimMatchesCode(unittest.TestCase):

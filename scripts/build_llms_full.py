@@ -40,8 +40,8 @@ HEADER = """# ab-test-playbook — full text
 > repository by scripts/build_llms_full.py. An A/B testing and CRO engine for
 > Claude Code: scenario suggestion from a curated scenario archive (the current
 > total is stated in the Overview below), single-variable test design,
-> methodology audit, real statistics read against the pre-declared direction,
-> and a self-contained HTML card per scenario.
+> methodology audit, and a self-contained HTML card per scenario that shows the
+> two variants side by side. Results and statistics stay with your testing tool.
 >
 > Source: https://github.com/ali-demirbas/ab-test-playbook (MIT)
 

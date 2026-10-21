@@ -5,9 +5,9 @@ __pycache__/
 .env.*
 !.env.example
 .claude/settings.local.json
-# Cards a run writes into the user's working directory. docs/demo/ is the one
-# checked-in card (the published demo) and is not named this way, so it is
-# unaffected by this rule.
+# Cards a run writes into the user's working directory. docs/demo/ holds the
+# checked-in cards (the published demo and the sample cards); they are not named
+# this way, so they are unaffected by this rule.
 abtest-card-*.html
 .abtest-history.md
 .abtest-backlog.md
