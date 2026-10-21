@@ -18,6 +18,7 @@ from validate_scenarios import (  # noqa: E402
     extract_cross_refs, find_unresolved_cross_refs, normalize_title,
     find_duplicate_never_do, find_near_duplicates, parse_glossary, glossary_status,
     MAX_VARIABLE_CHARS,
+    unclosed_blocks,
 )
 
 DEFAULT_VARIABLE = "Değişken: Buton rengi · Fark: değiştir"
@@ -463,3 +464,68 @@ class TestGlossary(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestArchiveBlockRead(unittest.TestCase):
+    """The skills read one archive block with grep + awk; a block must not bleed into its neighbour."""
+
+    ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+
+    @classmethod
+    def setUpClass(cls):
+        import re
+        import shutil
+        cls.awk = shutil.which("awk")
+        with open(os.path.join(cls.ROOT, "skills", "ab-test-suggest", "SKILL.md"), encoding="utf-8") as fh:
+            m = re.search(r"awk -v s=<title line> '([^']+)'", fh.read())
+        cls.program = m.group(1)
+        with open(os.path.join(cls.ROOT, "knowledge", "scenarios", "thank-you.md"), encoding="utf-8") as fh:
+            cls.text = fh.read()
+
+    def read_block(self, text, title_prefix):
+        import subprocess
+        import tempfile
+        lines = text.split("\n")
+        hits = [i + 1 for i, l in enumerate(lines) if l.startswith("## " + title_prefix)]
+        if not hits:
+            return None  # no title matches: no archive candidate, nothing read
+        with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as fh:
+            fh.write(text)
+        try:
+            out = subprocess.run([self.awk, "-v", "s=%d" % hits[0], self.program, fh.name],
+                                 capture_output=True, text=True, check=True).stdout
+        finally:
+            os.unlink(fh.name)
+        return out
+
+    def first_title(self, text):
+        return next(l for l in text.split("\n") if l.startswith("## "))[3:]
+
+    def test_an_intact_block_is_read_whole_and_alone(self):
+        if not self.awk:
+            self.skipTest("awk yok")
+        block = self.read_block(self.text, self.first_title(self.text))
+        self.assertEqual(block.count("\n## "), 0)
+        self.assertTrue(block.startswith("## "))
+        self.assertIn("Değişken:", block)
+
+    def test_a_missing_separator_stops_at_the_next_title(self):
+        if not self.awk:
+            self.skipTest("awk yok")
+        first = self.text.index("\n## ")
+        cut = self.text.index("\n---\n", first)
+        broken = self.text[:cut] + self.text[cut + 4:]  # the first block's closing --- removed
+        block = self.read_block(broken, self.first_title(broken))
+        self.assertEqual(block.strip().count("\n## "), 0, "read ran into the neighbouring scenario")
+        self.assertIn(self.first_title(broken), block)
+
+    def test_a_search_that_matches_no_title_reads_nothing(self):
+        self.assertIsNone(self.read_block(self.text, "Hiç olmayan bir başlık"))
+
+    def test_the_validator_names_a_block_without_its_separator(self):
+        first = self.text.index("\n## ")
+        cut = self.text.index("\n---\n", first)
+        broken = self.text[:cut] + self.text[cut + 4:]
+        parsed = parse_scenarios(broken)
+        self.assertEqual(unclosed_blocks(parsed), [parsed[0][0]])
+        self.assertEqual(unclosed_blocks(parse_scenarios(self.text)), [])

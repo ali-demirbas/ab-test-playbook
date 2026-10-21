@@ -37,7 +37,7 @@
 - Aydınlatma metnindeki amaç bilinmiyorsa öneri koşulludur (“Aydınlatma metni TC kimlik numarasının amacını nasıl yazıyor?”); amaç uydurulmaz.
 
 **Girdi I (telefon teklif sonrasına taşınır):** Telefon alanı ilk adımdan teklif sonrasına alınıyor.
-- `difference: move`; iki kol ilk adımı, ayırıcıyı ve sonraki adımın kendi başlığını (“Teklifiniz hazır”) çizer; A alanı ilk adımda, B sonraki adımda halkalar, etiket aynı.
+- `difference: move`; iki kol aynı iki aşamayı ayrı ekranlar olarak çizer (`.r-stage-break`, `card.stage_captions`: ilk adım ve “Teklifiniz hazır” ekranı); A alanı ilk adımda, B teklif ekranında halkalar. Her etiket kendi kolundaki gerçek konumu söyler (A “Telefon ilk adımda”, B “Telefon teklif sonrasında”).
 - Telefonun teklif ya da SMS doğrulaması için teklif öncesinde gerekip gerekmediği bilinmiyorsa öneri koşulludur (soru taşıyan `critical` varsayım, en fazla Orta). Alan boş çizilir, kişisel değer taşınmaz.
 
 **Düşme koşulları:**

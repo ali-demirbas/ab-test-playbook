@@ -18,7 +18,7 @@ Binding sources: `${extensionPath}/knowledge/mockup-style.md` (the core; the on-
 
 ## Visual accuracy
 
-Open the PNG at full size and at half size (`sips -Z 800 card.png --out card-800.png`, then Read both): at half size the title and the A/B difference must still be understandable, else FIX. Ten checks, each a FIX when it fails (report them as V1-V10):
+Open the PNG at full size and at half size (`card-<name>-800.png` from `render_check.mjs --half`, any platform; on macOS `sips -Z 800 card.png --out card-800.png` also works), then Read both; with no half-size image, say so and never report a half-size look you didn't make: at half size the title and the A/B difference must still be understandable, else FIX. Ten checks, each a FIX when it fails (report them as V1-V10):
 
 - **V1** The drawing shows the proposed variable, not a neighbour or a vaguer version of it.
 - **V2** A move looks like a move: the same element at its old place in A and its new place in B, never remove plus add.
@@ -27,7 +27,8 @@ Open the PNG at full size and at half size (`sips -Z 800 card.png --out card-800
 - **V5** The ring is tight: the variable only, a `.hl-soft` for what it forces (the toggle ringed, the prices soft-ringed).
 - **V6** Labels cover no field, button or text, and the gap reads clearly to the eye, not only ≥6px by measurement.
 - **V7** A/B weight is neutral: identical pills, no winner colour, no success mark used as a label.
-- **V8** A short screen isn't left tiny: `card.phone_scale: 1.4` when it fits.
+- **Fidelity where it matters:** on a shared page, judge A against the screen on structure, field order, key copy, the flow and the tested element. A logo, a decorative icon or a few pixels that are reasonably represented and identical in both arms are never a FIX. An `INHERITED` render_check line (a documented contrast defect copied from the user's screen, `card.inherited_contrast`) is not an error and not a pass: check the chat reports it as the page's defect.
+- **V8** A short screen isn't left tiny: `card.phone_scale: 1.4` (phone) or `card.web_scale: 1.2`/`1.4` (desktop) when it fits.
 - **V9** A long screen isn't clipped: fold and continuation, stages or `phone_scale: 1`, never a cut-off element.
 - **V10** A conditional card shows no unverified value as settled text (no invented billing sentence, no line added to both arms just to show it).
 
@@ -53,11 +54,11 @@ render_check automates the geometry (pill parity, ring breadth, label clearance,
 10. **Language and characters.** The card is in the user's language; a Turkish card has complete Turkish characters (ı/İ/ş/ğ/ü/ö/ç) and curly quotes.
 11. **Escaping leaks.** A raw `<`, `>` or `&` in the screen body, an unexpected tag or broken text: `variant_a`/`variant_b` pass through as raw markup, so escaping there is manual and easy to miss → FIX.
 12. **Accessibility on the drawing.** When the record carries an accessibility warning, the mockup doesn't contradict it: the new link or button drawn as a tiny target or low-contrast text (light grey on white) where 44×44 pt and 4.5:1 are promised, a modal or pop-up without a close control → FIX.
-13. **render_check output.** Every error line (card size, overflow, title lines, clipped content in a frame, stage phone or continuation, blank phone screen, a ring or label covering screen elements or too close, a ring too wide, sticky geometry, pill parity, text below 12px, contrast, A/B alignment or width) → FIX, quoting it. A warning is read against items 4 and 5 and V8. If it couldn't run (no PNG either), check items 2 to 5 and V1-V10 from the markup and say in a `watch:` line that the layout wasn't measured or seen.
+13. **render_check output.** Every error line (card size, overflow, title lines, clipped content in a frame, stage phone or continuation, blank phone screen, a ring or label covering screen elements or too close, a ring too wide, sticky geometry, pill parity, text below 12px, contrast, A/B alignment or width) → FIX, quoting it. A warning is read against items 4 and 5 and V8. Exit 1 (`VISUAL_CHECK_FAILED`) is a FIX quoting its errors. Exit 3 (`VISUAL_CHECK_UNAVAILABLE`: Playwright or Chromium missing or not started) or no PNG means nothing was measured or seen: still check the markup (items 1-3, V1-V10) and report any FIX, but the verdict is `UNVERIFIED`, never PASS.
 
 ## Verdict and fingerprint
 
-PASS only when every check passes for that card. Then read the final card's fingerprint from the draft you reviewed, `grep -oE 'abtest-final-fingerprint" content="[0-9a-f]{64}"' <draft.html>`, and return the hex unchanged; if the producer handed you the fingerprint the draft build printed and the two differ → `FIX: input missing (rebuilt draft)`. Never stamp a card you didn't review in this run, never compute or guess a fingerprint, never give one with a FIX.
+PASS only when render_check exited 0 (`VERIFIED`) on this draft, you opened its PNG, and every check passes for that card. Then read the final card's fingerprint from the draft you reviewed, `grep -oE 'abtest-final-fingerprint" content="[0-9a-f]{64}"' <draft.html>`, and return the hex unchanged; if the producer handed you the fingerprint the draft build printed and the two differ → `FIX: input missing (rebuilt draft)`. Never stamp a card you didn't review in this run, never compute or guess a fingerprint, never give one with a FIX.
 
 ## Return format
 
@@ -65,7 +66,7 @@ One block per card, all cards of the turn in one report:
 
 ```
 ## Mockup review: <card file>
-verdict: PASS <final fingerprint> | FIX
+verdict: PASS <final fingerprint> | FIX | UNVERIFIED (visual check unavailable, no fingerprint)
 route: render | scenario-critic   (FIX only)
 | check | difference / violation found (quoted) | required fix |
 ```

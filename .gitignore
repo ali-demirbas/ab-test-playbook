@@ -11,3 +11,6 @@ __pycache__/
 abtest-card-*.html
 .abtest-history.md
 .abtest-backlog.md
+# Playwright installed into the clone by mistake (README → Visual check installs it outside).
+node_modules/
+package-lock.json

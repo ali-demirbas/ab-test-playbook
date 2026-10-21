@@ -68,7 +68,7 @@ flowchart LR
 
 ## Install
 
-**Requirements:** Claude Code, and `python3` 3.9 or newer on your PATH. The scripts use the Python standard library only; there is nothing to `pip install`. One optional extra: the card's visual check (`scripts/render_check.mjs`) needs Node and Playwright with Chromium; without them cards still build and the check is skipped.
+**Requirements:** Claude Code, and `python3` 3.9 or newer on your PATH. The scripts use the Python standard library only; there is nothing to `pip install`. One optional extra: the card's visual check (`scripts/render_check.mjs`) needs Node and Playwright with Chromium (see Visual check below); without them a card is built as an unverified draft and never becomes final.
 
 In Claude Code:
 
@@ -99,6 +99,25 @@ git clone https://github.com/ali-demirbas/ab-test-playbook.git
 cd ab-test-playbook/.gemini/extensions/ab-test-playbook && gemini extensions link .
 ```
 
+### Visual check (optional)
+
+A card becomes final only after `scripts/render_check.mjs` has rendered it in Chromium and the mockup reviewer has looked at the image. The rest of the playbook stays Python standard library; this part needs Node.js 18 or newer. Install Playwright outside the repo so nothing lands in your clone:
+
+```bash
+mkdir -p ~/.abtest-visual && cd ~/.abtest-visual
+npm init -y && npm install playwright
+npx playwright install chromium
+export NODE_PATH=~/.abtest-visual/node_modules
+```
+
+On Linux, `npx playwright install --with-deps chromium` also installs the system libraries; on Windows set the variable with `$env:NODE_PATH="$HOME\.abtest-visual\node_modules"` (PowerShell). Set `CHROMIUM_PATH=/path/to/chrome-headless-shell` only to use a browser binary of your own. Test it from the repo root:
+
+```bash
+node scripts/render_check.mjs --strict docs/demo/scenario-card.html
+```
+
+The last stderr line names the outcome: `VERIFIED` (exit 0), `VISUAL_CHECK_FAILED` (exit 1, the card has a layout error to fix) or `VISUAL_CHECK_UNAVAILABLE` (exit 3, Playwright or Chromium missing). When it is unavailable nothing is measured, so the reviewer can't pass the card: you get the draft as an unverified preview, and after installing, the same draft is checked and finished. `--shot` and `--half` write `card-<name>.png` and `card-<name>-800.png` next to the card.
+
 ## Usage
 
 | You say | What happens |
@@ -111,7 +130,7 @@ cd ab-test-playbook/.gemini/extensions/ab-test-playbook && gemini extensions lin
 | `/ab-test card` — "turn this into a card" | Renders the scenario as a single-file 16:9 HTML card: the test's question and the Variant A/B mockups with the change ringed and labelled |
 | `/ab-test` on its own | Shows a short menu with one example prompt per subcommand, and asks nothing |
 
-When you share a page (a screenshot, a URL, or a description of your own page), the router asks exactly one multiple-choice question — which problem you're solving — and nothing else up front; no traffic, tool, or setup questions before it produces a scenario. If your message already states the problem, the question is skipped. It never quotes a sample size, a duration or a significance level. The brand source never blocks: if you shared a screenshot or page, brand colors are taken straight from it; otherwise a neutral palette is used, and a brand guide you send later replaces it. No note, no question, no waiting. A run produces at most three strong proposals by default, whether from `suggest` or `design`, and each becomes its own HTML card immediately; chat shows per proposal only the title, one tag line (priority, source, evidence) and the card file, never the record again. The set is never padded: one strong scenario is a complete answer, and a weak candidate is not added to reach a count. A test you explicitly ask for is always produced, with one chat line stating its weakness and naming a stronger alternative. With more than three strong candidates, the top three are produced and the count of the rest is offered in one line. A turn asks at most one question; anything else it needs is stated as an assumption and asked later.
+When you share a page (a screenshot, a URL, or a description of your own page), the router asks exactly one multiple-choice question — which problem you're solving — and nothing else up front; no traffic, tool, or setup questions before it produces a scenario. If your message already states the problem, the question is skipped. It never quotes a sample size, a duration or a significance level. The brand source never blocks: if you shared a screenshot or page, brand colors are taken straight from it; otherwise a neutral palette is used, and a brand guide you send later replaces it. No note, no question, no waiting. A run produces at most three strong proposals by default, whether from `suggest` or `design`, and each becomes its own HTML card immediately; chat shows per proposal only the title, one tag line (priority, source, evidence), one short `Neden:` line saying why it should work, and the card file, never the record again. The set is never padded: one strong scenario is a complete answer, and a weak candidate is not added to reach a count. A test you explicitly ask for is always produced, with one chat line stating its weakness and naming a stronger alternative. With more than three strong candidates, the top three are produced and the count of the rest is offered in one line. A turn asks at most one question; anything else it needs is stated as an assumption and asked later.
 
 ## What a session looks like
 
@@ -121,7 +140,7 @@ A product-page example, end to end:
 
 **It asks once:** a single multiple-choice question — which problem you're trying to solve (users start the flow but don't finish / never start / arrive but convert poorly / no specific problem, just look). No traffic, tool, or setup questions; none of them is needed to produce a scenario.
 
-**It returns** up to three proposals directly, with no "which one should I expand" round-trip. Each is a short record (the mechanism, the variable, the primary KPI with its denominator, the guardrail in "must not degrade" form) kept in its scenario JSON, and a self-contained HTML card that shows only the comparison: the question, Variant A and B side by side, the change ringed and named. The chat itself carries only a title and one tag line with the priority, the source and the evidence label: `Kanıt: arşiv örüntüsü` when it rests on a curated archive pattern (an idea worth testing, not a test that won), `Kanıt: sezgi` when it is a hunch, said out loud rather than dressed up. Variant A is the page exactly as shown, never redesigned. One strong scenario is a complete answer; weak candidates aren't added to fill a quota. More than three strong candidates? It produces the top three and offers the rest. Ask for detail on one ("explain 2") and it gets its three boxes and a prose explanation in chat.
+**It returns** up to three proposals directly, with no "which one should I expand" round-trip. Each is a short record (the mechanism, the variable, the primary KPI with its denominator, the guardrail in "must not degrade" form) kept in its scenario JSON, and a self-contained HTML card that shows only the comparison: the question, Variant A and B side by side, the change ringed and named. The chat itself carries only a title, a one-sentence `Neden:` (why) line and one tag line with the priority, the source and the evidence label: `Kanıt: arşiv örüntüsü` when it rests on a curated archive pattern (an idea worth testing, not a test that won), `Kanıt: sezgi` when it is a hunch, said out loud rather than dressed up. Variant A is the page exactly as shown, never redesigned. One strong scenario is a complete answer; weak candidates aren't added to fill a quota. More than three strong candidates? It produces the top three and offers the rest. Ask for detail on one ("explain 2") and it gets its three boxes and a prose explanation in chat.
 
 <p align="center">
   <img src="assets/example-card.png" alt="Example scenario card: does moving the coupon field behind an “İndirim kodum var” link increase revenue? The question at the top, Variant A and Variant B side by side below it, the changed element ringed and labelled." width="900">
@@ -195,7 +214,7 @@ Scenario content is Turkish (the archive's native language). The skills answer i
 
 What this is: a scenario archive, a disciplined design and audit methodology, schema validation for every scenario, and a card renderer that turns each one into a reviewable HTML card.
 
-This playbook proposes, designs, audits and visualizes A/B tests. It doesn't analyze results or compute sample size, duration, significance or a winner; use your testing tool's own reporting for that. It doesn't connect to an analytics or testing tool either, and doesn't monitor a running test. In regulated flows (insurance, pension, credit) it never makes a mandatory disclosure, a consent step or an identity check the test subject, holds any variant that changes a regulated display until the target market's rule is verified, and makes compliance sign-off a pre-start gate for every other test inside such a flow. It is not legal advice.
+This playbook proposes, designs, audits and visualizes A/B tests. It doesn't analyze results or compute sample size, duration, significance or a winner; use your testing tool's own reporting for that. It doesn't connect to an analytics or testing tool either, doesn't monitor a running test, and doesn't run or test your live app, its code or a staging site: the cards are drawings of the variants, not checks of an implementation. In regulated flows (insurance, pension, credit) it never makes a mandatory disclosure, a consent step or an identity check the test subject, holds any variant that changes a regulated display until the target market's rule is verified, and makes compliance sign-off a pre-start gate for every other test inside such a flow. It is not legal advice.
 
 ## License
 

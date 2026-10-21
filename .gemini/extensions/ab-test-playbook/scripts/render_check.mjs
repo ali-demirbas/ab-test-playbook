@@ -14,8 +14,17 @@
 //   CHROMIUM_PATH=/path/to/chrome-headless-shell node scripts/render_check.mjs --shot card.html
 //
 // --shot    write card-<name>.png next to each card (abtest-card-x.html → card-x.png)
+// --half    also write card-<name>-800.png, the same render at half size (800 × 450) for the
+//           reviewer's half-size look; works on every platform, no image tool needed
 // --json    print one JSON object per card instead of the report
 // --strict  warnings fail the run too
+//
+// Exit status (also printed as the last line on stderr):
+//   0  VERIFIED                   rendered in Chromium, no error (no warning with --strict)
+//   1  VISUAL_CHECK_FAILED        rendered, and a check failed: fix the card
+//   2  usage error                unknown flag, no card, missing file
+//   3  VISUAL_CHECK_UNAVAILABLE   Playwright or Chromium missing / didn't start / no screenshot:
+//                                 nothing was measured; the card is unverified, not failed
 //
 // The page part (collect) only measures; judge() turns the measurements into
 // errors and warnings and is a pure function, so its rules and messages are
@@ -80,8 +89,9 @@ import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-export const USAGE = "usage: render_check.mjs [--shot] [--json] [--strict] card.html [more.html ...]";
-export const FLAGS = ["--shot", "--json", "--strict"];
+export const USAGE = "usage: render_check.mjs [--shot] [--half] [--json] [--strict] card.html [more.html ...]";
+export const FLAGS = ["--shot", "--half", "--json", "--strict"];
+export const STATUS = { 0: "VERIFIED", 1: "VISUAL_CHECK_FAILED", 3: "VISUAL_CHECK_UNAVAILABLE" };
 
 // The contract's numbers (CONTRACT: card 1600 × 900, title ≤ 2 lines, phone
 // blank ≤ 24px, text ≥ 12px, contrast 4.5:1 / 3:1 large, balance 40% / 45%).
@@ -93,6 +103,7 @@ export const LIMITS = {
   minFontPx: 12,
   contrast: 4.5,
   contrastLarge: 3,
+  contrastNonText: 3,
   largePx: 24,
   largeBoldPx: 18.66,
   balanceHeight: 0.4,
@@ -127,7 +138,9 @@ export function parseArgs(argv) {
   if (unknown.length) return { error: `unknown option ${unknown.join(", ")}` };
   const files = argv.filter((a) => !a.startsWith("--"));
   if (!files.length) return { error: "no card given" };
-  return { shot: argv.includes("--shot"), json: argv.includes("--json"), strict: argv.includes("--strict"), files };
+  const out = { shot: argv.includes("--shot"), json: argv.includes("--json"), strict: argv.includes("--strict"), files };
+  if (argv.includes("--half")) out.half = true;
+  return out;
 }
 
 // ---------------------------------------------------------------- colour
@@ -347,7 +360,8 @@ function checkFrame(who, v, column, m, errors, warnings, opts) {
       small.get(key).n += 1;
     }
     if (t.dimmed || !t.fg) continue;
-    const need = isLarge(t.px * zoom, t.weight) ? L.contrastLarge : L.contrast;
+    // An icon drawn as a glyph (role="img") is non-text: WCAG 1.4.11, 3:1.
+    const need = t.icon ? L.contrastNonText : isLarge(t.px * zoom, t.weight) ? L.contrastLarge : L.contrast;
     let worstRatio = Infinity;
     let worstBg = null;
     for (const bg of backgrounds(t.layers)) {
@@ -356,6 +370,10 @@ function checkFrame(who, v, column, m, errors, warnings, opts) {
         worstRatio = ratio;
         worstBg = bg;
       }
+    }
+    if (worstRatio < need && opts.inherited && inheritedFrom(m, t)) {
+      opts.inherited.push(`${who}: ${t.what} ${worstRatio.toFixed(2)}:1 (${hex(over(t.fg, worstBg))} on ${hex(worstBg)}) is below ${need}:1, copied from the user's screen (card.inherited_contrast): the page's own accessibility defect, documented, not a pass`);
+      continue;
     }
     if (worstRatio < need) {
       const key = `${hex(t.fg)}|${hex(worstBg)}|${t.px}`;
@@ -388,9 +406,20 @@ function span(v) {
   return { h: bottom - v.frame.y, gap: v.below ? Math.max(0, v.below.frame.y - v.frame.b) : 0, offset: v.frame.y - v.column.y };
 }
 
+// A contrast failure is "inherited" only when the card documents it (card.inherited_contrast: exact text and
+// colour as measured on the user's screen), the element is outside every ring, and the other arm draws the same
+// text in the same colour outside its rings: a page defect the test doesn't touch. Anything else stays an error,
+// and B can't add or worsen one, because B's element must equal A's.
+export function inheritedFrom(m, t) {
+  const listed = (m.inheritedContrast || []).some((e) => e && e.text === t.text && String(e.color).toLowerCase() === hex(t.fg));
+  if (!listed || t.inRing) return false;
+  return m.variants.length === 2 && m.variants.every((v) => (v.texts || []).some((x) => x.text === t.text && x.fg && hex(x.fg) === hex(t.fg) && !x.inRing));
+}
+
 export function judge(m, opts = {}) {
   const errors = [];
   const warnings = [];
+  const inherited = [];
   const L = LIMITS;
 
   if (Math.round(m.card.w) !== L.cardW || Math.round(m.card.h) !== L.cardH) {
@@ -437,7 +466,7 @@ export function judge(m, opts = {}) {
   }
   if (m.variants.length !== 2) {
     errors.push(`expected 2 frames (Variant A and B), found ${m.variants.length}`);
-    return { errors, warnings };
+    return inherited.length ? { errors, warnings, inherited } : { errors, warnings };
   }
 
   for (const v of m.variants) {
@@ -447,7 +476,7 @@ export function judge(m, opts = {}) {
         const sw = `${who} stage ${j + 1}`;
         const cut = outside(st.frame, v.column);
         if (cut > 1) errors.push(`${sw}: phone sticks out of the ${px(v.column.w)} column by ${px(cut)}; the stage phones must fit side by side`);
-        checkFrame(sw, st, v.column, m, errors, warnings, { stage: true, blank: true });
+        checkFrame(sw, st, v.column, m, errors, warnings, { stage: true, blank: true, inherited });
         const cap = st.caption;
         if (!cap || !cap.text) {
           errors.push(`${sw}: no caption above the phone (card.stage_captions gives one per stage)`);
@@ -457,7 +486,7 @@ export function judge(m, opts = {}) {
         }
       });
     } else {
-      checkFrame(who, v, v.column, m, errors, warnings, { blank: true, balance: true });
+      checkFrame(who, v, v.column, m, errors, warnings, { blank: true, balance: true, inherited });
     }
     // The continuation sheet under the phone (.r-fold): same width as the screen, a caption, nothing cut off.
     if (v.below) {
@@ -470,7 +499,7 @@ export function judge(m, opts = {}) {
       if (m.stage && m.stage.b !== undefined && v.below.frame.b > m.stage.b + 1) {
         errors.push(`${bw}: sheet ends ${px(v.below.frame.b - m.stage.b)} below the stage and is cut off; draw less after .r-fold or set card.phone_scale: 1`);
       }
-      checkFrame(bw, v.below, v.column, m, errors, warnings, { stage: true });
+      checkFrame(bw, v.below, v.column, m, errors, warnings, { stage: true, inherited });
     }
   }
 
@@ -505,7 +534,7 @@ export function judge(m, opts = {}) {
       }
     }
   }
-  return { errors, warnings };
+  return inherited.length ? { errors, warnings, inherited } : { errors, warnings };
 }
 
 // Whether a card fails the run: any error, or with --strict any warning.
@@ -565,6 +594,10 @@ function collect() {
     title: titleEl ? { h: titleEl.getBoundingClientRect().height, lineHeight: num(getComputedStyle(titleEl).lineHeight), text: titleEl.textContent, rect: box(titleEl) } : null,
     stage: stageEl ? box(stageEl) : { w: 0, h: 0 },
     ribbons: [...document.querySelectorAll("#abtest-draft, #abtest-conditional")].map((el) => ({ id: el.id, ...box(el) })),
+    inheritedContrast: (() => {
+      const meta = document.querySelector('meta[name="abtest-inherited-contrast"]');
+      try { return meta ? JSON.parse(meta.content) : []; } catch { return []; }
+    })(),
     pills: [...document.querySelectorAll(".stage .pill-a, .stage .pill-b")].slice(0, 2).map((el) => {
       const cs = getComputedStyle(el);
       const style = {};
@@ -698,6 +731,9 @@ function collect() {
       if (!text) return;
       v.texts.push({
         what,
+        text: text.trim(),
+        icon: !!el.closest('[role="img"]'),
+        inRing: ringEls.some((hl) => hl === el || hl.contains(el)),
         px: num(cs.fontSize),
         weight: num(cs.fontWeight) || 400,
         fg: colour(cs.color),
@@ -803,46 +839,69 @@ async function main(argv) {
     console.error(`render_check: no such file: ${missing.join(", ")}`);
     return 2;
   }
+  const unavailable = (why) => {
+    console.error(`render_check: ${why}\nrender_check: ${STATUS[3]}: nothing was measured; the card stays unverified (README → Visual check)`);
+    return 3;
+  };
   const require = createRequire(import.meta.url);
   let playwright;
   try {
     playwright = require("playwright");
   } catch {
-    console.error("render_check: playwright not found; set NODE_PATH to a node_modules that has it");
-    return 2;
+    return unavailable("playwright not found; install it and set NODE_PATH to its node_modules");
   }
   const launch = {};
   if (process.env.CHROMIUM_PATH) launch.executablePath = process.env.CHROMIUM_PATH;
-  const browser = await playwright.chromium.launch(launch);
-  const page = await browser.newPage({ viewport: { width: LIMITS.cardW, height: LIMITS.cardH } });
-  let anyFailed = false;
+  let browser;
   try {
+    browser = await playwright.chromium.launch(launch);
+  } catch (e) {
+    return unavailable(`Chromium did not start (${String(e.message || e).split("\n")[0]}); run \`npx playwright install chromium\` or set CHROMIUM_PATH`);
+  }
+  let anyFailed = false;
+  let inheritedCount = 0;
+  try {
+    const page = await browser.newPage({ viewport: { width: LIMITS.cardW, height: LIMITS.cardH } });
+    const halfPage = opts.half ? await browser.newPage({ viewport: { width: LIMITS.cardW, height: LIMITS.cardH }, deviceScaleFactor: 0.5 }) : null;
     for (const file of opts.files) {
       const abs = path.resolve(file);
       await page.goto(pathToFileURL(abs).href);
       await page.evaluate(() => document.fonts && document.fonts.ready);
       const m = await page.evaluate(collect);
-      const { errors, warnings } = judge(m, { strict: opts.strict });
+      const { errors, warnings, inherited = [] } = judge(m, { strict: opts.strict });
+      inheritedCount += inherited.length;
       if (failed({ errors, warnings }, opts.strict)) anyFailed = true;
       let png = null;
+      const base = path.basename(abs, ".html").replace(/^abtest-card-/, "");
       if (opts.shot) {
-        const base = path.basename(abs, ".html").replace(/^abtest-card-/, "");
         png = path.join(path.dirname(abs), `card-${base}.png`);
         await page.screenshot({ path: png, fullPage: true });
       }
+      if (halfPage) {
+        await halfPage.goto(pathToFileURL(abs).href);
+        await halfPage.evaluate(() => document.fonts && document.fonts.ready);
+        await halfPage.screenshot({ path: path.join(path.dirname(abs), `card-${base}-800.png`) });
+      }
       if (opts.json) {
         const frames = m.variants.map((v) => ({ name: v.name, kind: v.frame.kind, x: v.frame.x, y: v.frame.y, w: v.frame.w, h: v.frame.h, column: v.column.w }));
-        console.log(JSON.stringify({ file, device: m.device, card: [m.card.w, m.card.h], stage: [m.stage.w, m.stage.h], frames, errors, warnings, png }));
+        console.log(JSON.stringify({ file, device: m.device, card: [m.card.w, m.card.h], stage: [m.stage.w, m.stage.h], frames, errors, warnings, inherited, png }));
       } else {
         console.log(summary(file, m, png));
         for (const e of errors) console.log(`  ERROR ${e}`);
         for (const w of warnings) console.log(`  warn  ${w}`);
+        for (const i of inherited) console.log(`  INHERITED ${i}`);
       }
     }
-  } finally {
-    await browser.close();
+  } catch (e) {
+    // A page that can't be rendered or shot is a missing visual check, not a failed card.
+    await browser.close().catch(() => {});
+    return unavailable(`rendering stopped (${String(e.message || e).split("\n")[0]})`);
   }
-  return anyFailed ? 1 : 0;
+  await browser.close();
+  const code = anyFailed ? 1 : 0;
+  const note = inheritedCount ? ` (${inheritedCount} inherited contrast defect(s) from the user's screen documented, not passed)` : "";
+  console.error(`render_check: ${STATUS[code]}${note}`);
+  return code;
 }
 
 // Run only as a script; imported (the unit tests do), it only exports.

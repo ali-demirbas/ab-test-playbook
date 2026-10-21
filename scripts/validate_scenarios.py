@@ -192,6 +192,20 @@ def parse_variable_line(body):
     return var, fark, errors
 
 
+def unclosed_blocks(parsed):
+    """Titles of blocks (all but a file's last) that don't end with a `---` line.
+
+    The skills read one block from its title line to the next `---`; a missing
+    separator makes that read run into the neighbouring scenario, which the
+    `## ` split above would never notice."""
+    out = []
+    for title, body in parsed[:-1]:
+        lines = [l.strip() for l in body.rstrip().split("\n") if l.strip()]
+        if not lines or lines[-1] != "---":
+            out.append(title)
+    return out
+
+
 def check_scenario(filename, title, body):
     errors = []
     where = f"{filename} → {title[:50]}"
@@ -543,6 +557,8 @@ def main(argv=None):
             # "## " başlığı hiç yoksa (ör. yanlışlıkla "### " kullanılmış) dosya
             # sessizce denetim dışı kalır; bunu temiz saymak yanlış güven üretir.
             all_errors.append(f"{name}: dosyada hiç senaryo bulunamadı ('## ' başlığı yok)")
+        for title in unclosed_blocks(parsed):
+            all_errors.append(f"{name} → {title[:50]}: blok '---' satırıyla kapanmıyor; arama bir sonraki senaryoyu da okur")
         for title, body in parsed:
             scenarios.append((name, title, body))
             # Aynı kutu başlığı bir senaryoda iki kez geçerse yalnızca ilki

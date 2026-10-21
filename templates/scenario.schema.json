@@ -612,6 +612,37 @@
           ],
           "description": "Phone frames only (device phone or phone-web). 1.2 (default) draws the 420px screen 504px wide so it fills its column; 1 keeps it at 420px so a tall screen (a whole form with its consent boxes) fits the stage instead of being clipped; 1.4 enlarges a short screen that would leave most of the stage empty. The continuation sheet under the phone (.r-fold) takes the same scale; stage phones (.r-stage-break) keep their own fixed size."
         },
+        "web_scale": {
+          "type": "number",
+          "enum": [
+            1,
+            1.2,
+            1.4
+          ],
+          "description": "Desktop browser frames only (device web). 1 (default) draws the page at its natural size; 1.2 or 1.4 zoom the whole frame (proportions kept) so a short page, such as a cart summary or a pricing row, fills more of the stage and the change reads at a glance."
+        },
+        "inherited_contrast": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "text",
+              "color"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1
+              },
+              "color": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              }
+            }
+          },
+          "description": "Shared page only. A text colour copied from the user's own screen that is below the contrast floor, listed element by element (exact text, colour as measured). render_check reports it as an inherited page defect, not a pass, and only when the element is identical in both arms and outside the rings; chat reports it as the page's accessibility issue."
+        },
         "mobile_toolbar": {
           "type": "boolean",
           "description": "phone-web only: true draws the mobile browser's bottom toolbar (four neutral glyphs and a home indicator) inside the phone, below the screen, identical in both arms. Frame chrome, never diffed. Use it when the first view's bottom edge matters (a pinned bar, .r-sticky). Refused on phone and web."

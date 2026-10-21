@@ -68,7 +68,7 @@ flowchart LR
 
 ## Kurulum
 
-**Gereksinimler:** Claude Code ve PATH üzerinde `python3` 3.9 veya üstü. Script’ler yalnızca Python standart kütüphanesini kullanır; `pip install` gerektiren bir şey yok. İsteğe bağlı tek ek: kartın görsel kontrolü (`scripts/render_check.mjs`) Node ile Chromium’lu Playwright ister; yoksa kartlar yine üretilir, kontrol atlanır.
+**Gereksinimler:** Claude Code ve PATH üzerinde `python3` 3.9 veya üstü. Script’ler yalnızca Python standart kütüphanesini kullanır; `pip install` gerektiren bir şey yok. İsteğe bağlı tek ek: kartın görsel kontrolü (`scripts/render_check.mjs`) Node ile Chromium’lu Playwright ister (aşağıda Görsel kontrol); yoksa kart doğrulanmamış taslak olarak üretilir, final olmaz.
 
 Claude Code içinde:
 
@@ -99,6 +99,25 @@ git clone https://github.com/ali-demirbas/ab-test-playbook.git
 cd ab-test-playbook/.gemini/extensions/ab-test-playbook && gemini extensions link .
 ```
 
+### Görsel kontrol (isteğe bağlı)
+
+Bir kart ancak `scripts/render_check.mjs` onu Chromium’da çizdikten ve görsel incelemeci görüntüye baktıktan sonra final olur. Rehberin geri kalanı Python standart kütüphanesiyle çalışır; bu kısım Node.js 18 veya üstü ister. Playwright’ı reponun dışına kurun ki klonunuza dosya düşmesin:
+
+```bash
+mkdir -p ~/.abtest-visual && cd ~/.abtest-visual
+npm init -y && npm install playwright
+npx playwright install chromium
+export NODE_PATH=~/.abtest-visual/node_modules
+```
+
+Linux’ta `npx playwright install --with-deps chromium` sistem kütüphanelerini de kurar; Windows’ta değişkeni PowerShell’de `$env:NODE_PATH="$HOME\.abtest-visual\node_modules"` ile verin. `CHROMIUM_PATH=/yol/chrome-headless-shell` yalnızca kendi tarayıcı dosyanızı kullanacaksanız gerekir. Repo kökünden deneyin:
+
+```bash
+node scripts/render_check.mjs --strict docs/demo/scenario-card.html
+```
+
+Son stderr satırı sonucu söyler: `VERIFIED` (çıkış 0), `VISUAL_CHECK_FAILED` (çıkış 1, kartta düzeltilecek bir yerleşim hatası var) ya da `VISUAL_CHECK_UNAVAILABLE` (çıkış 3, Playwright veya Chromium yok). Kontrol çalışmazsa hiçbir şey ölçülmez ve incelemeci kartı onaylayamaz: taslak, doğrulanmamış önizleme olarak gelir; kurulumdan sonra aynı taslak kontrol edilip tamamlanır. `--shot` ve `--half`, kartın yanına `card-<ad>.png` ve `card-<ad>-800.png` yazar.
+
 ## Kullanım
 
 | Siz şöyle dersiniz | Şu olur |
@@ -111,7 +130,7 @@ cd ab-test-playbook/.gemini/extensions/ab-test-playbook && gemini extensions lin
 | `/ab-test card`: “bunu karta çevir” | Senaryoyu tek dosyalık 16:9 bir HTML kart olarak render eder: testin sorusu ve değişikliği halkayla işaretlenip adlandırılmış Variant A/B mockup’ları |
 | Yalnızca `/ab-test` | Her alt komut için birer örnek istemle kısa bir menü gösterir, soru sormaz |
 
-Bir sayfa paylaştığınızda (ekran görüntüsü, URL ya da kendi sayfanızın tarifi), router baştan yalnızca tek bir çoktan seçmeli soru sorar: hangi problemi çözdüğünüz. Senaryo üretmeden önce başka hiçbir şey sormaz; trafik, araç veya kurulum sorusu yok. Mesajınız problemi zaten söylüyorsa bu soru atlanır. Örneklem büyüklüğü, süre ya da anlamlılık düzeyi hiçbir zaman söylenmez. Marka kaynağı akışı hiçbir zaman durdurmaz: ekran görüntüsü veya sayfa paylaştıysanız marka renkleri doğrudan oradan alınır; yoksa nötr palet kullanılır, sonradan gönderdiğiniz bir marka kılavuzu onun yerini alır. Not düşülmez, soru sorulmaz, cevap beklenmez. Bir tur varsayılan olarak en fazla üç güçlü öneri üretir (`suggest` ya da `design` fark etmez) ve her biri hemen kendi HTML kartı olur; sohbette öneri başına yalnızca başlık, tek etiket satırı (öncelik, kaynak, kanıt) ve kart dosyası kalır, kayıt ikinci kez yazılmaz. Liste asla şişirilmez: tek güçlü senaryo tam bir yanıttır, sayıyı tamamlamak için zayıf aday eklenmez. Açıkça istediğiniz bir test her zaman üretilir; zayıfsa sohbetteki tek satır zayıflığını söyler ve daha güçlü alternatifin adını verir. Üçten fazla güçlü aday varsa en iyi üçü üretilir, kalanların sayısı tek satırla teklif edilir. Bir tur en fazla bir soru sorar; gereken diğer bilgiler varsayım olarak belirtilir ve sonraki turda sorulur.
+Bir sayfa paylaştığınızda (ekran görüntüsü, URL ya da kendi sayfanızın tarifi), router baştan yalnızca tek bir çoktan seçmeli soru sorar: hangi problemi çözdüğünüz. Senaryo üretmeden önce başka hiçbir şey sormaz; trafik, araç veya kurulum sorusu yok. Mesajınız problemi zaten söylüyorsa bu soru atlanır. Örneklem büyüklüğü, süre ya da anlamlılık düzeyi hiçbir zaman söylenmez. Marka kaynağı akışı hiçbir zaman durdurmaz: ekran görüntüsü veya sayfa paylaştıysanız marka renkleri doğrudan oradan alınır; yoksa nötr palet kullanılır, sonradan gönderdiğiniz bir marka kılavuzu onun yerini alır. Not düşülmez, soru sorulmaz, cevap beklenmez. Bir tur varsayılan olarak en fazla üç güçlü öneri üretir (`suggest` ya da `design` fark etmez) ve her biri hemen kendi HTML kartı olur; sohbette öneri başına yalnızca başlık, tek etiket satırı (öncelik, kaynak, kanıt), neden işe yarayabileceğini söyleyen kısa bir `Neden:` satırı ve kart dosyası kalır, kayıt ikinci kez yazılmaz. Liste asla şişirilmez: tek güçlü senaryo tam bir yanıttır, sayıyı tamamlamak için zayıf aday eklenmez. Açıkça istediğiniz bir test her zaman üretilir; zayıfsa sohbetteki tek satır zayıflığını söyler ve daha güçlü alternatifin adını verir. Üçten fazla güçlü aday varsa en iyi üçü üretilir, kalanların sayısı tek satırla teklif edilir. Bir tur en fazla bir soru sorar; gereken diğer bilgiler varsayım olarak belirtilir ve sonraki turda sorulur.
 
 ## Bir oturum nasıl görünür
 
@@ -121,7 +140,7 @@ Uçtan uca bir ürün sayfası örneği:
 
 **Tek soru sorar:** hangi problemi çözmeye çalıştığınıza dair tek bir çoktan seçmeli soru (kullanıcılar akışa giriyor ama bitirmiyor / hiç başlamıyor / geliyor ama niteliksiz dönüşüyor / belirli bir problemim yok, sen bak). Trafik, araç veya kurulum sorusu yok; senaryo üretmek için hiçbiri gerekli değil.
 
-**Doğrudan** en fazla üç öneri döndürür, “hangisini açayım” gibi bir gidiş-geliş olmadan. Her biri senaryo JSON’unda duran kısa bir kayıttır (mekanizma, değişken, paydasıyla birincil KPI, “bozulmamalı” biçiminde guardrail) ve yalnızca karşılaştırmayı gösteren, kendi kendine yeten bir HTML karttır: soru, yan yana Variant A ve B, halkayla işaretlenip adlandırılmış değişiklik. Sohbette yalnızca bir başlık ve öncelik, kaynak ve kanıt etiketini taşıyan tek bir etiket satırı kalır: derlenmiş bir arşiv örüntüsüne dayanıyorsa `Kanıt: arşiv örüntüsü` (kazanmış bir test değil, denemeye değer bir fikir), bir sezgiyse `Kanıt: sezgi`, süslenmeden, olduğu gibi söylenir. Variant A sayfanın ekrandaki hâlidir, asla yeniden tasarlanmaz. Tek güçlü senaryo tam bir yanıttır; kota doldurmak için zayıf aday eklenmez. Üçten fazla güçlü aday mı var? En iyi üçünü üretir, gerisini teklif eder. Birinin ayrıntısını isterseniz (“2’yi detaylandır”) üç kutusu ve düz metin bir açıklama sohbette gelir.
+**Doğrudan** en fazla üç öneri döndürür, “hangisini açayım” gibi bir gidiş-geliş olmadan. Her biri senaryo JSON’unda duran kısa bir kayıttır (mekanizma, değişken, paydasıyla birincil KPI, “bozulmamalı” biçiminde guardrail) ve yalnızca karşılaştırmayı gösteren, kendi kendine yeten bir HTML karttır: soru, yan yana Variant A ve B, halkayla işaretlenip adlandırılmış değişiklik. Sohbette yalnızca bir başlık, tek cümlelik bir `Neden:` satırı ve öncelik, kaynak ve kanıt etiketini taşıyan tek bir etiket satırı kalır: derlenmiş bir arşiv örüntüsüne dayanıyorsa `Kanıt: arşiv örüntüsü` (kazanmış bir test değil, denemeye değer bir fikir), bir sezgiyse `Kanıt: sezgi`, süslenmeden, olduğu gibi söylenir. Variant A sayfanın ekrandaki hâlidir, asla yeniden tasarlanmaz. Tek güçlü senaryo tam bir yanıttır; kota doldurmak için zayıf aday eklenmez. Üçten fazla güçlü aday mı var? En iyi üçünü üretir, gerisini teklif eder. Birinin ayrıntısını isterseniz (“2’yi detaylandır”) üç kutusu ve düz metin bir açıklama sohbette gelir.
 
 <p align="center">
   <img src="assets/example-card.png" alt="Örnek senaryo kartı: kupon alanını “İndirim kodum var” bağlantısının arkasına almak geliri artırır mı? Üstte soru, altında yan yana Variant A ve Variant B, değişen öğe halkayla işaretli ve etiketli." width="900">
@@ -195,7 +214,7 @@ Senaryo içeriği Türkçedir (arşivin ana dili). Skill’ler sizin kullandığ
 
 Bu ne: bir senaryo arşivi, disiplinli bir tasarım ve denetim metodolojisi, her senaryo için şema doğrulaması ve her birini incelenebilir bir HTML karta çeviren bir kart üreticisi.
 
-Bu playbook A/B test önerir, tasarlar, denetler ve görselleştirir. Sonuç analizi yapmaz; örneklem, süre, anlamlılık veya kazanan hesaplamaz. Bunun için test aracınızın kendi raporunu kullanın. Bir analitik ya da test aracına bağlanmaz, koşan bir testi de izlemez. Düzenlemeye tabi akışlarda (sigorta, emeklilik, kredi) zorunlu bir bilgilendirmeyi, bir onay adımını ya da kimlik doğrulamayı asla test konusu yapmaz; düzenlenen bir gösterimi değiştiren varyantı hedef pazarın kuralı doğrulanana kadar bekletir, böyle bir akışın içindeki diğer her test için uyum onayını yayın öncesi kapı yapar. Hukuki tavsiye değildir.
+Bu playbook A/B test önerir, tasarlar, denetler ve görselleştirir. Sonuç analizi yapmaz; örneklem, süre, anlamlılık veya kazanan hesaplamaz. Bunun için test aracınızın kendi raporunu kullanın. Bir analitik ya da test aracına bağlanmaz, koşan bir testi izlemez; canlı uygulamanızı, kodunu ya da staging ortamını da çalıştırıp test etmez: kartlar varyantların çizimidir, bir uygulamanın kontrolü değildir. Düzenlemeye tabi akışlarda (sigorta, emeklilik, kredi) zorunlu bir bilgilendirmeyi, bir onay adımını ya da kimlik doğrulamayı asla test konusu yapmaz; düzenlenen bir gösterimi değiştiren varyantı hedef pazarın kuralı doğrulanana kadar bekletir, böyle bir akışın içindeki diğer her test için uyum onayını yayın öncesi kapı yapar. Hukuki tavsiye değildir.
 
 ## Lisans
 

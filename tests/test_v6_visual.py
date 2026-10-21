@@ -507,3 +507,68 @@ class TestSchemaFields(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestWebScale(unittest.TestCase):
+    """card.web_scale: a short desktop page zooms as a whole; other cards keep their bytes."""
+
+    A = '<div class="r-h">Sipariş özeti</div><div class="r-cta">Siparişi tamamla</div>'
+    B = ('<div class="r-h">Sipariş özeti</div><div class="hl" data-note="Kargo çubuğu">'
+         '<div class="r-help">Ücretsiz kargo</div></div><div class="r-cta">Siparişi tamamla</div>')
+
+    def sc(self, **card):
+        return record(self.A, self.B, difference="add", device="web", variable="Ücretsiz kargo bilgisi", **card)
+
+    def test_default_writes_no_zoom_rule(self):
+        html, _, _ = builds(self.sc())
+        self.assertNotIn(".browser{zoom:", html)
+
+    def test_scale_writes_one_zoom_rule(self):
+        for scale in (1.2, 1.4):
+            html, _, _ = builds(self.sc(web_scale=scale))
+            self.assertEqual(html.count(".browser{zoom:%s}" % scale), 1)
+
+    def test_default_bytes_equal_an_explicit_1(self):
+        self.assertEqual(builds(self.sc())[0], builds(self.sc(web_scale=1))[0])
+
+    def test_other_values_are_refused(self):
+        for bad in (1.3, 2, True, "1.4"):
+            self.assertIn("web_scale", die_text(bc.build, TEMPLATE, self.sc(web_scale=bad)))
+
+    def test_phone_frames_refuse_web_scale(self):
+        sc = self.sc(web_scale=1.4)
+        sc["card"]["device"] = "phone-web"
+        self.assertIn("device web", die_text(bc.build, TEMPLATE, sc))
+
+
+class TestInheritedContrastField(unittest.TestCase):
+    """card.inherited_contrast documents a page defect; the builder only lets it name an element both arms draw alike."""
+
+    A = '<div class="r-field empty" style="color:#777879">Adınız</div>'
+    B = ('<div class="r-field empty" style="color:#777879">Adınız</div><div class="hl" data-note="Gerekçe eklendi">'
+         '<div class="r-help">Teklif için gerekli.</div></div>')
+
+    def sc(self, inherited, basis="shared_page"):
+        sc = record(self.A, self.B, difference="add", variable="Gerekçe satırı", mockup_basis=basis,
+                    inherited_contrast=inherited)
+        sc["variants"] = [{"id": "A", "description": "Mevcut", "is_current": True},
+                          {"id": "B", "description": "Gerekçe satırı eklenir"}]
+        return sc
+
+    def test_a_listed_element_in_both_arms_writes_one_meta(self):
+        html, _, _ = builds(self.sc([{"text": "Adınız", "color": "#777879"}]))
+        self.assertEqual(html.count('name="abtest-inherited-contrast"'), 1)
+
+    def test_none_listed_writes_no_meta(self):
+        html, _, _ = builds(self.sc([]))
+        self.assertNotIn("abtest-inherited-contrast", html)
+
+    def test_only_a_shared_page_may_list_one(self):
+        self.assertIn("shared page", die_text(bc.build, TEMPLATE, self.sc([{"text": "Adınız", "color": "#777879"}],
+                                                                           basis="described")))
+
+    def test_a_text_not_in_both_arms_is_refused(self):
+        self.assertIn("both arms", die_text(bc.build, TEMPLATE, self.sc([{"text": "Teklif için gerekli.", "color": "#6b7280"}])))
+
+    def test_a_malformed_entry_is_refused(self):
+        self.assertIn("#rrggbb", die_text(bc.build, TEMPLATE, self.sc([{"text": "Adınız", "color": "grey"}])))

@@ -19,7 +19,7 @@ metadata:
 
   ```bash
   grep -nE '^## |Değişken:' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
-  awk -v s=<title line> 'NR>=s { if (NR>s && /^---$/) exit; print }' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
+  awk -v s=<title line> 'NR>=s { if (NR>s && (/^---$/ || /^## /)) exit; print }' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
   ```
 
   Before calling a candidate `generated`, one title-only grep across all stage files for its element (a sticky button lives under product-detail): `grep -n '^## .*<element keyword>' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/*.md`.

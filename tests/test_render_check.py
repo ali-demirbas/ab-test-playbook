@@ -16,6 +16,7 @@ import json
 import os
 import pathlib
 import shutil
+import tempfile
 import subprocess
 import unittest
 
@@ -107,6 +108,7 @@ class TestOptions(unittest.TestCase):
         self.assertEqual(call("parseArgs", ["--shot", "--strict", "a.html", "b.html"]),
                          {"shot": True, "json": False, "strict": True, "files": ["a.html", "b.html"]})
         self.assertEqual(call("parseArgs", ["--json", "a.html"])["json"], True)
+        self.assertEqual(call("parseArgs", ["--half", "a.html"])["half"], True)
 
     def test_unknown_flag_and_no_file(self):
         self.assertEqual(call("parseArgs", ["--shots", "a.html"]), {"error": "unknown option --shots"})
@@ -611,6 +613,8 @@ class TestFixturesInChromium(unittest.TestCase):
         args = [NODE, SCRIPT, "--json"] + (["--strict"] if strict else []) + [os.path.join(FIXTURES, n + ".html") for n in names]
         p = subprocess.run(args, capture_output=True, text=True, timeout=180)
         if p.returncode == 2:
+            raise unittest.SkipTest("render_check usage error: " + p.stderr.strip()[:200])
+        if p.returncode == 3:
             raise unittest.SkipTest("render_check could not start a browser: " + p.stderr.strip()[:200])
         out = {}
         for line in p.stdout.splitlines():
@@ -674,3 +678,91 @@ class TestFixturesInChromium(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def _png_size(path):
+    with open(path, "rb") as fh:
+        head = fh.read(24)
+    return int.from_bytes(head[16:20], "big"), int.from_bytes(head[20:24], "big")
+
+
+@unittest.skipUnless(NODE, "node bulunamadı")
+class TestVisualStatus(unittest.TestCase):
+    """Three outcomes stay apart: VERIFIED (0), VISUAL_CHECK_FAILED (1), VISUAL_CHECK_UNAVAILABLE (3)."""
+
+    def run_rc(self, args, env_update=None, drop=()):
+        env = {k: v for k, v in os.environ.items() if k not in drop}
+        env.update(env_update or {})
+        return subprocess.run([NODE, SCRIPT] + args, capture_output=True, text=True, timeout=180, env=env)
+
+    def test_without_playwright_the_check_is_unavailable_not_failed(self):
+        bare = {k: v for k, v in os.environ.items() if k != "NODE_PATH"}
+        probe = subprocess.run([NODE, "-e", "require.resolve('playwright')"], capture_output=True,
+                               cwd=os.path.dirname(SCRIPT), env=bare)
+        if probe.returncode == 0:
+            self.skipTest("playwright resolves without NODE_PATH here")
+        p = self.run_rc([os.path.join(FIXTURES, "clean.html")], drop=("NODE_PATH",))
+        self.assertEqual(p.returncode, 3, p.stderr)
+        self.assertIn("VISUAL_CHECK_UNAVAILABLE", p.stderr)
+        self.assertIn("nothing was measured", p.stderr)
+
+    @unittest.skipUnless(_playwright_ready(), "Playwright yok (NODE_PATH)")
+    def test_a_browser_that_does_not_start_is_unavailable(self):
+        p = self.run_rc([os.path.join(FIXTURES, "clean.html")], {"CHROMIUM_PATH": "/nonexistent/chrome-headless-shell"})
+        self.assertEqual(p.returncode, 3, p.stderr)
+        self.assertIn("Chromium did not start", p.stderr)
+        self.assertIn("VISUAL_CHECK_UNAVAILABLE", p.stderr)
+
+    @unittest.skipUnless(_playwright_ready(), "Playwright yok (NODE_PATH)")
+    def test_failed_and_verified_render_with_a_half_size_shot(self):
+        failed = self.run_rc(["--strict", os.path.join(FIXTURES, "sticky-inflow.html")])
+        if failed.returncode == 3:
+            self.skipTest("no browser: " + failed.stderr[:200])
+        self.assertEqual(failed.returncode, 1, failed.stdout)
+        self.assertTrue(failed.stderr.rstrip().endswith("VISUAL_CHECK_FAILED"), failed.stderr)
+        with tempfile.TemporaryDirectory() as tmp:
+            for name in ("clean.html", "card.css"):
+                shutil.copy(os.path.join(FIXTURES, name), tmp)
+            ok = self.run_rc(["--strict", "--shot", "--half", os.path.join(tmp, "clean.html")])
+            self.assertEqual(ok.returncode, 0, ok.stdout + ok.stderr)
+            self.assertTrue(ok.stderr.rstrip().endswith("VERIFIED"), ok.stderr)
+            self.assertEqual(_png_size(os.path.join(tmp, "card-clean.png")), (1600, 900))
+            self.assertEqual(_png_size(os.path.join(tmp, "card-clean-800.png")), (800, 450))
+
+
+@unittest.skipUnless(NODE, "node bulunamadı")
+class TestInheritedContrast(unittest.TestCase):
+    """A contrast defect copied from the user's screen is reported, not passed, and only where it qualifies."""
+
+    def m(self, a, b, listed):
+        return {"inheritedContrast": listed, "variants": [{"texts": a}, {"texts": b}]}
+
+    GREY = [119, 120, 121, 1]
+    ENTRY = [{"text": "Adınız", "color": "#777879"}]
+
+    def t(self, text="Adınız", fg=None, ring=False):
+        return {"text": text, "fg": fg or self.GREY, "inRing": ring}
+
+    def test_listed_identical_outside_rings_is_inherited(self):
+        self.assertTrue(call("inheritedFrom", self.m([self.t()], [self.t()], self.ENTRY), self.t()))
+
+    def test_not_listed_stays_an_error(self):
+        self.assertFalse(call("inheritedFrom", self.m([self.t()], [self.t()], []), self.t()))
+
+    def test_inside_a_ring_stays_an_error(self):
+        ringed = self.t(ring=True)
+        self.assertFalse(call("inheritedFrom", self.m([ringed], [ringed], self.ENTRY), ringed))
+
+    def test_b_worse_or_different_stays_an_error(self):
+        lighter = self.t(fg=[150, 150, 150, 1])
+        self.assertFalse(call("inheritedFrom", self.m([self.t()], [lighter], self.ENTRY), self.t()))
+        self.assertFalse(call("inheritedFrom", self.m([self.t()], [lighter], self.ENTRY), lighter))
+
+    def test_b_only_text_stays_an_error(self):
+        new = self.t("E-Posta (isteğe bağlı)")
+        listed = [{"text": "E-Posta (isteğe bağlı)", "color": "#777879"}]
+        self.assertFalse(call("inheritedFrom", self.m([self.t("E-Posta")], [new], listed), new))
+
+    def test_an_icon_is_held_to_three_to_one(self):
+        self.assertIn("contrastNonText: 3", SOURCE)
+        self.assertIn("t.icon ? L.contrastNonText", SOURCE)

@@ -168,6 +168,11 @@ NOTE_POSITIONS = ("above", "below")
 # The phone frame is drawn 1.2× (fills its column); 1 keeps it at 420px so a tall screen fits the stage,
 # 1.4 enlarges a short screen that would leave most of the stage empty.
 PHONE_SCALES = (1.2, 1, 1.4)
+# card.web_scale: a desktop browser frame is as tall as its content and its text a fixed 14px, so a short
+# page (a cart summary, a pricing row) leaves most of the stage empty. 1.2 / 1.4 zoom the whole frame
+# (proportions kept, the frame still fills its column). The rule is written only into cards that use it,
+# so every other card's bytes stay the same.
+WEB_SCALES = (1, 1.2, 1.4)
 PHONE_SCALE_ATTR = {1.2: "1.2", 1: "1", 1.4: "1.4"}
 # The card's own language: <html lang> and the draft ribbon. The title is
 # already in the user's language (rule 7); the pills say "Variant A/B" in both.
@@ -460,6 +465,29 @@ def normalize(scenario, msg_lang=None):
         die("card.phone_scale must be 1, 1.2 (default) or 1.4, got %r" % (phone_scale,))
     if phone_scale != 1.2 and device not in ("phone", "phone-web"):
         die("card.phone_scale applies to a phone frame (device phone or phone-web), not %r" % device)
+    inherited = card.get("inherited_contrast") or []
+    if inherited:
+        if basis != "shared_page":
+            die("card.inherited_contrast is only for a shared page (card.mockup_basis shared_page): it documents a "
+                "contrast defect copied from the user's own screen")
+        if not isinstance(inherited, list):
+            die("card.inherited_contrast must be a list of {\"text\": …, \"color\": \"#rrggbb\"}")
+        for item in inherited:
+            text_ok = isinstance(item, dict) and isinstance(item.get("text"), str) and item["text"].strip()
+            if not text_ok or not re.match(r"^#[0-9a-fA-F]{6}$", str(item.get("color", ""))):
+                die("card.inherited_contrast: each entry is {\"text\": <the element's exact text>, "
+                    "\"color\": \"#rrggbb\" as measured on the screen}, got %r" % (item,))
+            needle = ">%s<" % escape(item["text"].strip())
+            in_a = card.get("variant_a", "").count(needle)
+            in_b = card.get("variant_b", "").count(needle)
+            if not in_a or in_a != in_b:
+                die("card.inherited_contrast: %r must be the text of an element drawn the same in both arms "
+                    "(A has it %d time(s), B %d)" % (item["text"], in_a, in_b))
+    web_scale = card.get("web_scale", 1)
+    if isinstance(web_scale, bool) or web_scale not in WEB_SCALES:
+        die("card.web_scale must be 1 (default), 1.2 or 1.4, got %r" % (web_scale,))
+    if web_scale != 1 and device != "web":
+        die("card.web_scale applies to a desktop browser frame (device web), not %r" % device)
 
     mismatch = difference_problems(scenario, msg_lang or _MSG_LANG)
     if mismatch:
@@ -482,6 +510,8 @@ def normalize(scenario, msg_lang=None):
         "mockup_basis": basis,
         "note_pos": note_pos,
         "phone_scale": PHONE_SCALE_ATTR[phone_scale],
+        "web_scale": web_scale,
+        "inherited_contrast": [{"text": i["text"].strip(), "color": i["color"].lower()} for i in inherited],
         # Layout fields (layout_field_problems checks them, apply_layout draws them).
         "stage_captions": card.get("stage_captions"),
         "mobile_toolbar": card.get("mobile_toolbar", False),
@@ -2454,6 +2484,13 @@ def css_string(value):
     return '"%s"' % "".join(out)
 
 
+def web_scale_css(scale):
+    """card.web_scale → one zoom rule for the browser frame, or nothing (default 1)."""
+    if scale == 1:
+        return ""
+    return "  .browser{zoom:%s}\n" % scale
+
+
 def brand_css(brand):
     """card.brand → one :root override line inside <style>, or nothing."""
     if not brand:
@@ -2527,7 +2564,7 @@ def build(template_text, scenario, warnings=None, lang=None, manifest=None):
         "{{DEVICE}}": view["device"],
         "{{NOTE_POS}}": view["note_pos"],
         "{{PHONE_SCALE}}": view["phone_scale"],
-        "{{BRAND_CSS}}": brand_css(view["brand"]),
+        "{{BRAND_CSS}}": brand_css(view["brand"]) + web_scale_css(view["web_scale"]),
     })
     # Screens go in raw: this is the generative region, checked above. A screen
     # with a fold or stage breaks goes in as its pieces (layout_values).
@@ -2558,6 +2595,15 @@ def build(template_text, scenario, warnings=None, lang=None, manifest=None):
     # reviewer reviews (and its stamp approves) the card as the user sees it.
     if view["critical_assumptions"]:
         text = conditional_html(text, view["lang"])
+    # A contrast defect copied from the user's own screen, documented element by
+    # element: render_check reports it as inherited (not a pass) instead of
+    # failing the card, and only where the element is identical in both arms and
+    # outside the rings. Everything else keeps the 4.5:1 / 3:1 floor.
+    if view["inherited_contrast"]:
+        head_end = text.find("</head>")
+        meta = '<meta name="abtest-inherited-contrast" content="%s">\n' % escape(
+            json.dumps(view["inherited_contrast"], ensure_ascii=False, separators=(",", ":")))
+        text = text[:head_end] + meta + text[head_end:]
 
     # After the strip, so it survives; before <html>, so it is the first thing
     # anyone reading the source sees. Case-insensitive on purpose: `<!doctype`
