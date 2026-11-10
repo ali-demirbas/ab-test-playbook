@@ -310,7 +310,7 @@ Filtreleri doğrudan görünür kılmak varlıklarını hatırlatır ve kullanı
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Filtre görünürlüğü satışa dönüyor mu?
 - Filtre Kullanım Oranı: Filtre uygulayan kullanıcı oranı artıyor mu?
-- Aranan Ürüne Ulaşma Süresi: Doğru ürüne ulaşma hızlanıyor mu?
+- Görev Tamamlama Süresi (aranan ürüne ulaşma): Doğru ürüne ulaşma hızlanıyor mu?
 - Görülen Ürün Sayısı: Daralan alan görülen ürün sayısını düşürmemeli.
 - Sayfa Yüklenme Süresi: Açıktaki filtre paneli ve seçenek sayıları listenin yüklenmesini (LCP) geciktirmemeli.
 
@@ -370,7 +370,7 @@ Filtreleri “kimin için, hangi bütçeyle” gibi bir soru akışına çevirme
 - Akış Tamamlama Oranı: Soruları bitiren kullanıcı oranı ne kadar?
 - Klasik Filtre Kullanımı: Deneyimli kullanıcının filtre erişimi kaybolmamalı.
 - Sıfır Sonuç Oranı: Akış sonunda boş sonuç artmamalı.
-- Aranan Ürüne Ulaşma Süresi: Toplam süre uzamamalı.
+- Görev Tamamlama Süresi (aranan ürüne ulaşma): Toplam süre uzamamalı.
 
 **Yapılmaması gerekenler**
 - Soru akışını atlanamaz hâle getirip klasik filtreyi kaldırmayın.

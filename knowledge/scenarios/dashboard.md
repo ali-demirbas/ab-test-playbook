@@ -48,7 +48,7 @@ Sabit bir widget sırası her kullanıcıya aynı düzeni sunar ve öngörülebi
 
 **Takip edilecek ana KPI’lar**
 - Widget Etkileşim Oranı: Dashboard oturumlarında en az bir widget’la etkileşilen oturumların payı artıyor mu?
-- Ana Görev Tamamlama Süresi: Kullanıcı asıl aradığı bilgiye daha hızlı ulaşıyor mu?
+- Görev Tamamlama Süresi (ana görev): Kullanıcı asıl aradığı bilgiye daha hızlı ulaşıyor mu?
 - Kayıp Widget Şikâyeti: “Şu widget nereye gitti” destek talebi artmamalı.
 - Ayarları Sıfırlama Oranı: Kullanıcı sabit sıraya dönmeyi seçmemeli.
 - Sayfa Yüklenme Süresi: Kişiselleştirme mantığı sayfayı yavaşlatmamalı.
@@ -78,7 +78,7 @@ Bir ürünün değerli ama az bilinen bir özelliği, arayüzde durduğu hâlde 
 **Takip edilecek ana KPI’lar**
 - Özellik Deneme Oranı: Teste atanan kullanıcılardan özelliği ilk kez deneyenlerin oranı artıyor mu? Payda, ipucunun gösterildiği kullanıcılar değil, iki koldaki tüm kullanıcılardır.
 - Özelliği Tekrar Kullanma Oranı: Bir kez deneyen kullanıcı özelliği tekrar kullanıyor mu?
-- Ana Görev Tamamlama Süresi: İpucu, kullanıcının o an yapmaya çalıştığı asıl işi yavaşlatmamalı.
+- Görev Tamamlama Süresi (ana görev): İpucu, kullanıcının o an yapmaya çalıştığı asıl işi yavaşlatmamalı.
 - İpucu Kapatma Oranı: İpucu rahatsız edici bulunup anında kapatılmamalı.
 - Destek Talebi: İpucu kaynaklı kafa karışıklığı destek talebini artırmamalı.
 

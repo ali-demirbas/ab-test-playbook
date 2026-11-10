@@ -22,7 +22,7 @@ Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmız�
 - Tıklama Oranı (CTR): Tanı metriği; buton daha çok fark edilip tıklanıyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon değişiyor mu?
 - Yanlış Tıklama Oranı: Yeni renk ikincil butonlarla karışıp yanlış butona tıklamayı artırmamalı.
-- Marka Algısı (anket): Ölçülüyorsa düşmemeli.
+- Marka Algısı (anket): Ölçülüyorsa düşmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 
 **Yapılmaması gerekenler**
 - Aynı testte renk ile buton metnini birlikte değiştirmeyin.
@@ -109,9 +109,9 @@ Görünür bir kupon kutusu, kodu olmayan kullanıcıyı “indirim arayayım”
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Kaçak kapanırken indirim kullanımındaki değişim toplam geliri artırıyor mu?
 - Sipariş Tamamlama Oranı: Kupon kutusu kaçağı kapanıyor mu?
-- Kupon Kullanım Oranı: Kuponu olan kullanıcı alanı bulabilmeli, kullanım çökmemeli.
+- Kuponlu Sipariş Veren Ziyaretçi Oranı: Kuponu olan kullanıcı alanı bulabilmeli; atanan ziyaretçi başına kuponlu sipariş düşmemeli. Geçti ölçütü: geçerli kod iki kolda da girilir, uygulanır, indirim toplama yansır ve hata mesajı aynıdır.
 - Ödeme Adımı Terk Oranı: Doğrudan hedef davranış.
-- Kampanya Katılımı: Aktif kampanya performansı çökmemeli.
+- Duyurulan Aksiyonun Tamamlanma Oranı: Aktif kampanyanın aksiyonunu tamamlayan atanan ziyaretçi oranı düşmemeli.
 
 **Yapılmaması gerekenler**
 - Kupon alanını tamamen kaldırmayın; kodu olan kullanıcı öfkelenir.
@@ -138,9 +138,9 @@ Zorunlu üyelik satın alma sürecini uzatır ve terk oranını yükseltebilir. 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Misafir ödeme satın almayı artırıyor mu?
 - Destek Talebi: Hesapsız siparişte takip ve iade için açılan talepler artmamalı.
-- Checkout Tamamlama Süresi: Süreç kısalıyor mu?
+- Görev Tamamlama Süresi (checkout): Süreç kısalıyor mu?
 - Kayıt Oranı: Ciddi biçimde düşmemeli.
-- Tekrar Satın Alma Oranı: Misafir kullanıcı geri dönmeli.
+- Tekrar Satın Alma Oranı (60 gün): Misafir kullanıcı geri dönmeli.
 
 **Yapılmaması gerekenler**
 - Misafir ödemede gereksiz bilgi istemeyin.
@@ -167,7 +167,7 @@ Tek sayfa akışı toplam tıklamayı azaltır ama ilk bakışta yoğun görün�
 **Takip edilecek ana KPI’lar**
 - Sipariş Tamamlama Oranı: Ödemeye başlayanların bitirme oranı.
 - Adım Bazlı Terk Oranı: Hangi alanda kayıp var?
-- Checkout Süresi: Toplam süre kısalıyor mu?
+- Görev Tamamlama Süresi (checkout): Toplam süre kısalıyor mu?
 - Doğrulama Hatası Oranı: Tek sayfada artmamalı.
 - Destek Talebi: Sipariş sorunları yükselmemeli.
 
@@ -194,7 +194,7 @@ Her ek form alanı bir sürtünme noktasıdır. Posta koduyla otomatik il/ilçe 
 - Segment: Kayıtlı adresi olan kullanıcıda fark kalıyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Adres Adımı Tamamlama Oranı: Adres adımına ulaşan kullanıcıların (iki kolda aynı tetikleyici) adımı bitirme oranı artıyor mu?
+- Adım Tamamlama Oranı (adres adımı): Adres adımına ulaşan kullanıcıların (iki kolda aynı tetikleyici) adımı bitirme oranı artıyor mu?
 - Ortalama Doldurma Süresi: Kısalıyor mu?
 - Sipariş Tamamlama Oranı: Zincirin sonuna yansıyor mu?
 - Hatalı Adres / Teslimat Hatası: Artmamalı; en kritik guardrail.
@@ -281,7 +281,7 @@ Değişken: Ücretsiz kargo eşik tutarı · Fark: değiştir
 - Eşik altı davranış: Sepeti yeni eşiğin hemen altında kalan kullanıcılar ürün ekliyor mu, yoksa siparişi bırakıyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Ziyaretçi Başına Gelir (RPV): Eşik artışı AOV'yi şişirirken toplam geliri düşürmüyor mu?
+- Ziyaretçi Başına Gelir (RPV): Eşik artışı AOV’yi şişirirken toplam geliri düşürmüyor mu?
 - Ortalama Sepet Tutarı (AOV): Kullanıcılar eşiğe ulaşmak için daha çok ekliyor mu?
 - Dönüşüm Oranı (CR): Eşik değişimi satın almayı düşürüyor mu?
 - Ödeme Adımına Geçiş Oranı: Sepetten ödeme adımına geçiş artıyor mu?
@@ -317,8 +317,8 @@ Küçük metin değişiklikleri bile karar hızını, güven algısını ve yön
 - Dönüşüm Oranı (CR): Microcopy satın almaya yönlendiriyor mu?
 - Tıklama Oranı (CTR): Butona tıklama artıyor mu?
 - Form Tamamlama Oranı: Formu bitirme artıyor mu?
-- İade veya İptal Oranı: Metnin kurduğu beklenti (“İptal ücretsiz”, “Ücret alınmayacak”) sipariş sonrası iptali artırmamalı.
-- Adımda Geçirilen Süre: Uzamamalı.
+- İade veya İptal Oranı (30 gün): Metnin kurduğu beklenti (“İptal ücretsiz”, “Ücret alınmayacak”) sipariş sonrası iptali artırmamalı.
+- Görev Tamamlama Süresi (adım): Uzamamalı.
 
 **Yapılmaması gerekenler**
 - Yanıltıcı, aşırı iddialı veya baskıcı ifadeler kullanmayın.
@@ -345,9 +345,9 @@ Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci h
 **Takip edilecek ana KPI’lar**
 - Ödeme Tamamlama Oranı: Hızlı ödeme satın almayı artırıyor mu?
 - Ödeme Yöntemi Seçim Oranı: Hangi yöntem seçiliyor?
-- Adım Tamamlama Süresi: Ödeme adımı kısalıyor mu?
+- Görev Tamamlama Süresi (ödeme adımı): Ödeme adımı kısalıyor mu?
 - Hata / Reddedilme Oranı: Artmamalı.
-- Sipariş Sonrası İptal: Yükselmemeli.
+- Sipariş İptal Oranı (30 gün): Yükselmemeli.
 
 **Yapılmaması gerekenler**
 - Hızlı ödemeyi zorunlu kılmayın; manuel giriş seçeneği kalmalı.
@@ -374,7 +374,7 @@ Değişken: Checkout ilerleme çubuğu · Fark: ekle
 **Takip edilecek ana KPI’lar**
 - Sipariş Tamamlama Oranı: Checkout’a ulaşan kullanıcıların (iki kolda aynı tetikleyici) siparişi bitirme oranı yükseliyor mu?
 - Adım Bazlı Terk Oranı: Adımlar daha az mı terk ediliyor?
-- Adım Süresi: Adımlar daha hızlı mı tamamlanıyor?
+- Görev Tamamlama Süresi (adım): Adımlar daha hızlı mı tamamlanıyor?
 - Geri Dönüş Oranı: Önceki adıma dönüş artmamalı.
 - Sayfa Yüklenme Süresi: Çubuk yavaşlatmamalı.
 
@@ -433,9 +433,9 @@ Kart bilgisi girilen ekran, terk oranının en yüksek olduğu andır. Güvenli 
 **Takip edilecek ana KPI’lar**
 - Ödeme Tamamlama Oranı: Kart ekranına ulaşanların (iki kolda aynı tetikleyici) ödemeyi bitirme oranı artıyor mu?
 - Ödeme Adımı Terk Oranı: Düşüyor mu?
-- Adımda Geçirilen Süre: Tereddüt kısalıyor mu?
+- Görev Tamamlama Süresi (adım): Tereddüt kısalıyor mu?
 - Hata / Reddedilme Oranı: Değişmemeli.
-- Sipariş Sonrası İptal: Yükselmemeli.
+- Sipariş İptal Oranı (30 gün): Yükselmemeli.
 
 **Yapılmaması gerekenler**
 - Gerçekte sahip olmadığınız sertifika rozetlerini göstermeyin.
@@ -554,7 +554,7 @@ Kullanıcı bir seçim yaptığında (beden, adet, teslimat günü) bunun alınd
 - Sipariş Tamamlama Oranı: Onay geri bildirimi tamamlamayı artırıyor mu?
 - Hatalı Seçim Oranı: Yanlış varyantla sipariş azalıyor mu?
 - Tekrar Tıklama Oranı: Aynı seçeneğe tekrar tıklama azalıyor mu?
-- İade Oranı: Yanlış seçim kaynaklı iade artmamalı.
+- İade Oranı (30 gün): Yanlış seçim kaynaklı iade artmamalı.
 - Erişilebilirlik: Onay yalnızca renkle verilmemeli, ekran okuyucuya duyurusuz kalmamalı.
 
 **Yapılmaması gerekenler**
@@ -570,7 +570,7 @@ Kullanıcı bir seçim yaptığında (beden, adet, teslimat günü) bunun alınd
 
 Değişken: Tarafsız seçeneğin varsayılan seçimi · Fark: değiştir
 
-Bir kutunun önceden işaretli gelmesi kullanıcıyı hızlandırabilir, ama bu tekniğin sınırı nettir: pazarlama izni, veri paylaşımı ve ek ücretli hizmetler önceden işaretlenemez; birçok pazarda bu yasaktır ve kullanıcının açık iradesi gerekir. Test edilebilir olan yalnızca tarafsız tercihlerdir (teslimat günü, kargo yöntemi, adet).
+Bir kutunun önceden işaretli gelmesi kullanıcıyı hızlandırabilir, ama bu tekniğin sınırı nettir: pazarlama izni, veri paylaşımı ve ek ücretli hizmetler önceden işaretlenemez; birçok pazarda bu yasaktır ve kullanıcının açık iradesi gerekir. Test edilebilir olan yalnızca tarafsız tercihlerdir (teslimat günü, ücretsiz ya da aynı fiyatlı kargo seçenekleri arasında kargo yöntemi, adet); fiyatı değiştiren bir kargo seçeneği tarafsız değildir.
 
 **Test edilmesi gerekenler**
 - Varsayılan: Tarafsız bir seçeneğin önceden seçili gelmesi tamamlamayı artırıyor mu?
@@ -581,9 +581,9 @@ Bir kutunun önceden işaretli gelmesi kullanıcıyı hızlandırabilir, ama bu 
 
 **Takip edilecek ana KPI’lar**
 - Sipariş Tamamlama Oranı: Varsayılan tamamlamayı artırıyor mu?
-- Varsayılan Değiştirme Oranı: Yüksek değiştirme oranı yanlış varsayılana işarettir.
-- İade veya İptal Oranı: İstenmeyen seçim kaynaklı iptal artmamalı.
-- Destek Talebi: “Bunu ben seçmedim” türü talepler artmamalı.
+- Varsayılan Değiştirme Oranı: İkincil (yalnızca B); yüksek değiştirme oranı yanlış varsayılana işarettir, kollar arasında karşılaştırılmaz.
+- İade veya İptal Oranı (30 gün): İstenmeyen seçim kaynaklı iptal artmamalı.
+- Destek Talebi: “Bunu ben seçmedim” türü talepler atanan ziyaretçi başına artmamalı.
 - Ziyaretçi Başına Gelir (RPV): Gelir düşmemeli.
 
 **Yapılmaması gerekenler**
@@ -610,7 +610,7 @@ Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve 
 
 **Takip edilecek ana KPI’lar**
 - Ödeme Adımı Terk Oranı: Adımlı ekran bekleme sırasında ayrılan kullanıcı oranını düşürüyor mu?
-- Algılanan Süre (anket): Kullanıcı bekleme süresini kısa mı buluyor?
+- Algılanan Süre (anket): Kullanıcı bekleme süresini kısa mı buluyor? Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Gerçek İşlem Süresi: Adımlı ekran gerçek işlem süresini uzatmamalı.
 - Hata Sonrası Destek Talebi: Başarısız işlemlerde destek talebi artmamalı.
 - Ödeme Başarı Oranı: Genel ödeme tamamlama oranı düşmemeli.
