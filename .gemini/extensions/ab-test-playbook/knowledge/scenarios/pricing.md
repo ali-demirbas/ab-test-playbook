@@ -23,7 +23,7 @@ Değişken: Gösterilen fiyat planı sayısı · Fark: kaldır
 - Ziyaretçi Başına Gelir (RPV): Plan sayısı geliri artırıyor mu?
 - Ortalama Plan Değeri: Seçilen planın ortalama tutarı düşmemeli.
 - Plan Seçim Dağılımı: Herhangi bir planı seçen ziyaretçi oranı artıyor mu?
-- İptal veya Plan Düşürme Oranı: Yanlış plana yönlenen kullanıcı sonradan düşmemeli.
+- İptal veya Plan Düşürme Oranı (30 gün): Yanlış plana yönlenen kullanıcı sonradan düşmemeli.
 - Destek Talebi: “Hangi planı almalıyım” soruları artmamalı.
 
 **Yapılmaması gerekenler**
@@ -108,10 +108,10 @@ Yıllık bir tutarı aylık karşılığıyla göstermek rakamı küçültür ve
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Çerçeveleme geliri artırıyor mu?
-- İlk Dönem İptal Oranı: Beklenti uyumsuzluğundan doğan iptal artmamalı.
+- İlk Dönem İptal Oranı (ilk ödemeden sonra 30 gün): Beklenti uyumsuzluğundan doğan iptal artmamalı.
 - Ödeme Adımı Terk Oranı: Toplam tutarı görünce bırakma artmamalı.
 - Yıllık Plan Seçim Oranı: Uzun taahhüde geçiş artıyor mu?
-- Ödeme İtirazı veya İade Talebi: Tutar şaşkınlığı kaynaklı talepler artmamalı.
+- İade veya İtiraz Oranı (30 gün): Tutar şaşkınlığı kaynaklı talepler artmamalı.
 
 **Yapılmaması gerekenler**
 - Toplam tutarı okunmaz derecede küçük yazıp aylık rakamı tek görünen fiyat hâline getirmeyin.
@@ -139,7 +139,7 @@ Birim başına fiyat (kilogram, adet, kullanıcı, ay) farklı boyuttaki paketle
 - Ziyaretçi Başına Gelir (RPV): Birim fiyat geliri artırıyor mu?
 - Ortalama Sepet Tutarı (AOV): Büyük pakete kayma tutarı artırıyor mu?
 - Dönüşüm Oranı (CR): Satın alma oranı düşmemeli.
-- İade veya İptal Oranı: Bütçesini aşan alım sonradan geri dönmemeli.
+- İade veya İptal Oranı (30 gün): Bütçesini aşan alım sonradan geri dönmemeli.
 - Fiyat Alanı Etkileşimi: Asıl fiyatın okunması zorlaşmamalı.
 
 **Yapılmaması gerekenler**
@@ -167,9 +167,9 @@ Abonelik yorgunluğu yaşayan kullanıcı, her ödemenin tekrarlayacağını var
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): İfade geliri artırıyor mu?
 - Ödeme Tamamlama Oranı: Ödemeyi bitiren oranı artıyor mu?
-- Tekrar Satın Alma Oranı: İleriki dönemde tekrar alım düşmemeli.
+- Tekrar Satın Alma Oranı (60 gün): İleriki dönemde tekrar alım düşmemeli.
 - Abonelik Geçiş Oranı: Abonelik satıyorsanız bu oran kabul edilemez ölçüde düşmemeli.
-- İade veya İtiraz Oranı: Beklenti kaynaklı itirazlar azalıyor mu?
+- İade veya İtiraz Oranı (30 gün): Beklenti kaynaklı itirazlar azalıyor mu?
 
 **Yapılmaması gerekenler**
 - Gerçekte tekrarlayan bir ödeme varken tek seferlik ifadesi kullanmayın.
@@ -198,7 +198,7 @@ Vergi hariç fiyat rakamı küçük gösterir ve kurumsal alıcının zaten hari
 - Ödeme Adımı Terk Oranı: Tutar artışı kaynaklı bırakma artmamalı.
 - Dönüşüm Oranı (CR): Satın alma oranı ne yönde değişiyor?
 - Fiyat Kaynaklı Destek Talebi: “Neden farklı tutar çıktı” soruları artmamalı.
-- İade veya İtiraz Oranı: Tutar şaşkınlığı kaynaklı itirazlar artmamalı.
+- İade veya İtiraz Oranı (30 gün): Tutar şaşkınlığı kaynaklı itirazlar artmamalı.
 
 **Yapılmaması gerekenler**
 - Tüketiciye vergi dahil gösterimin zorunlu olduğu pazarlarda bunu test değişkeni yapmayın; orada seçim yoktur.
@@ -225,7 +225,7 @@ Fiyatın yanında “içindekilerin toplam değeri” göstermek alınan şeyin 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Değer gösterimi geliri artırıyor mu?
 - Dönüşüm Oranı (CR): Satın alma oranı artıyor mu?
-- İade Oranı: Abartılı değer algısı sonradan hayal kırıklığı yaratmamalı.
+- İade Oranı (30 gün): Abartılı değer algısı sonradan hayal kırıklığı yaratmamalı.
 - Ortalama Sepet Tutarı (AOV): Ortalama tutar düşmemeli.
 - Güven Kaynaklı Destek Talebi: Değer iddiasını sorgulayan talepler artmamalı.
 
@@ -314,7 +314,7 @@ Değişken: Fiyat küsuratının yazım biçimi · Fark: değiştir
 - Dönüşüm Oranı (CR): Fiyat formatı satın alma oranını artırıyor mu?
 - Ortalama Sepet Tutarı (AOV): Format, ortalama tutar algısını bozup gerçek harcamayı düşürmemeli.
 - Fiyat Okuma Netliği (oturum kaydı): Küsuratı fark etmeyen kullanıcı oranı yüksek mi?
-- İade veya İtiraz Oranı: “Beklediğimden pahalı çıktı” itirazları artmamalı.
+- İade veya İtiraz Oranı (30 gün): “Beklediğimden pahalı çıktı” itirazları artmamalı.
 
 **Yapılmaması gerekenler**
 - Toplam ödenecek tutarı, yalnızca ana rakamı büyük göstererek gizlemeyin; küsurat küçük olsa da her zaman okunabilir kalmalı.
@@ -341,8 +341,8 @@ Bir fiyat, yanında yüksek bir referans sayı (“piyasa ortalaması ₺X”, �
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Referans sayı geliri artırıyor mu?
 - Dönüşüm Oranı (CR): Referans sayı satın alma oranını artırıyor mu?
-- Güven Algısı (anket): Referans sayı inandırıcı bulunuyor mu, yoksa şüphe mi uyandırıyor?
-- İade veya İtiraz Oranı: “Yanıltıcı karşılaştırma” şikâyeti artmamalı.
+- Güven Algısı (anket): Referans sayı inandırıcı bulunuyor mu, yoksa şüphe mi uyandırıyor? Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
+- İade veya İtiraz Oranı (30 gün): “Yanıltıcı karşılaştırma” şikâyeti artmamalı.
 - Ortalama Sepet Tutarı (AOV): Referans sayı ortalama tutarı düşürmemeli.
 
 **Yapılmaması gerekenler**

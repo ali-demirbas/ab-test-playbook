@@ -11,7 +11,7 @@ Geri sayım sayacı “şimdi karar ver” baskısı yaratır ve kısa vadede t�
 
 **Test edilmesi gerekenler**
 - Aciliyet: Sayaç varken kampanyaya tıklama artıyor mu?
-- Gerçeklik: Sayaç süresi dolduğunda kampanya gerçekten bitiyor mu, yoksa yenileniyor mu; kullanıcı bunu fark ediyor mu?
+- Zamanlama: Sayaç satın alma kararını yalnızca kampanyanın son günlerine mi çekiyor, yoksa toplam kampanya satışını mı artırıyor?
 - Sonraki test: Sayaç kazanırsa konumu (sayfa üstü / ürün kartı içi) ayrı bir testte kampanya tıklamasını değiştiriyor mu?
 - Segment: Dönen ziyaretçide mi, yeni ziyaretçide mi etkisi daha büyük?
 - Kalan süre: Kampanyanın son 24 saatinde sayacın tıklamaya etkisi, kampanyanın ilk günlerindekinden daha mı büyük?
@@ -21,14 +21,16 @@ Geri sayım sayacı “şimdi karar ver” baskısı yaratır ve kısa vadede t�
 - Dönüşüm Oranı (CR): Sayaç satın alma oranını değiştiriyor mu?
 - Kampanya Tıklama Oranı: Tanı metriği; tıklama artışı tek başına kazanım sayılmaz.
 - Sayfa Terk Oranı: Aciliyet baskısı kullanıcıyı kaçırmamalı; artmamalı.
-- Şikâyet/Destek Talebi: “Süre bitmedi ama kampanya durdu” gibi şikâyetler artmamalı.
+- Destek Talebi: “Süre bitmedi ama kampanya durdu” gibi şikâyetler atanan ziyaretçi başına artmamalı.
 
 **Yapılmaması gerekenler**
-- Sahte veya sürekli sıfırlanan sayaç kullanmayın; sayaç gerçek kampanya bitişine bağlı olmalı ve sıfırda teklif gerçekten bitmeli (kural 6).
+- Sayacın gerçek kampanya bitişine bağlı olduğu ve sıfırda teklifin gerçekten bittiği doğrulanmadan testi başlatmayın; bu bir başlatma koşuludur, test sorusu değil. Sahte veya sürekli sıfırlanan sayaç kullanılmaz (kural 6).
 - Aynı testte sayaç ile indirim oranını birlikte değiştirmeyin.
 - Sayacı kapatma imkânı olmadan zorunlu göstermeyin.
 - Sayacı kampanyaya dahil olmayan ürünlerin bulunduğu listede göstermeyin; aciliyet yalnızca kampanyalı ürüne ait olmalı.
 - Sayacı sayfanın ana içeriğini kaplayacak kadar büyütmeyin.
+
+> **Pazar notu:** Sayacın verisi kampanya sisteminin gerçek bitiş tarihinden gelmeli. Sahte ya da sürekli yenilenen bir sayaç birçok pazarda (ör. AB ve ABD) yanıltıcı ticari uygulama sayılabilir; hedef pazarın güncel düzenlemesini kontrol edin.
 
 ---
 
@@ -165,7 +167,7 @@ Liste sayfasındaki hızlı ekleme butonu, kullanıcının ürünü incelemeden 
 - Dönüşüm Oranı (CR): Hızlı ekleme satın almayı artırıyor mu?
 - Sepete Ekleme Oranı: Listeden ekleme yükseliyor mu?
 - Ödeme Tamamlama Süresi: Adımlar hızlanıyor mu?
-- İade Oranı: İncelenmeden alınan ürün geri dönmemeli.
+- İade Oranı (30 gün): İncelenmeden alınan ürün geri dönmemeli.
 - Liste → Ürün Tıklama Oranı: Aşırı düşmemeli.
 
 **Yapılmaması gerekenler**
@@ -177,32 +179,32 @@ Liste sayfasındaki hızlı ekleme butonu, kullanıcının ürünü incelemeden 
 
 ---
 
-## Hikaye odaklı mesajlar liste sayfasında işe yarıyor mu?
+## Hikâye odaklı mesajlar liste sayfasında işe yarıyor mu?
 
 Değişken: Liste kartındaki ürün mesajının türü · Fark: değiştir
 
 Liste sayfasında teknik özellik yerine kısa ve duygusal mesaj kullanmak, ürünün algılanan değerini ve inceleme motivasyonunu değiştirebilir.
 
 **Test edilmesi gerekenler**
-- Değer algısı: Hikaye mesajı algılanan değeri artırıyor mu?
-- İçerik: Teknik bilgi yerine hikaye inceleme oranını yükseltiyor mu?
-- Sonraki test: Hikaye mesajı kazanırsa kart içindeki yeri (görselin altı / fiyatın altı) ayrı bir testte etkileşimi değiştiriyor mu?
-- Segment: Yeni ziyaretçi mi, dönen müşteri mi hikaye mesajına daha çok tepki veriyor?
+- Değer algısı: Hikâye mesajı algılanan değeri artırıyor mu?
+- İçerik: Teknik bilgi yerine hikâye inceleme oranını yükseltiyor mu?
+- Sonraki test: Hikâye mesajı kazanırsa kart içindeki yeri (görselin altı / fiyatın altı) ayrı bir testte etkileşimi değiştiriyor mu?
+- Segment: Yeni ziyaretçi mi, dönen müşteri mi hikâye mesajına daha çok tepki veriyor?
 - Kategori farkı: Modada teknolojiye göre daha mı etkili?
 
 **Takip edilecek ana KPI’lar**
-- Dönüşüm Oranı (CR): Hikaye mesajı satışı artırıyor mu?
-- Sepete Ekleme Oranı: Hikayeli ürünler daha çok ekleniyor mu?
+- Dönüşüm Oranı (CR): Hikâye mesajı satışı artırıyor mu?
+- Sepete Ekleme Oranı: Hikâyeli ürünler daha çok ekleniyor mu?
 - Liste → Ürün Tıklama Oranı: Tıklama artıyor mu?
 - Sayfada Kalma Süresi: Keşif derinleşiyor mu?
-- İade Oranı: Duygusal mesaj yanlış beklenti yaratmamalı.
+- İade Oranı (30 gün): Duygusal mesaj yanlış beklenti yaratmamalı.
 
 **Yapılmaması gerekenler**
-- Hikaye metnini uzun yazmayın; liste düzenini bozar.
+- Hikâye metnini uzun yazmayın; liste düzenini bozar.
 - Aşırı duygusal veya karmaşık anlatım kullanmayın.
-- Aynı testte hikaye metniyle fiyat ve etiketi birlikte değiştirmeyin.
+- Aynı testte hikâye metniyle fiyat ve etiketi birlikte değiştirmeyin.
 - Mobilde metnin taşmasına izin vermeyin.
-- Her ürüne hikaye yazmayın; ayırt ediciliği kaybolur.
+- Her ürüne hikâye yazmayın; ayırt ediciliği kaybolur.
 
 ---
 
@@ -223,7 +225,7 @@ Karşılaştırma tablosunda tüm özellikler yerine sadece farkları göstermek
 - Dönüşüm Oranı (CR): Karşılaştırma sayfasına ulaşan ziyaretçilerin (iki kolda aynı tetikleyici) satın alma oranı artıyor mu?
 - Karar Süresi: Kullanıcı daha az zamanda karar veriyor mu?
 - Karşılaştırma Etkileşim Oranı: “Farkları Göster” ne kadar kullanılıyor?
-- İade Oranı: Yanlış seçim kaynaklı iadeler artmamalı.
+- İade Oranı (30 gün): Yanlış seçim kaynaklı iadeler artmamalı.
 - Çıkış Oranı: Karşılaştırma sayfasından çıkış yükselmemeli.
 
 **Yapılmaması gerekenler**
@@ -426,7 +428,7 @@ Kartın üzerinde renk veya beden seçeneği göstermek kullanıcının ürün s
 - Dönüşüm Oranı (CR): Varyant gösterimi satışa dönüyor mu?
 - Liste → Ürün Tıklama Oranı: Ürüne geçiş artıyor mu?
 - Ürün Sayfası Geri Dönüş Oranı: Yanlış varyantla girip geri dönme artmamalı.
-- İade Oranı: Yanlış varyant seçimi iadeyi artırmamalı.
+- İade Oranı (30 gün): Yanlış varyant seçimi iadeyi artırmamalı.
 - Sayfa Yüklenme Süresi: Ek görseller hızı bozmamalı.
 
 **Yapılmaması gerekenler**
@@ -485,7 +487,7 @@ Kategori adının yanına görsel eklemek taramayı hızlandırır ve ne satıld
 - Kategori Tıklama Oranı: Tanı metriği; kategoriye geçiş artıyor mu?
 - Kategori Geri Dönüş Oranı: Yanlış kategoriye girip geri dönme artmamalı.
 - Sayfa Yüklenme Süresi: Görseller hızı bozmamalı.
-- Görülen Kategori Sayısı: Kullanıcının gördüğü kategori sayısı düşmemeli.
+- Görülen Kategori Sayısı (atanan ziyaretçi başına ortalama): Kullanıcının gördüğü kategori sayısı düşmemeli.
 
 **Yapılmaması gerekenler**
 - Kategoride bulunmayan bir ürünü kategori görseli yapmayın.
@@ -513,7 +515,7 @@ Değişken: Karttaki tahmini teslimat bilgisi · Fark: ekle
 - Dönüşüm Oranı (CR): Teslimat bilgisi satışa dönüyor mu?
 - Liste → Ürün Tıklama Oranı: Ürüne geçiş artıyor mu?
 - Teslimat Vaadi Tutma Oranı: Vaat edilen tarih tutmalıdır.
-- İade veya İptal Oranı: Teslimat beklentisi kaynaklı iptal artmamalı.
+- İade veya İptal Oranı (30 gün): Teslimat beklentisi kaynaklı iptal artmamalı.
 - Geç Teslimatlı Ürün Satışı: Yavaş ürünlerin satışı kabul edilemez ölçüde düşmemeli.
 
 **Yapılmaması gerekenler**
@@ -542,7 +544,7 @@ Konumun karar için belirleyici olduğu listelerde (emlak, mekân, mağaza, ilan
 - Dönüşüm Oranı (CR): Yerleşim asıl aksiyonu artırıyor mu?
 - İlan Detayına Geçiş Oranı: Kayda tıklama artıyor mu?
 - Harita Kullanım Oranı: Harita gerçekten kullanılıyor mu?
-- Görülen Kayıt Sayısı: Daralan liste görülen kayıt sayısını kabul edilemez ölçüde düşürmemeli.
+- Görülen Kayıt Sayısı (atanan ziyaretçi başına ortalama): Daralan liste görülen kayıt sayısını kabul edilemez ölçüde düşürmemeli.
 - Sayfa Yüklenme Süresi: Harita hızı bozmamalı.
 
 **Yapılmaması gerekenler**
@@ -573,7 +575,7 @@ Liste sayfasında, ürün kartında taksit avantajını küçük bir rozetle gö
 - Dönüşüm Oranı (CR): Rozetli üründe satın alma artıyor mu? RPV ile birlikte okunur.
 - Tıklama Oranı (CTR): Rozetli ürünler daha çok tıklanıyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
-- İade veya İptal Oranı: Yükselmemeli; taksit beklentisi hayal kırıklığına dönüşmemeli.
+- İade veya İptal Oranı (30 gün): Yükselmemeli; taksit beklentisi hayal kırıklığına dönüşmemeli.
 
 **Yapılmaması gerekenler**
 - Rozeti her üründe kullanmayın; etkisi sulanır.
@@ -616,7 +618,7 @@ Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edi
 - Kampanyası biten ürünün rozetini kartta bırakmayın; rozet kampanya bitişiyle birlikte kalkmalı.
 
 
-> **Pazar notu:** İndirim ve referans fiyat gösterimi yasal olarak düzenlenen bir alandır (kural 11). Rozet bir indirim iması taşıyorsa hedef pazarın kuralını doğrulamadan varyantı yayınlamayın; AB'de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatına bağlıdır.
+> **Pazar notu:** İndirim ve referans fiyat gösterimi yasal olarak düzenlenen bir alandır (kural 11). Rozet bir indirim iması taşıyorsa hedef pazarın kuralını doğrulamadan varyantı yayınlamayın; AB’de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatına bağlıdır.
 ---
 
 ## İlk alışveriş indirimi satın almayı etkiliyor mu?
@@ -633,11 +635,11 @@ Değişken: Karttaki ilk alışveriş indirimi bilgisi · Fark: ekle
 - Sonraki test: İndirim bilgisi kazanırsa tutarın yazımı (yüzde / TL) ayrı bir testte yeni kullanıcı dönüşümünü değiştiriyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Yeni Kullanıcı Başına Net Gelir: İndirim maliyeti düşüldükten sonra yeni kullanıcı başına gelir artıyor mu?
+- Ziyaretçi Başına Net Gelir (yeni kullanıcı, 30 gün): İndirim maliyeti ve 30 günlük iade düşüldükten sonra atanan yeni kullanıcı başına gelir artıyor mu?
 - Yeni Kullanıcı Dönüşümü (CR): İlk alışveriş oranı artıyor mu?
 - Sepete Ekleme Oranı: Listeye atanan yeni kullanıcılar daha çok sepete ekliyor mu?
 - Brüt Marj: Erimemeli; indirim maliyeti kazancı yememeli.
-- Tekrar Satın Alma Oranı: Yeni kullanıcı geri dönüyor mu?
+- Tekrar Satın Alma Oranı (60 gün): Yeni kullanıcı geri dönüyor mu?
 
 **Yapılmaması gerekenler**
 - İndirimi aşırı büyük ve agresif tasarlamayın; güven azaltır.

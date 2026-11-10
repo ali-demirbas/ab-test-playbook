@@ -80,7 +80,7 @@ Soyut fayda (“daha verimli çalışın”) geniş kitleye hitap eder ama kimse
 - Aksiyon Sonrası Dökülme Oranı: Somut vaatle gelenlerin sonraki adımda dökülmesi artmamalı.
 - Hemen Çıkma Oranı: Dar çerçeve ziyaretçiyi kaçırmamalı.
 - Kaydırma Derinliği: İfade okumaya devam ettiriyor mu?
-- İade veya İptal Oranı: Vaat ile gerçeğin uyumsuzluğu sonradan kayıp yaratmamalı.
+- İade veya İptal Oranı (30 gün): Vaat ile gerçeğin uyumsuzluğu sonradan kayıp yaratmamalı.
 
 **Yapılmaması gerekenler**
 - Arkasında ölçüm olmayan bir sayıyı fayda ifadesine yazmayın.
@@ -108,7 +108,7 @@ Uzun sayfada aşağı inen ziyaretçi ikna olduğunda yukarı dönmek zorunda ka
 - Ana Aksiyon Tamamlama Oranı: Toplam aksiyon artıyor mu?
 - Alt CTA Tıklama Payı: İkinci CTA gerçekten yeni tıklama getiriyor mu, yoksa üsttekini mi bölüyor?
 - Kaydırma Derinliği: Sayfa sonuna ulaşan ziyaretçi oranı düşmemeli.
-- İade veya İptal Oranı: Tekrarlanan çağrıyla alınan aksiyon sonradan iptale dönmemeli.
+- İade veya İptal Oranı (30 gün): Tekrarlanan çağrıyla alınan aksiyon sonradan iptale dönmemeli.
 - Aksiyon Sonrası Tamamlama Oranı: Geç tıklayanların sonraki adımı tamamlaması düşmemeli.
 
 **Yapılmaması gerekenler**
@@ -193,10 +193,10 @@ Arkasında gerçek bir insan olduğunu göstermek (kurucu fotoğrafı ve imzası
 
 **Takip edilecek ana KPI’lar**
 - Ana Aksiyon Tamamlama Oranı: Kişi görünürlüğü aksiyonu artırıyor mu?
-- Kurumsal Talep Sayısı: Kurumsal nitelikli talepler düşmemeli.
+- Kurumsal Talep Oranı (atanan ziyaretçi başına): Kurumsal nitelikli talepler düşmemeli.
 - Kaydırma Derinliği: Bölüm okunuyor mu?
 - Sayfada Kalma Süresi: İlgi süresi düşmemeli.
-- İletişim Talebi Sayısı: Soru sorma davranışı artıyor mu?
+- İletişim Talebi Oranı (atanan ziyaretçi başına): Soru sorma davranışı artıyor mu?
 
 **Yapılmaması gerekenler**
 - Aynı testte kişi bloğunu eklerken müşteri referanslarını veya logo bandını da değiştirmeyin.
@@ -373,7 +373,7 @@ Sayfa içi bağlantılar (sabit bir bölüm menüsü veya içindekiler) ziyaret�
 - Aksiyon Sonrası Dökülme Oranı: İkna içeriğini atlayıp tıklayanların sonraki adımda dökülmesi artmamalı.
 
 **Yapılmaması gerekenler**
-- Navigasyonu eklerken bölüm başlıklarını da yeniden yazmayın.
+- Aynı testte navigasyonu eklerken bölüm başlıklarını veya bölüm sırasını birlikte değiştirmeyin.
 - Sabit navigasyonu ekranın önemli bir kısmını kaplayacak boyutta kurmayın.
 - Navigasyona fiyat veya kayıt sayfası gibi sayfa dışına çıkan bağlantılar eklemeyin; yalnızca sayfa içi bölümlere gitmeli.
 - Bağlantı hedeflerini kaydırma sırasında başlığın altında kalacak şekilde bırakmayın.
@@ -395,11 +395,11 @@ Bir teklifin yanına açık bir “şimdi değil” seçeneği koymak kullanıc�
 - Segment: Yeni ziyaretçi ile mevcut kullanıcı farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
-- Toplam Kabul Oranı: Belirli bir süre içindeki kümülatif kabul artıyor mu?
+- Toplam Kabul Oranı (30 gün): Atanan kullanıcılarda 30 gün içindeki kümülatif kabul artıyor mu?
 - Anlık Kabul Oranı: Tek gösterimdeki kabul oranı ne oluyor?
 - Tekrar Ziyaret Oranı: Reddeden kullanıcının siteye dönüşü düşmemeli.
 - Şikâyet veya Kapatma Oranı: Rahatsızlık sinyalleri artmamalı.
-- İzin İptal Oranı: Sonradan izin geri çekme artmamalı.
+- İzin İptal Oranı (30 gün): Sonradan izin geri çekme artmamalı.
 
 **Yapılmaması gerekenler**
 - Reddetme seçeneğini okunmaz derecede soluk veya küçük yapan bir varyant kurmayın (kural 6).
@@ -427,7 +427,7 @@ Başlığın hemen üstünde veya altında duran ince bir şerit (ücretsiz karg
 - Ana Aksiyon Tamamlama Oranı: Çubuk aksiyonu artırıyor mu?
 - Kaydırma Derinliği: Çubuk okumayı durdurmamalı.
 - Hemen Çıkma Oranı: Reklam algısı çıkışı artırmamalı.
-- İlgili Destek Talebi: Çubuktaki konularda gelen sorular azalıyor mu?
+- Destek Talebi: Çubuktaki konularda gelen sorular azalıyor mu?
 - Başlık Etkileşimi: Ana başlığın görülmesi düşmemeli.
 
 **Yapılmaması gerekenler**
@@ -483,10 +483,10 @@ Kısa madde listesi (iptal koşulu, veri güvenliği, destek, teslimat) paragraf
 
 **Takip edilecek ana KPI’lar**
 - Ana Aksiyon Tamamlama Oranı: Liste aksiyonu artırıyor mu?
-- İlgili Destek Talebi: Listedeki konularda soru sayısı azalıyor mu?
+- Destek Talebi: Listedeki konularda soru sayısı azalıyor mu?
 - Kaydırma Derinliği: Bölüm görülüyor mu?
 - Sayfada Kalma Süresi: Okuma yükü ilgiyi kırmamalı.
-- İade veya İptal Oranı: Yanlış anlaşılan güvence sonradan sorun yaratmamalı.
+- İade veya İptal Oranı (30 gün): Yanlış anlaşılan güvence sonradan sorun yaratmamalı.
 
 **Yapılmaması gerekenler**
 - Koşullu bir güvenceyi koşulsuz gibi maddeleştirmeyin.
@@ -514,7 +514,7 @@ Tüm güvenceleri tek bölümde toplamak derli toplu bir cevap verir ama o böl�
 - Ana Aksiyon Tamamlama Oranı: Dağıtım biçimi aksiyonu artırıyor mu?
 - Adım Bazlı Terk Oranı: Endişe noktalarındaki bırakma azalıyor mu?
 - Güvence Görülme Oranı: Güvencelerin görülme oranı düşmemeli.
-- İlgili Destek Talebi: Aynı konudaki sorular azalıyor mu?
+- Destek Talebi: Aynı konudaki sorular azalıyor mu?
 - Sayfada Kalma Süresi: Dağınıklık karar süresini uzatmamalı.
 
 **Yapılmaması gerekenler**
@@ -573,7 +573,7 @@ Değişken: Referansın içerik türü · Fark: değiştir
 - Aksiyon Sonrası Dökülme Oranı: Dar referansla gelenlerin sonraki adımda dökülmesi artmamalı.
 - Referans Etkileşim Oranı: Referanslar okunuyor mu?
 - Kaydırma Derinliği: Bölüm görülüyor mu?
-- İade veya İptal Oranı: Vaat uyumsuzluğu sonradan kayıp yaratmamalı.
+- İade veya İptal Oranı (30 gün): Vaat uyumsuzluğu sonradan kayıp yaratmamalı.
 
 **Yapılmaması gerekenler**
 - Müşterinin söylemediği bir sonucu referansa yazmayın.
@@ -686,7 +686,7 @@ Rehber, şablon veya kontrol listesi karşılığında iletişim bilgisi istemek
 
 **Takip edilecek ana KPI’lar**
 - Nitelikli Fırsat Oranı (atanan ziyaretçi başına): Satış ekibinin nitelikli kabul ettiği fırsatların atanan ziyaretçiye oranı artıyor mu?
-- Toplam Kayıt Sayısı: Hacim artıyor mu?
+- Toplam Kayıt Oranı (atanan ziyaretçi başına): Hacim artıyor mu?
 - Talep Başına Nitelik Oranı: Niteliksiz kayıt oranı kabul edilemez ölçüde artmamalı.
 - Satış Ekibi İş Yükü: Takip edilemeyecek kadar kayıt birikmemeli.
 - Ana Aksiyon Tamamlama Oranı: Asıl dönüşüm (deneme, satın alma) düşmemeli.
@@ -716,9 +716,9 @@ Koşulsuz iade vaadi algılanan riski satıcıya aktarır ve kararsız ziyaretç
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Net Gelir: İade düşüldükten sonra gelir artıyor mu?
 - Dönüşüm Oranı (CR): Satın alma oranı artıyor mu?
-- İade Oranı: İade artışı kârlılığı bozacak seviyeye çıkmamalı.
-- İade İşlem Maliyeti: Operasyonel yük taşınabilir kalmalıdır.
-- Tekrar Satın Alma Oranı: Güven artışı geri dönüşü düşürmemeli.
+- İade Oranı (30 gün): İade artışı kârlılığı bozacak seviyeye çıkmamalı.
+- İade İşlem Maliyeti (30 gün): Operasyonel yük taşınabilir kalmalıdır.
+- Tekrar Satın Alma Oranı (60 gün): Güven artışı geri dönüşü düşürmemeli.
 
 **Yapılmaması gerekenler**
 - Uygulanmayacak bir garanti sözü vermeyin.
@@ -803,7 +803,7 @@ Bir marka sayfasının yanında görünen takipçi veya beğeni sayısı, ürün
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Sayaç göstermek satın alma veya kayıt oranını artırıyor mu?
 - Sayfa Yüklenme Süresi: Sosyal platformdan çekilen sayaç bileşeni sayfayı yavaşlatmamalı.
-- Güven Algısı (anket): Sayaç güveni artırdığını hissettiriyor mu?
+- Güven Algısı (anket): Sayaç güveni artırdığını hissettiriyor mu? Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Tıklama Oranı (CTR): Sayaç kendisi tıklanıp dış platforma gidiş yaratıyor mu? Gidiyorsa bu bir kayıp noktasıdır.
 - Sayfada Kalma Süresi: Sayaç dikkat dağıtıp asıl aksiyonu geciktirmemeli.
 
@@ -833,7 +833,7 @@ Küçük bir pop-up’tan farklı olarak, kısmi karşılama ekranı sayfanın b
 - Ana Aksiyon Tamamlama Oranı: Sayfaya atanan ziyaretçilerin sayfanın ana aksiyonunu tamamlama oranı artıyor mu? Payda ekranı geçenler değil, iki koldaki tüm ziyaretçilerdir.
 - Hemen Çıkma Oranı: Karşılama ekranı kaynaklı hemen çıkma artmamalı.
 - Teklif Kabul Oranı: Ekrandaki teklifi kabul eden ziyaretçi oranı nedir?
-- Sayfa Yüklenme Algısı (anket): Ekran, sayfanın yavaş açıldığı hissini vermemeli.
+- Sayfa Yüklenme Algısı (anket): Ekran, sayfanın yavaş açıldığı hissini vermemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Tekrar Ziyaret Oranı: Atanan ziyaretçilerin siteye tekrar dönüş oranı düşmemeli.
 
 **Yapılmaması gerekenler**

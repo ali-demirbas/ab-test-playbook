@@ -19,8 +19,8 @@ Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Fotoğraf türü satın almayı nasıl etkiliyor?
 - Sepete Ekleme Oranı: İlk aksiyon değişiyor mu?
-- İade Oranı: Gerçekçi fotoğraf beklenti-gerçek uyumunu artırıp iadeyi düşürüyor mu?
-- Marka Algısı (anket): Düşmemeli.
+- İade Oranı (30 gün): Gerçekçi fotoğraf beklenti-gerçek uyumunu artırıp iadeyi düşürüyor mu?
+- Marka Algısı (anket): Düşmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Sayfa Yüklenme Süresi: Ek galeri görselleri yavaşlatmamalı.
 
 **Yapılmaması gerekenler**
@@ -50,7 +50,7 @@ Değişken: Galerideki görsel sayısı · Fark: değiştir
 - Dönüşüm Oranı (CR): Görsel sayısı satın almayı nasıl etkiliyor?
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
 - Galeri Etkileşim Oranı: Kaydırma ve yakınlaştırma artıyor mu?
-- İade Oranı: Daha iyi görsel bilgi iadeyi düşürüyor mu?
+- İade Oranı (30 gün): Daha iyi görsel bilgi iadeyi düşürüyor mu?
 - Sayfa Yüklenme Süresi: Ek görseller sayfayı yavaşlatmamalı.
 
 **Yapılmaması gerekenler**
@@ -79,7 +79,7 @@ Modelin boyu ve giydiği beden, kullanıcının kendi bedenini seçmesini hızla
 - Dönüşüm Oranı (CR): Model beden bilgisi satın almayı artırıyor mu?
 - Sepete Ekleme Oranı: Belirsizlik azalınca ekleme artıyor mu?
 - Beden Tablosu Etkileşimi: Tabloya tıklama azalıyor mu?
-- İade Oranı: Artmamalı; beklenen yönde düşmeli.
+- İade Oranı (30 gün): Artmamalı; beklenen yönde düşmeli.
 - Ürün İnceleme Süresi: Uzamamalı.
 
 **Yapılmaması gerekenler**
@@ -108,7 +108,7 @@ Yıldız ve yorum sayısının fiyatın hemen altında mı, sayfanın alt kısm�
 - Dönüşüm Oranı (CR): Yorum özeti yukarı taşındığında satın alma artıyor mu?
 - Sepete Ekleme Oranı: Sosyal kanıt ilk aksiyona yönlendiriyor mu?
 - Yorum Bölümüne Tıklama: Özet gerçekten fark ediliyor mu?
-- İade Oranı: Yükselmemeli; yanlış beklenti yaratmadığını doğrular.
+- İade Oranı (30 gün): Yükselmemeli; yanlış beklenti yaratmadığını doğrular.
 - Sayfa Yüklenme Süresi: Ek bileşen LCP’yi bozmamalı.
 
 **Yapılmaması gerekenler**
@@ -166,7 +166,7 @@ Yüksek fiyatlı üründe “aylık 2.000 TL” ifadesi, toplam tutardan daha er
 - Ziyaretçi Başına Gelir (RPV): Aylık tutar çerçevesi atanan ziyaretçi başına geliri artırıyor mu? Birincil metrik bu; CR tek başına kazanan seçmez.
 - Dönüşüm Oranı (CR): Taksit vurgusunun satış etkisi; RPV ile birlikte okunur, tek başına yeterli değil.
 - Taksit Seçim Oranı: Gerçekten taksit kullanılıyor mu?
-- İade veya İptal Oranı: Yükselmemeli.
+- İade veya İptal Oranı (30 gün): Yükselmemeli.
 - Fiyat Şeffaflığı Şikâyeti: Destek talebi artmamalı.
 
 **Yapılmaması gerekenler**
@@ -198,7 +198,7 @@ Referans fiyat (çıpa) indirimin büyüklüğünü algılatır ama sürekli kul
 - Dönüşüm Oranı (CR): Çıpalı gösterimin satış etkisi; RPV ile birlikte okunur.
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
 - Brüt Marj: Erimemeli; indirim algısı gerçek indirime dönüşmemeli.
-- İade Oranı: Yükselmemeli.
+- İade Oranı (30 gün): Yükselmemeli.
 
 **Yapılmaması gerekenler**
 - Hiç uygulanmamış bir fiyatı eski fiyat diye göstermeyin; yasal risk.
@@ -228,7 +228,7 @@ Düz zeminli stüdyo çekimi ürünün kendisine odaklanır, ayrıntıyı net g�
 - Dönüşüm Oranı (CR): Hangi çekim tarzı daha yüksek satış getiriyor?
 - Galeri Etkileşim Oranı: Kullanıcı ilk görselden sonra galeride ilerliyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
-- İade Oranı: Yanlış beklenti yaratıp artmamalı.
+- İade Oranı (30 gün): Yanlış beklenti yaratıp artmamalı.
 - Sayfa Yüklenme Süresi: Ağır görseller yavaşlatmamalı.
 
 **Yapılmaması gerekenler**
@@ -254,7 +254,7 @@ Kullanıcıların “kalıbı dar/normal/bol geldi” oyları, beden tablosundan
 - Kategori farkı: Bel ve kalça ölçüsünün tam oturması gereken pantolonda kalıp oyu, elbiseye göre beden kaynaklı iadeyi daha çok mu azaltıyor?
 
 **Takip edilecek ana KPI’lar**
-- Beden Kaynaklı İade Oranı: Atanan ziyaretçilerin siparişlerinde beden nedeniyle iade edilenlerin payı düşüyor mu? İadeler ilan edilen pencerede (ör. teslimattan sonra 30 gün) iki kolda aynı sayılır, pencere kapanmadan okunmaz.
+- Beden Kaynaklı İade Oranı (30 gün): Atanan ziyaretçilerin siparişlerinde beden nedeniyle iade edilenlerin payı düşüyor mu? İadeler ilan edilen pencerede (ör. teslimattan sonra 30 gün) iki kolda aynı sayılır, pencere kapanmadan okunmaz.
 - Dönüşüm Oranı (CR): Belirsizlik azalınca satın alma artıyor mu?
 - Beden Tablosu Açılma Oranı: Geri bildirim tabloyu ikame ediyor mu?
 - Sepete Ekleme Oranı: Düşmemeli; caydırıcı etki olmamalı.
@@ -286,7 +286,7 @@ Bottom sheet kullanıcıyı sayfadan koparmadan seçim yaptırır ve tek elle er
 - Dönüşüm Oranı (CR): Ürün sayfasına atanan ziyaretçilerin satın alma oranı artıyor mu?
 - Sepete Ekleme Oranı: Tanı metriği; beden seçip sepete ekleyen ziyaretçi oranı.
 - Beden Seçim Tamamlama: Seçim ekranını bırakan oranı.
-- Beden Kaynaklı İade Oranı: Artmamalı.
+- Beden Kaynaklı İade Oranı (30 gün): Artmamalı.
 - Sayfa Geri Dönüş Oranı: Sheet kullanıcıyı kilitlememeli.
 
 **Yapılmaması gerekenler**
@@ -314,7 +314,7 @@ Değişken: Beden yardımının biçimi · Fark: değiştir
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Ürün sayfasına atanan ziyaretçilerin satın alma oranı artıyor mu?
 - Beden Seçim Tamamlama: Tanı metriği; kullanıcı beden seçimini bitiriyor mu?
-- Beden Kaynaklı İade Oranı: Yükselmemeli; yanlış öneri beden kaynaklı iadeyi artırmamalı.
+- Beden Kaynaklı İade Oranı (30 gün): Yükselmemeli; yanlış öneri beden kaynaklı iadeyi artırmamalı.
 - Öneri Kabul Oranı: Kullanıcı önerilen bedeni değiştirmeden mi alıyor?
 - Girdi Terk Oranı: Boy/kilo formunu yarıda bırakan var mı?
 
@@ -341,7 +341,7 @@ Müşteri fotoğrafları ürünün gerçek hayattaki halini gösterir ve stüdyo
 - Kategori farkı: Modada teknolojiye göre etki daha mı yüksek?
 
 **Takip edilecek ana KPI’lar**
-- İade Oranı: Atanan ziyaretçilerin siparişlerinde ilan edilen pencerede (ör. teslimattan sonra 30 gün) iade edilenlerin payı düşüyor mu? Asıl beklenen kazanç burada; pencere kapanmadan okunmaz.
+- İade Oranı (30 gün): Atanan ziyaretçilerin siparişlerinde ilan edilen pencerede (ör. teslimattan sonra 30 gün) iade edilenlerin payı düşüyor mu? Asıl beklenen kazanç burada; pencere kapanmadan okunmaz.
 - Dönüşüm Oranı (CR): Ürün sayfasına atanan ziyaretçilerin satın alma oranı değişiyor mu?
 - Yorum Bölümü Etkileşimi: Fotoğraflara tıklama ve galeri açma oranı.
 - Sayfa Ağırlığı: Görseller mobil hızını bozmamalı.
@@ -373,7 +373,7 @@ Varsayılan yorum sıralaması, kullanıcının ilk okuduğu üç yorumu belirle
 - Dönüşüm Oranı (CR): Sıralama satın almayı değiştiriyor mu?
 - Yorum Okuma Derinliği: Kaç yorum görüntüleniyor?
 - Sıralama Değiştirme Oranı: Varsayılan yeterli mi?
-- İade Oranı: Dengeli bilgi iadeyi artırmamalı.
+- İade Oranı (30 gün): Dengeli bilgi iadeyi artırmamalı.
 - Yorum Bölümü Çıkış Oranı: Yükselmemeli.
 
 **Yapılmaması gerekenler**
@@ -401,8 +401,8 @@ Değişken: Düşük stok uyarısı · Fark: ekle
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Aciliyet mesajı satın almayı hızlandırıyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
-- Güven Algısı (anket): Düşmemeli; uyarı baskı veya yapaylık hissi yaratmamalı.
-- İade Oranı: Yükselmemeli; aceleyle alınan ürün geri dönmemeli.
+- Güven Algısı (anket): Düşmemeli; uyarı baskı veya yapaylık hissi yaratmamalı. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
+- İade Oranı (30 gün): Yükselmemeli; aceleyle alınan ürün geri dönmemeli.
 - Karar Süresi: Ürün sayfasında geçen süre (tanı metriği).
 
 **Yapılmaması gerekenler**
@@ -431,8 +431,8 @@ Değişken: Aciliyet mesajının tipi · Fark: değiştir
 - Dönüşüm Oranı (CR): İki mesaj tipi arasındaki fark.
 - Sepete Ekleme Oranı: Aciliyet ilk aksiyona yansıyor mu?
 - Karar Süresi: Ürün sayfasında geçen süre (tanı metriği).
-- İade Oranı: Yükselmemeli; baskıyla alınan ürün geri dönmemeli.
-- Marka Algısı (anket): NPS düşmemeli.
+- İade Oranı (30 gün): Yükselmemeli; baskıyla alınan ürün geri dönmemeli.
+- Marka Algısı (anket): NPS düşmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 
 **Yapılmaması gerekenler**
 - Gerçek satış veya stok verisine dayanmayan sayı göstermeyin (kural 6); en hızlı güven kaybı buradan gelir.
@@ -461,7 +461,7 @@ Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve s
 - Dönüşüm Oranı (CR): Taksit görünürlüğü satın almayı artırıyor mu? RPV ile birlikte okunur.
 - Ortalama Sepet Tutarı (AOV): Daha pahalı ürüne yöneliyor mu?
 - Taksit Seçim Oranı: Gerçekten taksit kullanılıyor mu?
-- İade veya İptal Oranı: Yükselmemeli.
+- İade veya İptal Oranı (30 gün): Yükselmemeli.
 
 **Yapılmaması gerekenler**
 - Ürün için geçerli olmayan taksit bilgisi göstermeyin.
@@ -554,7 +554,7 @@ Sayfanın altında veya kapalı bir akordeonda duran kargo ve iade bloğunu fiya
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Fiyatın yakınına taşınan blok satışı artırıyor mu?
 - Sepete Ekleme Oranı: Kullanıcı ilk aksiyona yöneliyor mu?
-- İade Oranı: Yükselmemeli; net bilgi yanlış beklentiyi azaltmalı.
+- İade Oranı (30 gün): Yükselmemeli; net bilgi yanlış beklentiyi azaltmalı.
 - Bölüm Etkileşimi: Kargo-iade alanı inceleniyor mu?
 - Sayfada Kalma Süresi: Karar hızlanıyor mu?
 
@@ -587,7 +587,7 @@ Taksit, ücretsiz kargo ve kolay iade gibi avantajlar zaten sayfadayken bunları
 - Sepete Ekleme Oranı: Kullanıcı ilk aksiyona yöneliyor mu?
 - Avantaj Alanı Etkileşimi: Kutu inceleniyor mu?
 - Kaydırma Derinliği: Kullanıcı sayfada daha ileri gidiyor mu?
-- İade Oranı: Yükselmemeli; net koşul bilgisi yanlış beklentiyi azaltmalı.
+- İade Oranı (30 gün): Yükselmemeli; net koşul bilgisi yanlış beklentiyi azaltmalı.
 
 **Yapılmaması gerekenler**
 - Sadeleştirirken önemli koşul ve ayrıntıları gizlemeyin.
@@ -616,7 +616,7 @@ Taksit, iade, garanti ve teslimat gibi sık sorulan bilgilerin ürün sayfasınd
 - Sepete Ekleme Oranı: Kullanıcı daha hızlı ekliyor mu?
 - Destek Talebi: Artmamalı; soru ve çağrı sayısı azalmalı.
 - SSS Etkileşim Oranı: Başlıklar açılıyor mu?
-- İade Oranı: Net bilgi yanlış beklentiyi azaltıyor mu?
+- İade Oranı (30 gün): Net bilgi yanlış beklentiyi azaltıyor mu?
 
 **Yapılmaması gerekenler**
 - Aynı testte SSS bölümünü eklerken ürün açıklamasını veya teslimat ve iade metinlerini de değiştirmeyin.
@@ -644,7 +644,7 @@ Ek fayda mesajları güven yaratabilir ama fark edilmeyebilir. Satın alma karar
 - Dönüşüm Oranı (CR): Fayda mesajı satın almayı artırıyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
 - Etkileşim Oranı: Kullanıcı mesajı fark edip aksiyon alıyor mu?
-- İade Oranı: Yükselmemeli; fayda mesajı ürünün karşılayamayacağı bir beklenti kurmamalı.
+- İade Oranı (30 gün): Yükselmemeli; fayda mesajı ürünün karşılayamayacağı bir beklenti kurmamalı.
 - Liste → Ürün Tıklama Oranı: Fayda rozeti liste kartında da gösteriliyorsa geçiş artıyor mu?
 
 **Yapılmaması gerekenler**
@@ -747,7 +747,7 @@ Değişken: Kaydırmada sabit kalan Satın Al butonu · Fark: ekle
 
 Değişken: CTA butonunun rengi · Fark: değiştir
 
-Renk, boyut ve konum küçük görünen ama davranışı ciddi etkileyen değişkenler. Bazı markalarda %1, bazılarında %10 fark yaratabiliyor. Tahmin etmeyin, test edin.
+Ürün sayfasında sepete ekle butonu galeri, fiyat ve indirim etiketleri arasında öne çıkmak zorundadır; rengin etkisi sayfadan sayfaya değişir, tahmin edilmez, test edilir. “CTA buton rengi dönüşümü etkiler mi?” (`cart-checkout.md`) senaryosundan farkı: burada değişen ürün sayfasındaki sepete ekle butonudur, sepet ve ödeme adımındaki butonlar sabit kalır.
 
 **Test edilmesi gerekenler**
 - Renk: Turuncu, yeşil veya markanın ana rengi hangisi daha çok tıklanıyor?
@@ -758,7 +758,7 @@ Renk, boyut ve konum küçük görünen ama davranışı ciddi etkileyen değiş
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): CTA’ya tıklayan gerçekten satın alıyor mu?
-- Tıklama Oranı (CTR): Renk ve metin değişince tıklama artıyor mu?
+- Tıklama Oranı (CTR): Renk değişince tıklama artıyor mu?
 - Sepete Ekleme Oranı: Eklemeyi artırıyor mu?
 - Çıkış Oranı: Yeni tasarım kullanıcıyı kaçırmamalı.
 - Kaydırma Derinliği: Sabit bar okumayı engellememeli.
@@ -790,7 +790,7 @@ Değişken: Çoklu paket seçenekleri · Fark: ekle
 - Ortalama Sepet Tutarı (AOV): Paket seçimi sepet değerini yükseltiyor mu?
 - Dönüşüm Oranı (CR): Pakete yönelme satın alma oranını düşürüyor mu?
 - Paket Seçim Oranı: Kullanıcılar hangi pakete yöneliyor?
-- İade Oranı: Yükselmemeli; fazla alınan paket geri dönmemeli.
+- İade Oranı (30 gün): Yükselmemeli; fazla alınan paket geri dönmemeli.
 
 **Yapılmaması gerekenler**
 - Paket seçeneklerinin tekli ürünü gölgelemesine izin vermeyin.
@@ -818,7 +818,7 @@ Değişken: Tahmini teslimat tarihi bilgisi · Fark: ekle
 - Dönüşüm Oranı (CR): Teslimat bilgisi satın almayı artırıyor mu?
 - Sepete Ekleme Oranı: İlk aksiyon artıyor mu?
 - Sipariş Tamamlama Oranı: Belirsizlik azalınca tamamlama yükseliyor mu?
-- İade Oranı: Yükselmemeli; doğru beklenti iadeyi düşürmeli.
+- İade Oranı (30 gün): Yükselmemeli; doğru beklenti iadeyi düşürmeli.
 - Destek Talebi: Teslimat sorusu azalıyor mu?
 
 **Yapılmaması gerekenler**
@@ -846,9 +846,9 @@ Küçük görsellerin (thumbnail) solda dikey dizilmesi ana görsele daha çok y
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Ürün sayfasına atanan ziyaretçilerin satın alma oranı artıyor mu?
 - Galeri Etkileşim Oranı: Birden fazla görsel inceleyen kullanıcı artıyor mu?
-- İncelenen Görsel Sayısı: Ortalama görülen görsel sayısı düşmemeli.
+- İncelenen Görsel Sayısı (ürün sayfasına atanan ziyaretçi başına ortalama): Ortalama görülen görsel sayısı düşmemeli.
 - Sepete Ekleme Oranı: Tanı metriği; yerleşim sepete eklemeyi artırıyor mu?
-- İade Oranı: Daha iyi inceleme iadeyi azaltıyor mu?
+- İade Oranı (30 gün): Daha iyi inceleme iadeyi azaltıyor mu?
 
 **Yapılmaması gerekenler**
 - Aynı testte küçük görsel konumu ile ana görsel boyutunu bağımsız değişkenler gibi ayrı ayrı değiştirmeyin; ikisi birlikte tek bir yerleşim kararıdır.
@@ -873,10 +873,10 @@ Değişken: Görseldeki ölçek referansı · Fark: ekle
 - Cihaz: Mobilin küçük ekranında referans ölçeği masaüstündeki kadar net anlatıyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Ölçü Kaynaklı İade Oranı: Atanan ziyaretçilerin siparişlerinde “sandığımdan küçük ya da büyük” nedeniyle iade edilenlerin payı düşüyor mu? İadeler ilan edilen pencerede iki kolda aynı sayılır, pencere kapanmadan okunmaz.
+- Ölçü Kaynaklı İade Oranı (30 gün): Atanan ziyaretçilerin siparişlerinde “sandığımdan küçük ya da büyük” nedeniyle iade edilenlerin payı düşüyor mu? İadeler ilan edilen pencerede iki kolda aynı sayılır, pencere kapanmadan okunmaz.
 - Dönüşüm Oranı (CR): Satın alma oranı düşmemeli.
 - Sepete Ekleme Oranı: Netleşen ölçek satın alma niyetini artırıyor mu?
-- Ürün Sorusu Sayısı: “Ölçüsü nedir” soruları azalıyor mu?
+- Ürün Sorusu Oranı: “Ölçüsü nedir” soruları azalıyor mu?
 - Ziyaretçi Başına Gelir (RPV): Gelir düşmemeli.
 
 **Yapılmaması gerekenler**
@@ -905,8 +905,8 @@ Açıklamanın tamamen açık gelmesi bilgiyi erişilebilir kılar ama sayfayı 
 - Dönüşüm Oranı (CR): Ürün sayfasına atanan ziyaretçilerin satın alma oranı artıyor mu?
 - Açıklama Görülme Oranı: Bilginin görülmesi kabul edilemez ölçüde düşmemeli.
 - Sepete Ekleme Oranı: Tanı metriği; varyant sepete eklemeyi artırıyor mu?
-- İade Oranı: Okunmayan bilgi kaynaklı iade artmamalı.
-- Ürün Sorusu Sayısı: Aynı konudaki sorular artmamalı.
+- İade Oranı (30 gün): Okunmayan bilgi kaynaklı iade artmamalı.
+- Ürün Sorusu Oranı: Aynı konudaki sorular artmamalı.
 
 **Yapılmaması gerekenler**
 - Karar için zorunlu bilgiyi (malzeme, uyumluluk, garanti) katlanmış bölümün arkasına gizlemeyin.
@@ -933,9 +933,9 @@ Değişken: Öneri mesajının tonu · Fark: değiştir
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Kararlı öneri satın almayı artırıyor mu?
 - Ziyaretçi Başına Gelir (RPV): Gelir artıyor mu?
-- İade Oranı: Yanlış öneri kaynaklı iade artmamalı.
+- İade Oranı (30 gün): Yanlış öneri kaynaklı iade artmamalı.
 - Öneri Kabul Oranı: Önerilen seçeneğin seçilme oranı ne kadar?
-- Ürün Sorusu Sayısı: Kararsızlık kaynaklı sorular azalıyor mu?
+- Ürün Sorusu Oranı: Kararsızlık kaynaklı sorular azalıyor mu?
 
 **Yapılmaması gerekenler**
 - Kullanıcı için uygun olmayan, yalnızca marjı yüksek seçeneği “sizin için en uygunu” diye sunmayın.
@@ -991,9 +991,9 @@ Kullanıcıya rengi, gravürü veya kombinasyonu kendi seçtirmek, ürünü kend
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Ürün sayfasına atanan ziyaretçilerin satın alma oranı artıyor mu? Payda özelleştirmeyi başlatanlar değil, iki koldaki tüm ziyaretçilerdir.
 - Özelleştirme Tamamlama Oranı: Adımı başlatıp bitiren ziyaretçi oranı nedir?
-- İade Oranı: Özelleştirilmiş ürünlerin iade oranı standart üründen yüksek olmamalı.
+- İade Oranı (30 gün): Özelleştirilmiş ürünlerin iade oranı standart üründen yüksek olmamalı.
 - Brüt Marj: Özelleştirmenin üretim maliyeti sipariş başına marjı eritmemeli.
-- Teslimat Süresi Algısı (anket): Özelleştirmenin teslimatı uzatabileceği net anlaşılmalı.
+- Teslimat Süresi Algısı (anket): Özelleştirmenin teslimatı uzatabileceği net anlaşılmalı. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 
 **Yapılmaması gerekenler**
 - Özelleştirme seçeneklerinin gerçek üretim veya stok kısıtlarını aşan bir kombinasyonu sunmayın.
@@ -1020,7 +1020,7 @@ Değişken: Ürünün köken bilgisi · Fark: ekle
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Köken bilgisi satın alma oranını artırıyor mu?
 - Ortalama Sepet Tutarı (AOV): Algılanan kalite artışı ortalama tutara yansıyor mu?
-- İade Oranı: Beklenti-gerçeklik uyumsuzluğundan doğan iade artmamalı.
+- İade Oranı (30 gün): Beklenti-gerçeklik uyumsuzluğundan doğan iade artmamalı.
 - Ürün Detay Görüntüleme Süresi: Bilgi ek okuma süresini kabul edilemez ölçüde uzatmamalı.
 - Destek Talebi: Köken bilgisiyle ilgili doğrulama talebi artmamalı.
 
@@ -1049,8 +1049,8 @@ Bir paket ucuz ve pahalı ürünleri bir araya getirdiğinde, ucuz ürün pahal�
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Paket kompozisyonu geliri artırıyor mu?
 - Paket Seçim Oranı: Tekli üründen pakete geçiş oranı nedir?
-- Pahalı Ürün Algısı (anket): Pahalı ürünün değeri paket içinde düşük hissedilmemeli.
-- İade Oranı: Paket içindeki istenmeyen ürün yüzünden iade artmamalı.
+- Pahalı Ürün Algısı (anket): Pahalı ürünün değeri paket içinde düşük hissedilmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
+- İade Oranı (30 gün): Paket içindeki istenmeyen ürün yüzünden iade artmamalı.
 - Ortalama Sepet Tutarı (AOV): Kompozisyon değişikliği ortalama tutarı düşürmemeli.
 
 **Yapılmaması gerekenler**

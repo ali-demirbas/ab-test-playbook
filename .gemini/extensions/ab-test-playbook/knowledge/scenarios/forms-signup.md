@@ -77,7 +77,7 @@ Değişken: Form sütun sayısı · Fark: değiştir
 
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Düzen gönderimi artırıyor mu?
-- Boş Bırakılan Alan Sayısı: Atlanan alan sayısı artmamalı.
+- Boş Bırakılan Alan Sayısı (gönderilen form başına ortalama): Atlanan alan sayısı artmamalı.
 - Ortalama Doldurma Süresi: Tek sütun doldurmayı yavaşlatıyor mu?
 - Form Başlama Oranı: Uzayan form ilk dokunuşu azaltıyor mu?
 - Doğrulama Hatası Oranı: Gönderimde geri dönen hata sayısı artmamalı.
@@ -116,7 +116,7 @@ Formu doldurmaya başlayan kullanıcının bitirme olasılığı artar. Bu neden
 - Zor alanı sona taşırken neden istendiğini açıklayan metni kaldırmayın.
 - Yasal olarak belirli bir sırada sunulması gereken alanları (onay metinleri) taşımayın.
 - Sıralamayı kullanıcıya mantıksız gelecek şekilde bozmayın (şehirden önce mahalle sormak gibi).
-- Tek bir form tipinde ölçüp sonucu tüm formlara kural diye yazmayın.
+- Aynı testte alan sırasıyla birlikte alan etiketlerini veya yardım metinlerini değiştirmeyin.
 
 ---
 
@@ -309,15 +309,15 @@ Değişken: Birincil giriş yöntemi · Fark: değiştir
 
 **Takip edilecek ana KPI’lar**
 - Giriş Tamamlama Oranı: Yöntem girişi tamamlatıyor mu?
-- Kod Teslim ve Kullanım Oranı: Gönderilen kodun kullanılma oranı düşmemeli.
-- İlk Deneme Başarı Oranı: Tek seferde giriş yapabilme artıyor mu?
+- Kod Teslim ve Kullanım Oranı: İkincil (yalnızca B); gönderilen kodun kullanılma payı, kollar arasında karşılaştırılmaz.
+- Yetkisiz Giriş Bildirimi Oranı (30 gün): Güvenlik ekibinin kaydındaki yetkisiz giriş şikâyeti ve hesap ele geçirme olayı atanan kullanıcı başına artmamalı.
 - Şifre Sıfırlama Talebi: Sıfırlama yükü azalıyor mu?
-- Destek Talebi: Giriş kaynaklı talepler artmamalı.
+- Destek Talebi: Giriş kaynaklı talepler atanan ziyaretçi başına artmamalı.
 
 **Yapılmaması gerekenler**
 - İki adımlı doğrulamayı veya kimlik doğrulamayı bu testin kapsamına almayın; bunlar koruma amaçlıdır (kural 6).
 - Kod ekranında kodun hangi adrese veya numaraya gönderildiğini gizlemeyin; kullanıcı yanlış kanalı düzeltebilmeli.
-- Şifreli girişi aynı anda kaldırıp geri dönüşü olmayan bir varyant kurmayın.
+- Güvenlik ekibi B’nin kod süresini, deneme sınırını ve hesap kurtarma akışını onaylamadan testi başlatmayın; bu onay bir başlatma koşuludur. Şifreli girişi de aynı anda kaldırmayın.
 - Kodun gelmediği durumda yeniden gönderme seçeneğini kaldırmayın veya uzun bir bekleme süresinin arkasına saklamayın.
 - Aynı testte giriş yöntemini değiştirirken giriş ekranındaki alanları veya oturum süresini de değiştirmeyin.
 
@@ -544,7 +544,7 @@ Hazır tutar butonları karar yükünü kaldırır, bir aralık önerir ve yazma
 - Ana Aksiyon Tamamlama Oranı: İşlemi bitiren kullanıcı oranı artıyor mu?
 - Ortalama Seçilen Tutar: Ortalama tutar düşmemeli.
 - Serbest Giriş Kullanım Oranı: Kendi tutarını girenlerin oranı ne kadar?
-- İptal veya Düzeltme Oranı: Yanlış tutar kaynaklı düzeltme artmamalı.
+- İptal veya Düzeltme Oranı (30 gün): Yanlış tutar kaynaklı düzeltme artmamalı.
 
 **Yapılmaması gerekenler**
 - Serbest giriş imkânını tamamen kaldırıp kullanıcıyı hazır tutarlara hapsetmeyin.
@@ -629,7 +629,7 @@ E-posta veya telefon isteyen bir form, kullanıcıda “bu bilgi spam’e mi dö
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Güvence metni kayıt oranını artırıyor mu?
 - Alan Bazlı Terk Oranı: İlgili alanda bırakma artmamalı.
-- Güven Algısı (anket): Metin güveni artırdığını hissettiriyor mu, yoksa şüphe mi uyandırıyor?
+- Güven Algısı (anket): Metin güveni artırdığını hissettiriyor mu, yoksa şüphe mi uyandırıyor? Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Sayfada Kalma Süresi: Ek metin okuma süresini kabul edilemez ölçüde uzatmamalı.
 - Kayıt Sonrası Şikâyet: Verilen sözle kayıt sonrası gönderim davranışı tutarsızsa bu artmamalı; artıyorsa ayrı, engelleyici bir bulgudur (kural 6).
 
