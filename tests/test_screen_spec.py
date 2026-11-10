@@ -404,11 +404,12 @@ class TestOps(unittest.TestCase):
     def test_label_pos_below_adds_room_for_the_label(self):
         a, b = compiled(SIMPLE, {"op": "insert_after", "target": "mail", "node": {"help": "Satır"},
                                  "label": "Gerekçe satırı", "label_pos": "below"})
-        self.assertIn('<div class="hl" data-note="Gerekçe satırı" data-pos="below">'
-                      '<div class="r-help" style="margin-bottom:20px">Satır</div></div>', b)
+        # The room is a margin on the ring, outside it: the ring hugs the line and the label lies in the room.
+        self.assertIn('<div class="hl" data-note="Gerekçe satırı" data-pos="below" style="margin-bottom:20px">'
+                      '<div class="r-help">Satır</div></div>', b)
         _, b2 = compiled(SIMPLE, {"op": "insert_after", "target": "mail", "node": {"help": "Satır"},
                                   "label": "Gerekçe satırı", "label_pos": "above"})
-        self.assertIn('data-pos="above"><div class="r-help" style="margin-top:20px">Satır</div></div>', b2)
+        self.assertIn('data-pos="above" style="margin-top:20px"><div class="r-help">Satır</div></div>', b2)
 
     def test_a_target_inside_a_band_or_row(self):
         screen = [{"band": {"items": [{"row": [{"field": "Ay", "id": "ay"}, {"field": "Yıl", "id": "yil"}]}]}}]
@@ -417,11 +418,13 @@ class TestOps(unittest.TestCase):
                       '<div class="r-field empty select">Yıl</div></div></div>', b)
         self.assertEqual(gate("change", a, b), [])
 
-    def test_the_ring_wrapper_carries_no_style_of_its_own(self):
+    def test_the_ring_wrapper_carries_only_its_margins(self):
         change = {"op": "insert_after", "target": "mail", "node": {"help": "Satır", "mb": 12, "fg": "#000000"},
                   "label": "Satır", "label_pos": "below"}
-        _, b = compiled(SIMPLE, change)
-        self.assertIn('<div class="hl" data-note="Satır" data-pos="below"><div class="r-help" style="color:#000000;', b)
+        a, b = compiled(SIMPLE, change)
+        self.assertIn('<div class="hl" data-note="Satır" data-pos="below" style="margin-bottom:20px">'
+                      '<div class="r-help" style="color:#000000">Satır</div></div>', b)
+        self.assertEqual(gate("add", a, b), [])
 
 
 # ------------------------------------------------------------ soft rings and sharing
@@ -447,8 +450,9 @@ class TestSoftAndSharing(unittest.TestCase):
                                   "label": "Alan adı"})
         a3, _ = compiled(SCREEN, {"op": "remove", "target": "adiniz", "label": "Alan kaldırıldı"})
         self.assertEqual(a1.encode("utf-8"), a2.encode("utf-8"))
-        self.assertEqual(a1, a3.replace('<div class="hl" data-note="Alan kaldırıldı">', "").replace(
-            "Adınız</div></div>", "Adınız</div>"))
+        # Unwrapped, the ringed field of a3 is a1's field: the ring took over its margin, nothing else changed.
+        self.assertEqual(a1, a3.replace('<div class="hl" data-note="Alan kaldırıldı" style="margin-bottom:10px">', "")
+                         .replace('min-height:52px">Adınız</div></div>', 'min-height:52px;margin-bottom:10px">Adınız</div>'))
 
     def test_compile_is_deterministic_and_pure(self):
         screen, change = copy.deepcopy(SCREEN), copy.deepcopy(CHANGE)
