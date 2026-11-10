@@ -41,7 +41,7 @@ def flat(**over):
         "title": "Kupon alanı katlanınca dönüşüm artar mı?",
         "card": {
             "variant_a": '<div class="r-h">Sepet</div>',
-            "variant_b": '<div class="hl" data-note="Yeni"><div class="r-h">Sepet</div></div>',
+            "variant_b": '<div class="hl" data-note="Yeni"><div class="r-h">Sepetim</div></div>',
         },
     }
     for key, value in over.items():
@@ -54,6 +54,21 @@ def css_rule(selector):
     m = re.search(r"(?m)^\s*" + re.escape(selector) + r"\{([^}]*)\}", TEMPLATE)
     return m.group(1) if m else None
 
+
+
+# A refusal writes its reason to stderr before it exits; the tests that expect one would print it on every
+# run. The test runner keeps its own stream, so only the builder's messages are silenced.
+_STDERR = None
+
+
+def setUpModule():
+    global _STDERR
+    import io
+    _STDERR, sys.stderr = sys.stderr, io.StringIO()
+
+
+def tearDownModule():
+    sys.stderr = _STDERR
 
 class TestOneJson(unittest.TestCase):
     """Senaryo kaydı kartı doğrudan üretir."""
@@ -187,7 +202,11 @@ class TestHighlight(unittest.TestCase):
 
 class TestDifference(unittest.TestCase):
     A_PLAIN = '<div class="r-h">Sepet</div>'
-    RINGED = '<div class="hl" data-note="X"><div class="r-h">Sepet</div></div>'
+    # The ringed element differs from A's: two arms that render the same are refused (audit M6).
+    RINGED = '<div class="hl" data-note="X"><div class="r-h">Sepetim</div></div>'
+    A_RINGED = '<div class="hl" data-note="Eski"><div class="r-h">Sepet</div></div>'
+    # A move: the same ringed element at another place, next to an unchanged neighbour.
+    NEXT = '<div class="r-sub">Alt satır</div>'
 
     def build_with(self, difference, a, b, **over):
         return build(TEMPLATE, flat(difference=difference, variant_a=a, variant_b=b, **over))
@@ -208,13 +227,15 @@ class TestDifference(unittest.TestCase):
             self.build_with("remove", self.A_PLAIN, self.A_PLAIN)
 
     def test_move_ring_in_both(self):
-        self.build_with("move", self.RINGED, self.RINGED)
+        self.build_with("move", self.RINGED + self.NEXT, self.NEXT + self.RINGED)
         with self.assertRaises(SystemExit):
-            self.build_with("move", self.A_PLAIN, self.RINGED)
+            self.build_with("move", self.A_PLAIN + self.NEXT, self.NEXT + self.RINGED)
+        with self.assertRaises(SystemExit):  # rings in place: A and B render the same
+            self.build_with("move", self.RINGED, self.RINGED)
 
     def test_change_ring_in_b_a_optional(self):
         self.build_with("change", self.A_PLAIN, self.RINGED)
-        self.build_with("change", self.RINGED, self.RINGED)
+        self.build_with("change", self.A_RINGED, self.RINGED)
         with self.assertRaises(SystemExit):
             self.build_with("change", self.RINGED, self.A_PLAIN)
 
@@ -222,14 +243,14 @@ class TestDifference(unittest.TestCase):
         self.build_with("ekle", self.A_PLAIN, self.RINGED)
         self.build_with("Değiştir", self.A_PLAIN, self.RINGED)
         self.build_with("kaldır", self.RINGED, self.A_PLAIN)
-        self.build_with("taşı", self.RINGED, self.RINGED)
+        self.build_with("taşı", self.RINGED + self.NEXT, self.NEXT + self.RINGED)
 
     def test_unknown_difference_exits(self):
         with self.assertRaises(SystemExit):
             self.build_with("swap", self.A_PLAIN, self.RINGED)
 
     def test_no_difference_means_no_enforcement(self):
-        build(TEMPLATE, flat(variant_a=self.A_PLAIN, variant_b=self.A_PLAIN))
+        build(TEMPLATE, flat(variant_a=self.A_PLAIN, variant_b=self.RINGED))
 
     def test_problems_are_reported_in_turkish_too(self):
         probs = ring_problems("add", self.RINGED, self.RINGED, lang="tr")

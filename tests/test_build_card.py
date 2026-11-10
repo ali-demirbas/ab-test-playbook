@@ -58,11 +58,27 @@ def make_scenario(title="Kupon alanı katlanınca dönüşüm artar mı?", devic
     """A minimal scenario record as build() reads it: the title, the device and the card."""
     base = {
         "variant_a": '<div class="r-h">Sipariş özeti</div>',
-        "variant_b": '<div class="r-h">Sipariş özeti</div>',
+        # B differs inside a ring: two identical arms are refused (they render the same).
+        "variant_b": '<div class="r-h hl" data-note="Yeni başlık">Siparişiniz</div>',
     }
     base.update(card)
     return {"title": title, "device": device, "card": base}
 
+
+
+# A refusal writes its reason to stderr before it exits; the tests that expect one would print it on every
+# run. The test runner keeps its own stream, so only the builder's messages are silenced.
+_STDERR = None
+
+
+def setUpModule():
+    global _STDERR
+    import io
+    _STDERR, sys.stderr = sys.stderr, io.StringIO()
+
+
+def tearDownModule():
+    sys.stderr = _STDERR
 
 class TestEscaping(unittest.TestCase):
     """Metin alanları markup'a doğrudan gömülüyor: kaçırılmazsa kart bozulur."""
@@ -257,8 +273,9 @@ class TestSelfVerify(unittest.TestCase):
         # Ordinary copy like "based on = ..." or a class named "button-on" is
         # not an event handler.
         a = '<div class="r-h button-on">Fiyat karşılaştırması ekranda mı? Based on = fiyat</div>'
-        built = build(FAKE_TEMPLATE, make_scenario(variant_a=a, variant_b=a))
-        self_verify(built, FAKE_TEMPLATE, "phone", variants=(a, a))  # should not raise
+        b = '<div class="hl" data-note="Yeni">%s</div>' % a
+        built = build(FAKE_TEMPLATE, make_scenario(variant_a=a, variant_b=b.replace("Based on", "Based upon")))
+        self_verify(built, FAKE_TEMPLATE, "phone", variants=(a, b))  # should not raise
 
     def test_fixed_lines_skips_placeholder_and_comment_lines(self):
         lines = fixed_lines(FAKE_TEMPLATE)
@@ -276,7 +293,7 @@ class TestRealTemplate(unittest.TestCase):
 
     def setUp(self):
         if not os.path.isfile(REAL_TEMPLATE):
-            self.skipTest("templates/scenario-card.html bulunamadı")
+            self.skipTest("templates/scenario-card.html not found")
         with open(REAL_TEMPLATE, encoding="utf-8") as fh:
             self.template = fh.read()
 

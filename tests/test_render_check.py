@@ -78,7 +78,7 @@ def card():
     }
 
 
-@unittest.skipUnless(NODE, "node bulunamadı")
+@unittest.skipUnless(NODE, "node not found")
 class TestCli(unittest.TestCase):
     def test_syntax(self):
         self.assertEqual(subprocess.run([NODE, "--check", SCRIPT], capture_output=True).returncode, 0)
@@ -102,7 +102,7 @@ class TestCli(unittest.TestCase):
         self.assertEqual(call("parseArgs", ["a.html"])["files"], ["a.html"])
 
 
-@unittest.skipUnless(NODE, "node bulunamadı")
+@unittest.skipUnless(NODE, "node not found")
 class TestOptions(unittest.TestCase):
     def test_flags(self):
         self.assertEqual(call("parseArgs", ["--shot", "--strict", "a.html", "b.html"]),
@@ -121,7 +121,7 @@ class TestOptions(unittest.TestCase):
         self.assertFalse(call("failed", {"errors": [], "warnings": []}, True))
 
 
-@unittest.skipUnless(NODE, "node bulunamadı")
+@unittest.skipUnless(NODE, "node not found")
 class TestColour(unittest.TestCase):
     def test_contrast_ratio(self):
         self.assertAlmostEqual(call("contrastRatio", [0, 0, 0, 1], WHITE), 21.0, places=2)
@@ -137,7 +137,7 @@ class TestColour(unittest.TestCase):
         self.assertEqual(call("backgrounds", []), [WHITE])
 
 
-@unittest.skipUnless(NODE, "node bulunamadı")
+@unittest.skipUnless(NODE, "node not found")
 class TestJudge(unittest.TestCase):
     """judge(): each rule fires on its own measurement and its message names the element and the number."""
 
@@ -407,7 +407,7 @@ def sheet(v, w=None, scroll_h=120):
             "caption": {"text": "Kaydırınca görünen kısım"}}
 
 
-@unittest.skipUnless(NODE, "node bulunamadı")
+@unittest.skipUnless(NODE, "node not found")
 class TestContract7Judge(unittest.TestCase):
     """The Contract 7 rules on synthetic measurements: each fires on its number and stays quiet just inside it."""
 
@@ -604,7 +604,7 @@ def _playwright_ready():
     return p.returncode == 0
 
 
-@unittest.skipUnless(_playwright_ready(), "Playwright yok (NODE_PATH)")
+@unittest.skipUnless(_playwright_ready(), "Playwright not found (NODE_PATH)")
 class TestFixturesInChromium(unittest.TestCase):
     """Hand-written cards measured in Chromium: every new check has a failing and a passing card."""
 
@@ -686,7 +686,7 @@ def _png_size(path):
     return int.from_bytes(head[16:20], "big"), int.from_bytes(head[20:24], "big")
 
 
-@unittest.skipUnless(NODE, "node bulunamadı")
+@unittest.skipUnless(NODE, "node not found")
 class TestVisualStatus(unittest.TestCase):
     """Three outcomes stay apart: VERIFIED (0), VISUAL_CHECK_FAILED (1), VISUAL_CHECK_UNAVAILABLE (3)."""
 
@@ -701,19 +701,23 @@ class TestVisualStatus(unittest.TestCase):
                                cwd=os.path.dirname(SCRIPT), env=bare)
         if probe.returncode == 0:
             self.skipTest("playwright resolves without NODE_PATH here")
-        p = self.run_rc([os.path.join(FIXTURES, "clean.html")], drop=("NODE_PATH",))
+        with tempfile.TemporaryDirectory() as home:  # no ~/.abtest-visual either
+            p = self.run_rc([os.path.join(FIXTURES, "clean.html")], {"HOME": home}, drop=("NODE_PATH",))
         self.assertEqual(p.returncode, 3, p.stderr)
         self.assertIn("VISUAL_CHECK_UNAVAILABLE", p.stderr)
         self.assertIn("nothing was measured", p.stderr)
+        # The exit-3 message says the exact one-time install.
+        self.assertIn("npm i --prefix ~/.abtest-visual playwright && npx --prefix ~/.abtest-visual playwright "
+                      "install chromium", p.stderr)
 
-    @unittest.skipUnless(_playwright_ready(), "Playwright yok (NODE_PATH)")
+    @unittest.skipUnless(_playwright_ready(), "Playwright not found (NODE_PATH)")
     def test_a_browser_that_does_not_start_is_unavailable(self):
         p = self.run_rc([os.path.join(FIXTURES, "clean.html")], {"CHROMIUM_PATH": "/nonexistent/chrome-headless-shell"})
         self.assertEqual(p.returncode, 3, p.stderr)
         self.assertIn("Chromium did not start", p.stderr)
         self.assertIn("VISUAL_CHECK_UNAVAILABLE", p.stderr)
 
-    @unittest.skipUnless(_playwright_ready(), "Playwright yok (NODE_PATH)")
+    @unittest.skipUnless(_playwright_ready(), "Playwright not found (NODE_PATH)")
     def test_failed_and_verified_render_with_a_half_size_shot(self):
         failed = self.run_rc(["--strict", os.path.join(FIXTURES, "sticky-inflow.html")])
         if failed.returncode == 3:
@@ -730,7 +734,7 @@ class TestVisualStatus(unittest.TestCase):
             self.assertEqual(_png_size(os.path.join(tmp, "card-clean-800.png")), (800, 450))
 
 
-@unittest.skipUnless(NODE, "node bulunamadı")
+@unittest.skipUnless(NODE, "node not found")
 class TestInheritedContrast(unittest.TestCase):
     """A contrast defect copied from the user's screen is reported, not passed, and only where it qualifies."""
 

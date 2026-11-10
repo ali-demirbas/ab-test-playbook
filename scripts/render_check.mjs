@@ -6,12 +6,14 @@
 // edge), the size and contrast of every piece of mockup text, and the balance
 // of the frames on the stage. Optionally writes a screenshot.
 //
-// This is a manual/orchestrator tool, not part of the unit suite: the suite
-// stays stdlib-only Python, and Playwright is a Node dependency this repo does
-// not ship. Point it at an existing install:
+// Playwright is a Node dependency this repo does not ship (the unit suite stays
+// stdlib-only Python and runs the browser tests only when Playwright is found).
+// It is looked up in NODE_PATH, then in ~/.abtest-visual/node_modules, where a
+// one-time install puts it:
 //
-//   NODE_PATH=/path/to/node_modules node scripts/render_check.mjs card.html [more.html ...]
-//   CHROMIUM_PATH=/path/to/chrome-headless-shell node scripts/render_check.mjs --shot card.html
+//   npm i --prefix ~/.abtest-visual playwright && npx --prefix ~/.abtest-visual playwright install chromium
+//   node scripts/render_check.mjs card.html [more.html ...]
+//   NODE_PATH=/path/to/node_modules CHROMIUM_PATH=/path/to/chrome-headless-shell node scripts/render_check.mjs --shot card.html
 //
 // --shot    write card-<name>.png next to each card (abtest-card-x.html → card-x.png)
 // --half    also write card-<name>-800.png, the same render at half size (800 × 450) for the
@@ -23,8 +25,9 @@
 //   0  VERIFIED                   rendered in Chromium, no error (no warning with --strict)
 //   1  VISUAL_CHECK_FAILED        rendered, and a check failed: fix the card
 //   2  usage error                unknown flag, no card, missing file
-//   3  VISUAL_CHECK_UNAVAILABLE   Playwright or Chromium missing / didn't start / no screenshot:
-//                                 nothing was measured; the card is unverified, not failed
+//   3  VISUAL_CHECK_UNAVAILABLE   Playwright or Chromium missing / didn't start, or a card couldn't be
+//                                 rendered or shot: that card is unverified, not failed. A failed card
+//                                 makes the run 1 even when another card was unavailable.
 //
 // The page part (collect) only measures; judge() turns the measurements into
 // errors and warnings and is a pure function, so its rules and messages are
@@ -81,13 +84,37 @@
 //   continuation     The sheet under the phone (.below > .below-screen, from
 //                    .r-fold): no clipping, a caption, the same width as the
 //                    phone's screen, inside the stage.
+//   hidden text      Every text the screen draws: drawn at all, visibility:visible, opacity of
+//                    at least 0.1 with its ancestors, no filter, clip-path or mask, at least
+//                    half of it inside its clipping ancestors, not left of the screen, and the
+//                    topmost element at most of three points along its first line
+//                    (elementFromPoint, labels hidden; text under an .r-overlay excepted).
+//   ring content     Every element and text inside a ring lies inside the ring's box (1px), and
+//                    the ring holds something visible: a text that passed the check above or a
+//                    painted box.
 //
-// Exit: 0 = no error (warnings allowed unless --strict), 1 = an error (with
-// --strict also a warning), 2 = usage.
+// The exit status is the list above.
 import { createRequire } from "node:module";
 import path from "node:path";
 import fs from "node:fs";
+import os from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
+
+// Where render_check looks for Playwright: NODE_PATH (and this file's own node_modules), then one fixed
+// per-user folder, so a one-time install works without exporting anything.
+export const VISUAL_HOME = path.join(os.homedir(), ".abtest-visual");
+export const INSTALL_HINT = "npm i --prefix ~/.abtest-visual playwright && npx --prefix ~/.abtest-visual playwright install chromium";
+
+export function loadPlaywright() {
+  for (const from of [fileURLToPath(import.meta.url), path.join(VISUAL_HOME, "node_modules", ".render_check.cjs")]) {
+    try {
+      return createRequire(from)("playwright");
+    } catch {
+      // not there: try the next place
+    }
+  }
+  return null;
+}
 
 export const USAGE = "usage: render_check.mjs [--shot] [--half] [--json] [--strict] card.html [more.html ...]";
 export const FLAGS = ["--shot", "--half", "--json", "--strict"];
@@ -210,6 +237,15 @@ function cssValue(s) {
 }
 const kebab = (prop) => prop.replace(/[A-Z]/g, (ch) => "-" + ch.toLowerCase());
 
+// What to do about a screen whose content doesn't fit: a smaller phone scale only when it isn't already the
+// smallest; else split the screen (a phone) or draw less.
+export function fitAdvice(m, f) {
+  const phone = f.kind === "phone" || f.kind === "phone-web";
+  if (phone && m.phoneScale !== 1) return "draw only the part of the screen the test is about, or set card.phone_scale: 1";
+  if (phone) return "card.phone_scale is already 1: draw only the part of the screen the test is about, or put what follows the first view after a .r-fold (drawn under the phone)";
+  return "draw only the part of the page the test is about";
+}
+
 // Clipping, blank screen, rings and labels, text and the sticky bar of one drawn screen: the variant's
 // frame, one stage phone or the continuation sheet under the phone.
 function checkFrame(who, v, column, m, errors, warnings, opts) {
@@ -222,7 +258,7 @@ function checkFrame(who, v, column, m, errors, warnings, opts) {
   // Clipping: the frame is at most as tall as the stage, so content that does
   // not fit is cut off. The author shows the relevant part of the screen.
   if (s.scrollH > s.clientH + 1) {
-    errors.push(`${who}: screen content is clipped: ${px(s.scrollH)} of content in a ${px(s.clientH)} screen (${px(s.scrollH - s.clientH)} cut off at the bottom; draw only the part of the screen the test is about, or on a phone set card.phone_scale: 1; the frame is capped at the ${px(m.stage.h)} stage)`);
+    errors.push(`${who}: screen content is clipped: ${px(s.scrollH)} of content in a ${px(s.clientH)} screen (${px(s.scrollH - s.clientH)} cut off at the bottom; ${fitAdvice(m, f)}; the frame is capped at the ${px(m.stage.h)} stage)`);
   }
   if (v.topmost && v.topmost.px > 1) {
     errors.push(`${who}: screen content is clipped at the top: ${v.topmost.what} starts ${px(v.topmost.px)} above the screen's top edge and is cut off (draw it inside the screen; a modal goes in an .r-overlay that is a direct child of the screen, the ring on its .r-modal)`);
@@ -243,9 +279,15 @@ function checkFrame(who, v, column, m, errors, warnings, opts) {
     }
   }
 
+  // What the screen draws but a reader can't see (collect: opacity, visibility, filters, clipping ancestors,
+  // left of the screen, covered by another element).
+  for (const h of v.hidden || []) errors.push(`${who}: text ${h.what} is not visible: ${h.why}; draw it as it is seen, nothing over it`);
+
   // Rings and labels.
   v.rings.forEach((ring, k) => {
     const rw = `${who} ring “${ring.note}”`;
+    if (ring.content === false) errors.push(`${rw}: the ring holds nothing visible (no text a reader sees, no drawn element): a ring around nothing shows no variable`);
+    if (ring.spill) errors.push(`${rw}: ${ring.spill.what} sticks ${px(ring.spill.px)} out of the ring's box: what the ring marks must lie inside it (no negative margin or offset under a ring)`);
     const grown = ring.outline;
     const cut = outside(grown, s);
     if (cut > 0.5) errors.push(`${rw}: the ring is cut off by the screen edge (${px(cut)} outside the screen)`);
@@ -497,7 +539,7 @@ export function judge(m, opts = {}) {
       }
       if (!v.below.caption || !v.below.caption.text) errors.push(`${bw}: no caption above the sheet`);
       if (m.stage && m.stage.b !== undefined && v.below.frame.b > m.stage.b + 1) {
-        errors.push(`${bw}: sheet ends ${px(v.below.frame.b - m.stage.b)} below the stage and is cut off; draw less after .r-fold or set card.phone_scale: 1`);
+        errors.push(`${bw}: sheet ends ${px(v.below.frame.b - m.stage.b)} below the stage and is cut off; draw less after .r-fold${m.phoneScale === 1 ? "" : " or set card.phone_scale: 1"}`);
       }
       checkFrame(bw, v.below, v.column, m, errors, warnings, { stage: true, inherited });
     }
@@ -745,6 +787,98 @@ function collect() {
       v.stickies.push({ rect: box(st), firstView: !sheet && screen.contains(st) && !!st.closest(".phone") });
     });
 
+    // Every text the screen draws must be seen: not faded out, hidden, filtered or clipped by an ancestor,
+    // inside the screen, and the topmost thing where it is drawn (elementFromPoint, labels hidden). The markup
+    // is what the A/B diff compares; this is what a reader gets.
+    const sb = box(screen);
+    const opacityOf = (el) => {
+      let o = 1;
+      for (let n = el; n && n !== frame.parentElement; n = n.parentElement) o *= num(getComputedStyle(n).opacity);
+      return o;
+    };
+    const effectOf = (el) => {
+      for (let n = el; n && n !== frame.parentElement; n = n.parentElement) {
+        const cs = getComputedStyle(n);
+        if (cs.filter && cs.filter !== "none") return `filter ${cs.filter}`;
+        if (cs.clipPath && cs.clipPath !== "none") return `clip-path ${cs.clipPath}`;
+        const mask = cs.maskImage || cs.webkitMaskImage;
+        if (mask && mask !== "none") return "a mask";
+      }
+      return null;
+    };
+    // The share of `rects` left once every clipping ancestor (overflow other than visible) below the screen cuts them.
+    const unclipped = (el, rects) => {
+      const total = rects.reduce((s, r) => s + (r.r - r.x) * (r.b - r.y), 0);
+      if (!total) return 1;
+      let parts = rects.map((r) => ({ ...r }));
+      for (let n = el; n && n !== screen; n = n.parentElement) {
+        const cs = getComputedStyle(n);
+        if (cs.overflowX === "visible" && cs.overflowY === "visible" && !/paint|strict|content/.test(cs.contain || "")) continue;
+        const c = box(n);
+        parts = parts.map((r) => ({ x: Math.max(r.x, c.x), y: Math.max(r.y, c.y), r: Math.min(r.r, c.r), b: Math.min(r.b, c.b) }));
+      }
+      return parts.reduce((s, r) => s + Math.max(0, r.r - r.x) * Math.max(0, r.b - r.y), 0) / total;
+    };
+    const textRects = (tn) => {
+      const range = document.createRange();
+      range.selectNodeContents(tn);
+      return [...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0).map((r) => ({ x: r.left, y: r.top, r: r.right, b: r.bottom }));
+    };
+    v.hidden = [];
+    v.textBoxes = [];
+    document.head.appendChild(noLabels);
+    const hiddenOf = (el, tn, rects) => {
+      const cs = getComputedStyle(el);
+      if (!rects.length) return "it is not drawn (no line box: display:none or a zero size)";
+      if (cs.visibility !== "visible") return `visibility:${cs.visibility}`;
+      const op = opacityOf(el);
+      if (op < 0.1) return `opacity ${Math.round(op * 100) / 100} (with its ancestors)`;
+      const fx = effectOf(el);
+      if (fx) return fx;
+      const left = unclipped(el, rects);
+      if (left < 0.5) return `${Math.round(100 * (1 - left))}% of it is clipped by an ancestor (overflow)`;
+      // Left only: the right, top and bottom edges are measured as overflow and clipping above.
+      const out = Math.max(...rects.map((r) => sb.x - r.x));
+      if (out > 2) return `it lies ${Math.round(out)}px outside the screen's left edge`;
+      return null;
+    };
+    screen.querySelectorAll("*").forEach((el) => {
+      if (el.closest(".r-fold, .r-stage-break")) return;
+      for (const tn of el.childNodes) {
+        if (tn.nodeType !== 3 || !/\S/.test(tn.textContent)) continue;
+        const rects = textRects(tn);
+        const what = `“${short(tn.textContent)}”`;
+        const why = hiddenOf(el, tn, rects);
+        if (why) {
+          v.hidden.push({ what, why });
+          continue;
+        }
+        v.textBoxes.push({ el, rects });
+        const dimmed = overlayEls.some((ov) => !ov.contains(el) && ov.contains(screen) === false && (() => {
+          const o = ov.getBoundingClientRect();
+          return rects.every((r) => r.x >= o.left - 0.5 && r.r <= o.right + 0.5 && r.y >= o.top - 0.5 && r.b <= o.bottom + 0.5);
+        })());
+        if (dimmed) continue;
+        // Covered: most sample points along the first line hit another element.
+        const r0 = rects[0];
+        const cy = (r0.y + r0.b) / 2;
+        const points = [0.2, 0.5, 0.8].map((f) => [r0.x + f * (r0.r - r0.x), cy])
+          .filter(([x, y]) => x >= 0 && y >= 0 && x < innerWidth && y < innerHeight);
+        let covered = 0;
+        let by = null;
+        for (const [x, y] of points) {
+          const hit = document.elementFromPoint(x, y);
+          if (!hit || hit === el || el.contains(hit) || hit.contains(el)) continue;
+          covered += 1;
+          by = hit;
+        }
+        if (points.length && covered * 2 > points.length) {
+          v.hidden.push({ what, why: `it is covered by ${describe(by, (by.innerText || "").trim().split("\n")[0])}` });
+        }
+      }
+    });
+    noLabels.remove();
+
     ringEls.forEach((hl) => {
       const hb = box(hl);
       const hcs = getComputedStyle(hl);
@@ -757,6 +891,25 @@ function collect() {
         inSticky: Boolean(hl.closest(".r-sticky") || hl.querySelector(".r-sticky")),
         outline: { x: hb.x - grow, y: hb.y - grow, r: hb.r + grow, b: hb.b + grow },
         nested: ringEls.map((o, j) => (o !== hl && (o.contains(hl) || hl.contains(o)) ? j : -1)).filter((j) => j >= 0),
+        // What the ring holds stays inside its box, and it holds something a reader sees.
+        spill: (() => {
+          let worst = { px: 0, what: "" };
+          const take = (b, what) => {
+            const by = Math.max(hb.x - b.x, b.r - hb.r, hb.y - b.y, b.b - hb.b, 0);
+            if (by > worst.px) worst = { px: by, what };
+          };
+          hl.querySelectorAll("*").forEach((d) => {
+            const b = d.getBoundingClientRect();
+            if (b.width && b.height && getComputedStyle(d).visibility === "visible") take(box(d), describe(d, (d.innerText || "").trim().split("\n")[0]));
+          });
+          for (const t of v.textBoxes) if (hl.contains(t.el)) for (const r of t.rects) take(r, describe(t.el, t.el.textContent.trim()));
+          return worst.px > 1 ? worst : null;
+        })(),
+        content: v.textBoxes.some((t) => hl === t.el || hl.contains(t.el)) || [hl, ...hl.querySelectorAll("*")].some((d) => {
+          const b = d.getBoundingClientRect();
+          const cs = getComputedStyle(d);
+          return b.width > 1 && b.height > 1 && cs.visibility === "visible" && opacityOf(d) >= 0.1 && !effectOf(d) && paints(cs);
+        }),
         overOverlay: Boolean(hl.parentElement && hl.parentElement.closest(".r-overlay")),
         label: null,
       };
@@ -779,6 +932,7 @@ function collect() {
       }
       v.rings.push(ring);
     });
+    delete v.textBoxes; // DOM references: not part of the measurement
     return v;
   };
 
@@ -843,12 +997,9 @@ async function main(argv) {
     console.error(`render_check: ${why}\nrender_check: ${STATUS[3]}: nothing was measured; the card stays unverified (README → Visual check)`);
     return 3;
   };
-  const require = createRequire(import.meta.url);
-  let playwright;
-  try {
-    playwright = require("playwright");
-  } catch {
-    return unavailable("playwright not found; install it and set NODE_PATH to its node_modules");
+  const playwright = loadPlaywright();
+  if (!playwright) {
+    return unavailable(`playwright not found (looked in NODE_PATH and ${path.join("~", ".abtest-visual", "node_modules")}); install it once: ${INSTALL_HINT}`);
   }
   const launch = {};
   if (process.env.CHROMIUM_PATH) launch.executablePath = process.env.CHROMIUM_PATH;
@@ -856,14 +1007,23 @@ async function main(argv) {
   try {
     browser = await playwright.chromium.launch(launch);
   } catch (e) {
-    return unavailable(`Chromium did not start (${String(e.message || e).split("\n")[0]}); run \`npx playwright install chromium\` or set CHROMIUM_PATH`);
+    return unavailable(`Chromium did not start (${String(e.message || e).split("\n")[0]}); run \`npx --prefix ~/.abtest-visual playwright install chromium\` (or \`npx playwright install chromium\` next to your Playwright) or set CHROMIUM_PATH`);
   }
   let anyFailed = false;
+  let anyUnavailable = false;
   let inheritedCount = 0;
+  let page;
+  let halfPage = null;
   try {
-    const page = await browser.newPage({ viewport: { width: LIMITS.cardW, height: LIMITS.cardH } });
-    const halfPage = opts.half ? await browser.newPage({ viewport: { width: LIMITS.cardW, height: LIMITS.cardH }, deviceScaleFactor: 0.5 }) : null;
-    for (const file of opts.files) {
+    page = await browser.newPage({ viewport: { width: LIMITS.cardW, height: LIMITS.cardH } });
+    if (opts.half) halfPage = await browser.newPage({ viewport: { width: LIMITS.cardW, height: LIMITS.cardH }, deviceScaleFactor: 0.5 });
+  } catch (e) {
+    await browser.close().catch(() => {});
+    return unavailable(`no page could be opened (${String(e.message || e).split("\n")[0]})`);
+  }
+  for (const file of opts.files) {
+    // One card at a time: a card that can't be rendered is unverified, and the others keep their result.
+    try {
       const abs = path.resolve(file);
       await page.goto(pathToFileURL(abs).href);
       await page.evaluate(() => document.fonts && document.fonts.ready);
@@ -891,16 +1051,18 @@ async function main(argv) {
         for (const w of warnings) console.log(`  warn  ${w}`);
         for (const i of inherited) console.log(`  INHERITED ${i}`);
       }
+    } catch (e) {
+      anyUnavailable = true;
+      const why = `rendering stopped (${String(e.message || e).split("\n")[0]})`;
+      if (opts.json) console.log(JSON.stringify({ file, unavailable: why }));
+      else console.log(`${path.basename(file)}  UNAVAILABLE ${why}: nothing was measured for this card`);
     }
-  } catch (e) {
-    // A page that can't be rendered or shot is a missing visual check, not a failed card.
-    await browser.close().catch(() => {});
-    return unavailable(`rendering stopped (${String(e.message || e).split("\n")[0]})`);
   }
-  await browser.close();
-  const code = anyFailed ? 1 : 0;
+  await browser.close().catch(() => {});
+  // A failed card fails the run whatever else happened; otherwise a card that couldn't be measured leaves it unverified.
+  const code = anyFailed ? 1 : anyUnavailable ? 3 : 0;
   const note = inheritedCount ? ` (${inheritedCount} inherited contrast defect(s) from the user's screen documented, not passed)` : "";
-  console.error(`render_check: ${STATUS[code]}${note}`);
+  console.error(`render_check: ${STATUS[code]}${note}${code === 3 ? ": at least one card was not measured; it stays unverified" : ""}`);
   return code;
 }
 

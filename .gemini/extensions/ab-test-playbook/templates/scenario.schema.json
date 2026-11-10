@@ -407,7 +407,7 @@
         "string",
         "null"
       ],
-      "description": "Rule 11: market is separate from language. null means unknown — which is honest, and blocks carrying one market's result to another."
+      "description": "Rule 11: market is separate from language. null means unknown, which is honest and blocks carrying one market's result to another."
     },
     "objection": {
       "type": "string",
