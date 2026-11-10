@@ -2,6 +2,45 @@
 
 All notable changes to this project are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 3.1.0 - 2026-11-10
+
+### Safer visual check
+- render_check exits 0 `VERIFIED`, 1 `VISUAL_CHECK_FAILED`, 2 on a usage error or 3 `VISUAL_CHECK_UNAVAILABLE`; without a render the mockup reviewer returns `UNVERIFIED`, never PASS, and the draft is shown only as an unverified preview. `--half` writes the half-size PNG on any platform.
+- Every text must be visible: hidden, faded, filtered, clipped, off-screen or covered text is an error, and a ring must hold something visible with its content inside the ring box.
+- A failed card keeps exit 1 when several cards are checked. Playwright is also found in `~/.abtest-visual/node_modules`, and exit 3 prints the exact install command.
+- An icon glyph is held to 3:1. A text colour below the contrast floor that is copied from the user's own screen, identical in both arms and outside the rings, is listed in `card.inherited_contrast` and reported as the page's defect, never as a pass.
+
+### Stricter gates
+- The builder refuses inline CSS that hides, clips, moves or reorders content, a ring around nothing visible, two rings in one arm, a soft ring far from the ring, and an A/B pair that renders the same.
+- The draft carries no fingerprint. After a PASS the mockup reviewer runs `build_card.py --stamp <draft>`, which checks the draft and manifest on disk and prints the stamp; the stamp covers the final card's bytes, `card.mockup_basis` and the manifest. `--check <card>` confirms a delivered file is the reviewed card.
+- `--out` must be an `.html` file, never the template, the record, a source directory of the repository or a file the builder did not write.
+- Records are read by one shared reader that refuses a key written twice and an over-long integer; messages follow the record's language.
+- The rule 5 gate also catches significance and confidence levels, pre-registration, stopping rules and ship conditions in every free-text field, in Turkish and English.
+- A lagging primary or guardrail needs its window in the name, in records and in the archive. Input lines that try to set a stamp or skip a review count as injections.
+
+### Screen spec
+- A card is drawn from `card.screen` (the page once, as a node list) and `card.change` (one operation on the tested element with its ring label); both arms are compiled from them, so A and B cannot differ anywhere else. Raw `variant_a`/`variant_b` markup stays for what the list can't express; both forms at once are refused.
+- `card.change.linked` edits soft-ringed nodes in B for a consequence the variable forces, with every operation.
+- A no-op change, an edit under 8px, an emptied container, a fold moved into a container and a container-wide edit are refused.
+- The ring label's room is a margin on the ring, outside it: the ring hugs the element and the label no longer covers the line above.
+- `card.web_scale` 1.2 / 1.4 enlarges a short desktop page.
+
+### Archive and glossary
+- Every glossary row has an English canonical name; 12 new canonical metrics, and all 221 archive primaries now use canonical names.
+- Lagging KPIs (returns, cancellations, repeat purchase, uninstall) carry their window in the name.
+- Guardrails fixed in the coupon, one-time code login, countdown and pre-ticked default scenarios; a real end date and a security sign-off become pre-start gates.
+- Archive reads stop at the next title, and the validator refuses a block not closed by `---`.
+
+### Docs and install
+- README: one-time Playwright install in `~/.abtest-visual`, the visual check needed for a final card, an Update section and the render_check exit codes.
+- Setup notes after every designed test, with the pre-start line as their last line. A fixed Variant A is drawn verbatim; an obvious problem area on a screenshot gets its cards before the problem question.
+- Shared-page fidelity: ab-test-design reads the screen once into one inventory and compares Variant A with the screenshot before the critic.
+- No em dashes in docs, scripts or messages.
+
+### CI
+- Actions pinned to commit SHAs; a new render job runs the Chromium tests and fails on any skip.
+- Version 3.1.0 in the plugin, marketplace and skill metadata.
+
 ## 3.0.0 — 2026-10-21
 
 The playbook narrows to what it does well: proposing, designing, auditing and visualizing A/B tests. It no longer analyzes results or computes sample size, duration, significance or a winner; a request for any of these gets one out-of-scope line, and the user's testing tool does that work. Every proposal also becomes a compact scenario record instead of a regenerated three-box write-up, so a turn reads, repeats and writes less. A card is delivered only through quality gates: code checks what code can check, two reviewers check what code can't, and a failed check is an error with its reason, never a warning that lets delivery continue. And the card shows only the comparison: the test's question, the two mockups large and side by side, the change ringed and named.
@@ -66,11 +105,7 @@ The playbook narrows to what it does well: proposing, designing, auditing and vi
 - **Invented results and impact are refused wherever they are written:** every free-text field of the record is read for a number tied to an outcome or a chance ("dönüşüm %12 artar", "beklenen artış yüzde 12", "benzer testlerde %12 arttı", "conversion rises 12%", "win probability is 70%", "doubles signups"), in Turkish and English. Page discounts, thresholds, the user's own observed rates, a hypothesis without a number and research quoted with its named source stay allowed. Borderline wording becomes a strict-mode warning for the scenario-critic, whose new claims section decides what code can't.
 - **KPI names mean one thing:** a name that encodes a conditional population (per quote, per order, "→") is refused over an assigned-visitor denominator and the reverse, and a glossary name must keep its glossary denominator family. The glossary separates "Sözleşme Oranı (30 gün)" per assigned visitor from the per-quote diagnostic, normalized new subscription value from cash actually collected, and adds the period-refund guardrail ("Dönem Kaynaklı İade veya Şikâyet Talebi Oranı"); 105 canonical names. A post-assignment conditioned metric is never the primary.
 - **A move is drawn as a move:** `card.difference` can no longer differ from the record's difference. Each ring is labelled with the position true for its own arm. A pinned element is drawn at the viewport edge, not in the page flow: `.r-fold` splits a phone screen into the first view and a "Kaydırınca görünen kısım" continuation sheet, `.r-sticky` pins the identical element to the bottom of the first view, and `card.mobile_toolbar` draws the browser toolbar and safe area; an in-flow bar labelled as pinned is refused. A move to a later screen is drawn as separate stage phones (`.r-stage-break`, `card.stage_captions`).
-- **Clearer cards:** a soft dashed ring (`.hl-soft`) marks a consequence of the variable (prices that follow a default billing period) so the main ring stays on the variable; identical neutral Variant A/B pills; a lighter conditional ribbon; `card.phone_scale` 1.4 for short phone screens and `card.web_scale` 1.2 / 1.4 for short desktop pages; representative URLs use `.example`. render_check adds geometric errors for pill parity, a ring wider than the change, label clearance, sticky geometry, short-screen fill and stage or continuation clipping; mockup-reviewer judges the meaning (ten visual checks, full and half size).
-- **Visual check you can trust:** render_check exits 0 `VERIFIED`, 1 `VISUAL_CHECK_FAILED` or 3 `VISUAL_CHECK_UNAVAILABLE` (Playwright or Chromium missing); without a render the reviewer returns `UNVERIFIED`, never PASS, and the user gets the draft as an unverified preview. `--half` writes the half-size PNG on any platform. README gains a Visual check setup section.
-- **Shared-page fidelity:** ab-test-design reads the screen once into one inventory and compares Variant A with the screenshot before the critic; logos, decorative icons and a few pixels are represented reasonably, not chased. An icon glyph (`role="img"`) is held to 3:1; a below-floor text colour copied from the user's own screen, identical in both arms and outside the rings, is listed in `card.inherited_contrast` and reported as the page's defect, never as a pass. A new or worse contrast problem in B still fails.
-- **Archive reads stay inside one block:** the skills' block read also stops at the next title, and the validator refuses a block not closed by `---`.
-- **Screen spec:** a card is now drawn from `card.screen` (the page once, as a node list with page-colour overrides) and `card.change` (one op naming the tested element's id and its ring label); the builder and the validator compile both arms from them, so A and B cannot differ anywhere else and records on one screen share the list verbatim. Raw `variant_a`/`variant_b` markup stays for what the list can't express, and both forms at once are refused.
+- **Clearer cards:** a soft dashed ring (`.hl-soft`) marks a consequence of the variable (prices that follow a default billing period) so the main ring stays on the variable; identical neutral Variant A/B pills; a lighter conditional ribbon; `card.phone_scale` 1.4 for short screens; representative URLs use `.example`. render_check adds geometric errors for pill parity, a ring wider than the change, label clearance, sticky geometry, short-screen fill and stage or continuation clipping; mockup-reviewer judges the meaning (ten visual checks, full and half size).
 - **Conditional proposals instead of invented facts or lost ideas:** an optional `assumptions` list separates critical facts (a price display, a field's legal purpose, a step's real name, whether a field is needed later) from visual ones. A record with a critical assumption is medium priority at most and builds a conditional card, never a final one, with an amber "KOŞULLU · doğrulama gerekli" ribbon; the chat lists every critical fact in one "Koşullu (n):" line and asks only the most critical question. When the user confirms, the assumption goes, the record is reviewed again and the final card has no ribbon.
 - **Fixable is not blocking:** critic findings are tagged [blocking] or [fixable]; round 1 reports every fixable gap at once, fully specified fixes may be applied directly, and a later round raises no fixable item it could have raised before. Chat findings no longer hold back a record's stamp. The soft signup wall that was dropped in the last audit for a missing Esc criterion now reaches a card.
 - **More gates in code:** a complement guardrail written as a transition rate ("Sepetten Ödemeye Geçiş" vs "Sepet Terk"), a "shown to" population, an accessibility warning below 4.5:1 or without a 44×44 pt / 48×48 dp target, a `numeric_change` that names neither a source nor a derivation, a pre-ticked or removed consent box (including "okudum" and opt-in wishes like "… almak istiyorum", now a rule-6 matter), and content clipped at the top of the screen. An added modal can now be drawn (`.r-overlay` holding the ringed `.r-modal`).
