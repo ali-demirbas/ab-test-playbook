@@ -3,7 +3,7 @@
 
 Bu testlerin koruduğu şey tek bir davranış: yapıştırılan içerikteki talimat
 benzeri satır bulgu olarak raporlanır, sessizce geçilmez. İkinci sınıf (MARKUP)
-ab-test'e özgüdür — kullanıcıdan gelen metin kartın mockup gövdesine ham HTML
+ab-test'e özgüdür; kullanıcıdan gelen metin kartın mockup gövdesine ham HTML
 olarak girebildiği için, oraya sızan bir yük kartı açan tarayıcıda çalışır.
 """
 import contextlib

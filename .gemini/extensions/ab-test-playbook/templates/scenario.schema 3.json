@@ -1,0 +1,685 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ali-demirbas/ab-test-playbook/templates/scenario.schema.json",
+  "title": "Scenario record",
+  "description": "One A/B test proposal as a compact record of ten pieces of information (knowledge/methodology.md → The scenario record): title, problem, mechanism, variable, variants and difference, primary_kpi, guardrail, source and evidence, priority, and warnings only when something is critical. invariants name the functions both arms must keep identical when the change touches an interactive or functional element; numeric_change says why a number legitimately differs between the mockups; assumptions name the unverified facts the proposal rests on (a critical one keeps it a conditional proposal, medium at most); review carries the reviewers' PASS stamps. Optional layers: detail (the three-box view, only when the user asks for it) and card (the mockups scripts/build_card.py renders; the card shows only the title and the two mockups). Tool-agnostic and statistics-free: it says what to test, what decides and what must not degrade, not how to read the result. The shape is enforced here; cross-field rules (source_note for a generated record, adapted_from naming a real archive title and keeping its Değişken and Fark, a guardrail that is neither the primary nor its complement, denominators that are populations, a benefit guardrail under a revenue primary, the accessibility, invariants, regulation and urgency checks on what the change touches, evidence notes and claims, the current page is A, the detail box roles, KPI names that keep their glossary meaning, result and impact claims in every free-text field, the assumption rules, the card's difference matching the record's, its ring placement and markup allowlist) and the softer warnings are checked by scripts/validate_scenario_json.py; --strict turns its warnings into errors.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "problem",
+    "mechanism",
+    "variable",
+    "variants",
+    "primary_kpi",
+    "guardrail",
+    "source",
+    "evidence",
+    "priority"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "boxItem": {
+      "description": "One bullet in one of the three boxes. The object form carries a bold label; the string form is a plain line.",
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object",
+          "required": [
+            "label",
+            "text"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "reviewStamp": {
+      "type": "object",
+      "description": "A reviewer's PASS on exactly one version: the fingerprint it reviewed. Only PASS is ever stamped; FIX and RET are never recorded.",
+      "required": [
+        "verdict",
+        "fingerprint"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "verdict": {
+          "type": "string",
+          "enum": [
+            "PASS"
+          ]
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "sha256, 64 lowercase hex characters."
+        }
+      }
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Stable slug, e.g. cart-checkout-coupon-field-01"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Rule 1: the short question the test answers; ends with '?', aim for 90 characters or fewer. A title that asserts an answer prejudges the test."
+    },
+    "problem": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The user problem or opportunity the test targets, in one sentence naming the observable obstacle or opportunity on the page. Not printed on the card."
+    },
+    "mechanism": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Exactly one sentence: why B changes behaviour, resting on the problem. A generic psychology claim is not a mechanism."
+    },
+    "variable": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Rule 4: the ONE thing that differs between the variants, as a short noun phrase. A value naming two things is a rule-4 violation the schema cannot catch; scenario-critic does."
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "Exactly two, A then B. B's description is the change. A third variant is a different test design and this schema refuses to express it.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "description"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "is_current": {
+            "type": "boolean",
+            "description": "Rule 15: true only when variant A is the user's own current page (a screenshot, a URL or their own page they described), drawn as it is; omitted otherwise."
+          }
+        }
+      }
+    },
+    "difference": {
+      "type": "string",
+      "enum": [
+        "change",
+        "add",
+        "move",
+        "remove"
+      ],
+      "description": "How B differs from A. card.difference may only repeat it; it never overrides it."
+    },
+    "primary_kpi": {
+      "type": "object",
+      "required": [
+        "name",
+        "denominator",
+        "direction"
+      ],
+      "additionalProperties": false,
+      "description": "Rule 2: the one metric that decides, matching the business outcome the title names.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The glossary's canonical name when one exists (knowledge/kpi-glossary.md)."
+        },
+        "denominator": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Who is counted, identical in both arms (e.g. 'Teste atanan ziyaretçi'). Never a count, never the users who saw the new element."
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "increase",
+            "decrease"
+          ]
+        }
+      }
+    },
+    "guardrail": {
+      "description": "Rule 3: the most important protection, an independent harm (never the primary's complement or its name). A metric that must not rise or fall over a stated denominator, or a pass/fail check with its criterion. 'kind' picks the branch.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "name",
+            "kind",
+            "denominator",
+            "direction"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "metric"
+            },
+            "denominator": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Who is counted, e.g. 'Tamamlanan sipariş'."
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "must_not_increase",
+                "must_not_decrease"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "name",
+            "kind",
+            "criterion"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "const": "check"
+            },
+            "criterion": {
+              "type": "string",
+              "minLength": 1,
+              "description": "What must pass, e.g. 'Geçmeli: …'."
+            }
+          }
+        }
+      ]
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "archive",
+        "adapted",
+        "generated"
+      ],
+      "description": "Rule 8: 'archive' = an archive scenario used as written; 'adapted' = an archive scenario fitted to this page; 'generated' = produced for this page. Stated in chat, not printed on the card."
+    },
+    "adapted_from": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Rule 8: the title of the archive scenario the record comes from. Required for 'archive' and 'adapted' (checked by the validator)."
+    },
+    "source_note": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Rule 8: for a 'generated' record (required, checked by the validator), why no archive scenario fits and how this idea differs from the nearest one; optional otherwise."
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "level"
+      ],
+      "additionalProperties": false,
+      "description": "Rule 10: the strength of the evidence is always stated. A weak level is allowed; hiding it is not.",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": [
+            "user_data",
+            "archive",
+            "sector",
+            "intuition"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "priority": {
+      "type": "object",
+      "required": [
+        "tier",
+        "rationale"
+      ],
+      "additionalProperties": false,
+      "description": "Rule 9: a tier plus a one-sentence rationale that weighs, in words, impact (where in the funnel the change acts), confidence (the evidence label) and ease (copy, style or order vs. a new flow or backend work). No numeric scores. A strong candidate passes the mechanism gate and is medium or high. Stated in chat, not printed on the card.",
+      "properties": {
+        "tier": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One sentence in the scenario's language, naming impact, confidence and ease in words."
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "description": "Only when something is critical; omitted entirely otherwise (rules 3, 11, 14).",
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "text"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "accessibility",
+              "regulation",
+              "feasibility",
+              "privacy",
+              "market"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "description": "One sentence. An accessibility warning states its pass/fail criterion."
+          }
+        }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "description": "Rule 4: the functions that must work identically in both arms, one sentence each (e.g. 'Geçerli bir kod iki kolda da aynı adımla uygulanır.'). Required by the validator when the change touches an interactive or functional element (a link, a field, a coupon, payment, search, a form).",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "description": "Rules 9 and 10: the unverified facts the proposal rests on, at most three, omitted when there are none. 'critical' = the proposal's feasibility, legality or single-variable status depends on it (a real price display, a field's legal purpose, whether a field is needed for a later step, the real step names the variant writes): it carries the one short question that settles it, the record is priority 'medium' at most and its card builds as a conditional card. 'visual' = representative product names, photos, decorative details. Part of the record fingerprint. Checked by the validator: a critical item without its question, a text over 200 characters, priority 'high' with a critical item.",
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "text"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "visual"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "description": "One sentence, at most 200 characters (checked by the validator): the fact as assumed, e.g. 'Sayfanın yıllık görünümü fiyatların aylık karşılığını gösteriyor.'"
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Required for a critical item (checked by the validator): one short question that settles it, e.g. 'Yıllık fiyat kartta nasıl görünüyor?'"
+          }
+        }
+      }
+    },
+    "numeric_change": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Why a number (a price, amount, percentage, count or rating) legitimately differs between the A and B mockups, e.g. in a price test. Without it build_card.py refuses any numeric difference."
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Rule 17: the reviewers' PASS stamps. scenario_critic carries the record fingerprint (validate_scenario_json.py --fingerprint), mockup_reviewer the final card's fingerprint (printed by build_card.py --draft). Optional here; the draft build requires the critic stamp and the final build both, each matching what it is about to build. Left out of the record fingerprint.",
+      "properties": {
+        "scenario_critic": {
+          "$ref": "#/$defs/reviewStamp"
+        },
+        "mockup_reviewer": {
+          "$ref": "#/$defs/reviewStamp"
+        }
+      }
+    },
+    "lang": {
+      "type": "string",
+      "enum": [
+        "tr",
+        "en"
+      ],
+      "description": "Rule 7: the language of the record's text, of the card's <html lang> and of its draft ribbon. Defaults to tr when absent."
+    },
+    "stage": {
+      "type": "string",
+      "description": "Journey stage / archive file this belongs to, e.g. cart-checkout"
+    },
+    "device": {
+      "type": "string",
+      "enum": [
+        "phone",
+        "phone-web",
+        "web"
+      ],
+      "description": "The context the scenario lives in and the frame the card draws: phone = native app screen (tab bar only via card.bottom_nav), phone-web = page in a mobile browser (status bar + address bar, no tab bar), web = desktop browser. card.device overrides it for rendering. The former 'both' is gone: a card draws one frame, and the audience belongs in the setup notes."
+    },
+    "market": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Rule 11: market is separate from language. null means unknown — which is honest, and blocks carrying one market's result to another."
+    },
+    "objection": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The objection the change answers (methodology.md: Trust, Price, Fit, Timing, Effort, Clarity), in the scenario's language (Turkish: Güven, Fiyat, Uygunluk, Zamanlama, Çaba, Netlik). Not printed on the card."
+    },
+    "detail": {
+      "type": "object",
+      "required": [
+        "test_items",
+        "kpis",
+        "dont_items"
+      ],
+      "additionalProperties": false,
+      "description": "The three-box detailed view, present ONLY when the user asks for it (never by default). Shown in chat on request; never printed on the card.",
+      "properties": {
+        "test_items": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "#/$defs/boxItem"
+          },
+          "description": "The 'What to test' box: three to six items.",
+          "maxItems": 6
+        },
+        "kpis": {
+          "type": "array",
+          "minItems": 3,
+          "description": "The KPI box: three to six lines, exactly one primary and it comes first, at least one guardrail, each metric listed once (rules 2 and 3; checked by the validator). Every line carries its denominator, in the name (\"… (per assigned user)\", \"… (… başına)\") or in the denominator field.",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "role"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "primary",
+                  "secondary",
+                  "guardrail"
+                ]
+              },
+              "question": {
+                "type": "string",
+                "description": "What this metric answers."
+              },
+              "denominator": {
+                "type": "string",
+                "minLength": 1,
+                "description": "What the metric is divided by, when the name does not say it (e.g. 'assigned users', 'users who reached the payment step, logged in both arms')."
+              }
+            }
+          },
+          "allOf": [
+            {
+              "contains": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "const": "primary"
+                  }
+                },
+                "required": [
+                  "role"
+                ]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "const": "guardrail"
+                  }
+                },
+                "required": [
+                  "role"
+                ]
+              },
+              "minContains": 1
+            }
+          ],
+          "maxItems": 6
+        },
+        "dont_items": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "#/$defs/boxItem"
+          },
+          "description": "The 'Never do' box: three to six items.",
+          "maxItems": 6
+        }
+      }
+    },
+    "card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "description": "Optional visual layer consumed by scripts/build_card.py: the same JSON renders the card, which shows the record's title and the two mockups and nothing else. Absent when the scenario is only being designed, reviewed or exported; added at render time. The mockups come in one of two forms, exactly one (the validator checks): screen + change (the screen spec, compiled by scripts/screen_spec.py) or variant_a + variant_b (raw markup, for special cases).",
+      "properties": {
+        "variant_a": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Mockup body of the control, raw markup built from the template's .r-* components. Only the allowlisted inert tags and attributes pass (build_card.py: ALLOWED_TAGS / ALLOWED_ATTRS, every attribute value in double quotes, no comments, links, images, forms or scripts); anything else is refused, not cleaned."
+        },
+        "variant_b": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Mockup body of the test variant; differs from variant_a in exactly one element."
+        },
+        "screen": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object"
+          },
+          "description": "Screen spec form (Contract 8), the default way to draw: the page once, as a list of nodes compiled by scripts/screen_spec.py ({\"header\": ..}, {\"h\": ..}, {\"field\": .., \"label\": ..}, {\"cta\": ..}, {\"band\": {\"items\": [..]}}, ..; node kinds in knowledge/mockup-style.md → Screen spec). Variant A is this screen; Variant B is this screen plus card.change. Either screen + change OR variant_a + variant_b: both at once are refused (validator and builder). Records that share a screen copy the same list, so their Variant A is byte-identical."
+        },
+        "change": {
+          "type": "object",
+          "description": "Exactly one operation on one node of card.screen, the tested element, with the ring's label: {\"op\": insert_after|insert_before|replace|remove|move_after|move_before|edit, \"target\": <node id>, ..}. insert_*: node + label (difference add); replace: node + label (+ label_a); remove: label (difference remove); move_*: to + label_a + label_b (difference move); edit: set {property: value} + label (difference change). label_pos below|above places the label."
+        },
+        "soft": {
+          "type": "array",
+          "maxItems": 2,
+          "description": "Screen spec form only: up to two node ids (or {\"id\": .., \"note\": ..}) drawn with the soft ring (.hl-soft) in both arms, the variable's linked consequence."
+        },
+        "difference": {
+          "type": "string",
+          "enum": [
+            "change",
+            "add",
+            "move",
+            "remove",
+            "değiştir",
+            "ekle",
+            "taşı",
+            "kaldır"
+          ],
+          "description": "Optional. When present it must equal the record's difference (any accepted spelling); it never overrides it. One of the two is required (checked by the validator). How B differs from A (the archive's 'Fark:' line). Enforces ring placement: add → .hl only in B; remove → .hl only in A (labelled), B genuinely empty there; move → .hl in both; change → .hl in B (A optional). A change applied to N repeated elements gets ONE ring around the group."
+        },
+        "device": {
+          "type": "string",
+          "enum": [
+            "phone",
+            "phone-web",
+            "web"
+          ],
+          "description": "Frame override; defaults to the scenario's device, then phone."
+        },
+        "url": {
+          "type": "string",
+          "description": "Address bar text (web) or the domain shown in the mobile address bar (phone-web). Required for those two frames. A URL the user gave is used as given; a described page without one gets a representative <name>.example address (e.g. magaza.example/sepet)."
+        },
+        "bottom_nav": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "phone only: the real app's tab labels, a list of strings. Absent or empty = no tab bar (never invent one). Refused on phone-web and web, which draw no tab bar."
+        },
+        "bottom_nav_active": {
+          "type": [
+            "string",
+            "integer"
+          ],
+          "minLength": 1,
+          "minimum": 0,
+          "description": "The tab the screen belongs to, as that tab's label or its 0-based index in bottom_nav; drawn in the brand colour. The same tab is active in A and B. Ignored without bottom_nav."
+        },
+        "brand": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Rule 12: brand colours taken from the shared screen or a brand guide, applied silently (no note on the card). Absent = neutral palette. A colour is #hex, rgb()/hsl() or a CSS colour name; any other word is refused by the validator and the builder (it would render a transparent button).",
+          "properties": {
+            "primary": {
+              "type": "string",
+              "pattern": "^(#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(rgb|rgba|hsl|hsla)\\([0-9.,%\\s/]+\\)|[a-zA-Z]{3,24})$"
+            },
+            "on_primary": {
+              "type": "string",
+              "pattern": "^(#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(rgb|rgba|hsl|hsla)\\([0-9.,%\\s/]+\\)|[a-zA-Z]{3,24})$"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "mockup_basis": {
+          "type": "string",
+          "enum": [
+            "shared_page",
+            "described",
+            "representative"
+          ],
+          "description": "Metadata for the mockup reviewer, never printed: what the mockup is drawn from. shared_page → compare variant A with the shared page; described → rebuilt from the user's description; representative → a representative example (the chat says so in one line). Absent = shared_page when a variant is_current, representative otherwise."
+        },
+        "phone_scale": {
+          "type": "number",
+          "enum": [
+            1.2,
+            1,
+            1.4
+          ],
+          "description": "Phone frames only (device phone or phone-web). 1.2 (default) draws the 420px screen 504px wide so it fills its column; 1 keeps it at 420px so a tall screen (a whole form with its consent boxes) fits the stage instead of being clipped; 1.4 enlarges a short screen that would leave most of the stage empty. The continuation sheet under the phone (.r-fold) takes the same scale; stage phones (.r-stage-break) keep their own fixed size."
+        },
+        "web_scale": {
+          "type": "number",
+          "enum": [
+            1,
+            1.2,
+            1.4
+          ],
+          "description": "Desktop browser frames only (device web). 1 (default) draws the page at its natural size; 1.2 or 1.4 zoom the whole frame (proportions kept) so a short page, such as a cart summary or a pricing row, fills more of the stage and the change reads at a glance."
+        },
+        "inherited_contrast": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "text",
+              "color"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1
+              },
+              "color": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              }
+            }
+          },
+          "description": "Shared page only. A text colour copied from the user's own screen that is below the contrast floor, listed element by element (exact text, colour as measured). render_check reports it as an inherited page defect, not a pass, and only when the element is identical in both arms and outside the rings; chat reports it as the page's accessibility issue."
+        },
+        "mobile_toolbar": {
+          "type": "boolean",
+          "description": "phone-web only: true draws the mobile browser's bottom toolbar (four neutral glyphs and a home indicator) inside the phone, below the screen, identical in both arms. Frame chrome, never diffed. Use it when the first view's bottom edge matters (a pinned bar, .r-sticky). Refused on phone and web."
+        },
+        "stage_captions": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Required when the screens are split into stages by <div class=\"r-stage-break\"></div> (both arms the same number of breaks; at most one, so two stages): one short caption per stage, drawn above each stage's small phone, the same in both arms (e.g. [\"Sepet\", \"Ödeme\"]). Refused without stage breaks."
+        },
+        "note_pos": {
+          "type": "string",
+          "enum": [
+            "above",
+            "below"
+          ],
+          "description": "Default position of every ring label; a single ring can override with data-pos."
+        }
+      }
+    }
+  }
+}

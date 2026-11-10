@@ -3,7 +3,7 @@
 
 Why this exists: the repo's other checks read front matter with grep, which
 happily finds `name:` and `description:` in a block no YAML parser can load.
-That gap shipped a real defect — a description containing an unquoted
+That gap shipped a real defect; a description containing an unquoted
 `style: a Variant …` made `npx skills add` skip the skill entirely, with one
 warning in a spinner nobody reads. The skill was in the repo, passed every
 check, and did not exist as far as the installer was concerned.
@@ -13,7 +13,7 @@ every catalog that lists the repo parse it independently. A block that only
 *we* can read is a skill that only *we* can run.
 
 The lint below always runs, stdlib-only, because CI installs no YAML library.
-When PyYAML happens to be importable it runs too, as the authoritative pass —
+When PyYAML happens to be importable it runs too, as the authoritative pass ; 
 the lint targets the failure modes seen in practice, not the whole spec.
 
 Usage:
@@ -35,7 +35,7 @@ SEQ = re.compile(r"^(\s*)-\s+(.*)$")
 # one people learn to scroll past, which costs more than the rare prose `#`
 # it would catch. PyYAML's pass covers what is genuinely unparseable.
 FATAL = [
-    (": ", "unquoted ': ' — YAML reads this as a nested mapping"),
+    (": ", "unquoted ': '; YAML reads this as a nested mapping"),
 ]
 
 # Leading characters that make a plain scalar mean something else entirely.
@@ -60,7 +60,7 @@ def scalar_problems(value, allowed_colons=0):
     """Problems that stop a plain scalar from parsing.
 
     `allowed_colons` differs by position, and the difference is not cosmetic.
-    After `key:` the value must contain no `: ` at all — `desc: a: b` is a hard
+    After `key:` the value must contain no `: ` at all; `desc: a: b` is a hard
     error. A sequence item is different: `- a: b` is a legal one-pair mapping,
     so one is fine there and only the second one is fatal. Verified against
     PyYAML rather than assumed; flagging the legal form would fire on ordinary
@@ -74,10 +74,10 @@ def scalar_problems(value, allowed_colons=0):
         if len(value) > 1 and value[-1] == value[0]:
             return []
         # A value that opens with a quote and does not close it is not a plain
-        # scalar with a quote in it — YAML tries to read the whole thing as a
+        # scalar with a quote in it; YAML tries to read the whole thing as a
         # quoted string and runs off the end of the block. Caught here because
         # CI has no YAML library to catch it for us.
-        return ["opens with %r but does not close it — quote the whole value"
+        return ["opens with %r but does not close it; quote the whole value"
                 % value[0]]
     if value[0] in "|>":
         return []
@@ -169,7 +169,7 @@ def main(paths):
     if failed:
         return 1
     mode = "lint + PyYAML" if yaml is not None else "lint (PyYAML not installed)"
-    print("  ok: %d front matter blocks parse — %s" % (checked, mode))
+    print("  ok: %d front matter blocks parse; %s" % (checked, mode))
     return 0
 
 

@@ -46,9 +46,18 @@ card.change, exactly one:
   {"op": "remove", "target": id, "label": ".."}
   {"op": "move_after"|"move_before", "target": id, "to": id, "label_a": "..", "label_b": ".."}
   {"op": "edit", "target": id, "set": {key: value, ..}, "label": ".."}
+Any op may add "linked": [{"target": <a card.soft id>, "set": {..}}]: the
+variable's linked consequences (an annual-default toggle switches the prices
+under it), edits applied in B only to nodes card.soft rings in both arms.
 
 card.soft: up to two node ids (or {"id": .., "note": ..}) wrapped in .hl-soft
 in both arms, the variable's linked consequence.
+
+Refused as well: a change B draws exactly like A (an identical replace, a move
+to where the node already is, a hex colour differing only in case), a spacing
+or size edit under MIN_PX_CHANGE px, a remove or move that leaves a container
+empty, and a top-level-only node (fold, stage, sticky) moved into a container.
+A header's "back" icon leads the bar (left of the logo); the other icons trail.
 
 Python 3.9+, standard library only.
 """
@@ -61,6 +70,10 @@ LABEL_ROOM = 36     # room for a ring label placed below or above the ringed nod
 BLEED = 20          # the screen's side (and bottom) padding a band bleeds through (.screen padding)
 BLEED_TOP = 14      # the screen's top padding, bled through by a band that opens the screen
 MAX_SOFT = 2
+# A spacing or size edit smaller than this is not a difference a reader sees (mb 16 -> 17 is 1px).
+MIN_PX_CHANGE = 8
+PX_PROPS = ("mb", "height", "radius")
+CONTAINER_EDITABLE = ("bg", "border", "radius", "height", "mb", "pad", "gap")
 
 KINDS = ("header", "h", "sub", "text", "field", "row", "cta", "link", "help", "info", "check", "radio",
          "chips", "tabs", "steps", "progress", "line", "item", "plan", "badge", "banner", "img", "divider",
@@ -90,7 +103,7 @@ ICON_LABELS = {
     "tr": {"close": "Kapat", "support": "Destek", "menu": "Menü", "search": "Ara", "back": "Geri"},
     "en": {"close": "Close", "support": "Support", "menu": "Menu", "search": "Search", "back": "Back"},
 }
-HEX_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
+HEX_RE = re.compile(r"^#[0-9a-fA-F]{6}\Z")  # \Z: "#aabbcc\n" is not a colour
 
 MSG = {
     "screen_type": ("card.screen must be a non-empty list of nodes",
@@ -131,6 +144,40 @@ MSG = {
                   "card.change: \"to\" taşınan düğümün kendisini adlandırıyor"),
     "edit_key": ("card.change.set: \"{key}\" is not something a {kind} node has",
                  "card.change.set: \"{key}\" bir {kind} düğümünde yok"),
+    "no_difference": ("card.change: B draws exactly what A draws ({why}); a test needs a difference the reader can see",
+                      "card.change: B, A ile birebir aynı çiziliyor ({why}); testin okurun göreceği bir farkı olmalı"),
+    "why_replace": ("the replacement node is the same as the target", "yeni düğüm hedefin aynısı"),
+    "why_move": ("the moved node lands where it already is", "taşınan düğüm zaten durduğu yere iniyor"),
+    "why_edit": ("the new values render the same, e.g. a hex colour differing only in case",
+                 "yeni değerler aynı çiziliyor, ör. yalnızca büyük/küçük harfi farklı bir hex renk"),
+    "why_generic": ("the change renders nothing new", "değişiklik yeni bir şey çizmiyor"),
+    "px_small": ("card.change.set: \"{key}\" {old} -> {new} is a {d}px difference; under {min}px the arms look the same, "
+                 "change it by at least {min}px or test something else",
+                 "card.change.set: \"{key}\" {old} -> {new}, {d}px'lik bir fark; {min}px altında iki kol aynı görünür, "
+                 "en az {min}px değiştirin ya da başka bir şeyi test edin"),
+    "empty_container": ("card.change: the {op} leaves the {kind} at {where} empty in {arm}; an empty container draws "
+                        "nothing (remove the container itself, or move a node that has siblings)",
+                        "card.change: {op} işlemi {where} konumundaki {kind} kabını {arm} kolunda boş bırakıyor; boş kap "
+                        "hiçbir şey çizmez (kabın kendisini kaldırın ya da kardeşi olan bir düğümü taşıyın)"),
+    "move_top_only": ("card.change: a {kind} node sits only at the top level of the screen; it cannot move into "
+                      "a {parent}",
+                      "card.change: {kind} düğümü yalnızca ekranın en üst düzeyinde durur; bir {parent} içine taşınamaz"),
+    "linked_type": ("card.change.linked must be a list of {{\"target\": <a card.soft id>, \"set\": {{..}}}}",
+                    "card.change.linked bir {{\"target\": <card.soft kimliği>, \"set\": {{..}}}} listesi olmalı"),
+    "edit_container": ("card.change.set: \"{key}\" on a {kind} reaches every element inside it, so B would change "
+                       "several things at once; edit the one element inside instead (a {kind} itself takes only "
+                       "bg, border, radius, height, mb, pad or gap)",
+                       "card.change.set: bir {kind} üzerindeki \"{key}\" içindeki her öğeye ulaşır, B birden çok şeyi "
+                       "değiştirirdi; içerideki tek öğeyi düzenleyin ({kind} kabının kendisinde yalnızca bg, border, "
+                       "radius, height, mb, pad ya da gap değişir)"),
+    "linked_label_a": ("card.change.linked with an edit or replace needs label_a: ring A's element too (\"Monthly by "
+                       "default\"), so both arms show the variable next to its ringed consequence",
+                       "card.change.linked, edit ya da replace ile label_a ister: A'daki öğeyi de halkalayın "
+                       "(“Aylık varsayılan”), iki kol da değişkeni bağlı sonucunun yanında göstersin"),
+    "linked_not_soft": ("card.change.linked: \"{id}\" is not in card.soft; a linked difference is the variable's "
+                        "consequence and is drawn in a soft ring, so name the node in card.soft first",
+                        "card.change.linked: \"{id}\" card.soft içinde değil; bağlı fark değişkenin sonucudur ve "
+                        "yumuşak halkada çizilir, önce düğümü card.soft'a yazın"),
     "edit_same": ("card.change.set: every value already holds in A, so B would equal A",
                   "card.change.set: her değer A'da zaten geçerli, B A'ya eşit olurdu"),
     "soft_type": ("card.soft must be a list of up to {most} node ids (or {{\"id\": .., \"note\": ..}})",
@@ -154,8 +201,39 @@ MSG = {
 }
 
 
+# The `want` phrases the messages carry, in Turkish (an English phrase inside a
+# Turkish message read as a half-translated tool).
+WANT_TR = {
+    "a non-empty string": "boş olmayan bir metin",
+    "a px integer": "px cinsinden bir tam sayı",
+    "#rrggbb": "#rrggbb",
+    "\"center\" or \"left\"": "\"center\" ya da \"left\"",
+    "a string": "bir metin",
+    "true or false": "true ya da false",
+    "\"sm\"": "\"sm\"",
+    "a list of nodes": "bir düğüm listesi",
+    "a list of {\"label\": .., \"on\": bool}": "bir {\"label\": .., \"on\": bool} listesi",
+    "a list of {\"label\": .., \"state\": done|on}": "bir {\"label\": .., \"state\": done|on} listesi",
+    "an integer 0..100": "0..100 arası bir tam sayı",
+    "[left, right]": "[sol, sağ]",
+    "a height in px": "px cinsinden bir yükseklik",
+    "true": "true",
+    "one node": "tek bir düğüm",
+    "\"below\" or \"above\"": "\"below\" ya da \"above\"",
+    "a short label, two to four words": "iki ila dört kelimelik kısa bir etiket",
+    "an object of the properties to change": "değişecek özelliklerin nesnesi",
+    "the id of the node the moved node lands next to": "taşınan düğümün yanına ineceği düğümün kimliği",
+}
+
+
 def _m(_key, _lang, **kw):
     en, tr = MSG[_key]
+    if _lang == "tr" and isinstance(kw.get("want"), str):
+        want = kw["want"]
+        if want.startswith("one of "):
+            kw["want"] = "şunlardan biri: " + want[len("one of "):]
+        else:
+            kw["want"] = WANT_TR.get(want, want)
     return (tr if _lang == "tr" else en).format(**kw)
 
 
@@ -487,7 +565,7 @@ def _icon(ic, lang):
                        'transform:rotate(45deg);margin:13px 0 0 -3px"></span></span>' % (colour, colour))
     # back: a chevron drawn with two borders
     return head + ('display:inline-block;width:11px;height:11px;border-left:2px solid %s;border-bottom:2px solid %s;'
-                   'transform:rotate(45deg);margin-left:6px"></span>' % (colour, colour))
+                   'transform:rotate(45deg);margin-left:4px"></span>' % (colour, colour))
 
 
 def _header(node, lang, extra):
@@ -497,6 +575,12 @@ def _header(node, lang, extra):
         decls.append("border-bottom:0")
     decls += extra
     parts = []
+    icons = v.get("icons") or []
+    lead = [ic for ic in icons if ic.get("icon") == "back"]  # a back icon leads the bar, as on a real page
+    trail = [ic for ic in icons if ic.get("icon") != "back"]
+    if lead:
+        parts.append('<span style="display:flex;align-items:center;gap:22px">%s</span>'
+                     % "".join(_icon(ic, lang) for ic in lead))
     if v.get("logo") is True:
         parts.append('<span class="r-logo"></span>')
     elif _str(v.get("logo")):
@@ -505,10 +589,10 @@ def _header(node, lang, extra):
         parts.append('<span class="r-nav">%s</span>' % "".join("<span>%s</span>" % esc(s) for s in v["nav"]))
     if v.get("tel"):
         parts.append('<span class="r-tel">%s</span>' % esc(v["tel"]))
-    if v.get("icons"):
+    if trail:
         push = "" if (v.get("nav") or v.get("tel")) else "margin-left:auto;"
         parts.append('<span style="%sdisplay:flex;align-items:center;gap:22px">%s</span>'
-                     % (push, "".join(_icon(ic, lang) for ic in v["icons"])))
+                     % (push, "".join(_icon(ic, lang) for ic in trail)))
     return "<div%s>%s</div>" % (_attrs(["r-header"], decls), "".join(parts))
 
 
@@ -641,7 +725,14 @@ def _margins(node, gap, last, top):
     """The spacing declarations of a child: the rhythm (or its "mb") to the next
     sibling, plus the room a ring label placed below or above it needs. At the
     top level the template's own gap already separates siblings, so only the
-    difference is written."""
+    difference is written.
+
+    The room sits on the ringed element, inside the ring: outside it would be a
+    difference between the arms outside any ring (card_problems), and on a
+    neighbour it would change A, which must stay byte-identical across records
+    that share a screen. Inside the screen's flex column the margin does not
+    collapse through the ring, so the ring grows by the room; the clean fix is a
+    margin on the ring itself, which card_problems refuses today."""
     wanted = node.props.get("mb", gap) if not last else 0
     mt = 0
     if node.ring:
@@ -684,7 +775,7 @@ def _children(kids, gap, lang, top):
 # ------------------------------------------------------------------ the change
 
 def _change_keys(op):
-    base = ("op", "target")
+    base = ("op", "target", "linked")
     if op in ("insert_after", "insert_before"):
         return base + ("node", "label", "label_pos")
     if op == "replace":
@@ -702,7 +793,19 @@ def _apply_edit(node, settings, lang, problems):
     kind = node.kind
     allowed = COMMON_PROPS + EXTRA_PROPS.get(kind, ())
     changed = False
+    if kind in CONTAINERS:
+        # A container's colour or content reaches every element inside it: one edit would
+        # change several texts at once. Only the container's own box may be edited.
+        bad = [key for key in settings if key not in CONTAINER_EDITABLE]
+        if bad:
+            problems.append(_m("edit_container", lang, kind=kind, key=bad[0]))
+            return None
     for key, val in settings.items():
+        if key in PX_PROPS and _is_int(val):
+            old = raw.get(key, GAP if key == "mb" else None)
+            if old is not None and _is_int(old) and val != old and abs(val - old) < MIN_PX_CHANGE:
+                problems.append(_m("px_small", lang, key=key, old=old, new=val, d=abs(val - old), min=MIN_PX_CHANGE))
+                return None
         if key == kind or (key == "text" and isinstance(raw[kind], (str, int, bool, list))):
             if raw[kind] != val:
                 changed = True
@@ -798,6 +901,9 @@ def _apply(root_a, root_b, change, lang, problems):
             problems.append(_m("target_unknown", lang, key="to", id=to))
             return
         dest_parent, idx = dest
+        if moved.kind in TOP_ONLY and dest_parent is not root_b:
+            problems.append(_m("move_top_only", lang, kind=moved.kind, parent=dest_parent.kind))
+            return
         dest_parent.kids.insert(idx + 1 if op == "move_after" else idx, moved)
         moved.ring = (note_b, pos)
         parent_a.kids[ia].ring = (note_a, pos)
@@ -870,9 +976,90 @@ def compile(screen, change, lang="en", soft=None):
     _apply(root_a, root_b, change, lang, problems)
     target = change.get("target") if isinstance(change, dict) else None
     _apply_soft((root_a, root_b), soft, target, lang, problems)
+    if not problems:
+        _apply_linked(root_b, change, soft, lang, problems)
+    if not problems:
+        _empty_containers((root_a, root_b), change.get("op"), lang, problems)
     if problems:
         return "", "", problems
+    if _bare(root_a, lang) == _bare(root_b, lang):
+        why = {"replace": "why_replace", "move_after": "why_move", "move_before": "why_move",
+               "edit": "why_edit"}.get(change.get("op"), "why_generic")
+        return "", "", [_m("no_difference", lang, why=_m(why, lang))]
     return _children(root_a.kids, GAP, lang, True), _children(root_b.kids, GAP, lang, True), []
+
+
+def _bare(root, lang):
+    """The arm drawn without its rings (and so without the label room): what a reader compares."""
+    bare = copy.deepcopy(root)
+
+    def strip(node):
+        for kid in node.kids:
+            kid.ring, kid.soft = None, None
+            if kid.kids:
+                strip(kid)
+    strip(bare)
+    return _children(bare.kids, GAP, lang, True)
+
+
+def _empty_containers(roots, op, lang, problems):
+    """A remove or move that takes a row's (band's, stack's) last child leaves a
+    container that draws nothing; refused rather than drawn."""
+    for arm, root in zip(("A", "B"), roots):
+        def visit(node, where):
+            for i, kid in enumerate(node.kids):
+                here = "%s[%d]" % (where, i)
+                if kid.kind in CONTAINERS and kid.kind != "sticky" and not kid.kids:
+                    problems.append(_m("empty_container", lang, op=op, kind=kid.kind, where=here, arm=arm))
+                if kid.kids:
+                    visit(kid, here)
+        visit(root, "card.screen")
+
+
+def _apply_linked(root_b, change, soft, lang, problems):
+    """card.change.linked: the variable's linked consequences, each an edit of a
+    node named in card.soft, applied in B only (an annual-default toggle and
+    the prices it switches). The soft ring stays around the node in both arms.
+    An edit or replace with linked consequences rings A's element too
+    (label_a): each arm then reads ring, then consequence, and the A/B diff
+    sees the two regions side by side."""
+    linked = change.get("linked")
+    if linked is None:
+        return
+    if change.get("op") in ("edit", "replace") and not _str(change.get("label_a")):
+        problems.append(_m("linked_label_a", lang))
+        return
+    soft_ids = set()
+    for entry in soft or []:
+        soft_ids.add(entry if isinstance(entry, str) else entry.get("id") if isinstance(entry, dict) else None)
+    if not isinstance(linked, list) or not linked:
+        problems.append(_m("linked_type", lang))
+        return
+    for item in linked:
+        if not isinstance(item, dict) or set(item) != {"target", "set"} or not _str(item.get("target")) \
+                or not isinstance(item.get("set"), dict) or not item["set"]:
+            problems.append(_m("linked_type", lang))
+            return
+        target = item["target"]
+        if target not in soft_ids:
+            problems.append(_m("linked_not_soft", lang, id=target))
+            continue
+        hit = _find(root_b, target)
+        if hit is None:
+            problems.append(_m("target_unknown", lang, key="linked", id=target))
+            continue
+        parent, i = hit
+        old = parent.kids[i]
+        raw = _apply_edit(old, item["set"], lang, problems)
+        if raw is None:
+            continue
+        ids = _ids_of(root_b)
+        ids.pop(target, None)
+        new = _parse(raw, "card.change.linked", parent is root_b, lang, problems, ids)
+        if new is None:
+            continue
+        new.soft = old.soft
+        parent.kids[i] = new
 
 
 def compile_card(card, lang="en"):

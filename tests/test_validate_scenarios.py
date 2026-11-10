@@ -238,17 +238,27 @@ class TestWarnings(unittest.TestCase):
         title, body = first(s)
         self.assertEqual(check_scenario("test.md", title, body), [])
 
-    def test_count_primary_warns(self):
-        kpis = ["- Nitelikli Fırsat Sayısı (SQL): Satışa uygun talep artıyor mu?"] + make_kpis()[1:]
-        self.assertTrue(any("Sayısı" in w for w in self.warn(make_scenario(kpis=kpis))))
+    def err(self, text):
+        title, body = first(text)
+        return check_scenario("test.md", title, body)
 
-    def test_saw_denominator_primary_warns(self):
+    def test_count_primary_is_an_error(self):
+        """methodology → KPI rules: the archive check refuses a count primary (it used to only warn)."""
+        s = make_scenario(kpis=["- Nitelikli Fırsat Sayısı (SQL): Satışa uygun talep artıyor mu?"] + make_kpis()[1:])
+        self.assertTrue(any("Sayısı" in e for e in self.err(s)))
+        self.assertFalse(any("Sayısı" in w for w in self.warn(s)))
+
+    def test_saw_denominator_primary_is_an_error(self):
         kpis = ["- Kurtarma Oranı: Pop-up görüp oturuma devam eden kullanıcı oranı."] + make_kpis()[1:]
-        self.assertTrue(any("gören/görüp" in w for w in self.warn(make_scenario(kpis=kpis))))
+        self.assertTrue(any("gören/görüp" in e for e in self.err(make_scenario(kpis=kpis))))
 
-    def test_saw_suffix_form_warns(self):
+    def test_saw_suffix_form_is_an_error(self):
         kpis = ["- Yükseltme Oranı: Modalı görenlerin ödemeye geçme oranı artıyor mu?"] + make_kpis()[1:]
-        self.assertTrue(any("gören/görüp" in w for w in self.warn(make_scenario(kpis=kpis))))
+        self.assertTrue(any("gören/görüp" in e for e in self.err(make_scenario(kpis=kpis))))
+
+    def test_b_only_primary_is_not_refused(self):
+        kpis = ["- Kurtarma Oranı (yalnızca B): Pop-up görüp devam eden oran."] + make_kpis()[1:]
+        self.assertFalse(any("gören/görüp" in e for e in self.err(make_scenario(kpis=kpis))))
 
     def test_count_in_secondary_kpi_warns_too(self):
         # Payda kuralı her KPI satırı içindir; birincil dışındaki satır da uyarı alır
