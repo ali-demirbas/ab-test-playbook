@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ab-test-playbook — A/B test engine for Claude Code</title>
+<title>ab-test-playbook: A/B test engine for Claude Code</title>
 <meta name="description" content="A/B test engine for Claude Code: suggests, designs and audits test scenarios, and renders each one as a ready HTML card. 221 curated scenarios, adversarial review, and a methodology that refuses dark patterns.">
-<link rel="canonical" href="https://ali-demirbas.github.io/ab-test-playbook/">
+<link rel="canonical" href="https://github.com/ali-demirbas/ab-test-playbook">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://ali-demirbas.github.io/ab-test-playbook/">
-<meta property="og:title" content="ab-test-playbook — A/B testing and CRO for Claude Code">
+<meta property="og:url" content="https://github.com/ali-demirbas/ab-test-playbook">
+<meta property="og:title" content="ab-test-playbook: A/B testing and CRO for Claude Code">
 <meta property="og:description" content="221 experiment scenarios, single-variable test design, plan auditing, and a rendered HTML card per scenario.">
-<meta property="og:image" content="https://ali-demirbas.github.io/ab-test-playbook/preview-card.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ali-demirbas/ab-test-playbook/main/docs/preview-card.png">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Markdown alternates. The rel=alternate pattern is the same one RSS has used
      for two decades, and it is what actually reaches assistants: a chat tool
      handed this URL can follow it to plain Markdown instead of parsing markup.
-     Deliberately not here: JSON-LD and ai.txt-style files — controlled tests
+     Deliberately not here: JSON-LD and ai.txt-style files; controlled tests
      show assistants read structured data as ordinary page text, so the markup
      buys nothing the visible copy does not already say. -->
 <link rel="alternate" type="text/markdown" href="llms-full.txt" title="Full documentation as Markdown">
@@ -107,7 +107,7 @@
     <li><strong>One variable.</strong> A variant pair changes exactly one thing. If you insist on more, the output says the result cannot be attributed.</li>
     <li><strong>One primary KPI, always a guardrail.</strong> Five metrics of equal weight is not a measurement plan. Every scenario names the metric that decides, and at least one that must not break.</li>
     <li><strong>No dark patterns, and protections are not test subjects.</strong> Fake scarcity, hidden totals and uncloseable modals are refused. So is treating bot checks, identity verification or legal consent steps as friction to remove.</li>
-    <li><strong>Evidence is labelled.</strong> Every proposal states whether it rests on your own data, an archive pattern (a curated idea, not a test result), a sector observation, or intuition — and says so when it is weak.</li>
+    <li><strong>Evidence is labelled.</strong> Every proposal states whether it rests on your own data, an archive pattern (a curated idea, not a test result), a sector observation, or intuition, and says so when it is weak.</li>
     <li><strong>No statistics.</strong> It proposes, designs, audits and visualizes tests; sample size, duration, significance and the winner come from your testing tool's own reporting, never from a guess.</li>
   </ul>
 
@@ -124,10 +124,10 @@
   <ul>
     <li><strong>221 curated scenarios</strong> across journey stages (e-commerce, mobile app, SaaS, and regulated finance, insurance and pension flows), each already carrying the three boxes.</li>
     <li><strong>Short proposals.</strong> At most three strong ones per turn, each a compact record (the problem, a one-sentence mechanism, the variable, the primary KPI, the guardrail, evidence and priority) with a card that shows only the comparison; chat shows a title and one tag line, and the three boxes come on request.</li>
-    <li><strong>A plan audit</strong> — confounds, a proxy primary, mismatched denominators, guardrails that measure nothing, missing compliance or accessibility gates and dark patterns, caught before the test takes traffic.</li>
-    <li><strong>Adversarial review</strong> — a methodology critic reads every generated scenario, and a mockup reviewer checks the two variants differ in exactly one thing, before anything reaches you.</li>
-    <li><strong>Gated delivery</strong> — code refuses what it can check (a difference outside the ring, a changed number, an added button without accessibility criteria, a revenue win that could hide user harm), and the final card builds only with both reviewers' stamps matching exactly what they reviewed.</li>
-    <li><strong>A portable schema</strong> — a test definition independent of any experimentation platform.</li>
+    <li><strong>A plan audit:</strong> confounds, a proxy primary, mismatched denominators, guardrails that measure nothing, missing compliance or accessibility gates and dark patterns, caught before the test takes traffic.</li>
+    <li><strong>Adversarial review:</strong> a methodology critic reads every generated scenario, and a mockup reviewer checks the two variants differ in exactly one thing, before anything reaches you.</li>
+    <li><strong>Gated delivery:</strong> code refuses what it can check (a difference outside the ring, a changed number, an added button without accessibility criteria, a revenue win that could hide user harm), and the final card builds only with both reviewers' stamps matching exactly what they reviewed.</li>
+    <li><strong>A portable schema:</strong> a test definition independent of any experimentation platform.</li>
   </ul>
 
   <footer>
@@ -135,7 +135,7 @@
     <a href="https://github.com/ali-demirbas/ab-test-playbook">github.com/ali-demirbas/ab-test-playbook</a> · MIT
     <br>
     Reading this with an assistant? The whole documentation set is one Markdown file:
-    <a href="llms-full.txt">llms-full.txt</a> — or just the index, <a href="llms.txt">llms.txt</a>.
+    <a href="llms-full.txt">llms-full.txt</a>, or just the index, <a href="llms.txt">llms.txt</a>.
   </footer>
 
 </div>

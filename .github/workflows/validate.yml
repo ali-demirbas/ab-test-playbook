@@ -8,12 +8,15 @@ on:
 permissions:
   contents: read
 
+# Actions are pinned to full commit SHAs (the tag in the comment) so a moved
+# tag can't change what runs here. All three run on the node24 runtime.
 jobs:
   # The README promises python3 3.9+ with the standard library only, so the
   # suite runs on both ends of that range: 3.9 catches newer syntax or stdlib
   # calls slipping in, 3.13 catches deprecations. unittest rather than pytest
   # keeps CI as dependency-free as the scripts it tests (the suite is
-  # pytest-compatible for anyone who prefers it locally).
+  # pytest-compatible for anyone who prefers it locally). The Chromium render
+  # tests skip here; the render job below runs them.
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -21,12 +24,46 @@ jobs:
       matrix:
         python-version: ["3.9", "3.13"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Run unit tests (validators, card builder, schema, shipped examples)
         run: python -m unittest discover -s tests -v
+
+  # render_check.mjs and the VERIFIED / VISUAL_CHECK_FAILED gates need Node,
+  # Playwright and Chromium. Playwright goes to a temp prefix reached through
+  # NODE_PATH, not ~/.abtest-visual, so the "no Playwright without NODE_PATH"
+  # test still sees exit 3. Any skipped test fails the job: a silent skip is
+  # how the render gates went untested before.
+  render:
+    runs-on: ubuntu-latest
+    env:
+      NODE_PATH: ${{ github.workspace }}/../playwright/node_modules
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+      - name: Install Playwright and Chromium
+        run: |
+          npm i --prefix "$GITHUB_WORKSPACE/../playwright" playwright
+          npx --prefix "$GITHUB_WORKSPACE/../playwright" playwright install --with-deps chromium
+      - name: Run the full suite, render tests included, with no skips
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/unittest.log"
+          if grep -n "skipped" "$RUNNER_TEMP/unittest.log"; then
+            echo "::error::tests were skipped; the render job must run every test"
+            exit 1
+          fi
 
   # Same two ends of the supported range as the unit tests: the validators and
   # both bundle builders are scripts users run too, and a 3.10+ construct in one
@@ -38,12 +75,14 @@ jobs:
       matrix:
         python-version: ["3.9", "3.13"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Run repo validation
-        # Single entry point: content formats plus the cross-file seams —
+        # Single entry point: content formats plus the cross-file seams:
         # skill/agent frontmatter, internal links, ${CLAUDE_PLUGIN_ROOT}
         # references, and rule citations against CLAUDE.md.
         run: bash scripts/validate.sh
@@ -54,11 +93,13 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Install shellcheck
         run: sudo apt-get update && sudo apt-get install -y shellcheck
       - name: Lint shell scripts
-        # This script IS the validation layer — an unquoted expansion or a cd
+        # This script IS the validation layer: an unquoted expansion or a cd
         # that silently fails here makes every other check unreliable, so it is
         # linted at default severity with nothing excluded.
         run: shellcheck scripts/*.sh

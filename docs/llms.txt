@@ -33,7 +33,7 @@ Install in Claude Code with `/plugin marketplace add ali-demirbas/ab-test-playbo
 - [Scenario archive](https://github.com/ali-demirbas/ab-test-playbook/tree/main/knowledge/scenarios): 221 curated scenarios grouped by journey stage, in 13 files, including finance, insurance and private pension
 - [Examples](https://github.com/ali-demirbas/ab-test-playbook/tree/main/examples): sample scenario records carried end to end, definition through rendered card, plus an audit of a flawed test proposal
 - [Sample cards](https://github.com/ali-demirbas/ab-test-playbook/tree/main/docs/demo): the rendered sample cards on different screen types
-- [Live card demo](https://ali-demirbas.github.io/ab-test-playbook/): the real output of the card builder, no install
+- [Card demo page](https://github.com/ali-demirbas/ab-test-playbook/blob/main/docs/index.html): the real output of the card builder, opened in a browser after cloning
 
 ## Optional
 

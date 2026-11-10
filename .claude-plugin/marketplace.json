@@ -4,13 +4,15 @@
     "name": "Ali Demirbaş"
   },
   "metadata": {
-    "description": "A/B testing and CRO for Claude Code: 221 experiment scenarios (e-commerce, mobile app, SaaS, finance, insurance and pension), single-variable test design, plan audits and rendered HTML scenario cards."
+    "description": "A/B testing and CRO for Claude Code: 221 experiment scenarios (e-commerce, mobile app, SaaS, finance, insurance and pension), single-variable test design, plan audits and rendered HTML scenario cards.",
+    "version": "3.1.0"
   },
   "plugins": [
     {
       "name": "ab-test-playbook",
       "source": "./",
-      "description": "A/B test engine: suggests scenarios by journey stage from a pattern archive, designs single-variable experiments, audits test plans and renders each scenario as an A/B comparison card. It proposes, designs, audits and visualizes tests; it does not analyze results."
+      "description": "A/B test engine: suggests scenarios by journey stage from a pattern archive, designs single-variable experiments, audits test plans and renders each scenario as an A/B comparison card. It proposes, designs, audits and visualizes tests; it does not analyze results.",
+      "version": "3.1.0"
     }
   ]
 }

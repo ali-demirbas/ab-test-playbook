@@ -1,13 +1,13 @@
 ---
 name: ab-test
-description: A/B test engine router. Use when the user says "abtest", "A/B test", "A/B/n", "split test", "multivariate test", "experiment", "CRO", "test öner", "hangi testi yapmalıyım", "fiyat testi", "test planımı denetle", "deney tasarla", "test fikirlerimi sırala", any /ab-test subcommand or a bare /ab-test (shows a menu), or when a request plausibly matches more than one ab-test-* skill, so the router disambiguates instead of guessing. Also use when it may not be an A/B question at all (a diagnosis, a measurement setup, a decision already made), for a delivered scenario's detailed view ("detay", "neden bu", "üç kutuyu göster"), and for results or sizing questions ("anlamlı mı", "kazandı mı", "kaç ziyaretçi lazım", "ne kadar sürmeli", "is it significant", "sample size"), which get the one-line out-of-scope answer. Routes to ab-test-suggest (ideas from the archive), ab-test-design (a new test for your page), ab-test-audit (review a plan) and ab-test-card (render a scenario).
+description: A/B test engine router. Use when the user says "abtest", "A/B test", "A/B/n", "split test", "multivariate test", "experiment", "CRO", "improve conversion", "dönüşümü nasıl artırırım", "Hangi varyant daha iyi olur?", "test öner", "hangi testi yapmalıyım", "fiyat testi", "test planımı denetle", "deney tasarla", any /ab-test subcommand or a bare /ab-test (shows a menu), or when a request could match more than one ab-test-* skill, so the router disambiguates instead of guessing. Also for requests that may not be A/B questions (a diagnosis, a measurement setup, a decision already made), a delivered scenario's detail ("detay", "neden bu", "üç kutuyu göster"), and results or sizing questions ("anlamlı mı", "kazandı mı", "kaç ziyaretçi lazım", "is it significant", "sample size"), which get the one-line out-of-scope answer. Routes to ab-test-suggest (archive ideas), ab-test-design (a new test for your page), ab-test-audit (review a plan) and ab-test-card (render a scenario).
 metadata:
-  version: 3.0.0
+  version: 3.1.0
   category: router
-  updated: 2026-10-21
+  updated: 2026-11-10
 ---
 
-# ab-test — Router
+# ab-test: Router
 
 > **Language:** Output always matches the language you write in (CLAUDE.md rule 7).
 
@@ -27,9 +27,11 @@ Defined once, here; `ab-test-suggest`, `ab-test-design` and the evals use it.
 | bare `/ab-test` (no other text) | answer directly | A four-line menu in the user's language, one example prompt per subcommand, nothing asked: `suggest`: "Suggest tests for my checkout page" · `design`: "Design a test for this page" + a screenshot or URL · `audit`: "Is this test plan set up correctly?" + the plan · `card`: "Turn this scenario into a card". |
 | `suggest`, "test öner", "ne test edeyim" / "what should I test" with **no page shared** | ab-test-suggest | Archive picks, ranked by priority |
 | `design`, "bu sayfa için test tasarla" / "design a test for this page" with **a page shared** | ab-test-design | The verb doesn't decide: "bu ekranlara test öner" with screenshots is `design` |
+| "dönüşümü nasıl artırırım" / "improve conversion", "how do I get more signups" | design if a page is shared, else suggest | A test request in other words; a located drop goes through Diagnosis below first |
+| "Hangi varyant daha iyi olur?" / "which variant is better?" with two versions shared | ab-test-audit | The pair is reviewed as a test plan; which one wins is what the test answers, never predicted (rule 10). With results attached, the out-of-scope line below |
 | "o elediğin ekrana da test yaz" / "give me a test for the one you dropped" | ab-test-design | An explicit ask (rule 9): always produced; weak → its "Daha güçlü alternatif:" line, plus one line that it was ranked below the bar. No new problem question |
 | "detay", "neden bu", "üç kutuyu göster", "neden şunu önermedin" / "explain scenario 2", "why did you drop that one" | the skill that produced it | Its Detail on request: `detail` for that one record, re-validated and re-reviewed by scenario-critic (the card stays as it is), the three boxes and the reasons in chat. "Why not that one" gets the reason in prose, no card |
-| "kurulum", "hedef kitle", "test planını yaz" / "setup", "audience" about a delivered designed scenario | ab-test-design | Its setup notes, once; no new card |
+| "kurulum", "hedef kitle", "test planını yaz" / "setup", "audience" about a delivered designed scenario | ab-test-design | Its setup notes again, expanded only where asked; no new card |
 | An answer to a "Koşullu" question | the skill that produced it | Confirmed → the assumption is removed and the record goes through the whole pipeline again (a final card without the ribbon); contradicted → the record is rewritten or dropped, said in one line |
 | `audit`, "test planımı denetle", "bu test doğru mu kurulmuş" / "is this test set up correctly" with a plan, brief or variant pair | ab-test-audit | |
 | "sonuçları yorumla", "anlamlı mı", "kazandı mı", "kaç ziyaretçi lazım", "ne kadar sürmeli", "A/A testi kur", "ön kayıt", "karar kuralı" / "is this significant", "did it win", "sample size", "how long should it run", "set up an A/A test", "pre-registration", "decision rule" | answer directly | One line (rule 5): "This playbook proposes, designs, audits and visualizes A/B tests. It doesn't analyze results or compute sample size, duration, significance or a winner; use your testing tool's own reporting for that." (TR: "Bu playbook A/B test önerir, tasarlar, denetler ve görselleştirir. Sonuç analizi yapmaz; örneklem, süre, anlamlılık veya kazanan hesaplamaz. Bunun için test aracınızın kendi raporunu kullanın.") With a plan in hand, offering to audit it is the turn's one question. No computation, no reading of the numbers |
@@ -56,18 +58,18 @@ These checks come before the routing table; a trigger phrase in the same message
 
 ## Front door: one question
 
-A shared page gets only rule 13's multiple-choice question, worded for the page (a form → "isn't filling out the form", a product page → "isn't adding to cart"):
+Rule 13 decides when the problem question is asked; word it for the page (a form → "isn't filling out the form", a product page → "isn't adding to cart"):
 
 - **Starts but doesn't finish** (enters the flow, doesn't complete it)
 - **Never starts** (sees the page, doesn't take the first action)
 - **Comes but low quality** (volume, no quality)
 - **No specific problem** (look at the page, tell me)
 
-It holds the turn, is asked once for several screens, and not again in the session; no pick → (d); after the answer, a screen with no strong candidate gets one line. Traffic, test tool and budget are never asked (rule 5); a named tool only shapes the setup notes' vocabulary. A market question for payment, shipping, price display or trust signals (rule 11) waits its turn under rule 19 and is usually answered by the domain, currency or fields.
+Skipped when the message states the problem or names the test. A screenshot with an obvious problem area (an obstacle visible on the page, such as a CTA below the fold or an open coupon field) gets that area's cards in the same turn, the assumed problem in `problem`, and this question after them as the turn's one question (rule 19). Otherwise it holds the turn. Either way it is asked once for several screens and not again in the session; no pick → (d); after the answer, a screen with no strong candidate gets one line. Traffic, test tool and budget are never asked (rule 5); a named tool only shapes the setup notes' vocabulary. A market question (rule 11) waits its turn under rule 19 and is usually answered by the domain, currency or fields.
 
 ## Never do
 
-- Deliver anything but a complete record (rule 1), with exactly one primary KPI (rule 2), as a final card after both reviews (rule 17), never a draft.
+- Deliver anything but a complete record (rule 1), with exactly one primary KPI (rule 2), as a final or conditional card after both reviews (rule 17), never a draft except rule 9's UNVERIFIED preview.
 - Regenerate the three boxes unasked, or dump the sub-skill machinery to the user.
 - Compute, estimate or interpret a sample size, duration, significance or winner (rule 5).
 - Present an archive scenario as generated, or as a tested win (rule 8).

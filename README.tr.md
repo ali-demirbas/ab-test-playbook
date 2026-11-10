@@ -19,7 +19,7 @@ Gerçek e-ticaret, mobil uygulama ve SaaS büyüme çalışmalarında, ayrıca d
 
 Yeni bir öneri bu kutuları tekrarlamaz. On parçalık kısa, yapılandırılmış bir kayıttır: soru biçiminde bir başlık, hedeflediği kullanıcı problemi ya da fırsat, tek cümlelik davranışsal mekanizma, tek değişken, A ile B arasındaki tam fark, paydasıyla birincil KPI, en önemli guardrail, kaynak ve kanıt düzeyi, tek cümlelik gerekçesiyle öncelik ve yalnızca gerektiğinde kritik bir erişilebilirlik, düzenleme ya da uygulanabilirlik uyarısı. Üç kutu, istediğiniz an ayrıntılı görünüm olarak geri gelir.
 
-**Kurulumsuz demo:** gerçek bir senaryo kartı (üstte testin sorusu, altında tam olarak tek bir şeyde farklılaşan iki büyük mockup, test edilen öğe halkayla işaretli ve adlandırılmış) [ali-demirbas.github.io/ab-test-playbook](https://ali-demirbas.github.io/ab-test-playbook/) adresinde. Bu, `scripts/build_card.py`’nin gerçek çıktısıdır, bir resmi değil; başka ekran türleri için örnek kartlar [docs/demo/](docs/demo/) klasöründe.
+**Demo:** [docs/index.html](docs/index.html) gerçek bir senaryo kartı taşır (üstte testin sorusu, altında tam olarak tek bir şeyde farklılaşan iki büyük mockup, test edilen öğe halkayla işaretli ve adlandırılmış). Klonladıktan sonra tarayıcıda açın ya da aşağıdaki görsele bakın. Bu, `scripts/build_card.py`’nin gerçek çıktısıdır; başka ekran türleri için örnek kartlar [docs/demo/](docs/demo/) klasöründe.
 
 > [!NOTE]
 > Resmi kaynak: bu repo, [ali-demirbas/ab-test-playbook](https://github.com/ali-demirbas/ab-test-playbook). Herkese açık skill dizinlerinde ilgisiz birkaç repo tesadüfen benzer isimli bir skill kullanıyor; bu projeyle alakaları yok.
@@ -68,7 +68,7 @@ flowchart LR
 
 ## Kurulum
 
-**Gereksinimler:** Claude Code ve PATH üzerinde `python3` 3.9 veya üstü. Script’ler yalnızca Python standart kütüphanesini kullanır; `pip install` gerektiren bir şey yok. İsteğe bağlı tek ek: kartın görsel kontrolü (`scripts/render_check.mjs`) Node ile Chromium’lu Playwright ister (aşağıda Görsel kontrol); yoksa kart doğrulanmamış taslak olarak üretilir, final olmaz.
+**Gereksinimler:** Claude Code ve PATH üzerinde `python3` 3.9 veya üstü. Script’ler yalnızca Python standart kütüphanesini kullanır; `pip install` gerektiren bir şey yok. Nihai kart için görsel kontrol de gerekir: `scripts/render_check.mjs`, Node ile Chromium’lu Playwright üzerinde çalışır (aşağıda Görsel kontrol). O olmadan yalnızca doğrulanmamış bir önizleme alırsınız, nihai kart asla.
 
 Claude Code içinde:
 
@@ -99,24 +99,40 @@ git clone https://github.com/ali-demirbas/ab-test-playbook.git
 cd ab-test-playbook/.gemini/extensions/ab-test-playbook && gemini extensions link .
 ```
 
-### Görsel kontrol (isteğe bağlı)
+### Görsel kontrol (nihai kart için gerekli)
 
-Bir kart ancak `scripts/render_check.mjs` onu Chromium’da çizdikten ve görsel incelemeci görüntüye baktıktan sonra final olur. Rehberin geri kalanı Python standart kütüphanesiyle çalışır; bu kısım Node.js 18 veya üstü ister. Playwright’ı reponun dışına kurun ki klonunuza dosya düşmesin:
+Bir kart ancak `scripts/render_check.mjs` onu Chromium’da çizdikten ve görsel incelemeci görüntüye baktıktan sonra nihai olur. Rehberin geri kalanı Python standart kütüphanesiyle çalışır; bu kısım Node.js 18 veya üstü ister. Playwright’ı bir kez, reponun dışına kurun:
 
 ```bash
-mkdir -p ~/.abtest-visual && cd ~/.abtest-visual
-npm init -y && npm install playwright
-npx playwright install chromium
-export NODE_PATH=~/.abtest-visual/node_modules
+npm i --prefix ~/.abtest-visual playwright && npx --prefix ~/.abtest-visual playwright install chromium
 ```
 
-Linux’ta `npx playwright install --with-deps chromium` sistem kütüphanelerini de kurar; Windows’ta değişkeni PowerShell’de `$env:NODE_PATH="$HOME\.abtest-visual\node_modules"` ile verin. `CHROMIUM_PATH=/yol/chrome-headless-shell` yalnızca kendi tarayıcı dosyanızı kullanacaksanız gerekir. Repo kökünden deneyin:
+`render_check.mjs`, `~/.abtest-visual/node_modules` klasörünü kendisi bulur. Linux’ta sistem kütüphaneleri için `install` sözcüğünden sonra `--with-deps` ekleyin. `NODE_PATH` yalnızca Playwright başka bir yerdeyse, `CHROMIUM_PATH=/yol/chrome-headless-shell` yalnızca kendi tarayıcı dosyanızı kullanacaksanız gerekir. Denemek için önce klonunuza geçin:
 
 ```bash
+cd ab-test-playbook
 node scripts/render_check.mjs --strict docs/demo/scenario-card.html
 ```
 
-Son stderr satırı sonucu söyler: `VERIFIED` (çıkış 0), `VISUAL_CHECK_FAILED` (çıkış 1, kartta düzeltilecek bir yerleşim hatası var) ya da `VISUAL_CHECK_UNAVAILABLE` (çıkış 3, Playwright veya Chromium yok). Kontrol çalışmazsa hiçbir şey ölçülmez ve incelemeci kartı onaylayamaz: taslak, doğrulanmamış önizleme olarak gelir; kurulumdan sonra aynı taslak kontrol edilip tamamlanır. `--shot` ve `--half`, kartın yanına `card-<ad>.png` ve `card-<ad>-800.png` yazar.
+Son stderr satırı sonucu söyler:
+
+| Çıkış | Sonuç | Anlamı |
+|---|---|---|
+| 0 | `VERIFIED` | Çizildi, hata yok |
+| 1 | `VISUAL_CHECK_FAILED` | Çizildi, kartta düzeltilecek bir yerleşim hatası var |
+| 2 | kullanım hatası | Bilinmeyen seçenek, kart yok ya da dosya bulunamadı |
+| 3 | `VISUAL_CHECK_UNAVAILABLE` | Playwright veya Chromium yok, hiçbir şey ölçülmedi |
+
+Çıkış 3’te incelemecinin kararı `UNVERIFIED` olur, hiçbir kart nihai olmaz: taslak, açıkça UNVERIFIED diye etiketlenmiş bir önizleme olarak gelir. Kontrol kurulunca aynı taslak kontrol edilip tamamlanır. `--shot` ve `--half`, kartın yanına `card-<ad>.png` ve `card-<ad>-800.png` yazar.
+
+### Güncelleme
+
+```
+/plugin marketplace update ab-test-playbook
+/plugin update ab-test-playbook@ab-test-playbook
+```
+
+Güncellemeler yalnızca plugin’in sürüm numarası değişince gelir. `/plugin` kurulu sürümü gösterir; [CHANGELOG](CHANGELOG.md)’dakinden geride kalıyorsa iki komutu da çalıştırıp Claude Code’u yeniden başlatın. Yerel bir klon `git pull` ile güncellenir.
 
 ## Kullanım
 
@@ -130,7 +146,7 @@ Son stderr satırı sonucu söyler: `VERIFIED` (çıkış 0), `VISUAL_CHECK_FAIL
 | `/ab-test card`: “bunu karta çevir” | Senaryoyu tek dosyalık 16:9 bir HTML kart olarak render eder: testin sorusu ve değişikliği halkayla işaretlenip adlandırılmış Variant A/B mockup’ları |
 | Yalnızca `/ab-test` | Her alt komut için birer örnek istemle kısa bir menü gösterir, soru sormaz |
 
-Bir sayfa paylaştığınızda (ekran görüntüsü, URL ya da kendi sayfanızın tarifi), router baştan yalnızca tek bir çoktan seçmeli soru sorar: hangi problemi çözdüğünüz. Senaryo üretmeden önce başka hiçbir şey sormaz; trafik, araç veya kurulum sorusu yok. Mesajınız problemi zaten söylüyorsa bu soru atlanır. Örneklem büyüklüğü, süre ya da anlamlılık düzeyi hiçbir zaman söylenmez. Marka kaynağı akışı hiçbir zaman durdurmaz: ekran görüntüsü veya sayfa paylaştıysanız marka renkleri doğrudan oradan alınır; yoksa nötr palet kullanılır, sonradan gönderdiğiniz bir marka kılavuzu onun yerini alır. Not düşülmez, soru sorulmaz, cevap beklenmez. Bir tur varsayılan olarak en fazla üç güçlü öneri üretir (`suggest` ya da `design` fark etmez) ve her biri hemen kendi HTML kartı olur; sohbette öneri başına yalnızca başlık, tek etiket satırı (öncelik, kaynak, kanıt), neden işe yarayabileceğini söyleyen kısa bir `Neden:` satırı ve kart dosyası kalır, kayıt ikinci kez yazılmaz. Liste asla şişirilmez: tek güçlü senaryo tam bir yanıttır, sayıyı tamamlamak için zayıf aday eklenmez. Açıkça istediğiniz bir test her zaman üretilir; zayıfsa sohbetteki tek satır zayıflığını söyler ve daha güçlü alternatifin adını verir. Üçten fazla güçlü aday varsa en iyi üçü üretilir, kalanların sayısı tek satırla teklif edilir. Bir tur en fazla bir soru sorar; gereken diğer bilgiler varsayım olarak belirtilir ve sonraki turda sorulur.
+Bir sayfa paylaştığınızda (ekran görüntüsü, URL ya da kendi sayfanızın tarifi), router baştan yalnızca tek bir çoktan seçmeli soru sorar: hangi problemi çözdüğünüz. Senaryo üretmeden önce başka hiçbir şey sormaz; trafik, araç veya kurulum sorusu yok. Mesajınız problemi zaten söylüyor ya da testi adıyla istiyorsa bu soru atlanır. Ekran görüntüsünde göze çarpan bir sorun alanı varsa önce onun kartları gelir, soru kartlardan sonra sorulur. Örneklem büyüklüğü, süre ya da anlamlılık düzeyi hiçbir zaman söylenmez. Marka kaynağı akışı hiçbir zaman durdurmaz: ekran görüntüsü veya sayfa paylaştıysanız marka renkleri doğrudan oradan alınır; yoksa nötr palet kullanılır, sonradan gönderdiğiniz bir marka kılavuzu onun yerini alır. Not düşülmez, soru sorulmaz, cevap beklenmez. Bir tur varsayılan olarak en fazla üç güçlü öneri üretir (`suggest` ya da `design` fark etmez) ve her biri hemen kendi HTML kartı olur; sohbette öneri başına yalnızca başlık, tek etiket satırı (öncelik, kaynak, kanıt), neden işe yarayabileceğini söyleyen kısa bir `Neden:` satırı ve kart dosyası kalır, kayıt ikinci kez yazılmaz. Liste asla şişirilmez: tek güçlü senaryo tam bir yanıttır, sayıyı tamamlamak için zayıf aday eklenmez. Açıkça istediğiniz bir test her zaman üretilir; zayıfsa sohbetteki tek satır zayıflığını söyler ve daha güçlü alternatifin adını verir. Üçten fazla güçlü aday varsa en iyi üçü üretilir, kalanların sayısı tek satırla teklif edilir. Bir tur en fazla bir soru sorar; gereken diğer bilgiler varsayım olarak belirtilir ve sonraki turda sorulur.
 
 ## Bir oturum nasıl görünür
 
@@ -146,9 +162,9 @@ Uçtan uca bir ürün sayfası örneği:
   <img src="assets/example-card.png" alt="Örnek senaryo kartı: kupon alanını “İndirim kodum var” bağlantısının arkasına almak geliri artırır mı? Üstte soru, altında yan yana Variant A ve Variant B, değişen öğe halkayla işaretli ve etiketli." width="900">
 </p>
 
-<p align="center"><sub>Bir arşiv senaryosundan uyarlanmış kayıttan üretilmiş kart: kurgusal ürün ve mağaza, nötr palet (sayfa ya da marka kılavuzu paylaşılmadı). `ab-test card`’ın her senaryo için render ettiği şey budur, elle yapılmış bir mockup değil. <a href="https://ali-demirbas.github.io/ab-test-playbook/">Canlı, kurulumsuz versiyon →</a> · kaynak <a href="examples/">examples/</a>’da</sub></p>
+<p align="center"><sub>Bir arşiv senaryosundan uyarlanmış kayıttan üretilmiş kart: kurgusal ürün ve mağaza, nötr palet (sayfa ya da marka kılavuzu paylaşılmadı). `ab-test card`’ın her senaryo için render ettiği şey budur, elle yapılmış bir mockup değil. <a href="docs/index.html">HTML versiyonu</a> · kaynak <a href="examples/">examples/</a>’da</sub></p>
 
-**Her senaryo şunlarla birlikte gelir:** kaydı (senaryo JSON’unda) ve tasarlanan bir test için kartlardan sonra sohbete bir kez yazılan kısa kurulum notları: hedef kitle, varyantın göründüğü yer, dışlamalar ve eşzamanlı testler, uyum onayı ya da B’nin erişilebilirlik kontrolü gibi yayın öncesi kapılar. Birincil KPI ve guardrail orada tekrarlanmaz; bir araç belirttiyseniz notlar onun diliyle adlandırılır. Bilmediği bir şey “sizden gelmesi gerekiyor” diye yazılır, asla tahmin edilmez. Ardından kartın kendisi gelir (paylaştığınız ekran görüntüsünden alınan marka renkleri; yoksa nötr palet).
+**Her senaryo şunlarla birlikte gelir:** kaydı (senaryo JSON’unda) ve tasarlanan bir test için kartlardan sonra sohbete bir kez yazılan kısa kurulum notları: hedef kitle, varyantın göründüğü yer, dışlamalar ve eşzamanlı testler, uyum onayı ya da B’nin erişilebilirlik kontrolü gibi yayın öncesi kapılar. Birincil KPI ve guardrail orada tekrarlanmaz; bir araç belirttiyseniz notlar onun dilini kullanır. Bilmediği bir şey “sizden gelmesi gerekiyor” diye yazılır, asla tahmin edilmez. Ardından kartın kendisi gelir (paylaştığınız ekran görüntüsünden alınan marka renkleri; yoksa nötr palet).
 
 **Test, test aracınızda bitti** → nasıl gittiğini aracın kendi raporu söyler. `.abtest-history.md` dosyasına bir satır ekleyin (tarih, sayfa, tek değişken, aracınızın raporladığı sonuç, akılda tutulacak örüntü); sıradaki öneri, tasarım ya da denetim bunu okur: zaten kaybetmiş bir değişken gerekçesiz yeniden önerilmez, küçük testlerin art arda fark üretmediği bir sayfaya daha yapısal bir fikir gelir.
 
@@ -172,7 +188,7 @@ scripts/         validate_scenarios.py: senaryo arşivi için format kontrolü
                  build_gemini.py · build_llms_full.py: Gemini CLI eklentisini ve docs/llms-full.txt dosyasını üretir
                  canary_report.py: arşivin atıfsız kopyalarını bulmak için ayırt edici arama ifadeleri türetir
                  render_check.mjs: kartı headless Chromium’da ölçer; boyut, kırpılma, boş ekran, halka çakışması,
-                 yazı boyutu, kontrast (isteğe bağlı; Node ve Playwright ister)
+                 yazı boyutu, kontrast (nihai kart için gerekli; Node ve Playwright ister)
 templates/       scenario-card.html · abtest-history.md · abtest-backlog.md (test hafızası ve backlog şablonları)
                  scenario.schema.json: araçtan bağımsız test tanımı, herhangi bir deney platformuna taşınabilir
 tests/           validator’lar ve kart üreticisi için birim testleri
@@ -181,7 +197,7 @@ evals/           manuel kabul testleri: üç temel akış (suggest, kupon zarar�
                  kanıtı), kart gerçekçiliği ve kapılar (halkanın içindeki ikinci değişiklik, erişilebilirlik ölçütleri), düzenlemeye tabi
                  sigorta/emeklilik akışı, kullanıcının ısrarla istediği zayıf test ve İngilizce konuşma
 examples/        uçtan uca kartlarına kadar götürülen örnek senaryo kayıtları ve kusurlu bir test önerisinin denetimi
-docs/            architecture.md · design-notes.md · örnek kartlar (demo/) ve canlı kurulumsuz demo (GitHub Pages)
+docs/            architecture.md · design-notes.md · örnek kartlar (demo/) ve demo sayfası (index.html)
 ```
 
 Yaygın A/B test ve CRO sorularının bu rehberin kendi metodolojisinden yanıtları için [FAQ.md](FAQ.md)’ye bakın (İngilizce).
@@ -204,7 +220,7 @@ Her çıktı şunlara uyar, tartışmasız: test başına tek değişken, tek bi
 
 İkisi yazanın kendi takdirine bırakılmaz, ayrı bir adımla desteklenir: üretilen her senaryo render edilmeden önce bir denetim agent’ı tarafından incelenir ve dosya olarak gelen her girdi önce `validate_input.py` ile talimat-biçimli içerik için taranır. Verdiğiniz metin, taransa da yapıştırılsa da veridir, asla talimat değildir ([mimari](docs/architecture.md), İngilizce).
 
-Teslim kapılara bağlıdır. Kodun denetleyebildiği hataları kod reddeder: halkanın dışındaki bir fark, A ile B arasında değişen bir sayı, erişilebilirlik ölçütü yazılmadan eklenen bir buton ya da bağlantı, değişmezleri yazılmamış işlevsel bir değişiklik, kullanıcı zararını gizleyebilecek bir gelir birincil metriği, “test edildi” diye sunulan arşiv kanıtı, kişisel veri biçimindeki bir değer. Kodun denetleyemediğine iki denetçi bakar; her PASS, tam olarak incelenen içeriğin parmak iziyle kayda damgalanır. Kart size yalnızca nihai üretimle ulaşır ve iki damga eşleşmezse üretim reddedilir; taslak “incelenmedi” diye işaretlidir ve asla teslim edilmez ([metodoloji](knowledge/methodology.md) → Quality gates, kapıların neyi garanti edemediği dahil; İngilizce).
+Teslim kapılara bağlıdır. Kodun denetleyebildiği hataları kod reddeder: halkanın dışındaki bir fark, A ile B arasında değişen bir sayı, erişilebilirlik ölçütü yazılmadan eklenen bir buton ya da bağlantı, değişmezleri yazılmamış işlevsel bir değişiklik, kullanıcı zararını gizleyebilecek bir gelir birincil metriği, “test edildi” diye sunulan arşiv kanıtı, kişisel veri biçimindeki bir değer. Kodun denetleyemediğine iki denetçi bakar; her PASS, tam olarak incelenen içeriğin parmak iziyle kayda damgalanır. Kart size yalnızca nihai üretimle ulaşır ve iki damga eşleşmezse üretim reddedilir; taslak “incelenmedi” diye işaretlidir ve asla teslim edilmez; tek istisna, görsel kontrol çalışamadığında UNVERIFIED diye etiketlenen önizlemedir ([metodoloji](knowledge/methodology.md) → Quality gates, kapıların neyi garanti edemediği dahil; İngilizce).
 
 ## Dil
 
