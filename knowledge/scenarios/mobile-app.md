@@ -21,7 +21,7 @@ Tüm servisleri eşit boyutta göstermek nötr bir deneyim yaratır. Öncelikli 
 - Dönüşüm Oranı (CR): Öne çıkarılan servisin tamamlama oranı yükseliyor mu?
 - İkon Tıklama Oranı (CTR): Büyütülen ikon daha çok tıklanıyor mu?
 - Kategori Giriş Oranı: Servise giriş hızlanıyor mu?
-- Diğer Servis Tıklaması: Gölgelenen servisler düşmemeli.
+- Diğer Servis Kullanım Oranı: Gölgelenen servisleri kullanan atanan kullanıcıların payı düşmemeli.
 - Navigasyon Verimliliği: Hedef sayfaya daha az adımda ulaşılıyor mu?
 
 **Yapılmaması gerekenler**
@@ -50,7 +50,7 @@ Uygulamayı açar açmaz üye olmayı zorunlu tutmak (sert duvar), kullanıcın�
 - Kayıt Oranı: Toplam üye olma oranı düşüyor mu, artıyor mu?
 - Aktivasyon Oranı: Misafir kullanıcı temel aksiyonu tamamlıyor mu?
 - Misafirden Üyeye Geçiş: Kaç misafir sonradan kaydoluyor?
-- Uygulama Silme Oranı: Sert duvar ilk gün silmeyi artırmamalı.
+- Uygulama Silme Oranı (7 gün): Sert duvar ilk hafta içinde silmeyi artırmamalı.
 - 7. Gün Elde Tutma: Hangi model kalıcılığı artırıyor?
 
 **Yapılmaması gerekenler**
@@ -308,11 +308,11 @@ Herkese aynı “sonraki adım” yerine kullanıcının nerede kaldığına gö
 - Segment: Yeni kullanıcı ile aktif kullanıcı farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
-- İlk Değerli Eyleme Ulaşma Oranı: Teste atanan kullanıcıların ilk değerli eyleme (ör. ilk sipariş) ulaşma oranı artıyor mu?
+- Aktivasyon Oranı (ilk değerli eylem): Teste atanan kullanıcıların ilk değerli eyleme (ör. ilk sipariş) ulaşma oranı artıyor mu?
 - Önerilen Adımın Tamamlanma Oranı: Tanı metriği; öneri gerçekten yapılıyor mu?
 - Alakasız Öneri Oranı: Yanlış öneri gösterimi kabul edilemez seviyeye çıkmamalı.
 - 7. Gün Elde Tutma: Elde tutma artıyor mu?
-- Uygulama Silme Oranı: Öneri baskısı, ilan edilen pencerede uygulamayı silen kullanıcıyı artırmamalı.
+- Uygulama Silme Oranı (30 gün): Öneri baskısı, 30 gün içinde uygulamayı silen kullanıcıyı artırmamalı.
 
 **Yapılmaması gerekenler**
 - Durum tespitini kullanıcının paylaşmadığı verilerden türetip bunu ima etmeyin.
@@ -339,7 +339,7 @@ Görünürde biten ama tam dolu olmayan bir gösterge (“Profiliniz %70 tamamla
 **Takip edilecek ana KPI’lar**
 - Profil Tamamlama Oranı: Eksik alanları dolduran kullanıcı oranı artıyor mu?
 - Tekrar Ziyaret Oranı: Gösterge kullanıcıyı tekrar uygulamaya döndürüyor mu?
-- Doldurulan Ortalama Alan Sayısı: Bir oturumda tamamlanan alan sayısı artıyor mu?
+- Doldurulan Alan Sayısı (atanan kullanıcı başına ortalama): Bir oturumda tamamlanan alan sayısı artıyor mu?
 - Gösterge Kapatma Oranı: Gösterge rahatsız edici bulunup kapatılmamalı.
 - Oturum Süresi: Atanan kullanıcıların genel kullanım süresi düşmemeli.
 

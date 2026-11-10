@@ -20,9 +20,9 @@ Kullanıcı zaten ödeme yaptı, kart bilgisi elinde ve satın alma kararı taze
 **Takip edilecek ana KPI’lar**
 - Ek Satın Alma Oranı: Teşekkür sayfasından yeni bir sipariş başlatan kullanıcı oranı artıyor mu?
 - Ek Sipariş Ortalama Tutarı: Yeni siparişlerin ortalama tutarı nedir?
-- Sipariş Bilgisi Görünürlüğü (anket): Kullanıcı asıl sipariş numarasını ve teslimat bilgisini bulabilmeli.
+- Sipariş Bilgisi Görünürlüğü (anket): Kullanıcı asıl sipariş numarasını ve teslimat bilgisini bulabilmeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Destek Talebi: “Siparişimi nasıl takip ederim” soruları artmamalı.
-- İade veya İptal Oranı: Öneri şeridi asıl siparişte iptal veya iade talebini artırmamalı.
+- İade veya İptal Oranı (30 gün): Öneri şeridi asıl siparişte iptal veya iade talebini artırmamalı.
 
 **Yapılmaması gerekenler**
 - Öneriyi, asıl siparişin teslimat tarihi veya sipariş numarasının önüne geçirip gizlemeyin.
@@ -48,8 +48,8 @@ Misafir ödemesi checkout sürtünmesini azaltır ama işletmeyi tekrar iletişi
 
 **Takip edilecek ana KPI’lar**
 - Kayıt Oranı: Misafir ödemesi yapıp hesap oluşturan kullanıcı oranı artıyor mu?
-- Tekrar Satın Alma Oranı: Misafir alıcıların ilan edilen pencerede (ör. 60 gün) yeniden sipariş verme oranı artıyor mu?
-- Sipariş Netliği (anket): Davet, siparişin tamamlandığı algısını bulanıklaştırmamalı.
+- Tekrar Satın Alma Oranı (60 gün): Misafir alıcıların ilan edilen pencerede (ör. 60 gün) yeniden sipariş verme oranı artıyor mu?
+- Sipariş Netliği (anket): Davet, siparişin tamamlandığı algısını bulanıklaştırmamalı. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - E-posta Onay Oranı: Hesap oluşturma sürecinde bırakma artmamalı.
 - Destek Talebi: “Siparişim nereye gitti, hesabım var mı” karışıklığı artmamalı.
 
@@ -78,7 +78,7 @@ Kullanıcı memnuniyetinin tepe noktası satın alma anının hemen sonrasıdır
 **Takip edilecek ana KPI’lar**
 - Paylaşım Başlatma Oranı: Teşekkür sayfasına ulaşan alıcılar içinde davet paylaşımı başlatanların oranı (A’da diğer yüzeylerden yapılanlar dahil) artıyor mu?
 - Referans Dönüşüm Oranı: Paylaşılan linkten gelen yeni müşteri sayısı nedir?
-- Sipariş Bilgisi Görünürlüğü (anket): Davet, sipariş bilgisini gölgelememeli.
+- Sipariş Bilgisi Görünürlüğü (anket): Davet, sipariş bilgisini gölgelememeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Ödül Talep Oranı: Vaat edilen ödül gerçekten talep edilip kullanılabiliyor mu; edilmiyorsa bu bir bulgudur.
 - Brüt Marj: Ödül maliyeti, davetle gelen siparişlerin marjını eritmemeli.
 
@@ -105,8 +105,8 @@ Bir deneyim büyük ölçüde en yoğun anına ve nasıl bittiğine göre hatır
 - Segment: İlk kez alışveriş yapan ile sadık müşteriye aynı an mı sunulmalı?
 
 **Takip edilecek ana KPI’lar**
-- Tekrar Satın Alma Oranı: Onay ekranına ulaşan alıcıların ilan edilen pencerede (ör. 60 gün) yeniden sipariş verme oranı artıyor mu?
-- Marka Algısı (anket): İkincil sinyal; deneyimin genel algısı standart ekrana göre daha olumlu mu?
+- Tekrar Satın Alma Oranı (60 gün): Onay ekranına ulaşan alıcıların ilan edilen pencerede (ör. 60 gün) yeniden sipariş verme oranı artıyor mu?
+- Marka Algısı (anket): İkincil sinyal; deneyimin genel algısı standart ekrana göre daha olumlu mu? Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Sosyal Paylaşım Oranı: Kullanıcı deneyimi kendiliğinden paylaşıyor mu?
 - Sipariş Bilgisi Görünürlüğü: Kutlama anı asıl sipariş veya teslimat bilgisinin görünürlüğünü azaltmamalı.
 - Sayfa Yüklenme Süresi: Animasyon veya ek görsel sayfayı yavaşlatmamalı.

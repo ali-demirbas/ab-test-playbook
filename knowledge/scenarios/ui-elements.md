@@ -167,7 +167,7 @@ Değişken: İkon yanındaki yazılı etiket · Fark: ekle
 - Cihaz: Mobilde etiket için yer kalıyor mu?
 
 **Takip edilecek ana KPI’lar**
-- İlgili İşlev Kullanım Oranı: İkonun temsil ettiği işlevin kullanımı artıyor mu?
+- İşlev Kullanım Oranı (ikonun işlevi): İkonun temsil ettiği işlevin kullanımı artıyor mu?
 - Ana Aksiyon Tamamlama Oranı: Genel ilerleme düşmemeli.
 - Yanlış Tıklama Oranı: Beklenmeyen işleve tıklama azalıyor mu?
 - Destek Talebi: “Bunu nerede yapıyorum” soruları azalıyor mu?
@@ -258,7 +258,7 @@ Tekrarlanan bir işlemi tek dokunuşa indirmek (tekrar sipariş, son aramayı y�
 - Kısayol Kullanım Oranı: Kısayol gerçekten kullanılıyor mu?
 - Hatalı İşlem Oranı: Yanlış varsayılanla yapılan işlem artmamalı.
 - İşlem Süresi: Tamamlama süresi kısalıyor mu?
-- İptal veya Düzeltme Oranı: Sonradan düzeltme talebi artmamalı.
+- İptal veya Düzeltme Oranı (30 gün): Sonradan düzeltme talebi artmamalı.
 
 **Yapılmaması gerekenler**
 - Kısayolu geri alınamaz bir işlemi tek dokunuşa indirmek için kullanmayın.
@@ -286,7 +286,7 @@ Seçim yapılır yapılmaz sonraki adıma geçmek bir tıklamayı ortadan kaldı
 - Akış Tamamlama Oranı: Otomatik geçiş tamamlamayı artırıyor mu?
 - Geri Dönüş Oranı: Bir önceki adıma dönme artmamalı.
 - Hatalı Seçim Oranı: Yanlış seçimle ilerleme artmamalı.
-- Ortalama Tamamlama Süresi: Akış hızlanıyor mu?
+- Görev Tamamlama Süresi (akış): Akış hızlanıyor mu?
 - Erişilebilirlik: Otomatik geçişte odak eski adımda kalmamalı, geçiş duyurusuz olmamalı.
 
 **Yapılmaması gerekenler**
@@ -460,7 +460,7 @@ Tablo satır ve sütun mantığıyla doğrudan karşılaştırma kurar; çok say
 - Ana Aksiyon Tamamlama Oranı: Sunum biçimi seçim yapmayı artırıyor mu?
 - Karşılaştırma Etkileşim Oranı: İçerik gerçekten inceleniyor mu?
 - Karar Süresi: Seçim süresi kabul edilemez ölçüde uzamamalı.
-- İade veya İptal Oranı: Farkları bulamayıp yanlış seçeneği alanların iade veya iptali artmamalı.
+- İade veya İptal Oranı (30 gün): Farkları bulamayıp yanlış seçeneği alanların iade veya iptali artmamalı.
 - Erişilebilirlik: Tablo yapısı ekran okuyucuda anlamsız hâle gelmemeli.
 
 **Yapılmaması gerekenler**
@@ -491,7 +491,7 @@ Bir sayfadaki dış bağlantı (ör. blog yazısındaki kaynak, ortak site linki
 - Asıl Siteye Dönüş Oranı: Dış bağlantıya tıklayan kullanıcılar (iki kolda aynı tetikleyici) içinde aynı oturumda asıl sitede gezinmeye devam edenlerin oranı artıyor mu?
 - Dış Bağlantı Tıklama Oranı: Davranış değişikliği tıklama oranını etkiliyor mu?
 - Oturum Süresi: Toplam site kullanım süresi düşmemeli.
-- Kafa Karışıklığı (anket): Kullanıcı beklenmedik bir sekme açıldığını fark edip rahatsız olmamalı.
+- Kafa Karışıklığı (anket): Kullanıcı beklenmedik bir sekme açıldığını fark edip rahatsız olmamalı. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Geri Dönüş Oranı: Tarayıcı geri tuşuna basma sıklığı artmamalı; artıyorsa davranış kafa karıştırıyordur.
 
 **Yapılmaması gerekenler**
@@ -519,7 +519,7 @@ Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağz
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Buton metni, tıklamadan sonraki adımın tamamlanmasını artırıyor mu?
 - Tıklama Oranı (CTR): Tanı metriği; buton metni tıklamayı artırıyor mu?
-- Marka Algısı (anket): İfade markayı samimiyetsiz veya tuhaf hissettirmemeli.
+- Marka Algısı (anket): İfade markayı samimiyetsiz veya tuhaf hissettirmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Destek Talebi: “Yanlışlıkla başlattım” türü talepler artmamalı; ifade, verilmemiş bir kararı verilmiş gibi göstermemeli.
 - Tekrar Ziyaret Oranı: Kısa vadeli tıklama artışı uğruna marka algısı zedelenmemeli.
 
@@ -546,10 +546,10 @@ Bir sitenin herhangi bir noktasındaki tanıtım banner’ı genellikle birden f
 - Segment: Yeni ziyaretçi ile mevcut müşteri aynı motivasyona mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
-- Banner Kaynaklı Dönüşüm Oranı: Banner’a tıklayıp hedef aksiyonu tamamlayan ziyaretçi oranı artıyor mu?
+- Duyurulan Aksiyonun Tamamlanma Oranı: Banner’ın çağırdığı hedef aksiyonu tamamlayan atanan ziyaretçi oranı (banner’a tıklayanlar değil) artıyor mu?
 - Banner Tıklama Oranı: Tanı metriği; tek odaklı banner tıklamayı artırıyor mu?
 - Dönüşüm Oranı (CR): Banner odağı sitenin ana dönüşümünü düşürmemeli.
-- Kaybolan Teklif Farkındalığı (anket): Banner’dan çıkarılan diğer tekliflerin bilinirliği kabul edilemez ölçüde düşmemeli.
+- Kaybolan Teklif Farkındalığı (anket): Banner’dan çıkarılan diğer tekliflerin bilinirliği kabul edilemez ölçüde düşmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Brüt Marj: Tek mesaj indirime kilitlenince indirimli sipariş payı marjı eritmemeli.
 
 **Yapılmaması gerekenler**
@@ -577,9 +577,9 @@ Kullanıcıya birden fazla eşdeğer seçenek (ör. ürün varyantı, özellik k
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Seçim ekranına atanan ziyaretçilerin seçimi yapıp akışı tamamlama oranı artıyor mu?
 - Seçim Tamamlama Süresi: Tanı metriği; görsel ağırlık karar süresini kısaltıyor mu?
-- Seçim Sonrası Değiştirme/İptal Oranı: Öne çıkarılan seçeneği alanların vazgeçme oranı artmamalı.
+- Seçim Sonrası Değiştirme/İptal Oranı (30 gün): Öne çıkarılan seçeneği alanların vazgeçme oranı artmamalı.
 - Diğer Seçeneklerin Görülme Oranı: Öne çıkarılmayan seçenekler tamamen gözden kaçmamalı.
-- Memnuniyet (anket): Seçim sonrası memnuniyet öne çıkarma nedeniyle düşmemeli.
+- Memnuniyet (anket): Seçim sonrası memnuniyet öne çıkarma nedeniyle düşmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 
 **Yapılmaması gerekenler**
 - Gerçek veriye dayanmayan bir seçeneği “en çok tercih edilen” gibi göstermeyin (kural 6).

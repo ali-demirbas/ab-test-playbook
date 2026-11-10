@@ -79,7 +79,7 @@ Yıllık planın seçili gelmesi indirim algısını öne çıkarır ama kullan�
 - Ziyaretçi Başına Gelir (RPV): Fiyat sayfasına atanan ziyaretçi başına abonelik geliri (yıllık tahsilat aylığa çevrilerek) artıyor mu?
 - Dönüşüm Oranı (CR): Toplam abonelik başlangıcı düşüyor mu?
 - Kullanıcı Başına Gelir (ARPU): Abone başına gelir ve yıllık plan payı; karışımı açıklar ama toplam gelir düşerken de artabilir, kazananı seçmez.
-- İptal Talebi: İlk 30 günde artmamalı.
+- İptal Oranı (30 gün): Testte başlayan aboneliklerde ilk 30 günde iptal artmamalı.
 - Destek Talebi: “Yanlışlıkla yıllık aldım” şikâyeti yükselmemeli.
 
 **Yapılmaması gerekenler**
@@ -167,7 +167,7 @@ Fiyatlandırma sayfasında bir planı öne çıkarmak seçim davranışını yö
 - Dönüşüm Oranı (CR): Fiyat sayfasından başlayan abonelik düşmemeli.
 - Kullanıcı Başına Gelir (ARPU): Abone başına gelir ve plan seçim dağılımı; rozetin seçimi hangi plana kaydırdığını gösterir ama tek başına kazanan seçmez.
 - Plan Düşürme Oranı: İlk ay alt plana geçiş artmamalı.
-- İptal Oranı: Yanlış plana yönlenme iptali artırmamalı.
+- İptal Oranı (30 gün): Yanlış plana yönlenme iptali artırmamalı.
 
 **Yapılmaması gerekenler**
 - Gerçek veriye dayanmayan “en popüler” etiketi kullanmayın.
@@ -311,8 +311,8 @@ Aynı bilgi iki farklı çerçeveyle verilebilir: “Yükseltmezsen 3 gün sonra
 
 **Takip edilecek ana KPI’lar**
 - Ücretliye Geçiş Oranı: Denemesi biten kullanıcıların (iki kolda aynı tetikleyici) ücretli plana geçme oranı artıyor mu?
-- Marka Algısı (anket): Mesaj baskıcı veya manipülatif hissettirmemeli.
-- İptal Oranı: Yükseltenlerin ilk ay içinde iptal oranı artmamalı; baskıyla alınan karar kalıcı olmayabilir.
+- Marka Algısı (anket): Mesaj baskıcı veya manipülatif hissettirmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
+- İptal Oranı (30 gün): Yükseltenlerin ilk ay içinde iptal oranı artmamalı; baskıyla alınan karar kalıcı olmayabilir.
 - Bildirim Kapatma Oranı: Mesaj kaynaklı bildirim iptali artmamalı.
 - Destek Talebi: Çerçeveyle ilgili şikâyet veya soru artmamalı.
 
