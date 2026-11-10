@@ -709,12 +709,22 @@ def _element(node, lang, extra, top):
 
 
 def _render(node, margins, lang, top):
-    """One node with its margin declarations, inside its soft/ring wrappers."""
+    """One node with its margin declarations, inside its soft/ring wrappers.
+
+    A ringed node's non-negative margins (its rhythm and its label's room) sit
+    on the ring element, so the ring hugs the content and the label lies in
+    the room between the ring and its neighbour. A negative margin (a band's
+    bleed) stays on the node: the ring itself never pulls."""
+    outer = []
+    if node.ring:
+        outer = [m for m in margins if not m.split(":", 1)[1].lstrip().startswith("-")]
+        margins = [m for m in margins if m not in outer]
     out = _element(node, lang, margins, top)
     if node.ring:
         label, pos = node.ring
         pos_attr = ' data-pos="%s"' % pos if pos else ""
-        out = '<div class="hl" data-note="%s"%s>%s</div>' % (esc(label), pos_attr, out)
+        style = ' style="%s"' % ";".join(outer) if outer else ""
+        out = '<div class="hl" data-note="%s"%s%s>%s</div>' % (esc(label), pos_attr, style, out)
     if node.soft is not None:
         note = ' data-note="%s"' % esc(node.soft) if node.soft else ""
         out = '<div class="hl-soft"%s>%s</div>' % (note, out)
@@ -727,12 +737,11 @@ def _margins(node, gap, last, top):
     top level the template's own gap already separates siblings, so only the
     difference is written.
 
-    The room sits on the ringed element, inside the ring: outside it would be a
-    difference between the arms outside any ring (card_problems), and on a
-    neighbour it would change A, which must stay byte-identical across records
-    that share a screen. Inside the screen's flex column the margin does not
-    collapse through the ring, so the ring grows by the room; the clean fix is a
-    margin on the ring itself, which card_problems refuses today."""
+    _render moves these declarations onto the ring element when the node is
+    ringed, so the room lies outside the ring (card_problems allows a
+    non-negative margin-top or margin-bottom on a ring). On a neighbour it
+    would change A, which must stay byte-identical across records that share
+    a screen."""
     wanted = node.props.get("mb", gap) if not last else 0
     mt = 0
     if node.ring:

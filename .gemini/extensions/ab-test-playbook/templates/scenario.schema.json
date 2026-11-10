@@ -371,7 +371,7 @@
     "review": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Rule 17: the reviewers' PASS stamps. scenario_critic carries the record fingerprint (validate_scenario_json.py --fingerprint), mockup_reviewer the final card's fingerprint (printed by build_card.py --draft). Optional here; the draft build requires the critic stamp and the final build both, each matching what it is about to build. Left out of the record fingerprint.",
+      "description": "Rule 17: the reviewers' PASS stamps. scenario_critic carries the record fingerprint (validate_scenario_json.py --fingerprint), mockup_reviewer the stamp of the final card it reviewed as a draft (printed by build_card.py --stamp <draft>, from the card's bytes, card.mockup_basis and the manifest). Optional here; the draft build requires the critic stamp and the final build both, each matching what it is about to build. Left out of the record fingerprint.",
       "properties": {
         "scenario_critic": {
           "$ref": "#/$defs/reviewStamp"
@@ -538,7 +538,7 @@
         },
         "change": {
           "type": "object",
-          "description": "Exactly one operation on one node of card.screen, the tested element, with the ring's label: {\"op\": insert_after|insert_before|replace|remove|move_after|move_before|edit, \"target\": <node id>, ..}. insert_*: node + label (difference add); replace: node + label (+ label_a); remove: label (difference remove); move_*: to + label_a + label_b (difference move); edit: set {property: value} + label (difference change). label_pos below|above places the label."
+          "description": "Exactly one operation on one node of card.screen, the tested element, with the ring's label: {\"op\": insert_after|insert_before|replace|remove|move_after|move_before|edit, \"target\": <node id>, ..}. insert_*: node + label (difference add); replace: node + label (+ label_a); remove: label (difference remove); move_*: to + label_a + label_b (difference move); edit: set {property: value} + label (difference change). label_pos below|above places the label. linked (optional, any op): a list of {\"target\": <node id>, \"set\": {property: value}}, the variable's forced consequences, applied to B only; each target must be in card.soft (drawn with the soft ring in both arms), and an edit or replace with linked differences needs label_a."
         },
         "soft": {
           "type": "array",

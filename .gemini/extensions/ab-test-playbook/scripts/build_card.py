@@ -1597,14 +1597,21 @@ SOFT_DEPTH = 4
 SOFT_SIBLINGS = 2
 
 
-def soft_near(soft, ring):
+def soft_near(soft, ring, other_arm=False):
     """The soft ring sits next to the ring (SOFT_DEPTH, SOFT_SIBLINGS), not
-    elsewhere on the screen. Paths of two trees compare by position."""
+    elsewhere on the screen. Paths of two trees compare by position.
+
+    other_arm: the ring is in the other variant (this arm has none, as A of an
+    add or B of a remove). There the soft may hold the very slot the ring takes
+    in the other arm: the element right after an inserted ring, or the one that
+    moves up into a removed ring's place."""
     ps, pr = _path(soft), _path(ring)
     n = 0
     while n < len(ps) and n < len(pr) and ps[n] == pr[n]:
         n += 1
     if n == len(ps) or n == len(pr):
+        if other_arm:
+            return abs(len(ps) - len(pr)) <= SOFT_DEPTH
         return False  # one inside the other: soft_problems reports nesting
     return len(ps) - n <= SOFT_DEPTH and len(pr) - n <= SOFT_DEPTH and abs(ps[n] - pr[n]) <= SOFT_SIBLINGS
 
@@ -2150,8 +2157,9 @@ def soft_problems(trees, ring_lists, lang="en", card_lang=None):
             push = RING_PUSH_RE.search(soft.attrs.get("style") or "")
             if push:
                 out.append(_lm("soft_box", lang, v=name, prop=push.group(1).lower()))
+            other_arm = not ring_lists[name]
             near = ring_lists[name] or ring_lists["B" if name == "A" else "A"]
-            if not nested and near and not any(soft_near(soft, r) for r in near):
+            if not nested and near and not any(soft_near(soft, r, other_arm) for r in near):
                 out.append(_cm("soft_far", lang, v=name, note=(soft.attrs.get("data-note") or "").strip()))
             note = (soft.attrs.get("data-note") or "").strip()
             if card_lang == "tr" and note[:1].islower():
@@ -3490,36 +3498,18 @@ def _write_all(files):
                 os.remove(tmp)
 
 
-def _no_duplicate_keys(pairs):
-    """json object_pairs_hook: a key written twice is refused (json.load would keep the last one in silence)."""
-    out = {}
-    for key, value in pairs:
-        if key in out:
-            raise ValueError("duplicate key %r in one object" % key)
-        out[key] = value
-    return out
-
-
-def load_record(path):
-    """The scenario record at `path`: valid JSON, no duplicate keys, no number Python refuses to read.
-
-    validate_scenario_json.loads_record is the one reader when that module
-    has it (the validator and the builder then read a record the same way);
-    without it the builder's own reader below does the same checks."""
+def load_record(path, lang=None):
+    """The scenario record at `path`, read by validate_scenario_json.loads_record,
+    the one reader the validator uses too: valid JSON, no key written twice, no
+    integer longer than the validator allows. Messages follow --lang."""
+    import validate_scenario_json as vsj  # here, not at module level: the validator imports this module
     with open(path, encoding="utf-8") as fh:
         text = fh.read()
     try:
-        import validate_scenario_json as vsj
-        reader = getattr(vsj, "loads_record", None)
-    except Exception:  # pragma: no cover - the validator ships next to this file
-        reader = None
-    try:
-        if reader is not None:
-            return reader(text)
-        return json.loads(text, object_pairs_hook=_no_duplicate_keys)
+        return vsj.loads_record(text, lang or _MSG_LANG)
     except RecursionError:
         die("scenario is not valid JSON: nested too deeply")
-    except ValueError as exc:  # JSONDecodeError, a duplicate key, an integer past the digit limit
+    except ValueError as exc:  # JSONDecodeError, a duplicate key, an over-long integer
         die("scenario is not valid JSON: %s" % exc)
 
 
@@ -3625,7 +3615,7 @@ def _run(args, lang):
             raise _Refused("output", bad, header=_t("--out was refused:", "--out reddedildi:", lang))
     with open(args.template, encoding="utf-8") as fh:
         template_text = fh.read()
-    scenario = load_record(args.scenario)
+    scenario = load_record(args.scenario, lang)
     if not isinstance(scenario, dict) or not scenario.get("title"):
         die("scenario is missing required field: title")
 

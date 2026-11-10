@@ -5,7 +5,7 @@
 # check one file format well. Nothing checked the seams BETWEEN files: a skill
 # whose frontmatter drifted, a markdown link to a renamed doc, or a
 # ${CLAUDE_PLUGIN_ROOT}/knowledge/... reference pointing at a file that no longer
-# exists. That last class is the dangerous one — it fails only mid-run, inside a
+# exists. That last class is the dangerous one: it fails only mid-run, inside a
 # skill, as a file the model quietly could not read. This script is the single
 # entry point that runs both the content validators and those cross-file checks.
 set -uo pipefail
@@ -13,7 +13,7 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 # `|| exit` is load-bearing: this runs under `set -uo pipefail` without `-e`, so
 # a failed cd would let every check below run against whatever directory the
-# caller happened to be in — reporting a clean pass on a tree it never looked at.
+# caller happened to be in, reporting a clean pass on a tree it never looked at.
 cd "$ROOT" || exit 1
 FAIL=0
 
@@ -33,7 +33,7 @@ count_files() {
 
 echo "== 1. Skills: frontmatter with name + description + metadata =="
 # Parseability comes first. Everything below reads front matter with grep, which
-# finds `description:` just as happily in a block no YAML parser can load — and
+# finds `description:` just as happily in a block no YAML parser can load, and
 # the installers that matter (Claude Code, `npx skills add`) do parse it. This
 # caught a real one: an unquoted `visual style: a Variant …` made the whole
 # ab-test-card skill invisible to `npx skills add`, silently, while every other
@@ -90,7 +90,7 @@ for f in agents/*.md; do
   # An agent nothing spawns is dead weight; a spawn naming a missing agent is
   # worse. Both directions are checked here.
   grep -rqF "agents/$base" skills/ CLAUDE.md \
-    || err "$f: no skill or CLAUDE.md rule references agents/$base — dead agent"
+    || err "$f: no skill or CLAUDE.md rule references agents/$base: dead agent"
 done
 ok "$(count_files agents/*.md) agents checked"
 
@@ -109,7 +109,7 @@ echo "== 4. Scenario archive format =="
 if python3 scripts/validate_scenarios.py >/dev/null 2>&1; then
   ok "scenario archive conforms (validate_scenarios.py)"
 else
-  err "scenario archive failed validate_scenarios.py — run it directly for detail"
+  err "scenario archive failed validate_scenarios.py: run it directly for detail"
 fi
 
 echo "== 5. Scenario JSON against the schema =="
@@ -118,7 +118,7 @@ for j in examples/*.json examples/samples/*.json; do
   if python3 scripts/validate_scenario_json.py "$j" >/dev/null 2>&1; then
     ok "$j conforms to templates/scenario.schema.json"
   else
-    err "$j failed validate_scenario_json.py — run it directly for detail"
+    err "$j failed validate_scenario_json.py: run it directly for detail"
   fi
 done
 
@@ -143,10 +143,10 @@ for pair in "examples/scenario.json:docs/demo/scenario-card.html" \
     if cmp -s "$out" "$demo"; then
       ok "$src builds as a final card (both review stamps match) and equals $demo"
     else
-      err "$src builds, but $demo differs from today's build — rebuild the demo card from its record"
+      err "$src builds, but $demo differs from today's build: rebuild the demo card from its record"
     fi
   else
-    err "a final build of $src was refused — the template, the builder or the record changed after review: $(tail -1 "$out.log")"
+    err "a final build of $src was refused: the template, the builder or the record changed after review: $(tail -1 "$out.log")"
   fi
 done
 python3 -c 'import json, sys
@@ -167,7 +167,7 @@ for case_name in unreviewed changed; do
      && grep -q "was NOT updated" "$CARD_TMP/$case_name.log" && [ "$(cat "$CARD_TMP/$case_name.html")" = OLD ]; then
     ok "a final build of the $case_name record is refused (exit 1, \"$want\") and the existing card is left untouched"
   else
-    err "a final build of the $case_name record was not refused as it must be (exit $code) — the review gate is open"
+    err "a final build of the $case_name record was not refused as it must be (exit $code): the review gate is open"
   fi
 done
 rm -rf "$CARD_TMP"
@@ -179,7 +179,7 @@ failed = False
 checked = 0
 
 # docs/index.html is the published landing page and links into docs/demo/. It is
-# HTML, not markdown, so the markdown link scanner below never sees it — and a
+# HTML, not markdown, so the markdown link scanner below never sees it, and a
 # broken href there ships a 404 on the live site with nothing in the repo able
 # to notice. Checked first, on its own terms.
 href_re = re.compile(r'(?:href|src)="([^"#?]+)"')
@@ -199,13 +199,13 @@ for page in ('docs/index.html',):
                     failed = True
 # Any relative target, not just .md/.json. A narrower extension list leaves every
 # link to a template's .html, a screenshot's .png, a script's .py, or a bare
-# directory unchecked — precisely the targets most likely to be renamed, since
+# directory unchecked, precisely the targets most likely to be renamed, since
 # no reader following prose notices them.
 link_re = re.compile(r'\]\(([^)\s]+?)(?:#[^)]*)?\)')
 SKIP_PREFIXES = ('http://', 'https://', 'mailto:', 'tel:', '#', '${')
 
 # A link to this repo's own GitHub Pages site is an internal link written the
-# long way — skipping it as "external" is how the published site ends up
+# long way; skipping it as "external" is how the published site ends up
 # shipping a 404 that nothing in the repo can see.
 with open('.claude-plugin/plugin.json', encoding='utf-8') as f:
     repo_url = json.load(f)['repository']
@@ -249,7 +249,7 @@ echo "== 8. \${CLAUDE_PLUGIN_ROOT} path references =="
 python3 - <<'PY' || FAIL=1
 import os, re, sys
 # Skills address knowledge files at runtime as ${CLAUDE_PLUGIN_ROOT}/knowledge/…,
-# which is a plain string inside backticks, not a markdown link — so section 7
+# which is a plain string inside backticks, not a markdown link, so section 7
 # never sees any of them. A renamed knowledge file leaves these pointing at
 # nothing and fails only mid-run, inside a skill, as a file the model quietly
 # could not read.
@@ -283,7 +283,7 @@ PY
 echo "== 9. Rule references point at rules that exist =="
 python3 - <<'PY' || FAIL=1
 import os, re, sys
-# Skills and agents cite the binding rules by number — "kural 17" in the Turkish
+# Skills and agents cite the binding rules by number: "kural 17" in the Turkish
 # files (CLAUDE.md, knowledge/, agents/), "rule 17" in the English skill bodies.
 # CLAUDE.md is the only place those numbers are defined; a citation past the end
 # of the list is a rule the reader will look for and not find.
@@ -326,7 +326,7 @@ echo "== 10. Shipped content carries no instruction-like text =="
 if python3 scripts/validate_input.py knowledge/scenarios/*.md knowledge/*.md >/dev/null 2>&1; then
   ok "no instruction-like or executable-markup lines in shipped knowledge"
 else
-  err "validate_input.py flagged shipped content — run it directly for the quoted lines"
+  err "validate_input.py flagged shipped content: run it directly for the quoted lines"
 fi
 
 echo "== 11. Vocabulary agrees across schema, validator and builder =="
@@ -335,7 +335,7 @@ echo "== 11. Vocabulary agrees across schema, validator and builder =="
 # devices it can frame, the difference types whose ring placement it enforces,
 # the mockup bases it writes into the manifest, the ring label positions, and
 # the languages its <html lang> and draft ribbon know). Duplicated vocabulary
-# drifts silently — a device added to the schema alone would validate and then
+# drifts silently: a device added to the schema alone would validate and then
 # fail to render.
 python3 - <<'PY' || FAIL=1
 import json
@@ -403,7 +403,7 @@ echo "== 12. Skill description contract (sibling refs + 'Use when') =="
 # The router relies on the description alone to decide whether a skill fires
 # (progressive disclosure: the body never loads until picked). Two things can
 # silently break that contract: a description that names a sibling skill which
-# has since been renamed or removed (a dead pointer nothing else notices — the
+# has since been renamed or removed (a dead pointer nothing else notices; the
 # reader just never finds the skill it was told to look at), and a description
 # missing the "Use when ..." sentence the routing logic depends on.
 python3 - <<'PY' || FAIL=1
@@ -434,7 +434,7 @@ for f in sorted(glob.glob("skills/*/SKILL.md")):
         failed = True
 
     # `ab-test-*` is a glob standing for "any ab-test skill", not a literal
-    # reference — the [a-z]+ requirement (no bare "ab-test", no "ab-test-*")
+    # reference: the [a-z]+ requirement (no bare "ab-test", no "ab-test-*")
     # excludes it and the router's own name without a separate special case.
     for ref in set(re.findall(r'\bab-test-[a-z]+\b', desc)) - {own}:
         if ref not in skill_names:
@@ -514,8 +514,8 @@ echo "== 14. Skills and agents address shipped files via \${CLAUDE_PLUGIN_ROOT} 
 # silently reads no archive. Section 8 only sees paths that already carry the
 # prefix; this catches the ones that forgot it. Code fences are checked too: in
 # a skill, a fenced command is something the model runs from the user's cwd,
-# so a relative `scripts/...` there is the same bug. The front matter is skipped
-# — the description is routing prose for the picker, never resolved as a path.
+# so a relative `scripts/...` there is the same bug. The front matter is skipped:
+# the description is routing prose for the picker, never resolved as a path.
 python3 - <<'PY' || FAIL=1
 import glob
 import re
@@ -536,7 +536,7 @@ for path in sorted(glob.glob("skills/*/SKILL.md") + glob.glob("agents/*.md")):
     checked += 1
     for lineno in range(start, len(lines)):
         for hit in bare_re.finditer(lines[lineno]):
-            print(f"FAIL: {path}:{lineno + 1}: bare '{hit.group(0)}' path — "
+            print(f"FAIL: {path}:{lineno + 1}: bare '{hit.group(0)}' path: "
                   "prefix it with ${CLAUDE_PLUGIN_ROOT}/")
             failed = True
 if failed:
@@ -548,7 +548,7 @@ echo "== 15. Skill descriptions fit the 1024-character limit =="
 # The description is the only text the picker sees before a skill loads, and
 # installers enforce a 1024-character ceiling on it. A description that grows
 # past it is truncated or rejected at install time, usually losing the routing
-# hints at its end — "To check ..., see ab-test-audit" — first.
+# hints at its end ("To check ..., see ab-test-audit") first.
 python3 - <<'PY' || FAIL=1
 import glob
 import re
@@ -575,13 +575,13 @@ PY
 
 echo "== 16. Gemini CLI extension matches its sources =="
 # .gemini/extensions/ is generated from CLAUDE.md, skills/ and agents/, not
-# hand-maintained — the same reasoning as docs/llms-full.txt below, and the
+# hand-maintained: the same reasoning as docs/llms-full.txt below, and the
 # same failure mode: a source file edited without regenerating ships an
 # out-of-date second copy of the plugin under a different runtime.
 if python3 scripts/build_gemini.py --check >/dev/null 2>&1; then
   ok "gemini extension is in sync with CLAUDE.md, skills and agents"
 else
-  err ".gemini/extensions/ is stale — run: python3 scripts/build_gemini.py"
+  err ".gemini/extensions/ is stale; run: python3 scripts/build_gemini.py"
 fi
 
 echo "== 17. Published Markdown bundle matches its sources =="
@@ -591,7 +591,7 @@ echo "== 17. Published Markdown bundle matches its sources =="
 if python3 scripts/build_llms_full.py --check >/dev/null 2>&1; then
   ok "docs/llms-full.txt is in sync with README, CLAUDE.md, architecture, FAQ and methodology"
 else
-  err "docs/llms-full.txt is stale — run: python3 scripts/build_llms_full.py"
+  err "docs/llms-full.txt is stale; run: python3 scripts/build_llms_full.py"
 fi
 
 echo
