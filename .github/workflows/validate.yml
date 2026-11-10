@@ -18,7 +18,7 @@ jobs:
   # pytest-compatible for anyone who prefers it locally). The Chromium render
   # tests skip here; the render job below runs them.
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -60,7 +60,7 @@ jobs:
         run: |
           set -o pipefail
           python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/unittest.log"
-          if grep -n "skipped" "$RUNNER_TEMP/unittest.log"; then
+          if grep -nE "(\.\.\. skipped|skipped=[0-9])" "$RUNNER_TEMP/unittest.log"; then
             echo "::error::tests were skipped; the render job must run every test"
             exit 1
           fi
@@ -69,7 +69,7 @@ jobs:
   # both bundle builders are scripts users run too, and a 3.10+ construct in one
   # of them would otherwise only surface on a contributor's machine.
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
