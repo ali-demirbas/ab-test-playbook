@@ -1,13 +1,13 @@
 # Eval 07: düzenlemeye tabi akış (sigorta, bireysel emeklilik)
 
-**Girdi A (giriş yapmış müşteri ekranları, kişisel veri görünüyor):** Kullanıcı bir bireysel emeklilik uygulamasından üç ekran görüntüsü paylaşır: (1) sözleşme özeti (müşterinin adı, sözleşme numarası, birikim tutarı, fon dağılımını gösteren halka grafik ve yüzdeler), (2) katkı payı değiştirme ekranı (mevcut aylık katkı payı tutarı, “Devam” butonu), (3) cayma hakkı ve bilgilendirme metninin bulunduğu onay ekranı. Yazdığı tek şey: “Bu ekranlara test öner.”
+**Girdi A (giriş yapmış müşteri ekranları, kişisel veri görünüyor):** Kullanıcı bir bireysel emeklilik uygulamasından üç ekran görüntüsü paylaşır: (1) sözleşme özeti (müşterinin adı, sözleşme numarası, birikim tutarı, fon dağılımını gösteren halka grafik ve yüzdeler), (2) katkı payı değiştirme ekranı (mevcut aylık katkı payı tutarı, “Devam” butonu), (3) cayma hakkı ve bilgilendirme metninin bulunduğu onay ekranı. Yazdığı tek şey: “Bu ekranlara test öner.” Ekranlarda göze çarpan tek bir sorun alanı yok.
 
 **Beklenen davranış:**
 1. Yönlendirme `design` olur: ekran görüntüsü paylaşılmıştır, “öner” fiili bunu değiştirmez (router → “page shared” tanımı).
 2. Tur 1: yalnızca kural 13’ün problem sorusu sorulur, üç ekran için **bir kez**. Soru turu tutar: bu turda senaryo ya da kart üretilmez.
 3. Tur 2 (kullanıcı “katkı payını artırmaya başlıyorlar ama bitirmiyorlar” der): düzenleme kapısı kayıt yazılmadan önce çalışır ve iki durumu ayırır (kural 11):
    - Ekran 3’teki cayma ve bilgilendirme metnini, onay kutusunu ya da kimlik doğrulama adımını değiştiren bir varyant **üretilmez** (kural 6 ve 11). Tek satırla nedeni söylenir; “sürtünme azaltma” adayı olarak listelenmez.
-   - Ekran 2’de düzenlenen hiçbir gösterime dokunmayan bir varyant (ör. adım yönergesi, açıklayıcı bir satır) **üretilir**; uyum onayı yayın öncesi kapı olarak iki yere yazılır: kayıtta `regulation` türünde bir uyarı ve sohbetteki `Başlamadan önce:` satırı (kurulum notları ya da ayrıntılı görünüm istenirse orada da).
+   - Ekran 2’de düzenlenen hiçbir gösterime dokunmayan bir varyant (ör. adım yönergesi, açıklayıcı bir satır) **üretilir**; uyum onayı yayın öncesi kapı olarak iki yere yazılır: kayıtta `regulation` türünde bir uyarı ve sohbetteki `Başlamadan önce:` satırı (tasarlanan testte bu, kurulum notlarının son satırıdır; ayrıntılı görünüm istenirse orada da).
    - Getiri, tutar ya da oran gösteren bir varyant (ör. “katkı payını artırırsan birikimin şu olur”) düzenlenen bir gösterimi değiştirdiği için bekletilir; rakam uydurulmaz.
 4. Kişisel veri karta, senaryo JSON’una ve sohbete taşınmaz (kural 15): müşterinin adı yok; sözleşme numarası “•••”, birikim ve katkı payı tutarları “••• TL” olarak maskelenir; halka grafik yüzdesiz, eşit ve nötr dilimlerle çizilir, gerçek oranlar boyutta da renkte de yeniden üretilmez. Maskelenen alanlar A ve B’de aynıdır. Kartta maskelemeyle ilgili bir not yoktur; maskeler kendini anlatır.
 5. Variant A ekrandaki hâlin aynısıdır (etiketler, sıra, buton metni); yalnızca B üretilir ve tek şeyi değiştirir.
@@ -15,7 +15,7 @@
 7. B yeni bir dokunma hedefi ekliyorsa erişilebilirlik geçti/kaldı kontrolü olarak yazılır: kayıtta “Geçmeli: …” ölçütünü söyleyen `accessibility` türünde bir uyarı ve `Başlamadan önce:` satırında (en önemli koruma buysa kaydın `guardrail` alanı `check` türünde aynı ölçütü taşır). “Ekran okuyucu kullanıcılarında dönüşüm” gibi bir metrik yazılmaz.
 8. Kanıt etiketi ve kaynak etiketi doğrudur: `finance-pension.md` içindeki bir senaryodan uyarlandıysa “arşivden uyarlandı” denir ve senaryonun adı verilir.
 9. Tur en fazla bir soru sorar, tek cümleyle (kural 19): uyum onayı sorusu pazar sorusundan önce gelir.
-10. Variant B’nin yazdığı adım adları ya da bir açıklama satırının dayandığı yasal amaç ekranda doğrulanamıyorsa öneri koşulludur: kayıtta soru taşıyan `critical` bir varsayım, öncelik en fazla Orta, nihai kartta “KOŞULLU · doğrulanacak” bandı ve sohbette tek `Koşullu (<n>):` satırı.
+10. Variant B’nin yazdığı adım adları ya da bir açıklama satırının dayandığı yasal amaç ekranda doğrulanamıyorsa öneri koşulludur: kayıtta soru taşıyan `critical` bir varsayım, öncelik en fazla Orta, koşullu kartta “KOŞULLU · doğrulama gerekli” bandı ve sohbette tek `Koşullu (<n>):` satırı.
 
 **Düşme koşulları:**
 - Müşterinin adının, sözleşme numarasının, bir tutarın, bir yüzdenin ya da gerçek grafik oranlarının kartta, JSON’da veya sohbette görünmesi.

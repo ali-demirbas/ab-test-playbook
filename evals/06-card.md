@@ -43,7 +43,7 @@
 1. Kayıtta `accessibility` türünde bir uyarı vardır ve dört ölçütü taşır: dokunma alanı en az 44×44 pt, metin kontrastı en az 4.5:1, klavyeyle ulaşılır ve kullanılır, ekran okuyucunun okuduğu bir ad. Pop-up için ayrıca açılınca odağı alır, görünür bir kapatma düğmesi ve Esc ile kapanır.
 2. Uyarı yoksa ya da bir ölçüt eksikse (ör. klavye, ya da pop-up için odak ve kapatma) `validate_scenario_json.py` ve `build_card.py` reddeder; eksik ölçüt kayda eklenir ve kayıt yeniden scenario-critic’e gider.
 3. B işlevsel bir öğeye dokunduğu için kayıtta `invariants` vardır (ör. beden seçimi ve sepete ekleme iki kolda aynı çalışır).
-4. Erişilebilirlik kontrolü sohbetteki `Başlamadan önce:` satırında da yer alır (kurulum notları istenirse orada da); “ekran okuyucu kullanıcılarında dönüşüm” gibi bir metrik olarak yazılmaz (kural 3).
+4. Erişilebilirlik kontrolü sohbetteki `Başlamadan önce:` satırında da yer alır (tasarlanan bir testte bu satır kurulum notlarının son satırıdır); “ekran okuyucu kullanıcılarında dönüşüm” gibi bir metrik olarak yazılmaz (kural 3).
 5. mockup-reviewer B’de ölçütlerle çelişen bir şey görürse (küçücük bir dokunma alanı, soluk metin) `FIX` döner.
 
 **Düşme koşulları:**
@@ -68,9 +68,9 @@
 
 **Beklenen davranış:**
 1. Kaydın `difference` değeri `move`dur; `card.difference` ya hiç yoktur ya da aynı türü söyler. Farklı bir tür yazılırsa `build_card.py` kartı reddeder; taşıma “ekle” ya da “kaldır” olarak çizilmez.
-2. İki kol aynı ilk görünümü ve aynı yerde aynı kesik çizgiyi (katlama işareti) çizer. A’da buton çizginin altında, B’de ilk görünümün altında sabit olarak halkalanır; iki halkanın etiketi aynıdır, butonun içeriği aynıdır. Manifestte tek bir “taşındı” halkası vardır, değişiklik yoktur (`mockup-style.md` → Special cases).
+2. İki kol aynı ilk görünümü ve aynı yerde aynı kesik çizgiyi (katlama işareti) çizer. A’da buton çizginin altında, B’de ilk görünümün altında sabit olarak halkalanır; her halkanın etiketi kendi kolundaki konumu söyler (A “Buton sayfanın sonunda”, B “Buton ekranda sabit”), butonun içeriği aynıdır. Manifestte tek bir “taşındı” halkası vardır, değişiklik yoktur (`mockup-style.md` → Special cases).
 3. Kartta sayfa metni ve halka etiketleri dışında açıklama yoktur (“kaydırınca”, “sonraki adım” gibi not yazılmaz).
 
 **Düşme koşulları:**
-- Taşımanın tek kolda halkalanması, iki farklı etiket ya da kaldır/ekle olarak çizilmesi.
+- Taşımanın tek kolda halkalanması, kendi kolu için doğru olmayan bir etiket ya da kaldır/ekle olarak çizilmesi.
 - Katlama işaretinin yalnızca bir kolda çizilmesi ya da mockup içine açıklama metni konması.

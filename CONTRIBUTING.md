@@ -19,7 +19,7 @@ New archive scenarios keep exactly this format; the quality gates (`knowledge/me
 
 ## Changing a skill
 
-- Skill instructions live in `skills/*/SKILL.md`. Keep the `metadata` block current — bump `version` on a behavior change, update `updated` (YYYY-MM-DD) on any substantive revision.
+- Skill instructions live in `skills/*/SKILL.md`. Keep the `metadata` block current: bump `version` on a behavior change, update `updated` (YYYY-MM-DD) on any substantive revision.
 - Skills that render output (`ab-test-card`) must keep following `knowledge/mockup-style.md` for what a card shows and how it looks: the title, the two mockups, the ring and its label, nothing else. Don't invent new markup ad hoc, and don't put record content back on the card.
 - Skills that produce scenarios write the record, not the three boxes, and read the archive through `grep` plus the shortlisted blocks, never a whole stage file; keep both when editing them.
 - The scope is fixed by `CLAUDE.md` rule 5: the playbook proposes, designs, audits and visualizes tests. A change that adds result analysis or sample-size, duration or significance math doesn't belong here.
@@ -52,4 +52,4 @@ All three run in CI (`.github/workflows/validate.yml`) on every PR; the unit tes
 
 ## Language
 
-Scenario content is Turkish — the archive's native language and the language its patterns were collected in. Code, skill instructions, and repo docs are English. Don't translate scenario content into English; the skills already answer in whatever language the user writes in.
+Scenario content is Turkish, the archive's native language and the language its patterns were collected in. Code, skill instructions, and repo docs are English. Don't translate scenario content into English; the skills already answer in whatever language the user writes in.

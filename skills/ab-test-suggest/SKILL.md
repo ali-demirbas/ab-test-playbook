@@ -1,13 +1,13 @@
 ---
 name: ab-test-suggest
-description: Suggest A/B test scenarios for a given page or journey stage from a curated pattern archive, ranked by priority. Use when the user asks "what should I test", "what should I A/B test on my checkout / cart / product page / pricing page / homepage", "give me A/B test ideas", "experiment ideas", "split test ideas", "CRO ideas", "which tests should I run first", "test öner", "hangi testleri yapmalıyım", "checkout için hangi testler", "anasayfam için test fikirleri", "ne test edeyim". Picks matching scenarios from the curated archive in knowledge/scenarios/ (e-commerce, mobile app, SaaS/B2B, search and filtering, forms, pricing, insurance and pension), writes at most three strong ones as scenario records and delivers each as an HTML card via ab-test-card. Routing — when NO page is shared (no screenshot, URL or described flow of the user's own page), or on a direct /ab-test-suggest even with one, use this skill; otherwise a shared page goes to ab-test-design. To review a plan you already have, see ab-test-audit.
+description: Suggest A/B test scenarios for a page type or journey stage from a curated pattern archive, ranked by priority. Use when the user asks "what should I test", "what should I A/B test on my checkout / product page / pricing page", "give me A/B test ideas", "CRO ideas", "which tests should I run first", "test öner", "hangi testleri yapmalıyım", "anasayfam için test fikirleri", "ne test edeyim". Writes at most three strong scenarios from knowledge/scenarios/ as records, each delivered as an HTML card via ab-test-card. Use it when NO page of the user's own is shared (no screenshot, URL or described flow), or on a direct /ab-test-suggest; a shared page goes to ab-test-design, a plan to review to ab-test-audit.
 metadata:
-  version: 3.0.0
+  version: 3.1.0
   category: recommend
-  updated: 2026-10-21
+  updated: 2026-11-10
 ---
 
-# ab-test-suggest — Archive Test Suggestions
+# ab-test-suggest: Archive Test Suggestions
 
 > **Language:** Output always matches the language you write in (CLAUDE.md rule 7).
 

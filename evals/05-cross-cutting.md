@@ -2,13 +2,14 @@
 
 Bu dosyadaki girdiler tek bir alt komuta ait değildir; her akışta geçerli olan kuralları sınar.
 
-**Girdi A (tur başına en fazla bir soru):** Kullanıcı bir ödeme sayfasının ekran görüntüsünü paylaşır, başka bir şey yazmaz. Sayfada taksit ve kargo bilgisi var, para birimi ve alan adı pazarı belli etmiyor, sayfada 3’ten fazla güçlü aday görülebiliyor.
+**Girdi A (tur başına en fazla bir soru):** Kullanıcı bir ödeme sayfasının ekran görüntüsünü paylaşır, başka bir şey yazmaz. Sayfada taksit ve kargo bilgisi var, para birimi ve alan adı pazarı belli etmiyor, sayfada 3’ten fazla güçlü aday görülebiliyor, ama göze çarpan tek bir sorun alanı yok.
 
 **Beklenen davranış:**
 1. Tur 1: yalnızca kural 13’ün problem sorusu sorulur (dört seçenekli tek soru). **Soru turu tutar:** bu turda senaryo, kart ya da aday listesi üretilmez, çünkü her aday cevaba bağlıdır. Pazar sorusu, “gerçekten yok mu” sorusu ve >3 teklifi bu tura girmez.
-2. Tur 2 (problem cevaplandıktan sonra): en iyi 3 güçlü aday kısa kayıt ve kart olarak gelir. Pazar sorusu (kural 11) kural 19’un öncelik sırasında >3 teklifinden önce geldiği için turun tek sorusu odur; >3 teklifi sonraki tura ertelenir, açık varsayım tek satırla yazılır. Aynı türden birden fazla soru çıkarsa (ör. üç senaryonun eklediği üç öğenin ekranda olup olmadığı) tek soruda birleştirilir; farklı türler birleştirilmez.
+2. Tur 2 (problem cevaplandıktan sonra): en iyi 3 güçlü aday kısa kayıt ve kart olarak gelir. Pazar sorusu (kural 11) kural 19’un öncelik sırasında >3 teklifinden önce geldiği için turun tek sorusu odur; >3 teklifi sonraki tura ertelenir, açık varsayım tek satırla yazılır. Aynı türden birden fazla soru çıkarsa (ör. üç senaryonun eklediği üç öğenin ekranda olup olmadığı) yalnızca en kritik olanı sorulur, diğerleri “Koşullu” satırında doğrulanacak olgu olarak kalır; iki soru tek cümlede birleştirilmez (kural 19).
 3. Kullanıcı tur 2’de seçeneklerden birini seçmeden başka bir şey yazarsa soru **tekrar sorulmaz**; (d) “belirli bir sorun yok” sayılır ve senaryolar üretilir.
 4. Marka kılavuzu hiçbir turda sorulmaz (kural 12).
+5. Varyasyon: ekran görüntüsünde göze çarpan bir sorun alanı varsa (ör. ödeme butonu ilk ekranda görünmüyor) o alanın kartları tur 1’de gelir, varsayılan problem `problem` alanına yazılır ve problem sorusu kartlardan sonra turun tek sorusu olarak sorulur (kural 13, 19).
 
 **Düşme koşulları:**
 - Herhangi bir turda iki veya daha fazla soru.
@@ -78,7 +79,7 @@ Bu dosyadaki girdiler tek bir alt komuta ait değildir; her akışta geçerli ol
 5. Nihai üretim reddedilirse kart elle yapılmaz ve taslak teslim edilmez; reddin adını verdiği kapı (eksik ya da eşleşmeyen damga) yeniden incelemeyle kapatılır.
 6. İnceleme raporları sohbete dökülmez; yalnızca kullanıcının bilmesi gereken bir kısıt tek cümleyle yazılır (kural 17).
 7. scenario-critic her FIX maddesini `[blocking]` ya da `[fixable]` diye işaretler ve ilk turda bütün düzeltilebilir eksikleri birlikte bildirir. Eleştirmenin tam tarif ettiği ve yeni bilgi gerektirmeyen bir `[fixable]` düzeltme üretici tarafından doğrudan uygulanır ve sonraki incelemede doğrulanır; kullanıcının vermediği bir bilgi gerekiyorsa kayıt düşürülmez, bilgi uydurulmaz, kritik varsayım olarak koşullu öneriye döner (kural 10).
-8. Kritik varsayımı olan bir kaydın nihai kartı koşullu banttır (“KOŞULLU · doğrulanacak”) ve iki damgayı da taşır; kullanıcı bilgiyi doğrulayınca varsayım kaldırılır, kayıt yeniden incelenir, yeni taslak incelenir ve nihai kart bantsız yazılır.
+8. Kritik varsayımı olan bir kaydın kartı koşullu karttır (“KOŞULLU · doğrulama gerekli” bandı, asla nihai diye anılmaz) ve iki damgayı da taşır; kullanıcı bilgiyi doğrulayınca varsayım kaldırılır, kayıt yeniden incelenir, yeni taslak incelenir ve nihai kart bantsız yazılır.
 
 **Düşme koşulları:**
 - Taslak kartın teslim edilmesi ya da sohbette adının verilmesi.

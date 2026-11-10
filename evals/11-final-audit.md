@@ -8,7 +8,7 @@
 - Üç `invariants` maddesi (kod aynı adımla uygulanır, indirim ve toplamlar aynı, hata mesajı aynı); bağlantı için ölçütlü erişilebilirlik uyarısı (odak alana geçer) ve `Başlamadan önce:` satırı.
 
 **Girdi B (sabit ödeme butonu):** Mobil ödeme sayfası; buton kaydırınca görünüyor, B’de ilk ekranın altına sabitleniyor.
-- `difference: move`, `card.difference` yok ya da aynı. İki kol aynı ilk görünümü ve aynı katlama çizgisini çizer; A butonu çizginin altında, B ilk görünümün altında halkalar; etiket ve içerik aynı, manifestte tek “taşındı” halkası.
+- `difference: move`, `card.difference` yok ya da aynı. İki kol aynı ilk görünümü ve aynı katlama çizgisini çizer; A butonu çizginin altında, B ilk görünümün altında halkalar; içerik aynı, her etiket kendi kolundaki konumu söyler, manifestte tek “taşındı” halkası.
 - Ekle/kaldır olarak çizilmez; mockup içinde açıklama metni yoktur.
 
 **Girdi C (ücretsiz kargo çubuğu):** Sepette “X TL kaldı” çubuğu ekleniyor; eşik sayfada yazıyor.
@@ -16,7 +16,7 @@
 - Kargo beklentisi pazara bağlıdır: `market` uyarısı. Sayfadaki eşik bir iddia sayılmaz; “sepet tutarı yüzde 15 artar” gibi bir tahmin yazılmaz.
 
 **Girdi D (SaaS’ta yıllık plan varsayılanı):** Fiyat sayfasında aylık seçili; B yıllığı varsayılan yapıyor; yıllık fiyatın kartta nasıl göründüğü bilinmiyor.
-- Koşullu öneri: soru taşıyan `critical` varsayım, öncelik en fazla Orta, nihai kartta “KOŞULLU · doğrulanacak” bandı; sohbette doğrulanacak olguyu adlandıran “Koşullu (1): 1 için yıllık planın kartta görünen fiyatı.” satırı ve turun tek sorusu olarak en kritik olgu (“Yıllık plan kartta hangi fiyatla görünüyor?”). Birincil KPI satırı yazılırsa bu değeri gelir ya da tahsilat diye anmaz.
+- Koşullu öneri: soru taşıyan `critical` varsayım, öncelik en fazla Orta, koşullu kartta “KOŞULLU · doğrulama gerekli” bandı; sohbette doğrulanacak olguyu adlandıran “Koşullu (1): 1 için yıllık planın kartta görünen fiyatı.” satırı ve turun tek sorusu olarak en kritik olgu (“Yıllık plan kartta hangi fiyatla görünüyor?”). Birincil KPI satırı yazılırsa bu değeri gelir ya da tahsilat diye anmaz.
 - “Yeni Abonelik Değeri (aylığa normalize, atanan ziyaretçi başına)” ile “Tahsilat (gözlem penceresi, atanan ziyaretçi başına)” ayrı tutulur; aylığa normalize değer gerçekleşmiş ziyaretçi başına gelir gibi sunulmaz.
 - Kullanıcı fiyatı doğrulayınca varsayım kaldırılır, kayıt yeniden incelenir, kart bantsız yazılır.
 
