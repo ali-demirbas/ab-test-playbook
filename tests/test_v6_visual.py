@@ -100,7 +100,7 @@ class TestFold(unittest.TestCase):
 
     def test_english_caption(self):
         sc = record(ITEMS + FOLD + BELOW, ITEMS + FOLD + BELOW.replace("yarın", "yarın"), difference="change")
-        sc["card"]["variant_b"] = ITEMS + FOLD + '<div class="hl" data-note="New">%s</div>' % BELOW
+        sc["card"]["variant_b"] = ITEMS + FOLD + '<div class="hl" data-note="New">%s</div>' % BELOW.replace("yarın", "bugün")
         sc["lang"] = "en"
         html = builds(sc)[0]
         self.assertEqual(html.count('<div class="below-cap">Below the first screen</div>'), 2)

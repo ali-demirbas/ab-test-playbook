@@ -9,7 +9,7 @@ hatalar), 5 kart tarafı (etkileşimli öğe ve erişilebilirlik ölçütleri),
 10 kart tarafı (yasal metin, önceden işaretli onay, SMS doğrulaması), 11
 (kişisel veri) ve 12 (damga kapıları, yazılmayan dosya). Damgalar burada
 programla üretilir: eleştirmen damgası record_fingerprint ile, mockup damgası
-build_card.final_fingerprint ile.
+build_card.mockup_stamp ile.
 """
 import contextlib
 import copy
@@ -100,7 +100,7 @@ def stamped(sc, critic=True, mockup=True):
     if critic:
         sc["review"]["scenario_critic"] = critic_stamp(sc)
     if mockup:
-        sc["review"]["mockup_reviewer"] = {"verdict": "PASS", "fingerprint": bc.final_fingerprint(TEMPLATE, sc)}
+        sc["review"]["mockup_reviewer"] = {"verdict": "PASS", "fingerprint": bc.mockup_stamp(TEMPLATE, sc)}
     return sc
 
 
@@ -464,7 +464,7 @@ class TestPersonalDataGate(unittest.TestCase):
 
     def card_with(self, text):
         line = '<div class="r-sub">%s</div>' % text
-        return record(HEAD + line, ring(HEAD, "Başlık") + line)
+        return record(HEAD + line, ring('<div class="r-h">Sepetiniz</div>', "Başlık") + line)
 
     def test_personal_values_are_refused(self):
         cases = {
@@ -541,14 +541,14 @@ class TestShippedExampleIsReviewed(unittest.TestCase):
             with self.subTest(os.path.basename(path)):
                 sc = _load(path)
                 self.assertEqual(sc["review"]["mockup_reviewer"]["verdict"], "PASS")
-                self.assertEqual(sc["review"]["mockup_reviewer"]["fingerprint"], bc.final_fingerprint(TEMPLATE, sc))
+                self.assertEqual(sc["review"]["mockup_reviewer"]["fingerprint"], bc.mockup_stamp(TEMPLATE, sc))
 
     def test_the_shipped_demo_card_is_the_reviewed_final(self):
         for path, demo in SHIPPED:
             with self.subTest(os.path.basename(demo)):
                 with open(demo, "rb") as fh:
                     data = fh.read()
-                self.assertEqual(hashlib.sha256(data).hexdigest(), _load(path)["review"]["mockup_reviewer"]["fingerprint"])
+                self.assertEqual(hashlib.sha256(data).hexdigest(), bc.final_fingerprint(TEMPLATE, _load(path)))
                 self.assertNotIn(b"abtest-status", data)
 
 
@@ -659,8 +659,9 @@ class TestReviewGates(RunCase):
         r = self.run_main(sc)
         self.assertEqual(r.code, 0, r.stderr)
         data = r.read()
-        self.assertEqual(hashlib.sha256(data).hexdigest(), sc["review"]["mockup_reviewer"]["fingerprint"])
-        self.assertIn("final fingerprint: %s\n" % sc["review"]["mockup_reviewer"]["fingerprint"], r.stdout)
+        fp = bc.final_fingerprint(TEMPLATE, sc)
+        self.assertEqual(hashlib.sha256(data).hexdigest(), fp)
+        self.assertIn("final fingerprint: %s\n" % fp, r.stdout)
         self.assertNotIn(b"abtest-draft", data)
         self.assertNotIn(b"abtest-status", data)
 
@@ -724,23 +725,23 @@ class TestDraft(RunCase):
         self.assertEqual(r.code, 0, r.stderr)
         draft = r.read().decode("utf-8")
         final, _, _ = bc.final_html(TEMPLATE, sc)
-        fp = bc.html_fingerprint(final)
         self.assertIn('<meta name="abtest-status" content="draft">', draft)
-        self.assertIn('<meta name="abtest-final-fingerprint" content="%s">' % fp, draft)
+        self.assertNotIn("abtest-final-fingerprint", draft)  # audit M8: the draft carries no fingerprint
         self.assertIn(">TASLAK · incelenmedi</div>", draft)
-        self.assertEqual(draft, bc.draft_html(final, fp, "tr"))
-        stripped = draft.replace('<meta name="abtest-status" content="draft">\n', "").replace(
-            '<meta name="abtest-final-fingerprint" content="%s">\n' % fp, "")
+        self.assertEqual(draft, bc.draft_html(final, "tr"))
+        stripped = draft.replace('<meta name="abtest-status" content="draft">\n', "")
         stripped = "\n".join(line for line in stripped.split("\n") if 'id="abtest-draft"' not in line)
         self.assertEqual(stripped, final)
 
-    def test_prints_the_paths_and_the_fingerprint_on_their_own_lines(self):
+    def test_prints_the_paths_and_the_review_step_but_no_fingerprint(self):
         sc, r = self.draft()
-        fp = bc.final_fingerprint(TEMPLATE, sc)
         lines = r.stdout.splitlines()
         self.assertTrue(lines[0].startswith("draft: %s (" % r.out), lines)
         self.assertTrue(lines[1].startswith("manifest: %s (" % r.manifest), lines)
-        self.assertEqual(lines[2], "final fingerprint: %s" % fp)
+        self.assertTrue(lines[2].startswith("review: mockup-reviewer reviews this draft"), lines)
+        self.assertIn("--stamp %s" % r.out, r.stdout)
+        for value in (bc.final_fingerprint(TEMPLATE, sc), bc.mockup_stamp(TEMPLATE, sc)):
+            self.assertNotIn(value, r.stdout)
 
     def test_english_banner(self):
         sc = example()
@@ -749,11 +750,13 @@ class TestDraft(RunCase):
         _, r = self.draft(sc)
         self.assertIn(">DRAFT · not reviewed</div>".encode("utf-8"), r.read())
 
-    def test_the_mockup_reviewer_can_grep_the_fingerprint(self):
-        import re
+    def test_nothing_the_draft_writes_is_a_stamp(self):
         sc, r = self.draft()
-        hits = re.findall(r'abtest-final-fingerprint" content="([0-9a-f]{64})"', r.read().decode("utf-8"))
-        self.assertEqual(hits, [bc.final_fingerprint(TEMPLATE, sc)])
+        stamp = bc.mockup_stamp(TEMPLATE, sc)
+        for path in (r.out, r.manifest):
+            text = r.read(path).decode("utf-8")
+            self.assertNotIn(stamp, text)
+            self.assertNotIn(bc.final_fingerprint(TEMPLATE, sc), text)
 
     def test_manifest_document(self):
         sc, r = self.draft()
@@ -766,7 +769,7 @@ class TestDraft(RunCase):
         self.assertEqual(doc["mockup_basis"], "representative")
         self.assertIsNone(doc["numeric_change"])
         self.assertEqual(doc["record_fingerprint"], vsj.record_fingerprint(sc))
-        self.assertEqual(doc["final_fingerprint"], bc.final_fingerprint(TEMPLATE, sc))
+        self.assertNotIn("final_fingerprint", doc)
         self.assertEqual(doc["rings"], [{"ring": 1, "label": "Kupon bağlantıda / Kupon alanı açık", "variant": "A+B",
                                          "kind": "changed", "changes": len(doc["changes"])}])
         kinds = {(c["kind"], c["change"], c.get("value")) for c in doc["changes"]}
@@ -774,13 +777,18 @@ class TestDraft(RunCase):
         self.assertIn(("component", "removed", "r-field"), kinds)
         self.assertIn(("text", "removed", None), kinds)
 
-    def test_the_mockup_stamp_from_the_draft_builds_the_final(self):
+    def test_the_stamp_the_reviewer_prints_builds_the_final(self):
         sc, r = self.draft()
-        fp = r.stdout.splitlines()[2].split(": ")[1]
-        sc["review"]["mockup_reviewer"] = {"verdict": "PASS", "fingerprint": fp}
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = bc.main(["--template", TEMPLATE_PATH, "--scenario", r.src, "--stamp", r.out])
+        self.assertEqual(code, 0, err.getvalue())
+        stamp = json.loads(out.getvalue())
+        self.assertEqual(stamp, {"verdict": "PASS", "fingerprint": bc.mockup_stamp(TEMPLATE, sc)})
+        sc["review"]["mockup_reviewer"] = stamp
         final = self.run_main(sc)
         self.assertEqual(final.code, 0, final.stderr)
-        self.assertEqual(hashlib.sha256(final.read()).hexdigest(), fp)
+        self.assertEqual(hashlib.sha256(final.read()).hexdigest(), bc.final_fingerprint(TEMPLATE, sc))
 
     def test_draft_refusal_says_the_manifest_was_not_updated_either(self):
         sc = example()

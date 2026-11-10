@@ -74,7 +74,7 @@ def stamped(sc, mockup=True):
     sc = copy.deepcopy(sc)
     sc["review"] = {"scenario_critic": {"verdict": "PASS", "fingerprint": vsj.record_fingerprint(sc)}}
     if mockup:
-        sc["review"]["mockup_reviewer"] = {"verdict": "PASS", "fingerprint": bc.final_fingerprint(TEMPLATE, sc)}
+        sc["review"]["mockup_reviewer"] = {"verdict": "PASS", "fingerprint": bc.mockup_stamp(TEMPLATE, sc)}
     return sc
 
 
@@ -89,7 +89,7 @@ def flat(**over):
         "difference": "change",
         "card": {
             "variant_a": '<div class="r-h">Sepet</div>',
-            "variant_b": '<div class="hl" data-note="Yeni"><div class="r-h">Sepet</div></div>',
+            "variant_b": '<div class="hl" data-note="Yeni"><div class="r-h">Sepetim</div></div>',
         },
     }
     for key, value in over.items():
@@ -269,7 +269,7 @@ class TestAllowlist(unittest.TestCase):
 
     def test_literal_less_than_in_text_is_text(self):
         text = '<div class="r-h">3 < 5 ve 5 > 3</div>'
-        build(TEMPLATE, flat(variant_a=text, variant_b='<div class="hl" data-note="Yeni">%s</div>' % text))
+        build(TEMPLATE, flat(variant_a=text, variant_b='<div class="hl" data-note="Yeni">%s</div>' % text.replace("ve", "ile")))
 
     def test_markup_is_inserted_byte_for_byte(self):
         sc = example()
@@ -478,10 +478,18 @@ class TestRingRules(unittest.TestCase):
         sc = example()
         sc["card"]["variant_b"] = sc["card"]["variant_b"].replace(
             'style="align-self:flex-start;line-height:44px"',
-            'style="align-self:flex-start;line-height:44px;margin-bottom:20px"')
+            'style="align-self:flex-start;line-height:44px;margin-left:20px"')
         msg = die_text(build, TEMPLATE, sc)
         self.assertIn("margin", msg)
         self.assertIn("must not push content", msg)
+
+    def test_label_room_outside_the_ring_is_allowed(self):
+        # A non-negative margin-top / margin-bottom on the ring keeps the label's room outside the ring.
+        sc = example()
+        sc["card"]["variant_b"] = sc["card"]["variant_b"].replace(
+            'style="align-self:flex-start;line-height:44px"',
+            'style="align-self:flex-start;line-height:44px;margin-top:20px;margin-bottom:8px"')
+        build(TEMPLATE, sc)
 
     def test_ring_with_inline_padding_is_refused(self):
         b = '<div class="hl" data-note="Yeni" style="display:flex;padding:6px"><div class="r-h">Sepet</div></div>'
@@ -583,12 +591,12 @@ class TestRingRules(unittest.TestCase):
         build(TEMPLATE, sc, warnings=warnings)
         self.assertTrue(any("label" in w for w in warnings), warnings)
 
-    def test_several_rings_in_one_variant_warn(self):
-        b = ('<div class="hl" data-note="Bir"><div class="r-h">A</div></div>'
-             '<div class="hl" data-note="İki"><div class="r-h">B</div></div>')
-        warnings = []
-        build(TEMPLATE, flat(variant_a='<div class="r-h">A</div><div class="r-h">B</div>', variant_b=b), warnings=warnings)
-        self.assertTrue(any("2 rings" in w for w in warnings), warnings)
+    def test_several_rings_in_one_variant_are_refused(self):
+        # Two independent rings read as two variables (audit M5): refused, not a warning.
+        b = ('<div class="hl" data-note="Bir"><div class="r-h">A2</div></div>'
+             '<div class="hl" data-note="İki"><div class="r-h">B2</div></div>')
+        msg = die_text(build, TEMPLATE, flat(variant_a='<div class="r-h">A</div><div class="r-h">B</div>', variant_b=b))
+        self.assertIn("2 rings in B", msg)
 
     def test_move_with_a_different_element_is_refused(self):
         # Stage 3: a moved element whose content changed was a warning; it is a second variable.

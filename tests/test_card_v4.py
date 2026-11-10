@@ -161,8 +161,7 @@ class TestOnlyTheComparison(unittest.TestCase):
 class TestDraftRibbon(unittest.TestCase):
     def setUp(self):
         self.final = bc.final_html(TEMPLATE, example())[0]
-        self.fp = bc.html_fingerprint(self.final)
-        self.draft = bc.draft_html(self.final, self.fp, "tr")
+        self.draft = bc.draft_html(self.final, "tr")
 
     def test_the_ribbon_is_the_only_new_line_inside_the_card(self):
         ribbon = [ln for ln in self.draft.splitlines() if 'id="abtest-draft"' in ln]
@@ -187,7 +186,7 @@ class TestDraftRibbon(unittest.TestCase):
 
     def test_the_ribbon_text(self):
         self.assertIn(">TASLAK · incelenmedi</div>", self.draft)
-        self.assertIn(">DRAFT · not reviewed</div>", bc.draft_html(self.final, self.fp, "en"))
+        self.assertIn(">DRAFT · not reviewed</div>", bc.draft_html(self.final, "en"))
 
 
 class TestLayoutRules(unittest.TestCase):
@@ -299,10 +298,10 @@ class TestOnlyRecordsBuild(unittest.TestCase):
     def test_a_stamped_record_still_builds_its_final(self):
         sc = example()
         sc["review"] = {"scenario_critic": {"verdict": "PASS", "fingerprint": vsj.record_fingerprint(sc)}}
-        sc["review"]["mockup_reviewer"] = {"verdict": "PASS", "fingerprint": bc.final_fingerprint(TEMPLATE, sc)}
+        sc["review"]["mockup_reviewer"] = {"verdict": "PASS", "fingerprint": bc.mockup_stamp(TEMPLATE, sc)}
         code, out, err, written = run_main(sc)
         self.assertEqual(code, 0, err)
-        self.assertEqual(bc.html_fingerprint(written), sc["review"]["mockup_reviewer"]["fingerprint"])
+        self.assertEqual(bc.html_fingerprint(written), bc.final_fingerprint(TEMPLATE, sc))
 
 
 if __name__ == "__main__":

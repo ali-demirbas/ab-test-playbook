@@ -421,16 +421,14 @@ class TestConditionalCard(unittest.TestCase):
 
     def test_the_draft_of_a_conditional_card(self):
         final = bc.final_html(TEMPLATE, conditional())[0]
-        fp = bc.html_fingerprint(final)
-        draft = bc.draft_html(final, fp, "tr")
+        draft = bc.draft_html(final, "tr")
         self.assertIn(">TASLAK · incelenmedi</div>", draft)
         self.assertIn(">KOŞULLU · doğrulama gerekli</div>", draft)
         # The first status meta a reader finds says draft.
         first = draft.index('<meta name="abtest-status"')
         self.assertTrue(draft.startswith('<meta name="abtest-status" content="draft">', first))
-        self.assertEqual(draft.count('abtest-final-fingerprint" content="%s"' % fp), 1)
-        stripped = draft.replace('<meta name="abtest-status" content="draft">\n', "").replace(
-            '<meta name="abtest-final-fingerprint" content="%s">\n' % fp, "")
+        self.assertNotIn("abtest-final-fingerprint", draft)
+        stripped = draft.replace('<meta name="abtest-status" content="draft">\n', "")
         stripped = "\n".join(line for line in stripped.split("\n") if 'id="abtest-draft"' not in line)
         self.assertEqual(stripped, final)
 
@@ -463,13 +461,13 @@ class TestConditionalBuildEndToEnd(unittest.TestCase):
         code, out, err, draft = run_main(sc, "--draft")
         self.assertEqual(code, 0, err)
         self.assertIn("conditional card (not implementation-ready)", out)
-        fp = bc.final_fingerprint(TEMPLATE, sc)
-        self.assertIn("final fingerprint: %s" % fp, out)
+        self.assertNotIn(bc.final_fingerprint(TEMPLATE, sc), out)  # the draft prints no fingerprint (M8)
         self.assertIn('<meta name="abtest-status" content="draft">', draft)
         code, _, err, _ = run_main(sc)
         self.assertEqual(code, 1)
         self.assertIn("review.mockup_reviewer", err)
-        sc["review"]["mockup_reviewer"] = {"verdict": "PASS", "fingerprint": fp}
+        fp = bc.final_fingerprint(TEMPLATE, sc)
+        sc["review"]["mockup_reviewer"] = {"verdict": "PASS", "fingerprint": bc.mockup_stamp(TEMPLATE, sc)}
         code, out, err, final = run_main(sc)
         self.assertEqual(code, 0, err)
         self.assertIn("conditional card (not implementation-ready)", out)

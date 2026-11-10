@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Deterministically build a scenario card HTML from its template by copying the
-template and substituting ONLY the placeholder regions — the cp-then-edit
+template and substituting ONLY the placeholder regions: the cp-then-edit
 mechanism CLAUDE.md mandates, done in code so it is correct every run.
 
 The card is the comparison and nothing else: the record's title (a question) at
@@ -48,7 +48,7 @@ says so.
                          from url), never a tab bar
               web        desktop browser frame filling its column
   difference: change | add | move | remove (Turkish değiştir | ekle | taşı | kaldır
-              accepted). The ring (.hl) placement is enforced — see ring_problems().
+              accepted). The ring (.hl) placement is enforced, see ring_problems().
               card.difference that differs from the record's is refused
               (difference_problems): the card would show another test than
               the one reviewed. A move is drawn as a move, also below the
@@ -74,7 +74,7 @@ says so.
               hsl() or one of the CSS colour names; anything else is refused.
 
 `variant_a` / `variant_b` are raw markup produced by the model for the mockup
-region and are inserted verbatim — that region is generative by design, only
+region and are inserted verbatim: that region is generative by design, only
 its surrounding skeleton is fixed. Because it is raw, it passes an ALLOWLIST
 first (parse_markup): a closed set of inert tags and attributes, every
 attribute value double-quoted, no comments, balanced tags, screened inline CSS.
@@ -84,10 +84,20 @@ attribute; nothing is cleaned or rewritten.
 Mechanical quality gates (code checks what code can check; the reviewers
 check the rest, and delivery needs both):
 
-  * A/B diff. The two mockups are parsed and aligned. Any difference outside
-    the rings refuses the card; every change inside the rings is listed in a
-    diff manifest for mockup-reviewer (text, numbers, components, modifier
-    classes, attributes and inline styles, each with its ring label).
+  * A/B diff, on what renders (white space as a browser collapses it, style
+    spelling normalised). Any difference outside the rings refuses the card;
+    every change inside the rings is listed in a diff manifest for
+    mockup-reviewer (text, numbers, components, modifier classes, attributes
+    and inline styles, each with its ring label; a soft ring's changes as
+    their own "linked" entry). A and B that render the same refuse the card.
+  * Rings. One .hl per arm; a ring holds something visible; a .hl-soft sits
+    next to the ring.
+  * Inline style that could hide, clip, displace or reorder content
+    (style_problems): opacity, visibility, display:none, overflow, clip-path,
+    filters, masks, text-indent, offsets, z-index, non-rotate transforms,
+    large negative margins (any beyond an icon's under a ring), order and
+    reversed flex, preserved white space. The template's components carry
+    all positioning a card needs.
   * Numbers. A price, amount, percentage, count or rating that differs
     between A and B, inside or outside a ring, refuses the card unless the
     record says why in `numeric_change`.
@@ -103,7 +113,8 @@ check the rest, and delivery needs both):
     all-zero placeholders pass.
 
 What a browser shows (size, clipping, ring and label overlap, font size,
-contrast, A/B alignment) is measured by scripts/render_check.mjs, not here.
+contrast, A/B alignment, every text actually visible, ring content inside its
+ring) is measured by scripts/render_check.mjs, not here.
 
 Conditional card. A record with at least one critical assumption
 (`assumptions[].type == "critical"`) builds a conditional card: the final
@@ -116,11 +127,20 @@ a final card. A record without one builds exactly as before.
 Review gates. A draft (--draft) needs the scenario-critic stamp whose
 fingerprint equals the record's (validate_scenario_json.record_fingerprint);
 it writes the final card's HTML plus a draft ribbon overlaid on the card and
-two meta tags, writes <out>.manifest.json and prints the final card's
-fingerprint (of a conditional card: of its conditional bytes). A final build (the default) needs both stamps: scenario-critic =
-the record's fingerprint, mockup-reviewer = the sha256 of the exact bytes it is
-about to write. Everything is built in memory and written only when every gate
-passed.
+a draft meta tag, writes <out>.manifest.json and prints what the reviewer
+does next. It prints no fingerprint. mockup-reviewer, on PASS, runs --stamp on
+the draft it reviewed: refused unless that draft and its manifest are byte for
+byte what the record builds now; it prints the review.mockup_reviewer stamp
+(mockup_stamp: the final bytes, card.mockup_basis and the manifest). A final
+build (the default) needs both stamps, writes the card, reads it back and
+prints its sha256; --check CARD later confirms a delivered file is still that
+card. Everything is built in memory and written only when every gate passed.
+The stamps prove what was approved, not that a review happened (see the
+comment above stamp_of()).
+
+--out names an .html file: never the template or the record, never inside
+the repository's source directories, and never over an existing file this
+tool didn't write.
 
 Usage:
   build_card.py --template templates/scenario-card.html \\
@@ -129,9 +149,13 @@ Usage:
   build_card.py --template templates/scenario-card.html \\
                 --scenario scenario.json \\
                 --out abtest-card-kupon-alani.html [--lang tr]
+  build_card.py --template ... --scenario ... --stamp abtest-card-kupon-alani.draft.html
+  build_card.py --template ... --scenario ... --check abtest-card-kupon-alani.html
 
---draft  build the review draft (ribbon, meta tags, manifest) instead of the
+--draft  build the review draft (ribbon, meta tag, manifest) instead of the
          final card.
+--stamp  mockup-reviewer only, after a PASS: print the stamp for that draft.
+--check  confirm a delivered card is the reviewed final, byte for byte.
 --lang   language of the builder's own messages (en, the default, or tr).
 
 Exit: 0 = written and self-verified (warnings, if any, go to stderr as
@@ -198,8 +222,8 @@ PLACEHOLDER_RE = re.compile(r"\{\{[A-Z_]+\}\}")
 # ------------------------------------------------- the mockup markup allowlist
 #
 # `variant_a`/`variant_b` are inserted raw by design (SCREEN_PLACEHOLDERS above)
-# — the mockup markup is generative, so it can't be html.escape()'d without also
-# escaping the legitimate HTML it's made of. Text from a user's page can end up
+# (the mockup markup is generative, so it can't be html.escape()'d without also
+# escaping the legitimate HTML it's made of). Text from a user's page can end up
 # in it (CLAUDE.md rule 18), and whatever survives runs in the browser that
 # opens the card. A deny-list cannot hold that line: HTML accepts unquoted
 # handlers, entity-encoded schemes, <meta refresh>, <form action>, <style> and a
@@ -237,9 +261,11 @@ START_TAG_RE = re.compile(r"<([a-zA-Z][a-zA-Z0-9]*)((?:%s)*)%s*(/?)>" % (_ATTR_S
 END_TAG_RE = re.compile(r"</([a-zA-Z][a-zA-Z0-9]*)%s*>" % _WS)
 CONTROL_RE = re.compile(r"[\x00-\x08\x0b\x0e-\x1f\x7f]")
 
-# Inline CSS: anything that fetches (url, image-set, @import), scripts (legacy
-# expression/behavior/-moz-binding, a javascript: value), escapes the phone
-# frame (position:fixed), or hides one of those behind an escape or a comment.
+# Inline CSS, first screen (security): anything that fetches (url, image-set,
+# @import), scripts (legacy expression/behavior/-moz-binding, a javascript:
+# value), escapes the phone frame (position:fixed), or hides one of those
+# behind an escape or a comment. The second screen (visibility, below:
+# style_problems) refuses what would hide, clip or displace drawn content.
 CSS_FORBIDDEN = re.compile(
     r"url\s*\(|image-set\s*\(|expression\s*\(|@import|javascript\s*:|vbscript\s*:|behaviou?r\s*:|-moz-binding"
     r"|position\s*:\s*fixed|\\|/\*|[<>{}]",
@@ -271,16 +297,17 @@ DANGEROUS_PATTERNS = DANGEROUS_TAGS + DANGEROUS_IN_MARKUP
 # quoted values included.
 TAG_SEGMENT_RE = re.compile(r"""<[a-zA-Z/](?:"[^"]*"|'[^']*'|[^>"'])*>?""")
 
-# Provenance, added by the builder rather than kept in the template — the line
+# Provenance, added by the builder rather than kept in the template: the line
 # above strips every template comment, so a notice living there would be
 # removed from exactly the artifact that travels. Cards get shared, forwarded
 # and pasted into decks long after they leave the repo; this is the only thing
 # that still says where one came from. Invisible on screen by design: it costs
 # nothing in a client presentation, and removing it from generated output means
 # editing the generator, not deleting a line from a file.
+PROVENANCE_MARK = "Generated by ab-test-playbook"
 PROVENANCE = (
     "<!--\n"
-    "  Generated by ab-test-playbook — https://github.com/ali-demirbas/ab-test-playbook\n"
+    "  %s: https://github.com/ali-demirbas/ab-test-playbook\n" % PROVENANCE_MARK +
     "  Copyright (c) 2026 Ali Demirbaş · MIT License\n"
     "  This card was produced by scripts/build_card.py from templates/scenario-card.html.\n"
     "-->\n"
@@ -491,7 +518,7 @@ def normalize(scenario, msg_lang=None):
             die("card.inherited_contrast must be a list of {\"text\": …, \"color\": \"#rrggbb\"}")
         for item in inherited:
             text_ok = isinstance(item, dict) and isinstance(item.get("text"), str) and item["text"].strip()
-            if not text_ok or not re.match(r"^#[0-9a-fA-F]{6}$", str(item.get("color", ""))):
+            if not text_ok or not re.match(r"^#[0-9a-fA-F]{6}\Z", str(item.get("color", ""))):
                 die("card.inherited_contrast: each entry is {\"text\": <the element's exact text>, "
                     "\"color\": \"#rrggbb\" as measured on the screen}, got %r" % (item,))
             needle = ">%s<" % escape(item["text"].strip())
@@ -884,6 +911,30 @@ PINNED_STEMS = ("sabit", "sabitlen", "yapışkan")
 PINNED_WORDS = ("sticky", "pinned", "fixed")
 
 
+def _style_decls(value):
+    """An inline style as [(property, value)]: property lowercased, value with
+    its whitespace collapsed. The allowlist already refused comments, escapes
+    and braces, so a ";" always ends a declaration."""
+    out = []
+    for decl in (value or "").split(";"):
+        prop, sep, val = decl.partition(":")
+        prop = prop.strip().lower()
+        if sep and prop:
+            out.append((prop, " ".join(val.split())))
+    return out
+
+
+def _norm_style(value):
+    """An inline style as it renders, spelled one way: lowercased (CSS
+    keywords, colour names and hex digits are case-insensitive), 3- and
+    4-digit hex expanded, no spaces around the colon."""
+    decls = []
+    for prop, val in _style_decls(value):
+        val = re.sub(r"#[0-9a-f]{3,8}\b", lambda m: _norm_colour(m.group(0)), val.lower())
+        decls.append("%s:%s" % (prop, val))
+    return ";".join(decls)
+
+
 class Node:
     """One element of a parsed mockup body."""
 
@@ -903,18 +954,77 @@ class Node:
         """A soft ring (.hl-soft): a linked consequence of the variable, not the variable."""
         return SOFT_CLASS in self.classes
 
+    def norm_attrs(self):
+        """The attributes as they render: classes as a set, inline style with
+        its spelling normalised (_norm_style), so "#AABBCC" and "#aabbcc" or a
+        reordered class list are the same element."""
+        out = {}
+        for name, value in self.attrs.items():
+            if name == "class":
+                value = " ".join(sorted(set(value.split())))
+                if not value:
+                    continue
+            elif name == "style":
+                value = _norm_style(value)
+                if not value:
+                    continue
+            out[name] = value
+        return out
+
     def key(self, ring_blind=False):
-        """Structural identity. ring_blind drops the ring's own class and label
-        so a ringed element compares equal to its un-ringed twin."""
-        attrs = dict(self.attrs)
+        """Structural identity, on what renders (norm_attrs). ring_blind drops
+        the ring's own class and label so a ringed element compares equal to
+        its un-ringed twin."""
+        attrs = self.norm_attrs()
         if ring_blind:
             attrs.pop("data-note", None)
             attrs.pop("data-pos", None)
-            attrs["class"] = " ".join(c for c in self.classes if c not in RING_CLASSES)
+            attrs["class"] = " ".join(sorted(set(c for c in self.classes if c not in RING_CLASSES)))
             if not attrs["class"]:
                 del attrs["class"]
         return (self.tag, tuple(sorted(attrs.items())),
                 tuple(k.key(ring_blind) if isinstance(k, Node) else k for k in self.kids))
+
+
+ASCII_WS_RE = re.compile(r"[ \t\n\r\f]+")
+INLINE_TAGS = ("span", "b", "strong", "i", "em", "u", "s", "small", "sup", "sub")
+# Characters that draw nothing: a text made only of these (or of spaces) is no
+# visible content, whatever the browser keeps of it.
+INVISIBLE_RE = re.compile("[\\s ­͏ᅟᅠ᠎​-‏ -  -⁯"
+                          "　ㅤ﻿ﾠ]+")
+
+
+def _inline(k):
+    return isinstance(k, str) or (isinstance(k, Node) and k.tag in INLINE_TAGS)
+
+
+def _settle_spaces(node):
+    """Keep a text's edge space only where it renders: next to inline content
+    on that side. A whitespace-only text between two inline neighbours is one
+    space; anywhere else (between blocks, at a container's edge) it is gone."""
+    kids = node.kids
+    out = []
+    for i, k in enumerate(kids):
+        if isinstance(k, Node):
+            _settle_spaces(k)
+            out.append(k)
+            continue
+        prev_inline = i > 0 and _inline(kids[i - 1])
+        next_inline = i + 1 < len(kids) and _inline(kids[i + 1])
+        if not k.strip(" "):
+            if prev_inline and next_inline:
+                out.append(" ")
+            continue
+        if k.startswith(" ") and not prev_inline:
+            k = k.lstrip(" ")
+        if k.endswith(" ") and not next_inline:
+            k = k.rstrip(" ")
+        out.append(k)
+    node.kids = out
+
+
+def _visible_text(text):
+    return bool(INVISIBLE_RE.sub("", text or ""))
 
 
 class _TreeBuilder(HTMLParser):
@@ -928,9 +1038,19 @@ class _TreeBuilder(HTMLParser):
         self.problems = []
         self.starts = 0
 
+    def _open_p(self):
+        """A <p> anywhere among the open elements: a block start tag closes it
+        (none of the allowed tags is a scope boundary), even through a <span>."""
+        node = self.cur
+        while node is not None:
+            if node.tag == "p":
+                return True
+            node = node.parent
+        return False
+
     def handle_starttag(self, tag, attrs):
         self.starts += 1
-        if self.cur.tag == "p" and tag in BLOCK_TAGS:
+        if tag in BLOCK_TAGS and self._open_p():
             self.problems.append(("p_block", {"tag": tag}))
         if tag == "li" and self.cur.tag not in ("ul", "ol"):
             self.problems.append(("li_parent", {}))
@@ -956,9 +1076,23 @@ class _TreeBuilder(HTMLParser):
         self.cur = self.cur.parent
 
     def handle_data(self, data):
-        text = " ".join(data.split())
-        if text:
-            self.cur.kids.append(text)
+        # What a browser renders (white-space: normal; the inline screen
+        # refuses pre and friends): runs of ASCII whitespace collapse to one
+        # space. Nothing else is whitespace to CSS, so a no-break space stays
+        # a character. Spaces at the edges are settled once the parent is
+        # complete (_settle_spaces): they render only between inline content.
+        text = ASCII_WS_RE.sub(" ", data)
+        if not text:
+            return
+        kids = self.cur.kids
+        if kids and isinstance(kids[-1], str):
+            kids[-1] = ASCII_WS_RE.sub(" ", kids[-1] + text)
+        else:
+            kids.append(text)
+
+    def close(self):
+        HTMLParser.close(self)
+        _settle_spaces(self.root)
 
 
 def _allowed_attrs_text():
@@ -1024,7 +1158,7 @@ def _lex(markup, lang):
                 add("handler", attr=name, tag=tag)
             elif name in URL_ATTRS:
                 add("url_attr", attr=name, tag=tag)
-            elif name not in ALLOWED_ATTRS and not ARIA_ATTR_RE.match(name):
+            elif name not in ALLOWED_ATTRS and not ARIA_ATTR_RE.fullmatch(name):
                 add("attr", attr=name, tag=tag, allowed=_allowed_attrs_text())
             if name == "style":
                 bad = CSS_FORBIDDEN.search(value) or CSS_FORBIDDEN.search(re.sub(r"\s+", "", value))
@@ -1195,10 +1329,6 @@ CARD_MSG = {
                    "capital letter",
                    "{v} varyantındaki halka etiketi küçük harfle başlıyor (“{note}”); Türkçe etiket büyük harfle "
                    "başlar"),
-    "multi_ring": ("{n} rings in {v}: one change applied to {n} elements gets one ring around the group; "
-                   "{n} rings read as {n} variables",
-                   "{v} varyantında {n} halka var: {n} öğeye uygulanan tek değişiklik grubun etrafında tek halka alır; "
-                   "{n} halka {n} değişken gibi okunur"),
     "move_content": ("difference 'move': the ringed element's content differs between A and B ({what}); only its "
                      "position may change, a changed copy, size or style is a second variable",
                      "fark 'taşı': halkalı öğenin içeriği A ile B arasında farklı ({what}); yalnızca yeri "
@@ -1213,12 +1343,59 @@ CARD_MSG = {
                  "second variable unless colour is what the test changes (the manifest lists it for the reviewer)",
                  "yalnızca B varyantında, halkanın içinde geçen satır içi renk: {vals}; yalnızca B'de olan renk, "
                  "test rengi değiştirmiyorsa ikinci bir değişkendir (manifest gözden geçiren için listeler)"),
+    "hide": ("variant_{vl}: inline “{decl}” on <{tag}> can hide, clip, displace or reorder what a reader sees; "
+             "{why}. Positioning, clipping and stacking belong to the template's components, never to a mockup's "
+             "inline style: draw the element where it is, as it looks",
+             "variant_{vl}: <{tag}> üzerindeki satır içi “{decl}”, okurun gördüğünü gizleyebilir, kırpabilir, "
+             "kaydırabilir ya da yeniden sıralayabilir; {why_tr}. Konumlandırma, kırpma ve katmanlama şablonun "
+             "bileşenlerine aittir, mockup'ın satır içi stiline asla: öğeyi olduğu yerde, göründüğü gibi çizin"),
+    "ring_empty": ("ring “{note}” in {v} contains nothing visible (no text with a visible character and no drawn "
+                   "component): a ring around nothing shows no variable",
+                   "{v} varyantındaki “{note}” halkası görünür hiçbir şey içermiyor (görünür karakterli metin ya da "
+                   "çizilmiş bileşen yok): hiçbir şeyin etrafındaki halka bir değişken göstermez"),
+    "no_change": ("A and B render the same (only the ring and its label differ): the card would claim a difference "
+                  "that doesn't exist. Draw the change itself in B (a move: the element at another place)",
+                  "A ile B aynı çiziliyor (yalnızca halka ve etiketi farklı): kart olmayan bir farkı göstermiş olur. "
+                  "Değişikliğin kendisini B'de çizin (taşımada öğe başka bir yerde)"),
+    "rings_many": ("{n} rings in {v}: one change applied to {n} elements gets one ring around the group; {n} "
+                   "independent rings read as {n} variables, and a linked consequence takes .hl-soft",
+                   "{v} varyantında {n} halka var: {n} öğeye uygulanan tek değişiklik grubun etrafında tek halka "
+                   "alır; {n} bağımsız halka {n} değişken gibi okunur, bağlı sonuç .hl-soft alır"),
+    "ring_whole": ("the ring in {v} wraps {pct}% of the screen's text: a ring around (almost) the whole screen rings a "
+                   "region, not the variable; ring the element that changes",
+                   "{v} varyantındaki halka ekran metninin %{pct} kadarını sarıyor: ekranın (neredeyse) tamamını "
+                   "saran halka değişkeni değil bir bölgeyi gösterir; değişen öğeyi halkalayın"),
+    "soft_far": ("{v}: the .hl-soft “{note}” is not next to the ring: a linked consequence sits beside the variable "
+                 "(a sibling of the ring or of the block that holds it), not elsewhere on the screen",
+                 "{v}: “{note}” .hl-soft halkası halkanın yanında değil: bağlı sonuç değişkenin yanında durur "
+                 "(halkanın ya da onu taşıyan bloğun kardeşi), ekranın başka bir yerinde değil"),
     "colour_b_outside": ("inline colour only in Variant B on an element outside the ring: {vals}; a colour change "
                          "outside the ring is a second variable, whatever the test changes",
                          "yalnızca B varyantında, halkanın dışındaki bir öğede geçen satır içi renk: {vals}; "
                          "halkanın dışındaki renk değişikliği, test neyi değiştirirse değiştirsin ikinci bir "
                          "değişkendir"),
 }
+
+# A ring holding this share of a screen's text (on a screen with some text)
+# rings the screen, not the variable: a warning for the reviewer; render_check
+# measures the ring's area and refuses a ring too wide.
+RING_WHOLE = 0.8
+def ring_push(style):
+    """The spacing a ring itself must not carry ("margin" or "padding"), or None.
+
+    A non-negative margin-top or margin-bottom on the ring element is allowed:
+    it keeps the room for the ring's label outside the ring (between the ring
+    and its neighbour) instead of inside it. Padding, side margins and a
+    negative margin would push or pull the ringed content."""
+    for prop, val in _style_decls(style):
+        if prop.startswith("padding"):
+            return "padding"
+        if prop.startswith("margin"):
+            if prop in ("margin-top", "margin-bottom") and not val.strip().startswith("-") and _neg_px(val) == 0:
+                continue
+            return "margin"
+    return None
+
 
 RING_PUSH_RE = re.compile(r"(?:^|;)\s*(margin|padding)(?:-[a-z-]+)?\s*:", re.IGNORECASE)
 RING_STYLE_RE = re.compile(
@@ -1237,6 +1414,199 @@ COLOUR_TOPIC_RE = re.compile(
 def _cm(key, lang, **kw):
     en, tr = CARD_MSG[key]
     return (tr if lang == "tr" else en).format(**kw)
+
+
+# ------------------------------------------------- inline style: what renders
+#
+# The A/B diff compares the markup; a mockup's inline style could make the
+# markup and the picture disagree: text that is in both arms but invisible in
+# one, an element drawn over another, a ring whose content sits elsewhere.
+# The template's components carry all the positioning, clipping and stacking a
+# card needs (.r-overlay, .r-sticky, the frames), so an inline style never
+# does. Refused anywhere in a mockup:
+HIDE_PROPS = {
+    "opacity": ("opacity fades text out while the markup still has it", "opaklık metni soldurur, işaretlemede durur"),
+    "visibility": ("visibility hides an element that still takes space", "visibility öğeyi gizler, yeri kalır"),
+    "clip": ("clip cuts an element", "clip öğeyi keser"),
+    "clip-path": ("clip-path cuts an element", "clip-path öğeyi keser"),
+    "mask": ("a mask hides parts of an element", "maske öğenin bir kısmını gizler"),
+    "filter": ("a filter blurs or hides an element", "filtre öğeyi bulanıklaştırır ya da gizler"),
+    "backdrop-filter": ("a filter blurs what lies behind", "filtre arkadakini bulanıklaştırır"),
+    "mix-blend-mode": ("a blend mode changes what the colours look like", "karışım kipi renklerin görünüşünü değiştirir"),
+    "text-indent": ("text-indent can push text out of its box", "text-indent metni kutusunun dışına itebilir"),
+    "z-index": ("z-index stacks an element over another", "z-index öğeyi başka bir öğenin üstüne koyar"),
+    "inset": ("an offset moves an element away from its place", "kaydırma öğeyi yerinden oynatır"),
+    "top": ("an offset moves an element away from its place", "kaydırma öğeyi yerinden oynatır"),
+    "left": ("an offset moves an element away from its place", "kaydırma öğeyi yerinden oynatır"),
+    "right": ("an offset moves an element away from its place", "kaydırma öğeyi yerinden oynatır"),
+    "bottom": ("an offset moves an element away from its place", "kaydırma öğeyi yerinden oynatır"),
+    "overflow": ("overflow clips what doesn't fit", "overflow sığmayanı keser"),
+    "contain": ("containment clips what doesn't fit", "contain sığmayanı keser"),
+    "content-visibility": ("content-visibility can skip drawing content", "content-visibility içeriği çizmeyebilir"),
+    "zoom": ("zoom shrinks or grows text away from its measured size", "zoom metni ölçülen boyutundan küçültür ya da büyütür"),
+    "scale": ("scale shrinks or grows an element", "scale öğeyi küçültür ya da büyütür"),
+    "translate": ("translate moves an element away from its place", "translate öğeyi yerinden oynatır"),
+    "rotate": ("use transform:rotate() for a drawn icon", "çizilmiş simge için transform:rotate() kullanın"),
+    "order": ("order draws elements in another order than the markup", "order öğeleri işaretlemedekinden farklı sırada çizer"),
+    "offset": ("a motion path moves an element away from its place", "hareket yolu öğeyi yerinden oynatır"),
+    "-webkit-text-fill-color": ("the fill colour can make text invisible whatever its colour",
+                                "dolgu rengi, rengi ne olursa olsun metni görünmez yapabilir"),
+    "-webkit-text-stroke": ("a stroke changes what the text looks like", "kontur metnin görünüşünü değiştirir"),
+}
+# Prefixed and longhand spellings, mapped to the property they stand for.
+HIDE_PREFIXES = (("overflow-", "overflow"), ("inset-", "inset"), ("mask-", "mask"), ("-webkit-mask", "mask"),
+                 ("offset-", "offset"), ("-webkit-clip-path", "clip-path"), ("-webkit-filter", "filter"),
+                 ("-webkit-backdrop-filter", "backdrop-filter"), ("-webkit-text-stroke", "-webkit-text-stroke"))
+# Allowed only with these values.
+POSITION_OK = ("static", "relative")
+DISPLAY_REFUSED = ("none", "contents")
+REVERSE_RE = re.compile(r"\b(?:row|column|wrap)-reverse\b")
+WHITE_SPACE_REFUSED = ("pre", "pre-wrap", "pre-line", "break-spaces")
+# transform: rotate() only (a chevron or a search glyph drawn with borders).
+TRANSFORM_OK_RE = re.compile(r"^(?:none|(?:rotate(?:z)?\(\s*-?[\d.]+(?:deg|turn|rad|grad)\s*\)\s*)+)$")
+NEG_LENGTH_RE = re.compile(r"(?<![\w.])-(\d+(?:\.\d+)?)(px|em|rem|%|vw|vh)?\b")
+# The largest negative margin a mockup may use: the screen's own padding (a
+# full-bleed band, BLEED in screen_spec.py; the browser screen's is 24px), or
+# a tighter rhythm than the screen's 16px gap. Inside a ring a negative margin
+# would take the content outside the ring's box; only an icon's few pixels pass.
+NEG_MARGIN_PX = 24
+NEG_MARGIN_RING_PX = 4
+NEG_SPACING_PX = 2
+EM_PX = 16
+STYLE_WHY = {
+    "position": ("only static or relative positioning; absolute, fixed and sticky take an element out of its place",
+                 "yalnızca static ya da relative konum; absolute, fixed ve sticky öğeyi yerinden çıkarır"),
+    "display": ("display:none and display:contents remove an element's box", "display:none ve display:contents öğenin kutusunu kaldırır"),
+    "reverse": ("a reversed flex order draws the elements in another order than the markup",
+                "ters flex sırası öğeleri işaretlemedekinden farklı sırada çizer"),
+    "white-space": ("preserved white space renders text differently from the markup the diff reads",
+                    "korunan boşluk, metni karşılaştırmanın okuduğu işaretlemeden farklı çizer"),
+    "transform": ("only transform:rotate() for a drawn icon; translate, scale, skew and matrix move or resize an "
+                  "element", "yalnızca çizilmiş simge için transform:rotate(); translate, scale, skew ve matrix öğeyi "
+                  "kaydırır ya da boyutlandırır"),
+    "margin": ("a negative margin of more than {most}px pulls an element over its neighbour or off the screen",
+               "{most}px'ten büyük negatif kenar boşluğu öğeyi komşusunun üstüne ya da ekranın dışına çeker"),
+    "margin_ring": ("inside a ring a negative margin of more than {most}px takes content outside the ring's box",
+                    "halkanın içinde {most}px'ten büyük negatif kenar boşluğu içeriği halkanın kutusunun dışına taşır"),
+    "spacing": ("negative letter or word spacing of more than {most}px draws glyphs over each other",
+                "{most}px'ten büyük negatif harf ya da sözcük aralığı harfleri üst üste çizer"),
+}
+
+
+def _neg_px(val):
+    """The largest negative length in a CSS value, in px (em/rem at 16px; a % counts as large)."""
+    worst = 0.0
+    for m in NEG_LENGTH_RE.finditer(val):
+        n, unit = float(m.group(1)), m.group(2) or "px"
+        if unit in ("em", "rem"):
+            n *= EM_PX
+        elif unit != "px":
+            n = float("inf") if n else 0.0
+        worst = max(worst, n)
+    return worst
+
+
+def _style_reason(prop, val, in_ring):
+    """Why one inline declaration is refused ((en, tr) reason), or None."""
+    base = prop
+    if prop in HIDE_PROPS:
+        return HIDE_PROPS[prop]
+    for prefix, stands_for in HIDE_PREFIXES:
+        if prop.startswith(prefix):
+            return HIDE_PROPS[stands_for]
+    v = val.lower()
+    if base == "position" and v not in POSITION_OK:
+        return STYLE_WHY["position"]
+    if base == "display" and v in DISPLAY_REFUSED:
+        return STYLE_WHY["display"]
+    if base in ("flex-direction", "flex-flow", "flex-wrap") and REVERSE_RE.search(v):
+        return STYLE_WHY["reverse"]
+    if base == "white-space" and v in WHITE_SPACE_REFUSED:
+        return STYLE_WHY["white-space"]
+    if base == "transform" and not TRANSFORM_OK_RE.fullmatch(v):
+        return STYLE_WHY["transform"]
+    if base.startswith("margin"):
+        most = NEG_MARGIN_RING_PX if in_ring else NEG_MARGIN_PX
+        if _neg_px(v) > most:
+            en, tr = STYLE_WHY["margin_ring" if in_ring else "margin"]
+            return en.format(most=most), tr.format(most=most)
+    if base in ("letter-spacing", "word-spacing") and _neg_px(v) > NEG_SPACING_PX:
+        en, tr = STYLE_WHY["spacing"]
+        return en.format(most=NEG_SPACING_PX), tr.format(most=NEG_SPACING_PX)
+    return None
+
+
+def style_problems(tree, name, lang="en"):
+    """Inline declarations in one parsed mockup that can hide, clip, displace
+    or reorder what renders (HIDE_PROPS and the value rules above). One
+    message per declaration spelling."""
+    out, seen = [], set()
+    for node in _walk(tree):
+        in_ring = _in_ring(node)
+        for prop, val in _style_decls(node.attrs.get("style")):
+            why = _style_reason(prop, val, in_ring)
+            decl = "%s:%s" % (prop, val)
+            if why is None or (decl, in_ring) in seen:
+                continue
+            seen.add((decl, in_ring))
+            out.append(_cm("hide", lang, vl=name.lower(), decl=decl, tag=node.tag, why=why[0], why_tr=why[1]))
+    return out
+
+
+# Components that draw a box (a fill, a border or a shape) of their own: a ring
+# around one of them rings something even without text. A text style (r-h,
+# r-help, r-sub …) draws nothing without its text.
+PAINTED_COMPONENTS = frozenset((
+    "ph", "img", "hero", "r-card", "r-thumb", "r-field", "r-info", "r-cta", "r-tabs", "r-tile", "r-plan", "r-steps",
+    "r-progress", "r-check", "r-radio", "r-chip", "r-search", "r-suggest", "r-overlay", "r-modal", "r-banner",
+    "r-badge", "r-divider", "r-header"))
+
+
+def _has_visible_content(node):
+    """Visible text (a character that draws) or a drawn component (an r-*/ph
+    class, or an inline background or border) anywhere in node, node included."""
+    if any(c in PAINTED_COMPONENTS for c in node.classes):
+        return True
+    for prop, val in _style_decls(node.attrs.get("style")):
+        painted = prop in ("background", "background-color", "background-image") or (
+            prop.startswith("border") and not prop.endswith(("color", "radius", "style")))
+        if painted and val.lower() not in ("none", "0", "0px", "transparent"):
+            return True
+    for k in node.kids:
+        if isinstance(k, str):
+            if _visible_text(k):
+                return True
+        elif _has_visible_content(k):
+            return True
+    return False
+
+
+def _path(node):
+    """Element indices from the root down to node."""
+    out = []
+    while node.parent is not None:
+        out.append([k for k in node.parent.kids if isinstance(k, Node)].index(node))
+        node = node.parent
+    return out[::-1]
+
+
+# A soft ring's distance to the ring: their branches meet at most this many
+# levels above each, as siblings at most this far apart (the ring's block and
+# the block that holds the consequence side by side).
+SOFT_DEPTH = 4
+SOFT_SIBLINGS = 2
+
+
+def soft_near(soft, ring):
+    """The soft ring sits next to the ring (SOFT_DEPTH, SOFT_SIBLINGS), not
+    elsewhere on the screen. Paths of two trees compare by position."""
+    ps, pr = _path(soft), _path(ring)
+    n = 0
+    while n < len(ps) and n < len(pr) and ps[n] == pr[n]:
+        n += 1
+    if n == len(ps) or n == len(pr):
+        return False  # one inside the other: soft_problems reports nesting
+    return len(ps) - n <= SOFT_DEPTH and len(pr) - n <= SOFT_DEPTH and abs(ps[n] - pr[n]) <= SOFT_SIBLINGS
 
 
 def component_classes(template_text):
@@ -1264,11 +1634,22 @@ def _norm_colour(value):
     return v
 
 
+def colour_values(style):
+    """Every colour an inline style names: #hex, rgb()/hsl(), var(--…), and a
+    CSS colour name ("red", "transparent", "currentColor") in a value."""
+    out = list(COLOUR_VALUE_RE.findall(style or ""))
+    for _, val in _style_decls(style):
+        stripped = COLOUR_VALUE_RE.sub(" ", val)
+        out.extend(w for w in re.findall(r"[a-zA-Z]+", stripped)
+                   if w.lower() in NAMED_COLORS or w.lower() in ("transparent", "currentcolor"))
+    return out
+
+
 def inline_colours(root):
     """Every literal colour value written in a style attribute under `root`."""
     out = []
     for node in _walk(root):
-        for value in COLOUR_VALUE_RE.findall(node.attrs.get("style") or ""):
+        for value in colour_values(node.attrs.get("style")):
             v = _norm_colour(value)
             if v not in out:
                 out.append(v)
@@ -1277,7 +1658,7 @@ def inline_colours(root):
 
 def _describe(k):
     if isinstance(k, str):
-        return "“%s”" % k[:50]
+        return "“%s”" % (k.strip() or " ")[:50]
     tag = ("<%s %s>" % (k.tag, " ".join('%s="%s"' % kv for kv in sorted(k.attrs.items()))))[:110]
     text = _node_text(k)
     return "%s “%s”" % (tag, text[:50]) if text else tag
@@ -1322,9 +1703,10 @@ def _overlay_ring(node):
     The overlay qualifies when it isn't a ring itself and its whole content is
     one ring around .r-modal: the modal ringed itself (class "r-modal hl") or a
     bare ring wrapper whose only content is the modal."""
-    if not isinstance(node, Node) or node.is_ring or "r-overlay" not in node.classes or len(node.kids) != 1:
+    if (not isinstance(node, Node) or node.is_ring or node.attrs != {"class": "r-overlay"}
+            or len(_solid_kids(node)) != 1):
         return None
-    ring = node.kids[0]
+    ring = _solid_kids(node)[0]
     if not isinstance(ring, Node) or not ring.is_ring:
         return None
     if "r-modal" in ring.classes:
@@ -1380,7 +1762,7 @@ def _rkey(k):
 
 
 def _same_shell(x, y):
-    return isinstance(x, Node) and isinstance(y, Node) and x.tag == y.tag and x.attrs == y.attrs
+    return isinstance(x, Node) and isinstance(y, Node) and x.tag == y.tag and x.norm_attrs() == y.norm_attrs()
 
 
 def _span(sa, sb, path, start, regions, outside):
@@ -1422,7 +1804,7 @@ def _has_soft(nodes):
 
 
 def _shell(k):
-    return (k.tag, tuple(sorted(k.attrs.items()))) if isinstance(k, Node) else ("#text", k)
+    return (k.tag, tuple(sorted(k.norm_attrs().items()))) if isinstance(k, Node) else ("#text", k)
 
 
 def _soft_span(loose_a, loose_b, rings_a, rings_b, path, start, regions, outside):
@@ -1499,6 +1881,21 @@ def _ring_content_key(node):
     if _is_wrapper_ring(node):
         return tuple(_rkey(k) for k in node.kids)
     return (_rkey(node),)
+
+
+def _render_key(node):
+    """What a screen draws, for the no-op check: ring-blind, and a ring that
+    only wraps (class "hl" or "hl-soft" and its label, nothing else) is looked
+    through, so a ring drawn around unchanged content is no change."""
+    kids = []
+    for k in node.kids:
+        if isinstance(k, Node) and k.tag == "div" and k.classes in (["hl"], [SOFT_CLASS]) \
+                and set(k.attrs) <= set(RING_OWN_ATTRS):
+            kids.extend(_render_key(x) if isinstance(x, Node) else x for x in k.kids)
+        else:
+            kids.append(_render_key(k) if isinstance(k, Node) else k)
+    shell = node.key(True)[:2]
+    return shell + (tuple(kids),)
 
 
 def _in_ring(node):
@@ -1753,6 +2150,9 @@ def soft_problems(trees, ring_lists, lang="en", card_lang=None):
             push = RING_PUSH_RE.search(soft.attrs.get("style") or "")
             if push:
                 out.append(_lm("soft_box", lang, v=name, prop=push.group(1).lower()))
+            near = ring_lists[name] or ring_lists["B" if name == "A" else "A"]
+            if not nested and near and not any(soft_near(soft, r) for r in near):
+                out.append(_cm("soft_far", lang, v=name, note=(soft.attrs.get("data-note") or "").strip()))
             note = (soft.attrs.get("data-note") or "").strip()
             if card_lang == "tr" and note[:1].islower():
                 out.append(_lm("soft_case", lang, v=name, note=note))
@@ -1794,8 +2194,11 @@ def card_problems(difference, variant_a, variant_b, lang="en", variable=None, cl
     exists only in B on an element outside the ring, and a 'move' whose
     element changed, the layout markers' rules (layout_problems), the soft
     rings' rules (soft_problems) and a pinned element drawn in the page flow
-    (pinned_problems). Warnings are for the reviewer: a long label, several
-    rings, a colour only in B inside the ring when colour isn't the variable.
+    (pinned_problems), more than one ring in an arm, a ring holding nothing
+    visible, and inline style that hides or displaces content
+    (style_problems). Warnings are for the reviewer: a long label, a ring
+    around (almost) the whole screen, a colour only in B inside the ring when
+    colour isn't the variable.
 
     `change_text` is Variant B's description (the pinned heuristic reads it
     next to `variable` and B's ring labels); `layout` the card's layout
@@ -1830,14 +2233,23 @@ def card_problems(difference, variant_a, variant_b, lang="en", variable=None, cl
             # card_lang is the card's own language (the record's lang); lang only picks the message language.
             if card_lang == "tr" and note[:1].islower():
                 errors.append(_cm("label_case", lang, v=name, note=note))
-            push = RING_PUSH_RE.search(style)
+            push = ring_push(style)
             if push:
-                errors.append(_cm("ring_box", lang, v=name, prop=push.group(1).lower()))
+                errors.append(_cm("ring_box", lang, v=name, prop=push))
             extra = RING_STYLE_RE.search(style)
             if extra:
                 warnings.append(_cm("ring_style", lang, v=name, prop=extra.group(1).lower()))
         if len(found) > 1:
-            warnings.append(_cm("multi_ring", lang, v=name, n=len(found)))
+            errors.append(_cm("rings_many", lang, v=name, n=len(found)))
+        for mark in found + [n for n in _walk(trees[field]) if n.is_soft and not n.is_ring]:
+            if not _has_visible_content(mark):
+                errors.append(_cm("ring_empty", lang, v=name, note=(mark.attrs.get("data-note") or "").strip()))
+        total = sum(len(t) for t in _all_texts(trees[field]))
+        for ring in found:
+            inside = sum(len(t) for t in _all_texts(ring))
+            if total >= 40 and inside >= RING_WHOLE * total:
+                warnings.append(_cm("ring_whole", lang, v=name, pct=int(round(100.0 * inside / total))))
+        errors += style_problems(trees[field], name, lang)
         if classes:
             for node in _walk(trees[field]):
                 for cls in node.classes:
@@ -1870,7 +2282,7 @@ def card_problems(difference, variant_a, variant_b, lang="en", variable=None, cl
     in_a = set(inline_colours(trees["variant_a"]))
     only_b_outside, only_b_inside = [], []
     for node in _walk(trees["variant_b"]):
-        for value in COLOUR_VALUE_RE.findall(node.attrs.get("style") or ""):
+        for value in colour_values(node.attrs.get("style")):
             v = _norm_colour(value)
             if v in in_a:
                 continue
@@ -1920,7 +2332,8 @@ def _facts(nodes):
 
     def visit(k, where="#root"):
         if isinstance(k, str):
-            texts.append((where, k))
+            if k.strip():
+                texts.append((where, k.strip()))
             return
         sig = _elem_sig(k)
         for c in k.classes:
@@ -1931,7 +2344,7 @@ def _facts(nodes):
             else:
                 mods[(sig, c)] += 1
         wrapper = _is_wrapper_ring(k)
-        for name, value in sorted(k.attrs.items()):
+        for name, value in sorted(k.norm_attrs().items()):
             if name in RING_OWN_ATTRS or (wrapper and name == "style"):
                 continue
             attrs[(sig, name, value)] += 1
@@ -2067,7 +2480,22 @@ def ring_regions(regions):
     bar around the element is looked through, _ring_content_key).
     """
     out, a_only, b_only = [], [], []
+    split = []
     for na, nb in regions:
+        # A soft ring that shares a stretch with the ring is its own entry, "linked", never merged into the
+        # ring's changes: the reviewer checks the consequence apart from the variable. Paired in order.
+        soft_a = [n for n in na if _soft_only([n])]
+        soft_b = [n for n in nb if _soft_only([n])]
+        rest_a = [n for n in na if n not in soft_a]
+        rest_b = [n for n in nb if n not in soft_b]
+        main = any(_ringed(n) and not _soft_only([n]) for n in rest_a + rest_b)
+        if (soft_a or soft_b) and main:
+            split.append((rest_a, rest_b))
+            for k in range(max(len(soft_a), len(soft_b))):
+                split.append((soft_a[k:k + 1], soft_b[k:k + 1]))
+        else:
+            split.append((na, nb))
+    for na, nb in split:
         if _soft_only(list(na) + list(nb)):
             out.append(("linked", na, nb))
         elif na and not nb and all(_ringed(n) for n in na):
@@ -2308,7 +2736,7 @@ def _short(text, n=60):
 def _node_text(node):
     parts = []
     for k in node.kids:
-        parts.append(k if isinstance(k, str) else _node_text(k))
+        parts.append(k.strip() if isinstance(k, str) else _node_text(k))
     return " ".join(p for p in parts if p)
 
 
@@ -2458,6 +2886,9 @@ def mockup_report(view, lang="en", classes=None):
     tree_b, _ = parse_markup(b, lang)
     if tree_a is None or tree_b is None:
         return errors, warnings, manifest
+    # Builder only (validate_scenario_json shares card_problems and checks markup, not what renders).
+    if _render_key(tree_a) == _render_key(tree_b):
+        errors.append(_cm("no_change", lang))
     errors += number_problems(tree_a, tree_b, view.get("numeric_change"), lang)
     errors += accessibility_problems(tree_a, tree_b, view.get("warnings"), lang)
     errors += regulation_problems(tree_a, tree_b, lang)
@@ -2482,7 +2913,7 @@ COLOR_MSG = {
 def color_problem(value, key="primary", lang="en"):
     """Why `value` is not usable as a brand colour, or None when it is."""
     idx = 1 if lang == "tr" else 0
-    if not isinstance(value, str) or not COLOR_RE.match(value.strip()):
+    if not isinstance(value, str) or not COLOR_RE.fullmatch(value.strip()):
         return COLOR_MSG["syntax"][idx].format(key=key, val=value)
     v = value.strip()
     if v[0] != "#" and "(" not in v and v.lower() not in NAMED_COLORS:
@@ -2627,7 +3058,7 @@ def build(template_text, scenario, warnings=None, lang=None, manifest=None):
     # After the strip, so it survives; before <html>, so it is the first thing
     # anyone reading the source sees. Case-insensitive on purpose: `<!doctype`
     # is equally valid HTML, and putting the notice above the doctype drops the
-    # browser into quirks mode — a layout bug caused by a copyright line.
+    # browser into quirks mode, a layout bug caused by a copyright line.
     if text.lstrip()[:9].upper() == "<!DOCTYPE":
         head, sep, rest = text.partition("\n")
         text = head + sep + PROVENANCE + rest
@@ -2747,10 +3178,22 @@ def preflight(scenario, lang="en"):
 # Two stamps in the record's `review`, each written only on a PASS:
 #   review.scenario_critic.fingerprint = record_fingerprint(record)
 #       (validate_scenario_json.py; the record without `review` and `card`)
-#   review.mockup_reviewer.fingerprint = sha256 of the exact bytes the final
-#       build writes (html_fingerprint of final_html()), printed by --draft
+#   review.mockup_reviewer.fingerprint = mockup_stamp(): a sha256 over the
+#       exact bytes the final build writes (html_fingerprint of final_html()),
+#       card.mockup_basis and the manifest the reviewer ticked off. It is
+#       printed only by --stamp, which mockup-reviewer runs on the draft file it
+#       reviewed (and which refuses when that file or its manifest is not what
+#       the record builds now). --draft prints no fingerprint and writes none
+#       into the draft or its manifest.
 # A draft needs the first, a final build both. Any edit after a review changes
 # the fingerprint it approved, by design: the edit goes back to that reviewer.
+#
+# What this is and is not. A stamp proves which bytes were approved; it does
+# not prove that a review happened. This is a local tool: whoever can run
+# --stamp, or read this file and recompute the hash, can forge a stamp. The
+# scheme only makes sure the normal path can't be skipped by accident or by
+# copy-paste: nothing the draft build prints or writes is a valid stamp, and
+# --stamp is a separate, deliberate step reserved for mockup-reviewer.
 
 REVIEWERS = {"scenario_critic": "scenario-critic", "mockup_reviewer": "mockup-reviewer"}
 FINGERPRINT_RE = re.compile(r"^[0-9a-f]{64}$")
@@ -2837,25 +3280,47 @@ def final_html(template_text, scenario, lang=None):
 
 
 def final_fingerprint(template_text, scenario, lang=None):
-    """The fingerprint a mockup-reviewer stamp must carry for this record and template."""
+    """sha256 of the final card's bytes for this record and template (not a stamp: see mockup_stamp)."""
     return html_fingerprint(final_html(template_text, scenario, lang)[0])
 
 
-def draft_html(final_text, fingerprint, card_lang="tr"):
-    """The final card plus the draft ribbon and the two draft meta tags.
+STAMP_SCHEME = "ab-test-playbook/mockup-reviewer/v2"
+
+
+def _manifest_digest(manifest):
+    """sha256 of what the reviewer ticks off: the rings and their changes (path-independent)."""
+    body = {"rings": manifest.get("rings", []), "changes": manifest.get("changes", [])}
+    return hashlib.sha256(json.dumps(body, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+                          .encode("utf-8")).hexdigest()
+
+
+def stamp_of(final_fp, mockup_basis, manifest):
+    """The mockup-reviewer stamp for a final card's fingerprint, its mockup_basis and its manifest."""
+    payload = "\n".join((STAMP_SCHEME, final_fp, mockup_basis or "-", _manifest_digest(manifest)))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def mockup_stamp(template_text, scenario, lang=None):
+    """The fingerprint a mockup-reviewer stamp must carry for this record and template."""
+    built, manifest, _ = final_html(template_text, scenario, lang)
+    return stamp_of(html_fingerprint(built), normalize(scenario).get("mockup_basis"), manifest)
+
+
+def draft_html(final_text, card_lang="tr"):
+    """The final card plus the draft ribbon and the draft meta tag.
 
     The ribbon is its own line right after the card's opening tag; the meta
-    tags close <head>. Nothing else of the final card changes. On a
-    conditional card the draft's metas go in just before the conditional
-    meta, so the first abtest-status a reader finds says "draft".
+    tag closes <head>. Nothing else of the final card changes. On a
+    conditional card the draft's meta goes in just before the conditional
+    meta, so the first abtest-status a reader finds says "draft". The draft
+    carries no fingerprint (see the review gates above).
     """
     head_end = final_text.find("</head>")
     card = CARD_OPEN_RE.search(final_text)
     if head_end < 0 or card is None or card.start() < head_end:
-        die("template has no <head>…</head> and <div class=\"card\">: the draft ribbon and meta tags have "
+        die("template has no <head>…</head> and <div class=\"card\">: the draft ribbon and meta tag have "
             "nowhere to go")
-    metas = ('<meta name="abtest-status" content="draft">\n'
-             '<meta name="abtest-final-fingerprint" content="%s">\n' % fingerprint)
+    metas = '<meta name="abtest-status" content="draft">\n'
     ribbon = '  <div id="abtest-draft" role="status" style="%s">%s</div>\n' % (
         escape(DRAFT_RIBBON_STYLE), escape(DRAFT_BANNER.get(card_lang, DRAFT_BANNER["en"])))
     at = final_text.find(CONDITIONAL_META, 0, head_end)
@@ -2881,11 +3346,12 @@ STAMP_MSG = {
                        "inceleme damgası eksik: review.scenario_critic. Kaydı scenario-critic'e inceletin; PASS "
                        "gelirse {{\"verdict\": \"PASS\", \"fingerprint\": <validate_scenario_json.py --fingerprint "
                        "çıktısı>}} damgasını ekleyin"),
-    "missing_mockup": ("missing review stamp: review.mockup_reviewer. Build the draft (--draft), have mockup-reviewer "
-                       "review the draft and its manifest; on PASS stamp the final fingerprint the draft build printed",
-                       "inceleme damgası eksik: review.mockup_reviewer. Taslağı kurun (--draft), taslağı ve "
-                       "manifestini mockup-reviewer'a inceletin; PASS gelirse taslak kurulumunun yazdığı nihai parmak "
-                       "izini damgalayın"),
+    "missing_mockup": ("missing review stamp: review.mockup_reviewer. Build the draft (--draft) and have "
+                       "mockup-reviewer review the draft and its manifest; on PASS the reviewer runs --stamp on that "
+                       "draft and its output is the stamp",
+                       "inceleme damgası eksik: review.mockup_reviewer. Taslağı kurun (--draft) ve taslağı "
+                       "manifestiyle mockup-reviewer'a inceletin; PASS gelirse gözden geçiren o taslakta --stamp "
+                       "çalıştırır, çıktısı damgadır"),
     "verdict": ("review.{key}.verdict is {val!r}: only a PASS is ever stamped (FIX and RET go back to {name})",
                 "review.{key}.verdict değeri {val!r}: yalnızca PASS damgalanır (FIX ve RET {name} adımına geri döner)"),
     "format": ("review.{key}.fingerprint must be a sha256 hex string (64 lowercase characters), got {val!r}",
@@ -2917,14 +3383,14 @@ def stamp_problems(scenario, key, expected, lang="en"):
     if stamp.get("verdict") != "PASS":
         return [_sm("verdict", lang, key=key, val=stamp.get("verdict"), name=REVIEWERS[key])]
     fp = stamp.get("fingerprint")
-    if not isinstance(fp, str) or not FINGERPRINT_RE.match(fp):
+    if not isinstance(fp, str) or not FINGERPRINT_RE.fullmatch(fp):
         return [_sm("format", lang, key=key, val=fp)]
     if fp != expected:
         return [_sm("stale_critic" if key == "scenario_critic" else "stale_mockup", lang, val=fp[:12])]
     return []
 
 
-def manifest_document(scenario, view, manifest, final_fp, record_fp, draft_path):
+def manifest_document(scenario, view, manifest, record_fp, draft_path):
     """The JSON written next to a draft: what the mockup reviewer checks item by item."""
     numeric = view.get("numeric_change")
     doc = {
@@ -2939,7 +3405,6 @@ def manifest_document(scenario, view, manifest, final_fp, record_fp, draft_path)
         "mockup_basis": view.get("mockup_basis"),
         "numeric_change": numeric if isinstance(numeric, str) and numeric.strip() else None,
         "record_fingerprint": record_fp,
-        "final_fingerprint": final_fp,
         "rings": manifest.get("rings", []),
         "changes": manifest.get("changes", []),
     }
@@ -2952,6 +3417,7 @@ GATES = {
     "validator": ("record validation", "kayıt doğrulaması"),
     "card": ("card checks", "kart denetimleri"),
     "review": ("review stamps", "inceleme damgaları"),
+    "output": ("output path", "çıktı yolu"),
 }
 
 
@@ -3024,17 +3490,142 @@ def _write_all(files):
                 os.remove(tmp)
 
 
+def _no_duplicate_keys(pairs):
+    """json object_pairs_hook: a key written twice is refused (json.load would keep the last one in silence)."""
+    out = {}
+    for key, value in pairs:
+        if key in out:
+            raise ValueError("duplicate key %r in one object" % key)
+        out[key] = value
+    return out
+
+
+def load_record(path):
+    """The scenario record at `path`: valid JSON, no duplicate keys, no number Python refuses to read.
+
+    validate_scenario_json.loads_record is the one reader when that module
+    has it (the validator and the builder then read a record the same way);
+    without it the builder's own reader below does the same checks."""
+    with open(path, encoding="utf-8") as fh:
+        text = fh.read()
+    try:
+        import validate_scenario_json as vsj
+        reader = getattr(vsj, "loads_record", None)
+    except Exception:  # pragma: no cover - the validator ships next to this file
+        reader = None
+    try:
+        if reader is not None:
+            return reader(text)
+        return json.loads(text, object_pairs_hook=_no_duplicate_keys)
+    except RecursionError:
+        die("scenario is not valid JSON: nested too deeply")
+    except ValueError as exc:  # JSONDecodeError, a duplicate key, an integer past the digit limit
+        die("scenario is not valid JSON: %s" % exc)
+
+
+# --out may name only a card file: never the template, the record or a source
+# file of this repository. Inside the repository a card is written only outside
+# its source directories (docs/demo/ holds the published demo cards).
+REPO_ROOT = os.path.dirname(_HERE)
+SOURCE_DIRS = ("templates", "scripts", "skills", "agents", "knowledge", "tests", "evals", "examples", "assets",
+               ".gemini", ".claude-plugin", ".github")
+OUT_MSG = {
+    "suffix": ("--out must name an .html card file, got {path}",
+               "--out bir .html kart dosyası olmalı, gelen {path}"),
+    "input": ("--out {path} is the {what}: a build never overwrites its own input",
+              "--out {path} {what_tr} dosyasının kendisi: kurulum kendi girdisinin üzerine asla yazmaz"),
+    "source": ("--out {path} lies in the repository's {dir}/ directory: cards are never written among the "
+               "playbook's source files; write it to your working directory",
+               "--out {path} deponun {dir}/ dizininde: kartlar oyun kitabının kaynak dosyalarının arasına asla "
+               "yazılmaz; çalışma dizininize yazın"),
+    "not_card": ("--out {path} already exists and is not a card this tool built (no provenance line): refusing to "
+                 "overwrite it; choose another file name",
+                 "--out {path} zaten var ve bu aracın kurduğu bir kart değil (köken satırı yok): üzerine yazılmıyor; "
+                 "başka bir dosya adı seçin"),
+}
+
+
+def _om(key, lang, **kw):
+    en, tr = OUT_MSG[key]
+    return (tr if lang == "tr" else en).format(**kw)
+
+
+def out_problems(out, template_path, scenario_path, lang="en"):
+    """Why --out must not be written (path rules above), or []. Run before anything is built."""
+    real = os.path.realpath(out)
+    if not real.lower().endswith(".html"):
+        return [_om("suffix", lang, path=out)]
+    for path, what, what_tr in ((template_path, "template", "şablon"), (scenario_path, "record", "kayıt")):
+        if path and real == os.path.realpath(path):
+            return [_om("input", lang, path=out, what=what, what_tr=what_tr)]
+    root = os.path.realpath(REPO_ROOT)
+    for name in SOURCE_DIRS:
+        base = os.path.join(root, name)
+        if real == base or real.startswith(base + os.sep):
+            return [_om("source", lang, path=out, dir=name)]
+    return []
+
+
+def existing_problems(paths, lang="en"):
+    """A file in the way that this tool didn't write (checked just before writing)."""
+    out = []
+    for path in paths:
+        if not os.path.exists(path):
+            continue
+        try:
+            with open(path, encoding="utf-8", errors="replace") as fh:
+                head = fh.read(4096)
+        except OSError:
+            head = ""
+        if PROVENANCE_MARK not in head and not (path.endswith(MANIFEST_SUFFIX) and MANIFEST_FORMAT in head):
+            out.append(_om("not_card", lang, path=path))
+    return out
+
+
+RUN_MSG = {
+    "draft_review": ("review: mockup-reviewer reviews this draft and its manifest; on PASS it runs\n"
+                     "  build_card.py --template {template} --scenario {scenario} --stamp {draft}\n"
+                     "  and writes the JSON it prints into review.mockup_reviewer",
+                     "inceleme: mockup-reviewer bu taslağı ve manifestini inceler; PASS ise şunu çalıştırır\n"
+                     "  build_card.py --template {template} --scenario {scenario} --stamp {draft}\n"
+                     "  ve yazdığı JSON'u review.mockup_reviewer alanına koyar"),
+    "stale_draft": ("--stamp {path}: {what} is not what this record builds now (it changed, or the draft is "
+                    "stale): rebuild the draft with --draft and review that one",
+                    "--stamp {path}: {what_tr} bu kaydın şu an kurduğuyla aynı değil (değişmiş ya da taslak eski): "
+                    "taslağı --draft ile yeniden kurun ve onu inceleyin"),
+    "no_draft": ("--stamp {path}: no such draft; build it with --draft first",
+                 "--stamp {path}: böyle bir taslak yok; önce --draft ile kurun"),
+    "delivered": ("{path} does not match the reviewed card (sha256 {got}…, the record builds {want}…): the delivered "
+                  "file was edited or is stale; rebuild it with the final build",
+                  "{path} incelenen kartla eşleşmiyor (sha256 {got}…, kayıt {want}… kuruyor): teslim edilen dosya "
+                  "elle değişmiş ya da eski; nihai kurulumla yeniden kurun"),
+    "delivered_ok": ("{path} matches the reviewed card (both stamps match)",
+                     "{path} incelenen kartla eşleşiyor (iki damga da eşleşiyor)"),
+}
+
+
+def _rm(key, lang, **kw):
+    en, tr = RUN_MSG[key]
+    return (tr if lang == "tr" else en).format(**kw)
+
+
+def _read_bytes(path):
+    with open(path, "rb") as fh:
+        return fh.read()
+
+
 def _run(args, lang):
+    mode = "stamp" if args.stamp else "check" if args.check else "draft" if args.draft else "final"
     for path in (args.template, args.scenario):
         if not os.path.isfile(path):
             die("no such file: %s" % path)
+    if mode in ("draft", "final"):
+        bad = out_problems(args.out, args.template, args.scenario, lang)
+        if bad:
+            raise _Refused("output", bad, header=_t("--out was refused:", "--out reddedildi:", lang))
     with open(args.template, encoding="utf-8") as fh:
         template_text = fh.read()
-    with open(args.scenario, encoding="utf-8") as fh:
-        try:
-            scenario = json.load(fh)
-        except json.JSONDecodeError as exc:
-            die("scenario is not valid JSON: %s" % exc)
+    scenario = load_record(args.scenario)
     if not isinstance(scenario, dict) or not scenario.get("title"):
         die("scenario is missing required field: title")
 
@@ -3050,28 +3641,62 @@ def _run(args, lang):
 
     record_fp = _gate("validator", record_fingerprint_of, scenario)
     problems = stamp_problems(scenario, "scenario_critic", record_fp, lang)
-    if not args.draft:
-        problems += stamp_problems(scenario, "mockup_reviewer", final_fp, lang)
+    stamp = stamp_of(final_fp, view.get("mockup_basis"), manifest)
+    if mode in ("final", "check"):
+        problems += stamp_problems(scenario, "mockup_reviewer", stamp, lang)
     if problems:
-        raise _Refused("review", problems, header=_t(
-            "the %s build was refused:" % ("draft" if args.draft else "final"),
-            "taslak kurulumu reddedildi:" if args.draft else "nihai kurulum reddedildi:", lang))
+        headers = {"draft": ("the draft build was refused:", "taslak kurulumu reddedildi:"),
+                   "final": ("the final build was refused:", "nihai kurulum reddedildi:"),
+                   "stamp": ("the stamp was refused:", "damga reddedildi:"),
+                   "check": ("the delivered card can't be checked:", "teslim edilen kart denetlenemiyor:")}
+        raise _Refused("review", problems, header=_t(*headers[mode], lang=lang))
 
     summary = build_summary(built, view)
-    if args.draft:
-        draft = draft_html(built, final_fp, view["lang"])
+    draft = draft_html(built, view["lang"])
+    if mode == "stamp":
+        # The draft on disk must be the one this record builds now, with its manifest: what the reviewer
+        # looked at is what gets approved.
+        if not os.path.isfile(args.stamp):
+            raise _Refused("review", [_rm("no_draft", lang, path=args.stamp)])
+        doc = manifest_document(scenario, view, manifest, record_fp, args.stamp)
+        want = {args.stamp: draft, args.stamp + MANIFEST_SUFFIX: json.dumps(doc, ensure_ascii=False, indent=2) + "\n"}
+        for path, text in want.items():
+            what = ("the manifest", "manifest") if path.endswith(MANIFEST_SUFFIX) else ("the draft", "taslak")
+            if not os.path.isfile(path) or _read_bytes(path) != text.encode("utf-8"):
+                raise _Refused("review", [_rm("stale_draft", lang, path=args.stamp, what=what[0], what_tr=what[1])])
+        print(json.dumps({"verdict": "PASS", "fingerprint": stamp}))
+        return 0
+    if mode == "check":
+        got = hashlib.sha256(_read_bytes(args.check)).hexdigest() if os.path.isfile(args.check) else "-" * 12
+        if got != final_fp:
+            raise _Refused("review", [_rm("delivered", lang, path=args.check, got=got[:12], want=final_fp[:12])])
+        print(_rm("delivered_ok", lang, path=args.check))
+        return 0
+    if mode == "draft":
         manifest_path = args.out + MANIFEST_SUFFIX
-        doc = manifest_document(scenario, view, manifest, final_fp, record_fp, args.out)
-        _write_all([(args.out, draft), (manifest_path, json.dumps(doc, ensure_ascii=False, indent=2) + "\n")])
-        print("draft: %s (%s%s)" % (args.out, summary, ", %d warning(s)" % len(warnings) if warnings else ""))
-        print("manifest: %s (%d change(s) inside %d ring(s))" % (manifest_path, len(doc["changes"]), len(doc["rings"])))
-        print("final fingerprint: %s" % final_fp)
-        stale = stamp_problems(scenario, "mockup_reviewer", final_fp, lang)
-        review = scenario.get("review") if isinstance(scenario.get("review"), dict) else {}
-        if stale and "mockup_reviewer" in review:
-            warnings.append(stale[0])
+        files = [(args.out, draft), (manifest_path, json.dumps(
+            manifest_document(scenario, view, manifest, record_fp, args.out), ensure_ascii=False, indent=2) + "\n")]
     else:
-        _write_all([(args.out, built)])
+        files = [(args.out, built)]
+    bad = existing_problems([path for path, _ in files], lang)
+    if bad:
+        raise _Refused("output", bad, header=_t("--out was refused:", "--out reddedildi:", lang))
+    _write_all(files)
+    # What is on disk is what was approved: read back, compared byte for byte.
+    for path, text in files:
+        if _read_bytes(path) != text.encode("utf-8"):
+            die("%s was written but reads back different bytes; it is not the reviewed card" % path)
+    if mode == "draft":
+        print("draft: %s (%s%s)" % (args.out, summary, ", %d warning(s)" % len(warnings) if warnings else ""))
+        print("manifest: %s (%d change(s) inside %d ring(s))" % (files[1][0], len(manifest.get("changes", [])),
+                                                                len(manifest.get("rings", []))))
+        print(_rm("draft_review", lang, template=args.template, scenario=args.scenario, draft=args.out))
+        review = scenario.get("review") if isinstance(scenario.get("review"), dict) else {}
+        if "mockup_reviewer" in review:
+            stale = stamp_problems(scenario, "mockup_reviewer", stamp, lang)
+            if stale:
+                warnings.append(stale[0])
+    else:
         print("built %s (%s%s)" % (args.out, summary, ", %d warning(s)" % len(warnings) if warnings else ""))
         print("final fingerprint: %s" % final_fp)
         print(_t("reviews: scenario-critic PASS, mockup-reviewer PASS (both stamps match)",
@@ -3086,15 +3711,27 @@ def main(argv):
     ap = argparse.ArgumentParser(description="Build a scenario card from the template.")
     ap.add_argument("--template", required=True, help="path to templates/scenario-card.html")
     ap.add_argument("--scenario", required=True, help="JSON file describing the scenario")
-    ap.add_argument("--out", required=True, help="path to write the card to")
+    ap.add_argument("--out", help="path of the .html card to write (draft or final build)")
     ap.add_argument("--draft", action="store_true",
-                    help="build the review draft (ribbon, meta tags, <out>.manifest.json) instead of the final card")
+                    help="build the review draft (ribbon, meta tag, <out>.manifest.json) instead of the final card")
+    ap.add_argument("--stamp", metavar="DRAFT",
+                    help="mockup-reviewer only, after a PASS: print the review.mockup_reviewer stamp for this draft "
+                         "(refused unless the draft and its manifest are what the record builds now); writes nothing")
+    ap.add_argument("--check", metavar="CARD",
+                    help="check that a delivered card file is byte for byte the reviewed final card; writes nothing")
     ap.add_argument("--lang", choices=("en", "tr"), default="en",
                     help="language of this tool's messages (default: en)")
     args = ap.parse_args(argv)
+    modes = [m for m in (args.stamp, args.check) if m] + (["draft"] if args.draft else [])
+    if len(modes) > 1:
+        ap.error("--draft, --stamp and --check don't combine")
+    if (args.stamp or args.check) and args.out:
+        ap.error("--stamp and --check write nothing: drop --out")
+    if not (args.stamp or args.check) and not args.out:
+        ap.error("--out is required for a draft or a final build")
     _MSG_LANG = args.lang
     lang = args.lang
-    paths = [args.out] + ([args.out + MANIFEST_SUFFIX] if args.draft else [])
+    paths = [] if not args.out else [args.out] + ([args.out + MANIFEST_SUFFIX] if args.draft else [])
     try:
         return _run(args, lang)
     except _Refused as refusal:

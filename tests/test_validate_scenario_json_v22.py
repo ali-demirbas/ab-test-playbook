@@ -291,7 +291,7 @@ class TestCardFields(unittest.TestCase):
 
     def test_ring_margin_is_an_error(self):
         sc = base()
-        sc["card"] = card(variant_b=card()["variant_b"].replace('class="hl"', 'class="hl" style="margin-bottom:20px"'))
+        sc["card"] = card(variant_b=card()["variant_b"].replace('class="hl"', 'class="hl" style="margin-left:20px"'))
         self.assertTrue(has(errs(sc, "tr"), "içeriği itmemeli"), errs(sc, "tr"))
 
     def test_unknown_colour_name_is_an_error(self):
