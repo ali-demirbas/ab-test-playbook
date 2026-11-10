@@ -538,7 +538,7 @@
         },
         "change": {
           "type": "object",
-          "description": "Exactly one operation on one node of card.screen, the tested element, with the ring's label: {\"op\": insert_after|insert_before|replace|remove|move_after|move_before|edit, \"target\": <node id>, ..}. insert_*: node + label (difference add); replace: node + label (+ label_a); remove: label (difference remove); move_*: to + label_a + label_b (difference move); edit: set {property: value} + label (difference change). label_pos below|above places the label."
+          "description": "Exactly one operation on one node of card.screen, the tested element, with the ring's label: {\"op\": insert_after|insert_before|replace|remove|move_after|move_before|edit, \"target\": <node id>, ..}. insert_*: node + label (difference add); replace: node + label (+ label_a); remove: label (difference remove); move_*: to + label_a + label_b (difference move); edit: set {property: value} + label (difference change). label_pos below|above places the label. linked (optional, any op): a list of {\"target\": <node id>, \"set\": {property: value}}, the variable's forced consequences, applied to B only; each target must be in card.soft (drawn with the soft ring in both arms), and an edit or replace with linked differences needs label_a."
         },
         "soft": {
           "type": "array",

@@ -513,7 +513,7 @@ class TestArchiveBlockRead(unittest.TestCase):
 
     def test_an_intact_block_is_read_whole_and_alone(self):
         if not self.awk:
-            self.skipTest("awk yok")
+            self.skipTest("awk not found")
         block = self.read_block(self.text, self.first_title(self.text))
         self.assertEqual(block.count("\n## "), 0)
         self.assertTrue(block.startswith("## "))
@@ -521,7 +521,7 @@ class TestArchiveBlockRead(unittest.TestCase):
 
     def test_a_missing_separator_stops_at_the_next_title(self):
         if not self.awk:
-            self.skipTest("awk yok")
+            self.skipTest("awk not found")
         first = self.text.index("\n## ")
         cut = self.text.index("\n---\n", first)
         broken = self.text[:cut] + self.text[cut + 4:]  # the first block's closing --- removed

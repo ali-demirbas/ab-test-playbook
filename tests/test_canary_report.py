@@ -2,7 +2,7 @@
 """canary_report.py için unit testler. Bağımlısız (unittest).
 
 Bu aracın tek işi aratıldığında GERÇEKTEN eşleşecek ifadeler üretmek. Üretilen
-ifade sayfada o sırayla geçmiyorsa arama boş döner ve bu "kopya yok" sanılır —
+ifade sayfada o sırayla geçmiyorsa arama boş döner ve bu "kopya yok" sanılır;
 aracın sessizce yanlış güven vermesi, hiç çalışmamasından kötüdür. Testlerin
 çoğu o hataya karşı.
 """

@@ -666,7 +666,7 @@ class TestEndToEnd(unittest.TestCase):
             self.assertEqual(html.count(">%s<" % text), 2)
         self.assertEqual(html.count('data-note="Gerekçe satırı eklendi"'), 1)
 
-    @unittest.skipUnless(_playwright_ready(), "Playwright yok (NODE_PATH)")
+    @unittest.skipUnless(_playwright_ready(), "Playwright not found (NODE_PATH)")
     def test_3_render_check_strict_is_verified(self):
         if not os.path.exists(self.draft):
             self.test_2_draft_build()

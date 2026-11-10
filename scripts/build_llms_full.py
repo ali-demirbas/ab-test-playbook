@@ -5,7 +5,7 @@ Why generated rather than hand-written: a full-text bundle is only useful while
 it matches the documents it bundles, and a hand-maintained copy silently rots
 the first time README or CLAUDE.md changes. Generating it means `validate.sh`
 can diff the committed file against a fresh build and fail the run when they
-diverge — the same reasoning as build_card.py self-verifying against drift.
+diverge: the same reasoning as build_card.py self-verifying against drift.
 
 Why this file exists at all: when someone pastes a repo URL into a chat tool,
 the assistant fetches HTML and burns most of its budget on markup. A single
@@ -34,7 +34,7 @@ SOURCES = [
     ("knowledge/methodology.md", "Methodology"),
 ]
 
-HEADER = """# ab-test-playbook — full text
+HEADER = """# ab-test-playbook: full text
 
 > Single-file bundle of this project's core documentation, generated from the
 > repository by scripts/build_llms_full.py. An A/B testing and CRO engine for
@@ -95,7 +95,7 @@ def build():
             continue
         with open(path, encoding="utf-8") as fh:
             body = absolutize_links(fh.read().strip(), rel)
-        parts.append("\n\n---\n\n# %s — %s\n\n%s\n" % (label, rel, body))
+        parts.append("\n\n---\n\n# %s: %s\n\n%s\n" % (label, rel, body))
     return "".join(parts)
 
 
@@ -109,12 +109,12 @@ def main(argv):
 
     if args.check:
         if not os.path.isfile(OUT):
-            print("docs/llms-full.txt is missing — run scripts/build_llms_full.py")
+            print("docs/llms-full.txt is missing: run scripts/build_llms_full.py")
             return 1
         with open(OUT, encoding="utf-8") as fh:
             current = fh.read()
         if current != built:
-            print("docs/llms-full.txt is stale — run scripts/build_llms_full.py")
+            print("docs/llms-full.txt is stale: run scripts/build_llms_full.py")
             return 1
         print("  ok: docs/llms-full.txt matches its sources")
         return 0

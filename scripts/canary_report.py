@@ -3,12 +3,12 @@
 
 The problem this addresses: the archive is MIT-licensed, which permits reuse
 and requires the copyright notice be kept. Someone stripping the notice is in
-breach — but a breach nobody detects is not a deterrent. Provenance in the
+breach, but a breach nobody detects is not a deterrent. Provenance in the
 generated cards handles attribution; this handles *detection*.
 
 Why phrases are computed rather than stored: a canary list committed to a
 public repo is a list of exactly what to scrub. Nothing here is embedded or
-hidden — these are phrases the content already contains, selected for being
+hidden: these are phrases the content already contains, selected for being
 statistically distinctive enough that a web search for them in quotes should
 return this project and nothing else. Whoever copies the text cannot know
 which phrases are being watched, because the answer changes with the content.
@@ -87,7 +87,7 @@ def phrases(text, size=7):
 
     A window spanning two sentences reads fine in this report and then matches
     nothing on the web, because that word sequence does not occur in the
-    rendered page — the search would come back empty and the phrase would look
+    rendered page: the search would come back empty and the phrase would look
     like proof of no copy when it is proof of a bad phrase.
     """
     for sentence in SENTENCE_SPLIT.split(text):
@@ -153,7 +153,7 @@ def main(argv):
     ranked.sort(reverse=True)
 
     if not ranked:
-        print("No sufficiently distinctive phrases found — content may be too short or too generic.")
+        print("No sufficiently distinctive phrases found; content may be too short or too generic.")
         return 0
 
     print("Search each of these in quotes. Anything but this project is a copy.\n")
@@ -163,13 +163,13 @@ def main(argv):
 
     print("How to read the results")
     print("  Take a baseline now: search each phrase and note what comes back. A new")
-    print("  page carrying one verbatim, later, is a copy — that delta is the signal,")
+    print("  page carrying one verbatim, later, is a copy: that delta is the signal,")
     print("  not the raw count. Early on this project may not be indexed yet, so an")
     print("  empty result means 'nothing to compare against', not 'nothing copied'.")
     print()
     print("Nothing is stored on purpose: a committed canary list tells whoever copies")
     print("the content exactly which phrases to rewrite. Re-run after substantial")
-    print("content changes — the selection follows the text.")
+    print("content changes: the selection follows the text.")
     return 0
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Build a Gemini CLI extension from the same skills/agents/rules this repo
-ships as a Claude Code plugin — so the plugin reaches Gemini CLI users too,
+ships as a Claude Code plugin, so the plugin reaches Gemini CLI users too,
 without a second, hand-maintained copy of the content to keep in sync.
 
 This is NOT a blind concatenation of the SKILL.md files (that is what a naive
@@ -13,13 +13,13 @@ Gemini CLI):
      documented Gemini CLI extension-install-path equivalent.
   2. `${extensionPath}/knowledge/methodology.md` only resolves at runtime if
      `knowledge/` actually exists inside the extension's own install
-     directory — and it doesn't, unless something puts it there. The
+     directory, and it doesn't, unless something puts it there. The
      Claude Code plugin gets this for free (Claude Code resolves
      `${CLAUDE_PLUGIN_ROOT}` against the plugin's own repo checkout); a
      Gemini extension installed via `gemini extensions link` is a standalone
      bundle with no such fallback. So this script also COPIES every
      directory the skills/agents/CLAUDE.md actually reference wholesale
-     (knowledge/, scripts/, templates/ — detected, not hardcoded, so a newly
+     (knowledge/, scripts/, templates/; detected, not hardcoded, so a newly
      referenced directory is picked up automatically) into the extension,
      and individual files referenced outside those directories (a doc
      living inside an otherwise-irrelevant publishing directory) are copied
@@ -28,12 +28,12 @@ Gemini CLI):
   3. The two review agents (CLAUDE.md rule 17) are Claude Code subagents,
      declared with Claude Code tool names (Read, Grep, Glob, Bash). Gemini CLI
      supports bundled extension subagents too, but under a different tool
-     vocabulary (read_file, grep_search, glob, run_shell_command) — an
+     vocabulary (read_file, grep_search, glob, run_shell_command): an
      unmapped name would silently do nothing rather than fail loudly, so
      TOOL_MAP below is exhaustive on purpose and this script refuses to build
      if an agent uses a tool it doesn't cover.
 
-CLAUDE.md's rule text is inlined into GEMINI.md in full, not linked — every
+CLAUDE.md's rule text is inlined into GEMINI.md in full, not linked: every
 skill and agent cites it by rule number ("kural 17"), and Gemini CLI has no
 plugin-relative file-loading step equivalent to Claude Code reading it at the
 top of a skill run.
@@ -61,14 +61,14 @@ EXT_ROOT = os.path.join(ROOT, ".gemini", "extensions")
 # operates on the set, not one file at a time (a scenario archive, a
 # template + schema pair, a script module that imports a sibling). Detected
 # against this allowlist rather than bundling any referenced top-level dir
-# sight unseen — a repo's own `docs/` typically mixes runtime-relevant files
+# sight unseen: a repo's own `docs/` typically mixes runtime-relevant files
 # with pure publishing output (a GitHub Pages site, hero images) that has no
 # business inside a Gemini extension; a directory in this list is assumed
 # to be reference material top to bottom.
 BUNDLE_WHOLE_CANDIDATES = ("knowledge", "templates", "scripts")
 
 # Claude Code tool name -> Gemini CLI subagent tool name (per Gemini CLI's
-# subagent frontmatter schema). The only place this mapping lives — a new
+# subagent frontmatter schema). The only place this mapping lives: a new
 # tool added to an agent's frontmatter with no entry here fails the build
 # instead of shipping a Gemini subagent with a tool name that resolves to
 # nothing.
@@ -121,7 +121,7 @@ def translate_tools_line(match):
     mapped = []
     for n in names:
         if n not in TOOL_MAP:
-            die("agent tool '%s' has no Gemini CLI mapping in TOOL_MAP — add one" % n)
+            die("agent tool '%s' has no Gemini CLI mapping in TOOL_MAP: add one" % n)
         mapped.append(TOOL_MAP[n])
     return prefix + ": " + ", ".join(mapped)
 
@@ -157,7 +157,7 @@ def detect_dependencies(all_text):
 
 def build_agent_file(text, bundled_dirs, bundled_files):
     """Same frontmatter and body, `tools:` translated, plugin-root and bare
-    links rewritten. Only the tools line is touched beyond that — name and
+    links rewritten. Only the tools line is touched beyond that: name and
     description stay byte-identical to the Claude Code agent."""
     text = rewrite_plugin_root(text)
     text = rewrite_bare_links(text, bundled_dirs, bundled_files)
@@ -208,7 +208,7 @@ def build_files():
         "You are an expert assistant for %s with the skills below available. "
         "Apply whichever skill matches the user's request; the \"Binding "
         "rules\" section is non-negotiable and applies to every skill's "
-        "output — this is the same rule set the Claude Code plugin version "
+        "output: this is the same rule set the Claude Code plugin version "
         "of this tool enforces, generated from the same source file.\n"
         % name,
         "## Binding rules (CLAUDE.md)\n\n" + prep(claude_md_text).strip() + "\n",
@@ -221,7 +221,7 @@ def build_files():
         parts.append(
             "## Agents\n\n"
             "This extension bundles the subagents the skills above reference, "
-            "under `agents/`. Invoke them the way a skill's text says to — do "
+            "under `agents/`. Invoke them the way a skill's text says to; do "
             "not skip a spawn step just because no tool call syntax is shown "
             "inline.\n"
         )

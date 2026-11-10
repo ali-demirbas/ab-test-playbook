@@ -390,7 +390,7 @@ class TestConditionalCard(unittest.TestCase):
         self.assertIn('<meta name="abtest-status" content="conditional">\n</head>', built)
         self.assertIn('<div id="abtest-conditional" role="note"', built)
         self.assertIn(">KOŞULLU · doğrulama gerekli</div>", built)
-        self.assertNotIn("—", bc.CONDITIONAL_BANNER["tr"] + bc.CONDITIONAL_BANNER["en"])
+        self.assertNotIn("\u2014", bc.CONDITIONAL_BANNER["tr"] + bc.CONDITIONAL_BANNER["en"])
         lines = built.splitlines()
         ribbon = [ln for ln in lines if 'id="abtest-conditional"' in ln]
         self.assertEqual(len(ribbon), 1)

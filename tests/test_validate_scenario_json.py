@@ -459,7 +459,7 @@ class TestMessages(unittest.TestCase):
 class TestExampleFile(unittest.TestCase):
     def test_shipped_example_validates(self):
         if not os.path.isfile(EXAMPLE):
-            self.skipTest("examples/scenario.json bulunamadı")
+            self.skipTest("examples/scenario.json not found")
         with open(EXAMPLE, encoding="utf-8") as fh:
             self.assertEqual(validate(json.load(fh), SCHEMA), [])
 
