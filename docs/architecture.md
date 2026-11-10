@@ -31,7 +31,7 @@ user asks (page / URL / screenshot / question / test plan)
         │   scripts/build_card.py --draft
         │   needs the critic stamp; diff, ring, numeric, legal-text,
         │   accessibility and personal-data checks; escaping + drift check
-        │   → draft card ("not reviewed") + manifest + final fingerprint
+        │   → draft card ("not reviewed", no fingerprint) + manifest
         │             │
         │             ▼
         │   scripts/render_check.mjs (needs Node + Playwright)
@@ -42,7 +42,8 @@ user asks (page / URL / screenshot / question / test plan)
         │             ▼
         │   agents/mockup-reviewer
         │   draft + manifest + render_check output, one run for all cards
-        │   PASS → stamp review.mockup_reviewer with the final fingerprint
+        │   PASS → runs build_card.py --stamp <draft>; its JSON goes
+        │   into review.mockup_reviewer
         │   FIX → mockup fix, new draft, review again
         │   UNVERIFIED (no render) → no stamp; the draft is given only
         │   as a preview labelled UNVERIFIED, never final
@@ -97,7 +98,7 @@ has the full table and what the gates can't guarantee).
 | Regulation | Refuses a regulated-looking record without a `regulation` warning, unverified urgency | Refuses B dropping legal or security text, or pre-ticking consent | Dark patterns, held displays | |
 | Personal data | | Refuses values shaped like personal data | | Masking right |
 | Layout and readability | | `render_check.mjs` errors on size, clipping, blank screen, ring overlaps, text size, contrast | | Reads that output; judges size and misleading clipping |
-| Gates | `--fingerprint` | Draft needs the critic stamp; final needs both | Stamps the record fingerprint on PASS | Stamps the final card fingerprint on PASS |
+| Gates | `--fingerprint` | Draft needs the critic stamp; final needs both; `--stamp` prints the mockup stamp, `--check` verifies a delivered card | Stamps the record fingerprint on PASS | Stamps what `build_card.py --stamp` prints on PASS |
 
 ## Where each concern lives
 

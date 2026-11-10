@@ -21,25 +21,38 @@ have stamped the record ([`knowledge/methodology.md`](../knowledge/methodology.m
 python3 scripts/validate_scenario_json.py --fingerprint examples/scenario.json
 
 # 2. Draft: needs the scenario-critic stamp matching that fingerprint.
-#    Writes the card with a "DRAFT · not reviewed" banner, the inside-ring
-#    manifest next to it (<out>.manifest.json) and prints the final fingerprint
+#    Writes the card with a "DRAFT · not reviewed" banner and the inside-ring
+#    manifest next to it (<out>.manifest.json); the draft has no fingerprint
 python3 scripts/build_card.py --draft \
   --template templates/scenario-card.html \
   --scenario examples/scenario.json \
-  --out /tmp/card.html
+  --out /tmp/card.draft.html
 
-# 3. Final: needs both stamps (critic = record fingerprint, mockup reviewer =
-#    the final fingerprint the draft printed); otherwise nothing is written
+# 3. Mockup stamp (mockup-reviewer only, after its PASS): prints the JSON for
+#    review.mockup_reviewer; writes nothing, refuses a stale draft or manifest
+python3 scripts/build_card.py \
+  --template templates/scenario-card.html \
+  --scenario examples/scenario.json \
+  --stamp /tmp/card.draft.html
+
+# 4. Final: needs both stamps; otherwise nothing is written. Prints the final
+#    card's fingerprint
 python3 scripts/build_card.py \
   --template templates/scenario-card.html \
   --scenario examples/scenario.json \
   --out /tmp/card.html
+
+# 5. Later: is a delivered file still byte for byte the reviewed card?
+python3 scripts/build_card.py \
+  --template templates/scenario-card.html \
+  --scenario examples/scenario.json \
+  --check /tmp/card.html
 ```
 
 In a session the stamps are written by the pipeline: scenario-critic's PASS
 carries the fingerprint from step 1 into `review.scenario_critic`, and
-mockup-reviewer's PASS, after reading the draft and its manifest, carries the
-fingerprint from step 2 into `review.mockup_reviewer`. Edit the record after
+mockup-reviewer, after its PASS on the draft and its manifest, runs step 3
+and the JSON it prints goes into `review.mockup_reviewer`. Edit the record after
 that and step 1 prints a different fingerprint, so the final build refuses
 until the record is reviewed again; edit only the mockup and the critic's stamp
 still holds, but the mockup reviewer's no longer matches the card. A refused
