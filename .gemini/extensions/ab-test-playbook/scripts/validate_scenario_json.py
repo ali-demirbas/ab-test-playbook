@@ -93,6 +93,17 @@ ERRORS (exit 1):
     line, at least one guardrail, no metric listed twice, no complement
     guardrail, the primary line is not a count and has no "saw it"
     denominator (rules 2 and 3)
+  * statistics (rule 5), in every free-text field but detail and card: a
+    p-value, significance, sample size, power, an interval, Bayes, MDE/SRM/
+    CUPED, an ICE score, a significance level ("alfa 0,05", "α = 0.05"), a
+    confidence level ("%95 güven", "95% confidence"), a pre-registered plan, a
+    decision or stopping rule, a winner ("kazanan B", "winner") or a ship
+    condition ("ship B if ahead", "B öndeyse yayına alınır"); a negated rule
+    phrase ("kazanan seçmez", "no decision rule") states the boundary and passes
+  * a lagging primary or metric guardrail (returns, cancellations, churn,
+    repeat purchase, refunds) carries its window in the name (rule 3)
+  * the file itself: a key written twice in one object, an integer longer
+    than MAX_INT_DIGITS (both pass json.load silently or with a traceback)
   * variants are "A" then "B", and the current page is A (rule 15)
   * card (optional; a record is valid without one): a difference type is
     stated (the record's; card.difference may only repeat it), the mockup markup passes the
@@ -144,7 +155,7 @@ value into review.scenario_critic; build_card.py compares it before it builds.
 Usage:
   validate_scenario_json.py <file.json> [more.json ...]
   validate_scenario_json.py --strict <file.json>         # warnings count as errors
-  validate_scenario_json.py --lang en <file.json>        # messages in English (default: Turkish)
+  validate_scenario_json.py --lang en <file.json>        # messages in English (default: the record's lang)
   validate_scenario_json.py --schema templates/scenario.schema.json <file.json>
   validate_scenario_json.py --fingerprint <file.json>    # validate, then print only the fingerprint
 
@@ -213,8 +224,8 @@ MAX_ASSUMPTION = 200  # assumptions[].text; load_schema() refuses maxLength, so 
 # The warning type a regulated-looking record must carry (rule 11).
 REGULATION = "regulation"
 
-# Messages: Turkish by default (the playbook's home language), English with
-# --lang en. Field paths are identical in both, so a message can be traced to
+# Messages: in the record's own language (its `lang`, Turkish when it has none),
+# or the one --lang names. Field paths are identical in both, so a message can be traced to
 # the JSON whichever language it is printed in.
 MSG = {
     "type": ("{path}: beklenen tür {exp}, gelen {got}", "{path}: expected type {exp}, got {got}"),
@@ -233,6 +244,16 @@ MSG = {
     "file_errors": ("{file}: {n} ihlal", "{file}: {n} violation(s)"),
     "file_ok": ("{file}: ok", "{file}: ok"),
     "invalid_json": ("{file}: GEÇERSİZ JSON: {err}", "{file}: INVALID JSON: {err}"),
+    "kpi_window": ("{path}: {name!r} gecikmeli bir metrik (iade, iptal, churn, tekrar satın alma …); takip penceresi "
+                   "adın parçasıdır: “İade Oranı (30 gün)” (kural 3, kpi-glossary.md → İade ve iptal)",
+                   "{path}: {name!r} is a lagging metric (returns, cancellations, churn, repeat purchase …); its "
+                   "window is part of the name: \"Return Rate (30 days)\" (rule 3)"),
+    "json_duplicate_key": ("{key!r} anahtarı aynı nesnede iki kez yazılmış; JSON sonuncuyu alır, ilki sessizce "
+                           "kaybolur, birini silin",
+                           "key {key!r} appears twice in one object; JSON keeps the last one and the first is "
+                           "silently lost, remove one"),
+    "json_long_int": ("{n} basamaklı bir tam sayı; kayıtta en çok {max} basamak olur",
+                      "an integer of {n} digits; a record holds at most {max}"),
     "total": ("TOPLAM: {n} ihlal", "TOTAL: {n} violation(s)"),
     "all_ok": ("Tüm senaryolar şemaya uyuyor.", "All scenarios conform to the schema."),
     "root": ("(kök)", "(root)"),
@@ -590,7 +611,7 @@ def walk(value, schema, path, errors, root, lang="tr"):
     if isinstance(value, str):
         if "minLength" in schema and len(value) < schema["minLength"]:
             errors.append(msg(lang, "minLength", path=shown, n=schema["minLength"]))
-        if "pattern" in schema and not re.search(schema["pattern"], value):
+        if "pattern" in schema and not re.search(schema_pattern(schema["pattern"]), value):
             errors.append(msg(lang, "pattern", path=shown, val=value, pat=schema["pattern"]))
 
     if isinstance(value, (int, float)) and not isinstance(value, bool):
@@ -618,6 +639,14 @@ def walk(value, schema, path, errors, root, lang="tr"):
         for key, sub in props.items():
             if key in value:
                 walk(value[key], sub, "%s.%s" % (path, key) if path else key, errors, root, lang)
+
+
+def schema_pattern(pattern):
+    """A schema pattern for Python: JSON Schema's (ECMA) `$` is the end of the
+    string, Python's also matches before a final newline ("#aabbcc\\n")."""
+    if pattern.endswith("$") and not pattern.endswith("\\$"):
+        return pattern[:-1] + r"\Z"
+    return pattern
 
 
 def resolve(ref, root):
@@ -915,7 +944,30 @@ STATISTICS_RE = re.compile(
     r"\bp\s*-?\s*(?:değeri|value)\b|\bp\s*[<≤]\s*0?[.,]\d|istatistiksel(?:\s+olarak)?\s+anlamlı|anlamlılık"
     r"|statistical(?:ly)?\s+significan|\bsignificance\b|örneklem|sample\s+size|güç\s+analiz|power\s+analysis"
     r"|istatistiksel\s+güç|statistical\s+power|güven\s+aralığı|confidence\s+interval|credible\s+interval|bayes"
-    r"|(?-i:\bMDE\b|\bSRM\b|CUPED|\bA/A\b|\bICE\b)|ICE\s+(?:puan|skor|score)", re.IGNORECASE)
+    r"|(?-i:\bMDE\b|\bSRM\b|CUPED|\bA/A\b|\bICE\b)|ICE\s+(?:puan|skor|score)"
+    # significance level and confidence ("alfa 0,05", "α = 0.05", "%95 güven", "95% confidence level")
+    r"|(?<!\w)(?:alfa|alpha)(?:\s+(?:değeri|level|seviyesi|düzeyi)\w*)?\s*[=:<≤]?\s*0?[.,]\d"
+    r"|(?<!\w)(?:alfa|alpha)\s+(?:değeri|level|seviyesi|düzeyi)\w*|(?<!\w)α(?!\w)"
+    r"|(?:%\s?|yüzde\s+)\d{2}(?:[.,]\d+)?\s+güven\w*|\d{2}(?:[.,]\d+)?\s?%\s+confiden\w*"
+    r"|güven\s+düzey\w*\s+(?:%|yüzde|0[.,]\d)|confidence\s+level\w*|statistical\s+confidence"
+    # a pre-registered plan, a decision rule, a winner, a ship condition ("ship B if ahead", "B öndeyse");
+    # these are skipped when negated ("kazanan seçmez", "no decision rule"), see statistics_hit()
+    r"|(?P<rule>pre-?regist\w*|ön\s*-?\s*kayıt\w*\s+(?:plan|analiz|hipotez)\w*"
+    r"|(?:analiz|test|plan)\w*\s+ön\s*-?\s*kayd\w*"
+    r"|karar\s+kural\w*|decision\s+rules?\b|stopping\s+rules?\b|durdurma\s+kural\w*"
+    r"|(?<!\w)kazanan\s+(?:varyant|kol|versiyon|sürüm|tasarım|seçenek)\w*|(?<!\w)kazanan\s+(?-i:[AB])(?!\w)"
+    r"|(?<!\w)kazanan(?:ı|ın)?\s+(?:belirle|seç|ilan\s+ed|ilan\s+et|olur|çıkar|yayına)\w*"
+    r"|(?<!\w)(?:(?-i:[AB])|varyant\w*|kol\w*)\s+kazanırsa(?!\w)"
+    r"|(?<!\w)winn(?:ers?|ing\s+(?:variant|arm|version|design))(?!\w)"
+    r"|(?<!\w)(?:(?-i:[AB])|varyant\w*)\s+(?:öndeyse|önde\s+(?:ise|olursa|çıkarsa|kalırsa)|üstünse"
+    r"|daha\s+iyi(?:yse|\s+ise|\s+çıkarsa))"
+    r"|\b(?:ship|roll\s*out|launch|deploy)\s+(?:\w+\s+){0,2}?if\b"
+    r"|\bif\s+(?:(?-i:[AB])|the\s+variant|variant\s+[AB])\s+(?:is\s+)?(?:ahead|leads|wins|better|outperforms)\b)",
+    re.IGNORECASE)
+# A Turkish negative verb right after a rule phrase ("kazanan seçmez", "ilan etmeyin", "belirlenmez").
+STATISTICS_NEGATED_AFTER_RE = re.compile(
+    r"\w*(?:m[ae]z|m[ae]y\w*|m[ae]m\w*|m[ıiuü]yor\w*|m[ae]di\w*|m[ae]k\s+(?:yok|değil))\b|\s+(?:etme\w*|edilme\w*|"
+    r"yok|değil\w*)\b", re.IGNORECASE)
 # "tested with a screen reader" describes a check, not a result.
 OVERCLAIM_RE = re.compile(
     r"(?<!\w)(?:kanıtlanmış(?:tır)?|kanıtlandı|test\s+edilmiş(?:tir)?|test\s+edildi(?:ği)?|kazanmış(?:tır)?"
@@ -955,7 +1007,7 @@ PAGE_FIGURE_BEFORE_RE = re.compile(
 PAGE_FIGURE_AFTER_RE = re.compile(
     r"^(?:indirim|kampanya|faiz|komisyon|taksit|vergi|kdv|cashback|off|discount|ucuz|cheaper|kontrast|contrast"
     r"|zoom|yakınlaştır)\w*$", re.IGNORECASE)
-# Turkish outcome verbs: a stem and its suffix, read by tr_outcome().
+# Turkish outcome verbs: a stem and its suffix, read by outcome_words().
 TR_OUTCOME_RE = re.compile(
     r"(?<!\w)(kazandır|iyileştir|yükselt|yüksel|artır|art|düşür|düş|azalt|azal|kazan|iyileş|katla|büyü)(\w*)",
     re.IGNORECASE)
@@ -1026,7 +1078,7 @@ ATTRIBUTION_RE = re.compile(
     r"|according\s+to|reports?|reported|found\s+that|shows?\s+that|bildir\w*|belirt\w*|raporla\w*)(?!\w)",
     re.IGNORECASE)
 ATTRIBUTION_PROPER_RE = re.compile(r"(?<!\w)[A-ZÇĞİÖŞÜ0-9][\w.-]*(?:['’]\w+)?\s+göre(?!\w)")
-# evidence.note names its source: a source word, or a proper name (GA4, Hotjar, Baymard …).
+# evidence.note names its source: a source word, or a proper name (GA4, Hotjar, a named study …).
 SOURCE_WORD_RE = re.compile(
     r"(?<!\w)(?:rapor|report|veri|data|panel|dashboard|analiz|analytics|anket|survey|export|ölçüm|kayıt|log|araç"
     r"|tool|huni|funnel|test|deney|experiment|araştırma|çalışma|study|research|kaynak|source)", re.IGNORECASE)
@@ -1133,21 +1185,18 @@ _GLOSSARY_ROWS = []  # loaded once: [{canonical: {"definition", "payda", "synony
 
 
 def glossary_rows(path=GLOSSARY_FILE):
-    """Every glossary row: {canonical name: {"definition", "payda", "synonyms"}}.
+    """Every glossary row: {canonical name: {"definition", "payda", "synonyms", "english"}}.
 
-    The table format validate_scenarios.py reads: | **Name** | Tanım | Payda | syn; syn |.
+    validate_scenarios.parse_glossary_rows reads the tables (columns found by
+    their header row, an English canonical name included when the glossary
+    has one), so both validators read the glossary the same way.
     """
     if path != GLOSSARY_FILE or not _GLOSSARY_ROWS:
         rows = {}
         if os.path.isfile(path):
+            import validate_scenarios
             with open(path, encoding="utf-8") as fh:
-                for line in fh:
-                    cells = [c.strip() for c in line.strip().strip("|").split("|")] if line.startswith("|") else []
-                    if len(cells) < 4 or not cells[0].startswith("**"):
-                        continue
-                    rows[cells[0].strip("*").strip()] = {
-                        "definition": cells[1], "payda": cells[2],
-                        "synonyms": [s.strip() for s in cells[3].split(";") if s.strip() and s.strip() != "-"]}
+                rows = validate_scenarios.parse_glossary_rows(fh.read())
         if path != GLOSSARY_FILE:
             return rows
         _GLOSSARY_ROWS.append(rows)
@@ -1168,7 +1217,7 @@ def glossary_canonical(name):
     if not _GLOSSARY_INDEX:
         exact, stripped = {}, {}
         for canon, row in glossary_rows().items():
-            for label in [canon] + row["synonyms"]:
+            for label in [canon] + row["synonyms"] + row.get("english", []):
                 exact.setdefault(fold_tr(label), canon)
                 key = fold_tr(_strip_window(label))
                 stripped[key] = canon if stripped.get(key, canon) == canon else None  # None: ambiguous
@@ -1388,7 +1437,25 @@ def check_kpis(scenario, errors, lang="tr"):
     if guardrail.get("kind") == "metric":
         errors.extend(population_problems(guardrail, "guardrail", lang))
     errors.extend(complement_problems(record_entries(scenario), lang))
+    errors.extend(window_problems(scenario, lang))
     check_kpi_meaning(scenario, errors, lang)
+
+
+def window_problems(scenario, lang="tr"):
+    """Rule 3: a lagging primary or metric guardrail (returns, cancellations,
+    churn, repeat purchase, refunds, deletion) carries its window in the name,
+    "İade Oranı (30 gün)"; the archive check is validate_scenarios.kpi_window_problems."""
+    import validate_scenarios
+    out = []
+    for key in ("primary_kpi", "guardrail"):
+        kpi = _obj(scenario.get(key))
+        name = kpi.get("name")
+        if key == "guardrail" and kpi.get("kind") != "metric":
+            continue
+        if isinstance(name, str) and validate_scenarios.LAGGING_HINT.search(name) \
+                and not validate_scenarios.WINDOW_HINT.search(name):
+            out.append(msg(lang, "kpi_window", path=key + ".name", name=name))
+    return out
 
 
 def check_detail(scenario, errors, lang="tr"):
@@ -1811,7 +1878,7 @@ def check_statistics(scenario, errors, lang="tr"):
     """Rule 5: no field of the record itself states a statistic or a numeric score."""
     primary, guardrail = _obj(scenario.get("primary_kpi")), _obj(scenario.get("guardrail"))
     pairs = [(key, scenario.get(key)) for key in ("title", "problem", "mechanism", "variable", "source_note",
-                                                  "numeric_change")]
+                                                  "numeric_change", "stage", "market", "objection")]
     pairs += [("variants[%d].description" % i, v.get("description"))
               for i, v in enumerate(_list(scenario.get("variants"))) if isinstance(v, dict)]
     pairs += [("priority.rationale", _obj(scenario.get("priority")).get("rationale")),
@@ -1824,9 +1891,24 @@ def check_statistics(scenario, errors, lang="tr"):
     pairs += [("assumptions[%d].%s" % (i, k), a.get(k)) for i, a in enumerate(_list(scenario.get("assumptions")))
               if isinstance(a, dict) for k in ("text", "question")]
     for path, text in _strings(pairs):
-        hit = STATISTICS_RE.search(text)
+        hit = statistics_hit(text)
         if hit:
-            errors.append(msg(lang, "statistics", path=path, word=hit.group(0)))
+            errors.append(msg(lang, "statistics", path=path, word=hit))
+
+
+def statistics_hit(text):
+    """The first statistics phrase in `text`, or None. A decision-rule or
+    winner phrase that is negated ("bu test kazanan seçmez", "no decision
+    rule", "kazanan ilan etmeyin") states the rule 5 boundary, not a rule."""
+    for m in STATISTICS_RE.finditer(text):
+        if m.group("rule"):
+            if NEGATION_BEFORE_RE.search(text[:m.start()]):
+                continue
+            if STATISTICS_NEGATED_AFTER_RE.match(text, m.end()) or re.search(
+                    r"m[ae](?:z|y|m|di)\w*$|m[ıiuü]yor\w*$", m.group(0), re.IGNORECASE):
+                continue
+        return m.group(0)
+    return None
 
 
 def first_hit(regex, text, exclude=()):
@@ -2217,23 +2299,74 @@ def lint(scenario, schema=None, lang="tr", include_card=True):
     return out
 
 
+MAX_INT_DIGITS = 18  # no record field needs more; Python 3.11+ refuses over 4300 digits with a traceback
+
+
+class _JsonRefused(ValueError):
+    pass
+
+
+def _no_duplicate_keys(lang):
+    def hook(pairs):
+        seen = {}
+        for key, value in pairs:
+            if key in seen:
+                raise _JsonRefused(msg(lang, "json_duplicate_key", key=key))
+            seen[key] = value
+        return seen
+    return hook
+
+
+def _bounded_int(lang):
+    def parse(text):
+        if len(text.lstrip("-")) > MAX_INT_DIGITS:
+            raise _JsonRefused(msg(lang, "json_long_int", n=len(text.lstrip("-")), max=MAX_INT_DIGITS))
+        return int(text)
+    return parse
+
+
+def loads_record(text, lang="tr"):
+    """json.loads that refuses what json.loads silently accepts: a key given
+    twice (the last one would win, unseen by whoever read the first) and an
+    integer longer than MAX_INT_DIGITS. Raises ValueError."""
+    return json.loads(text, object_pairs_hook=_no_duplicate_keys(lang), parse_int=_bounded_int(lang))
+
+
 def read_json(path, lang="tr"):
     """(document, None), or (None, the INVALID JSON message)."""
     with open(path, encoding="utf-8") as fh:
-        try:
-            return json.load(fh), None
-        except json.JSONDecodeError as exc:
-            return None, msg(lang, "invalid_json", file=path, err=exc)
+        text = fh.read()
+    try:
+        return loads_record(text, lang), None
+    except ValueError as exc:  # JSONDecodeError, a duplicate key, an over-long integer
+        return None, msg(lang, "invalid_json", file=path, err=exc)
 
 
-def print_fingerprint(path, schema, lang="tr", strict=False):
+def record_lang(doc):
+    """The language a record's messages are printed in: its own `lang`, else Turkish."""
+    value = doc.get("lang") if isinstance(doc, dict) else None
+    return value if value in ("tr", "en") else "tr"
+
+
+def file_lang(path):
+    """record_lang() of a file that may not parse: a `"lang": "en"` in its text is enough."""
+    try:
+        with open(path, encoding="utf-8") as fh:
+            return "en" if re.search(r'"lang"\s*:\s*"en"', fh.read()) else "tr"
+    except (OSError, UnicodeDecodeError):
+        return "tr"
+
+
+def print_fingerprint(path, schema, lang=None, strict=False):
     """--fingerprint: validate, then print only the fingerprint on stdout.
     Errors (and, with --strict, warnings) go to stderr and nothing is printed
-    on stdout, so a caller can never stamp a record that does not validate."""
-    doc, invalid = read_json(path, lang)
+    on stdout, so a caller can never stamp a record that does not validate.
+    `lang` None: the record's own language."""
+    doc, invalid = read_json(path, lang or file_lang(path))
     if invalid:
         sys.stderr.write(invalid + "\n")
         return 1
+    lang = lang or record_lang(doc)
     errors, warnings = validate(doc, schema, lang), lint(doc, schema, lang)
     if strict:
         errors, warnings = errors + warnings, []
@@ -2251,11 +2384,12 @@ def main(argv):
     ap.add_argument("files", nargs="*", help="scenario JSON file(s)")
     ap.add_argument("--schema", default=DEFAULT_SCHEMA)
     ap.add_argument("--strict", action="store_true", help="warnings count as violations (exit 1)")
-    ap.add_argument("--lang", choices=("tr", "en"), default="tr", help="message language (default: tr)")
+    ap.add_argument("--lang", choices=("tr", "en"), default=None,
+                    help="message language (default: each record's own lang, else tr)")
     ap.add_argument("--fingerprint", metavar="FILE",
                     help="validate FILE, then print only its record fingerprint (refused when it has errors)")
     args = ap.parse_args(argv)
-    lang = args.lang
+    lang = args.lang or "tr"  # usage and schema messages; each record's own messages follow record_lang()
     if args.fingerprint and args.files:
         ap.error("--fingerprint takes exactly one file")
     if not args.fingerprint and not args.files:
@@ -2275,15 +2409,19 @@ def main(argv):
             sys.stderr.write("validate_scenario_json: no such file: %s\n" % path)
             return 2
     if args.fingerprint:
-        return print_fingerprint(args.fingerprint, schema, lang, args.strict)
+        return print_fingerprint(args.fingerprint, schema, args.lang, args.strict)
 
     total_errors = total_warnings = 0
+    langs = set()
     for path in args.files:
-        doc, invalid = read_json(path, lang)
+        doc, invalid = read_json(path, args.lang or file_lang(path))
         if invalid:
             print(invalid)
             total_errors += 1
+            langs.add(args.lang or file_lang(path))
             continue
+        lang = args.lang or record_lang(doc)
+        langs.add(lang)
         errors = validate(doc, schema, lang)
         warnings = lint(doc, schema, lang)
         if errors:
@@ -2299,6 +2437,7 @@ def main(argv):
                 print("  ~ %s" % warning)
             total_warnings += len(warnings)
 
+    lang = args.lang or (langs.pop() if len(langs) == 1 else "tr")
     if args.strict:
         total_errors += total_warnings
     if total_errors:

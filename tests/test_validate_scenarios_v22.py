@@ -130,10 +130,10 @@ class TestCountAndSawOnEveryLine(unittest.TestCase):
         self.assertTrue(warn(make_scenario(kpis=k)))
         self.assertEqual(warn(make_scenario(kpis=k), glossary={"Görülen Ürün Sayısı": []}), [])
 
-    def test_primary_count_still_warns_with_a_glossary(self):
+    def test_primary_count_is_an_error_even_with_a_glossary(self):
         k = ["- Nitelikli Fırsat Sayısı (SQL): Satışa uygun talep artıyor mu?"] + make_kpis()[1:]
-        w = warn(make_scenario(kpis=k), glossary={"Nitelikli Fırsat Sayısı (SQL)": []})
-        self.assertTrue(any("birincil KPI bir sayı" in x for x in w), w)
+        e = errors(make_scenario(kpis=k))
+        self.assertTrue(any("birincil KPI bir sayı" in x for x in e), e)
 
 
 class TestTitleVariableNearDuplicates(unittest.TestCase):

@@ -30,14 +30,23 @@ Denetlenen kurallar (CLAUDE.md ve knowledge/methodology.md'den):
  12. Kutuları neredeyse aynı olan iki senaryo (kelime kümesi Jaccard benzerliği
      eşiğin üstünde) ancak birinde diğerine “… senaryosundan farkı” atfı varsa
      geçer.
+ 13. Birincil KPI bir sayı (“Sayısı”) değildir ve paydası “gören/görüp” demez
+     (“yalnız B” etiketli tanı satırı hariç; methodology → KPI rules).
+ 14. Gecikmeli bir birincil KPI ya da guardrail (iade, iptal, churn, durdurma,
+     tekrar satın alma, hesap silme, geri ödeme) takip penceresini adında taşır:
+     “İade Oranı (30 gün)”, “7. Gün Elde Tutma”.
+ 15. knowledge/kpi-glossary.md varsa: birincil KPI sözlükte kanonik addır
+     (Türkçe kanonik ad, varsa İngilizce adı, kısaltmasız biçimi de olur).
 
 Uyarılar (çıkış kodunu etkilemez; sonda “Uyarı sayısı: N” satırı basılır):
   - Değişken ifadesi “ ve ” veya “/” içeriyor: iki değişken olabilir.
-  - Bir KPI “Sayısı” içeriyor (kollar farklı büyüklükteyse sayı
-    karşılaştırılamaz) veya paydası “gören/görüp” diyor (payda yalnızca B’de var
-    olabilir). Birincil KPI’da satırın tamamına, diğer satırlarda yalnızca ada
-    bakılır; “… başına” yazan sayı, sözlükte kanonik adı olan ikincil satır ve
-    “yalnız B” etiketli tanı satırı uyarı almaz.
+  - Birincil dışındaki bir KPI “Sayısı” içeriyor (kollar farklı büyüklükteyse
+    sayı karşılaştırılamaz) veya paydası “gören/görüp” diyor (payda yalnızca
+    B’de var olabilir); yalnızca ada bakılır, “… başına” yazan sayı, sözlükte
+    kanonik adı olan satır ve “yalnız B” etiketli tanı satırı uyarı almaz.
+  - Guardrail kalıbına uyan satırların hiçbiri bir metrik adlandırmıyor
+    (“Kampanya Katılımı: performansı çökmemeli”).
+  - Birincil dışındaki bir KPI adı sözlükte eş anlamlı (kanonik ad yazılır).
   - Guardrail, birincil KPI’ın tümleyeni: birincil bir tamamlama/dönüşüm/kayıt
     oranı, guardrail adımı yazılmamış “Terk Oranı” ya da “Sayfa Terk Oranı”.
   - Yapılmaması gerekenler kutusunda değişken yalıtımı maddesi yok (“Aynı
@@ -45,7 +54,7 @@ Uyarılar (çıkış kodunu etkilemez; sonda “Uyarı sayısı: N” satırı b
   - Başlığı ve Değişken ifadesi neredeyse aynı olan iki senaryo (dosyalar arası
     da), biri diğerine “… senaryosundan farkı” atfı vermiyorsa.
   - knowledge/kpi-glossary.md varsa: sözlükte kanonik adı olmayan birincil KPI
-    sayısı (--verbose ile liste).
+    sayısı da basılır (kural 15'in hataları; --verbose ile liste).
 
 SINIR: Bu araç bir BİÇİM denetçisidir, anlam denetçisi değildir. Etiketi anlamlı
 görünen ama içeriği boş maddeler, birbirinin sonuna tek kelime eklenmiş
@@ -94,6 +103,97 @@ PER_HINT = re.compile(r"başına", re.IGNORECASE)
 # Yalnızca B kolunda var olan bir tanı satırı kollar arasında karşılaştırılmaz;
 # öyle etiketlendiyse payda uyarısı anlamsızdır.
 B_ONLY_HINT = re.compile(r"yalnız(?:ca)?\s+B\b|sadece\s+B\b")
+
+# Gecikmeli metrik (iade, iptal, churn, durdurma, tekrar satın alma, silme,
+# geri ödeme): test bittikten sonra olur, takip penceresi adın parçasıdır
+# (“İade Oranı (30 gün)”; methodology → KPI rules, kpi-glossary.md → İade ve iptal).
+LAGGING_HINT = re.compile(
+    r"(?<!\w)(?:iade|iptal|churn|durdur|tekrar\s+satın|yeniden\s+satın|ikinci\s+sipariş|hesab?\w*\s+sil|geri\s+ödeme"
+    r"|abonelik(?:ten)?\s+(?:çık|ayrıl|bırak)|elde\s+tut|refund|return|cancel|retention|repeat\s+purchase"
+    r"|chargeback|account\s+delet)\w*", re.IGNORECASE)
+WINDOW_HINT = re.compile(
+    r"\([^()]*(?:\d|gün|hafta|\bay\b|aylık|yıl|süre|pencere|dönem|window|day|week|month|year)[^()]*\)"
+    r"|(?<!\w)\d+\.?[\s-]*(?:gün|hafta|ay|yıl|day|week|month|year)\w*(?!\w)|(?<!\w)D\d+(?!\w)",
+    re.IGNORECASE)
+
+# Guardrail satırı bir metriği adlandırır: “Kampanya Katılımı: performansı
+# çökmemeli” gibi bir cümle kalıba uysa da ölçülebilir bir metrik değildir.
+METRIC_HINT = re.compile(
+    r"oran|süre|gelir|marj|maliyet|tutar|değer|bedel|puan|skor|hız|sayı|talep|taleb|şikâyet|şikayet|hata|ağırlı|boyut"
+    r"|\(anket\)|\b(?:LCP|INP|CLS|TTFB|CR|AOV|RPV|ARPU|NPS|CSAT|CTR)\b|rate|time|revenue|margin|cost|score",
+    re.IGNORECASE)
+
+
+def primary_problems(primary):
+    """Birincil KPI satırının hataları (methodology → KPI rules): sayı ya da
+    “gören/görüp” paydası. “yalnız B” etiketli satır tanıdır, karşılaştırılmaz."""
+    out = []
+    if B_ONLY_HINT.search(primary):
+        return out
+    label = kpi_label(primary)
+    if COUNT_HINT.search(label) and not PER_HINT.search(label):
+        out.append(f"birincil KPI bir sayı (“Sayısı”); kollar farklı büyüklükteyse karşılaştırılamaz, "
+                   f"atanan ziyaretçi başına orana çevirin → {label}")
+    if SAW_HINT.search(primary):
+        out.append(f"birincil KPI paydası “gören/görüp” diyor; yalnızca B’de var olan bir payda "
+                   f"karşılaştırılamaz (methodology → KPI denominator) → {primary[2:70]}")
+    return out
+
+
+def is_guardrail_line(item):
+    return bool(re.search(GUARDRAIL_PATTERN, item))
+
+
+def kpi_window_problems(kpis):
+    """Pencere adında yazılmamış gecikmeli birincil ya da guardrail adları (hata)."""
+    out = []
+    for i, item in enumerate(kpis):
+        if i and not is_guardrail_line(item):
+            continue
+        label = kpi_label(item)
+        if LAGGING_HINT.search(label) and not WINDOW_HINT.search(label):
+            role = "birincil KPI" if i == 0 else "guardrail"
+            out.append(f"{role} gecikmeli bir metrik ama takip penceresi adında yok; adın sonuna yazın "
+                       f"(“İade Oranı (30 gün)”, kpi-glossary.md → İade ve iptal) → {label}")
+    return out
+
+
+def guardrail_metric_warnings(kpis, glossary=None):
+    """Guardrail kalıbına uyan satırların hiçbiri bir metrik adlandırmıyorsa uyarı."""
+    lines = [item for item in kpis[1:] if is_guardrail_line(item)]
+    if not lines:
+        return []
+    for item in lines:
+        label = kpi_label(item)
+        if METRIC_HINT.search(label) or (glossary is not None and glossary_status(label, glossary) != "missing"):
+            return []
+    return ["guardrail satırları bir metrik adlandırmıyor (oran, süre, gelir, şikâyet …); “…memeli/…mamalı” "
+            "kalıbı tek başına guardrail değildir, ölçülen metriği ve paydasını yazın → "
+            + "; ".join(kpi_label(item) for item in lines)]
+
+
+def primary_glossary_problems(primary, glossary):
+    """Birincil KPI sözlükteki kanonik adla yazılır (methodology → KPI rules)."""
+    label = kpi_label(primary)
+    status = glossary_status(label, glossary)
+    if status == "canonical":
+        return []
+    if status.startswith("synonym:"):
+        return [f"birincil KPI sözlükte eş anlamlı; kanonik adı yazın → {label} → {status.split(':', 1)[1]}"]
+    return [f"birincil KPI sözlükte yok; kpi-glossary.md’deki kanonik adı yazın ya da metriği sözlüğe "
+            f"paydasıyla ekleyin → {label}"]
+
+
+def glossary_name_warnings(kpis, glossary):
+    """Sözlükte eş anlamlı olan bir KPI adı: arşiv kanonik adı yazar."""
+    out = []
+    for item in kpis:
+        label = kpi_label(item)
+        status = glossary_status(label, glossary)
+        if status.startswith("synonym:"):
+            out.append(f"KPI adı sözlükte eş anlamlı; arşiv kanonik adı yazar → {label} → "
+                       f"{status.split(':', 1)[1]}")
+    return out
 
 # Tümleyen guardrail: birincil bir tamamlama/dönüşüm/kayıt oranıyken adımı
 # yazılmamış terk oranı (sözlükteki “Terk Oranı” ve “Sayfa Terk Oranı”) aynı
@@ -151,7 +251,7 @@ def parse_scenarios(text):
 
 
 def box_items(body, header):
-    # (?:\n|$) — dosyanın son satırında newline olmasa da son maddeyi yakala.
+    # (?:\n|$); dosyanın son satırında newline olmasa da son maddeyi yakala.
     m = re.search(r"\*\*" + re.escape(header) + r"\*\*\n((?:- .*(?:\n|$))+)", body)
     if not m:
         return None
@@ -206,7 +306,9 @@ def unclosed_blocks(parsed):
     return out
 
 
-def check_scenario(filename, title, body):
+def check_scenario(filename, title, body, glossary=None):
+    """Biçim hataları. glossary verilirse (kpi-glossary.md) birincil KPI'ın
+    sözlükte kanonik ad olması da denetlenir."""
     errors = []
     where = f"{filename} → {title[:50]}"
 
@@ -234,7 +336,7 @@ def check_scenario(filename, title, body):
     kpis = box_items(body, KPI_BOX)
     if kpis and not re.search(GUARDRAIL_PATTERN, "\n".join(kpis)):
         errors.append(
-            f"{where}: KPI listesinde guardrail yok — bir metriğin 'bozulmaması gerektiği' "
+            f"{where}: KPI listesinde guardrail yok; bir metriğin 'bozulmaması gerektiği' "
             f"olumsuz kalıpla yazılmalı (…memeli/…mamalı); '…melidir' biten bir hedef cümlesi guardrail değildir"
         )
     if kpis and re.search(GUARDRAIL_PATTERN, kpis[0]):
@@ -243,12 +345,18 @@ def check_scenario(filename, title, body):
             f"bir hedeftir (“… artıyor mu?”), bozulmama cümlesini bir guardrail maddesine taşıyın → {kpis[0][:60]}"
         )
 
+    if kpis:
+        errors.extend(f"{where}: {e}" for e in primary_problems(kpis[0]))
+        errors.extend(f"{where}: {e}" for e in kpi_window_problems(kpis))
+        if glossary is not None:
+            errors.extend(f"{where}: {e}" for e in primary_glossary_problems(kpis[0], glossary))
+
     tests = box_items(body, TEST_BOX)
     if tests:
         if not re.search(SEGMENT_PATTERN, "\n".join(tests)):
             errors.append(f"{where}: test listesinde cihaz/segment kırılımı sorusu yok")
         for item in tests:
-            # 'Etiket: soru?' — etiket boş olmayacak, sorunun ardından örnek listesi gelebilir
+            # 'Etiket: soru?'; etiket boş olmayacak, sorunun ardından örnek listesi gelebilir
             # ("Kaç rozet optimum? (1 / 3 / 5)"), o yüzden soru işareti sonda olmak zorunda değil.
             if not re.match(r"^- [^:\n]{2,}:\s*\S[^?]*\?", item):
                 errors.append(f"{where}: test maddesi 'Etiket: soru?' biçiminde değil → {item[:45]}")
@@ -283,17 +391,6 @@ def check_warnings(filename, title, body, glossary=None):
     kpis = box_items(body, KPI_BOX)
     if kpis:
         primary = kpis[0]
-        if not B_ONLY_HINT.search(primary):
-            if COUNT_HINT.search(kpi_label(primary)) and not PER_HINT.search(kpi_label(primary)):
-                warnings.append(
-                    f"{where}: birincil KPI bir sayı (“Sayısı”); kollar farklı büyüklükteyse karşılaştırılamaz, "
-                    f"atanan ziyaretçi başına orana çevirin → {kpi_label(primary)}"
-                )
-            if SAW_HINT.search(primary):
-                warnings.append(
-                    f"{where}: birincil KPI paydası “gören/görüp” diyor; yalnızca B’de var olan bir payda "
-                    f"karşılaştırılamaz (methodology → KPI denominator) → {primary[2:70]}"
-                )
         for item in kpis[1:]:
             label = kpi_label(item)
             if B_ONLY_HINT.search(item):
@@ -318,6 +415,12 @@ def check_warnings(filename, title, body, glossary=None):
                         f"{where}: guardrail birincil KPI’ın tümleyeni gibi görünüyor (aynı adımın terki, "
                         f"1 − birincil); bağımsız bir zarar ölçün: sonraki adım, kalite, maliyet → {kpi_label(item)}"
                     )
+    if kpis:
+        # Uyarı, hata değil: ikincil satırlarda sözlük dışı ad serbesttir (paydası yazılıysa) ve
+        # metrik adı denetimi bir sezgidir.
+        warnings.extend(f"{where}: {w}" for w in guardrail_metric_warnings(kpis, glossary))
+        if glossary is not None:
+            warnings.extend(f"{where}: {w}" for w in glossary_name_warnings(kpis[1:], glossary))
     nevers = box_items(body, NEVER_BOX)
     if nevers and not any(ISOLATION_HINT.search(item) for item in nevers):
         warnings.append(
@@ -474,20 +577,97 @@ def find_title_variable_duplicates(scenarios, threshold=TITLE_DUP_THRESHOLD):
 
 # --- KPI sözlüğü --------------------------------------------------------------
 
-def parse_glossary(text):
-    """kpi-glossary.md tablolarından {kanonik ad: [eş anlamlılar]} çıkar.
+class Glossary(dict):
+    """{kanonik ad: [eş anlamlılar]}; `english` = {İngilizce ad: kanonik ad}.
 
-    Satır biçimi: | **Kanonik Ad** | Tanım | Payda | eş1; eş2 |"""
-    glossary = {}
+    İngilizce ad bir eş anlamlı değil, kaydın İngilizce kanonik adıdır:
+    glossary_status onu 'canonical' sayar."""
+
+    def __init__(self, *args, **kwargs):
+        super(Glossary, self).__init__(*args, **kwargs)
+        self.english = {}
+
+
+# Sözlük tablolarının sütunları başlık satırından okunur; başka bir sütun
+# (ör. İngilizce kanonik ad) eklendiğinde eş anlamlılar yanlış sütundan okunmaz.
+_COL_RES = (
+    ("english", re.compile(r"ingilizce|english|^en(?:\s|$)|\(en\)", re.IGNORECASE)),
+    ("synonyms", re.compile(r"eş\s*anlam|synonym", re.IGNORECASE)),
+    ("payda", re.compile(r"payda|denominator", re.IGNORECASE)),
+    ("definition", re.compile(r"tanım|definition", re.IGNORECASE)),
+    ("turkish", re.compile(r"kanonik|canonical|türkçe|turkish", re.IGNORECASE)),
+)
+_LEGACY_COLUMNS = {"definition": 1, "payda": 2, "synonyms": 3}
+
+
+def _header_columns(cells):
+    """Bir tablo başlık satırının {rol: sütun no} haritası; başlık değilse None."""
+    if any(c.startswith("**") for c in cells):
+        return None
+    cols = {}
+    for i, cell in enumerate(cells):
+        for role, regex in _COL_RES:
+            if role not in cols and regex.search(cell):
+                cols[role] = i
+                break
+    return cols if ("synonyms" in cols or "payda" in cols or "english" in cols) else None
+
+
+def _split_names(cell):
+    return [s.strip().strip("*").strip() for s in cell.split(";") if s.strip() and s.strip() not in ("-", "\u2014", "\u2013")]
+
+
+def parse_glossary_rows(text):
+    """kpi-glossary.md tablolarının her satırı:
+    {kanonik ad: {"definition", "payda", "synonyms", "english"}}.
+
+    Satır biçimi: | **Kanonik Ad** | Tanım | Payda | eş1; eş2 |. Sütunlar her
+    tablonun başlık satırından bulunur (Tanım/Payda/eş anlamlılar, varsa
+    İngilizce ad); başlıksız tabloda eski sıra geçerlidir. İlk sütunu
+    İngilizce ad olan bir tablo (ayrı bir İngilizce bölüm), Türkçe kanonik
+    adı gösteren bir sütunu varsa o satırın İngilizce adını ekler."""
+    rows = {}
+    english_only = []  # (İngilizce ad, Türkçe kanonik ad) ayrı bölümden
+    cols = None
     for line in text.split("\n"):
         if not line.startswith("|"):
+            cols = None  # a table ends at its first non-table line
             continue
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
-        if len(cells) < 4 or not cells[0].startswith("**"):
+        header = _header_columns(cells)
+        if header is not None:
+            cols = header
             continue
+        if not cells or not cells[0].startswith("**"):
+            continue
+        use = cols or _LEGACY_COLUMNS
         name = cells[0].strip("*").strip()
-        synonyms = [s.strip() for s in cells[3].split(";") if s.strip() and s.strip() != "-"]
-        glossary[name] = synonyms
+
+        def cell(role):
+            i = use.get(role)
+            return cells[i] if i is not None and i < len(cells) else ""
+
+        if use.get("english") == 0 and use.get("turkish") not in (None, 0):
+            english_only.append((name, cell("turkish").strip("*").strip()))
+            continue
+        if cols is None and len(cells) < 4:
+            continue
+        rows[name] = {"definition": cell("definition"), "payda": cell("payda"),
+                      "synonyms": _split_names(cell("synonyms")), "english": _split_names(cell("english"))}
+    for en, tr in english_only:
+        if tr in rows and en not in rows[tr]["english"]:
+            rows[tr]["english"].append(en)
+    return rows
+
+
+def parse_glossary(text):
+    """kpi-glossary.md tablolarından {kanonik ad: [eş anlamlılar]} çıkar
+    (Glossary; İngilizce kanonik adlar `english` içinde)."""
+    glossary = Glossary()
+    for name, row in parse_glossary_rows(text).items():
+        glossary[name] = row["synonyms"]
+        for en in row["english"]:
+            glossary.english.setdefault(en, name)
     return glossary
 
 
@@ -504,8 +684,14 @@ def glossary_status(label, glossary):
     Sondaki tek bir parantez niteleyicisi yok sayılır:
     'Nitelikli Fırsat Oranı (atanan ziyaretçi başına)' → 'Nitelikli Fırsat Oranı'."""
     candidates = [label, re.sub(r"\s*\([^()]*\)$", "", label)]
+    english = getattr(glossary, "english", {})
     for c in candidates:
-        if c in glossary:
+        if c in glossary or c in english:
+            return "canonical"
+    # 'Dönüşüm Oranı' is 'Dönüşüm Oranı (CR)' without its abbreviation.
+    for c in candidates:
+        bare = [name for name in list(glossary) + list(english) if re.sub(r"\s*\([^()]*\)$", "", name) == c]
+        if len(bare) == 1:
             return "canonical"
     for canon, syns in glossary.items():
         for c in candidates:
@@ -566,7 +752,7 @@ def main(argv=None):
             for header in BOXES:
                 if body.count(f"**{header}**") > 1:
                     all_errors.append(f"{name} → {title[:50]}: '{header}' kutusu birden fazla kez tanımlı")
-            all_errors.extend(check_scenario(name, title, body))
+            all_errors.extend(check_scenario(name, title, body, glossary=glossary))
             all_warnings.extend(check_warnings(name, title, body, glossary=glossary))
 
     all_errors.extend(find_duplicate_never_do(scenarios))
@@ -604,7 +790,7 @@ def main(argv=None):
                 hint = f" → kanonik ad: {status.split(':', 1)[1]}" if status.startswith("synonym:") else ""
                 missing.append(f"{name} → {title[:40]}: {kpi_label(kpis[0])}{hint}")
         print(f"KPI sözlüğü: {len(glossary)} kanonik ad; {len(missing)}/{total} birincil KPI sözlükte kanonik ad olarak yok "
-              f"(uyarı{'' if args.verbose or not missing else '; liste için --verbose'}).")
+              f"(hata{'' if args.verbose or not missing else '; liste için --verbose'}).")
         if args.verbose:
             for m in missing:
                 print(f"  - {m}")

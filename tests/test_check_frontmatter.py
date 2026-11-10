@@ -3,7 +3,7 @@
 
 Bu kontrolün varlık sebebi gerçek bir kusur: `description` içindeki tırnaksız
 bir `style: a Variant` yüzünden ab-test-card skill'i `npx skills add` tarafından
-sessizce atlanıyordu — repoda duruyor, diğer tüm kontrollerden geçiyor, ama
+sessizce atlanıyordu; repoda duruyor, diğer tüm kontrollerden geçiyor, ama
 kurulmuyordu.
 
 Testlerin ağırlığı YANLIŞ POZİTİFTE. Şablon dosyalarında bilerek yazılmış YAML
@@ -37,7 +37,7 @@ class TestTheBugThatShipped(unittest.TestCase):
         self.assertEqual(lint(block('desc: "card in the style: a Variant pair"')), [])
 
     def test_em_dash_rewrite_fixes_it(self):
-        self.assertEqual(lint(block("desc: card in the style — a Variant pair")), [])
+        self.assertEqual(lint(block("desc: card in the style \u2014 a Variant pair")), [])
 
 
 class TestUnterminatedQuote(unittest.TestCase):

@@ -511,8 +511,8 @@ class TestRefusals(unittest.TestCase):
 
     def test_turkish_messages_have_no_em_dash(self):
         for en, tr in ss.MSG.values():
-            self.assertNotIn("—", tr)
-            self.assertNotIn("—", en)
+            self.assertNotIn("\u2014", tr)
+            self.assertNotIn("\u2014", en)
 
     def test_forms(self):
         self.assertEqual(ss.card_form({"variant_a": "x", "variant_b": "y"}), "raw")

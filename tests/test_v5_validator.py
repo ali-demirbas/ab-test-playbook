@@ -194,13 +194,15 @@ class TestClaimsAllowed(unittest.TestCase):
             self.assertEqual(claims(sc), [], (text, errs(sc)))
 
     def test_a_sector_result_quoted_with_its_source(self):
-        note = "Baymard Institute 2025 ödeme adımı araştırması."
-        for text in ("Baymard raporuna göre zorunlu hesap açma ödeme terkini %24 artırır.",
-                     "Baymard reports that forced account creation raises checkout abandonment by 24%."):
+        note = "2025 ödeme adımı kullanılabilirlik araştırması (checkout usability research)."
+        tr_source, en_source = "Ödeme kullanılabilirliği araştırmasına göre ", "Checkout usability research reports that "
+        for text in (tr_source + "zorunlu hesap açma ödeme terkini %24 artırır.",
+                     en_source + "forced account creation raises checkout abandonment by 24%."):
             sc = plain(evidence={"level": "sector", "note": note}, problem=text)
             self.assertEqual(claims(sc), [], (text, errs(sc)))
             sc["evidence"] = {"level": "sector", "note": "Yaygın bir kalıp."}
-            sc["problem"] = text.replace("Baymard raporuna göre ", "").replace("Baymard reports that ", "")
+            sc["problem"] = text.replace(tr_source, "").replace(en_source, "")
+            sc["problem"] = sc["problem"][:1].upper() + sc["problem"][1:]
             self.assertTrue(claims(sc), text)
 
     def test_the_detail_view_and_the_card_are_not_read(self):
