@@ -267,8 +267,8 @@ class TestNoOpIsRefused(unittest.TestCase):
         screen = [{"h": "Sepetim", "id": "h"}, {"field": "E-posta", "id": "mail"}, {"cta": "Devam", "id": "cta"}]
         a, b, problems = ss.compile(screen, {"op": "move_before", "target": "mail", "to": "cta",
                                              "label_a": "Eski yer", "label_b": "Yeni yer"}, "tr")
-        self.assertEqual(problems, [])
-        self.assertTrue(has(report(a, b, difference="move")[0], "A and B render the same"))
+        # The screen spec refuses the no-op itself, before the builder's own A == B check is reached.
+        self.assertTrue(has(problems, "birebir aynı"), problems)
 
     def test_a_real_change_passes(self):
         self.assertFalse(has(report(HEAD + LINE, HEAD + ring(LINE.replace("yarın", "bugün")))[0], "render the same"))
@@ -355,7 +355,7 @@ class TestJsonInput(CliCase):
         code, _, err = main_run(["--template", TEMPLATE_PATH, "--scenario", src, "--out",
                                  os.path.join(self.dir, "c.html"), "--draft"])
         self.assertEqual(code, 2)
-        self.assertIn("duplicate key 'title'", err)
+        self.assertIn("key 'title' appears twice in one object", err)  # the validator's shared reader, in --lang
 
     def test_a_huge_integer_is_a_message_not_a_traceback(self):
         src = self.write("s.json", '{"title": "T", "n": %s}' % ("9" * 5000))

@@ -144,6 +144,14 @@ class TestLinkedDifferences(unittest.TestCase):
                 a, b = compiled(screen, change, soft=["p1"])
                 self.assertEqual(gate(difference, a, b), [])
 
+    def test_a_far_soft_ring_in_the_arm_without_a_ring_is_still_refused(self):
+        screen = self.PRICING + [{"help": "Bir", "id": "h1"}, {"help": "İki", "id": "h2"},
+                                 {"plan": {"name": "Uzak", "price": "300 TL", "per": "/ay"}, "id": "far"}]
+        change = {"op": "insert_after", "target": "toggle", "node": {"badge": "2 ay bedava"}, "label": "Rozet",
+                  "linked": [{"target": "far", "set": {"price": "250 TL"}}]}
+        a, b = compiled(screen, change, soft=["far"])
+        self.assertTrue(any("is not next to the ring" in p for p in gate("add", a, b)))
+
     def test_a_malformed_linked_list_is_refused(self):
         change = dict(self.CHANGE, linked=[{"target": "p1"}])
         p = problems_of(self.PRICING, change, soft=["p1"])
