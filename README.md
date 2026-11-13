@@ -1,4 +1,4 @@
-# ab-test-playbook: A/B testing & CRO playbook with 221 experiment scenarios
+# A/B Test Builder: 221 experiment scenarios for A/B testing & CRO
 
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
@@ -26,7 +26,7 @@ A new proposal doesn't repeat those boxes. It is a short structured record of te
 
 ## Why a playbook instead of ad-hoc testing
 
-| Without a system | With ab-test-playbook |
+| Without a system | With A/B Test Builder |
 |---|---|
 | Test ideas come from memory or whatever feels right today | Prioritized from a 221-scenario archive (high / medium / low, with a one-sentence reason), or generated with a stated mechanism; "more eye-catching" isn't an accepted reason |
 | A plan goes live with two changes in B, a click metric as the primary, or a guardrail that measures nothing | `/ab-test audit` flags confounds, mismatched denominators, a proxy standing in for the outcome, a guardrail that is the primary's complement, and missing compliance or accessibility gates before the test takes traffic |
