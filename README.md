@@ -235,3 +235,7 @@ This playbook proposes, designs, audits and visualizes A/B tests. It doesn't ana
 ## License
 
 MIT. Use it, adapt it, send a scenario back if you've got a good one. If it saves you from shipping a bad test, a star helps the next person find it.
+
+---
+
+Built by [Ali Demirbaş](https://alidemirbas.com.tr)
