@@ -28,6 +28,8 @@ OUT = os.path.join(REPO, "docs", "llms-full.txt")
 # how it is put together, then the questions people actually arrive with.
 SOURCES = [
     ("README.md", "Overview"),
+    ("docs/reference.md", "Reference"),
+    ("docs/install.md", "Install"),
     ("CLAUDE.md", "Binding rules"),
     ("docs/architecture.md", "Architecture"),
     ("FAQ.md", "FAQ"),

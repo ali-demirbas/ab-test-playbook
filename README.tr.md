@@ -1,259 +1,112 @@
-# A/B Test Builder: 221 deney senaryolu A/B test ve CRO rehberi
+# A/B Test Builder
 
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 ![Scenarios](https://img.shields.io/badge/scenarios-221-blue)
-![Python](https://img.shields.io/badge/python-3.9%2B_%C2%B7_stdlib_only-blue)
 
 **Dil:** [English](README.md) · [Türkçe](README.tr.md)
 
-[Kuruluma atla ↓](#kurulum)
+Sayfanızın ekran görüntüsünü tek değişkenli A/B test planlarına çevirir. Her planda bir birincil KPI ve bir guardrail (bozulmaması gereken metrik) bulunur, plan iki ajan tarafından incelenir ve A ile B yan yana duran bir kart olarak çizilir. Claude Code içinde çalışır.
 
-E-ticaret, mobil uygulama, SaaS ve dijital ürünler için pratik bir A/B test ve CRO (dönüşüm oranı optimizasyonu) rehberi; Claude Code üzerinde çalışır. Derlenmiş bir örüntü arşivinden, yolculuk aşamasına göre deney fikirleri önerir, sayfanız için disiplinli tek-değişkenli bir çerçevede yenilerini tasarlar, test önerilerini metodolojik, UX ve etik hatalara karşı denetler (confound, vekil birincil metrik, eksik guardrail, dark pattern) ve her senaryoyu doğrudan yalnızca karşılaştırmayı gösteren bir HTML karta çevirir. Ayrıca istemek gerekmez.
+<p align="center">
+  <a href="https://ali-demirbas.github.io/ab-test-playbook/"><img src="assets/example-card.png" alt="Örnek kart: kupon alanını “İndirim kodum var” bağlantısının arkasına almak geliri artırır mı? Üstte soru, altında yan yana Variant A ve Variant B, değişen tek öğe halkayla işaretli ve etiketli." width="900"></a>
+</p>
 
-Gerçek e-ticaret, mobil uygulama ve SaaS büyüme çalışmalarında, ayrıca düzenlemeye tabi finans, sigorta ve bireysel emeklilik akışlarında kullanılan bir A/B test senaryosu ve hipotez üretim deseni arşivinden inşa edildi: 221 senaryo, metodoloji ve metin içeriği, hazır bir görsel deste değil. Deney fikri ve tasarımı, test önceliklendirme (kanıta dayalı bir puandan hesaplanan Yüksek / Orta / Düşük öncelik), guardrail metrikleri, plan denetimi ve checkout/ürün sayfası/fiyatlandırma optimizasyonunu kapsar. Arşivdeki her senaryo aynı üç-kutu disiplinini izler:
+<p align="center"><sub>Gerçek bir kart, eklentinin her test için çizdiği haliyle: kurgusal mağaza, nötr renkler. <a href="https://ali-demirbas.github.io/ab-test-playbook/">Canlı demo</a> · <a href="docs/demo/">diğer örnek kartlar</a></sub></p>
 
-- **Test edilmesi gerekenler**: deneyin hangi soruları yanıtlaması gerektiği
-- **Takip edilecek ana KPI’lar**: bir birincil metrik + bozulmaması gereken guardrail’ler
-- **Yapılmaması gerekenler**: testi geçersiz kılan hatalar
+- **Siz verirsiniz:** sayfanızın ekran görüntüsünü, adresini ya da kısa bir tarifini. Paylaşacak sayfa yoksa sayfa türünü söyleyin ("ödeme sayfam"), 221 senaryoluk derlenmiş arşivden fikir seçer.
+- **Siz alırsınız:** bir ile üç arası test planı. Her planda tek değişiklik, neden işe yarayacağı, bir birincil KPI ve bir guardrail vardır. Plan, A ile B'nin yan yana durduğu ve değişikliğin halkayla işaretlendiği bir HTML kart olarak gelir.
+- **Yapmadıkları:** örneklem, süre, anlamlılık ya da kazanan hesaplamaz, analitik ya da test aracınıza bağlanmaz, canlı sitenize dokunmaz. Sonuçlar test aracınızda kalır.
 
-Yeni bir öneri bu kutuları tekrarlamaz. On parçalık kısa, yapılandırılmış bir kayıttır: soru biçiminde bir başlık, hedeflediği kullanıcı problemi ya da fırsat, tek cümlelik davranışsal mekanizma, tek değişken, A ile B arasındaki tam fark, paydasıyla birincil KPI, en önemli guardrail, kaynak ve kanıt düzeyi, tek cümlelik gerekçesiyle öncelik ve yalnızca gerektiğinde kritik bir erişilebilirlik, düzenleme ya da uygulanabilirlik uyarısı. Üç kutu, istediğiniz an ayrıntılı görünüm olarak geri gelir.
+Sırada neyi test edeceğine karar veren growth, CRO ve ürün ekipleri için. Kod yazmanız gerekmez.
 
-**Demo:** [docs/index.html](docs/index.html) gerçek bir senaryo kartı taşır (üstte testin sorusu, altında tam olarak tek bir şeyde farklılaşan iki büyük mockup, test edilen öğe halkayla işaretli ve adlandırılmış). Klonladıktan sonra tarayıcıda açın ya da aşağıdaki görsele bakın. Bu, `scripts/build_card.py`’nin gerçek çıktısıdır; başka ekran türleri için örnek kartlar [docs/demo/](docs/demo/) klasöründe.
+> **Bilinmesi gereken tek ad:** eklentinin görünen adı A/B Test Builder. `ab-test-playbook` adıyla kurulur, komutu `/ab-test`. Resmi kaynak bu repodur. Herkese açık dizinlerdeki benzer adlı skill'ler bu proje değildir.
 
-> [!NOTE]
-> Resmi kaynak: bu repo, [ali-demirbas/ab-test-playbook](https://github.com/ali-demirbas/ab-test-playbook). Herkese açık skill dizinlerinde ilgisiz birkaç repo tesadüfen benzer isimli bir skill kullanıyor; bu projeyle alakaları yok.
+## 3 adımda ilk kart
 
-## Neden rastgele test etmek yerine bir rehber
+**Gerekenler:** Claude Code ve Python 3.9 veya üstü. Node 18 veya üstü ve Playwright yalnızca son görsel kontrol için gerekir (2. adım).
 
-| Rehber olmadan | A/B Test Builder ile |
-|---|---|
-| Test fikirleri hafızadan ya da o gün akla gelenden gelir | 221 senaryoluk arşivden önceliğe göre sıralanır (Yüksek / Orta / Düşük, tek cümlelik gerekçeyle) ya da belirtilmiş bir mekanizmayla üretilir; “daha dikkat çekici olur” kabul edilen bir gerekçe değildir |
-| Plan, B’de iki değişiklikle, birincil metrik olarak bir tıklamayla ya da hiçbir şey ölçmeyen bir guardrail’le yayına girer | `/ab-test audit` confound’ları, uyuşmayan paydaları, asıl sonucun yerine geçen vekil metriği, birincilin tümleyeni olan guardrail’i ve eksik uyum ya da erişilebilirlik kapılarını test trafik almadan önce işaretler |
-| Beş metrik izlenir, hiçbiri kararı vermez | Adı konmuş tek bir birincil metrik ve bağımsız bir zararı ölçen zorunlu bir guardrail; p-hacking riski işaretlenir, yayınlanmaz |
-| Senaryoyu yazan model kendi ödevini kendi notlandırır | Kart taslağı çıkmadan önce kaydı bir adversarial denetçi kontrol eder; ikinci bir denetçi çizilen kartta gizli ikinci farkı arar; iki incelemenin damgası olmadan nihai kart üretilmez |
-| Fiyat veya indirim testi yalnızca dönüşüm oranına bakar | Birincil metrik ziyaretçi başına gelir olur, marj guardrail olarak eklenir; dönüşüm artarken ziyaretçi başına gelirin düşmesi tasarımın yakalamak için kurulduğu risktir |
-| Kupon alanını gizlemek geliri artırır, çünkü kodu olan kullanıcı artık tam fiyat öder; bu bir kazanç gibi okunur | Kupon, indirim ya da başka bir kullanıcı faydasına dokunan değişiklikte gelir birincil metrikse o faydayı koruyan guardrail olmadan kayıt reddedilir |
-| Kullanıcı isterse dark pattern yayına girer | İstense bile reddedilir, nedeni çıktıda söylenir |
-| Daha önce denenen bir şey varsa birinin hafızasında kalır, o kadar | `.abtest-history.md`, test aracınızın sonuçlarından sizin tuttuğunuz dosya; skill’ler bunu okur ve gerekçesiz olarak zaten kaybetmiş bir şeyi tekrar önermez |
-
-## Bu rehberin cevapladığı sorular
-
-- E-ticaret checkout veya sepetimde hangi A/B testlerini çalıştırmalıyım?
-- Ürün detay sayfasında (PDP) ne test etmeliyim?
-- Arkasında gerçek kanıt olan bir A/B test hipotezini nasıl kurarım?
-- Bir A/B testinde guardrail olarak hangi metrikleri izlemeliyim?
-- Varyantım bir dark pattern mi, düzenlenen bir gösterime dokunuyor mu?
-- Bir sonucu geçersiz kılan yaygın A/B test hataları nelerdir?
-- Hangi CRO deneylerini önce çalıştıracağımı nasıl önceliklendiririm?
-- SaaS fiyatlandırma sayfamda veya onboarding akışımda ne test etmeliyim?
-- Test planım doğru mu kurulmuş, yoksa bir confound mu var?
-
-```mermaid
-flowchart LR
-    subgraph Generate["Senaryo üret"]
-        S["/ab-test suggest\narşivden, önceliğe göre sıralı"]
-        D["/ab-test design\nsayfanız için yeni senaryo"]
-    end
-    C["/ab-test card\nHTML senaryo kartı"]
-    A["/ab-test audit\nyayına almadan hataları yakala"]
-    T["test aracınız\ntesti koşar, sonucu raporlar"]
-
-    S --> C
-    D --> C
-    C --> T
-    T -->|geçmiş satırı, sıradaki hipotez| D
-    A -.->|düzelt, yayından önce| D
-```
-
-## Kurulum
-
-**Gereksinimler:** Claude Code ve PATH üzerinde `python3` 3.9 veya üstü. Script’ler yalnızca Python standart kütüphanesini kullanır; `pip install` gerektiren bir şey yok. Nihai kart için görsel kontrol de gerekir: `scripts/render_check.mjs`, Node ile Chromium’lu Playwright üzerinde çalışır (aşağıda Görsel kontrol). O olmadan yalnızca doğrulanmamış bir önizleme alırsınız, nihai kart asla.
-
-Claude Code içinde:
+**1. Eklentiyi kurun.** Şunları Claude Code'a yazın:
 
 ```
 /plugin marketplace add ali-demirbas/ab-test-playbook
 /plugin install ab-test-playbook@ab-test-playbook
 ```
 
-A/B Test Builder görünen addır; plugin `ab-test-playbook` adıyla kurulur ve bütün komutlar bu adı kullanır.
-
-Ya da klonlayıp yerel bir plugin olarak ekleyin:
-
-```bash
-git clone https://github.com/ali-demirbas/ab-test-playbook.git
-claude --plugin-dir ./ab-test-playbook
-```
-
-**Yalnızca skill’ler, sınırlı.** Skills CLI beş skill talimatını tek başına kopyalayabilir:
-
-```bash
-npx skills add ali-demirbas/ab-test-playbook --all
-```
-
-Bu yol her skill’in yalnızca `SKILL.md` dosyasını getirir. Bağlayıcı kurallar (`CLAUDE.md`), senaryo arşivi, script’ler ve denetim agent’ları gelmez. Her skill bunlara plugin kökü üzerinden ulaştığı için arşivden öneri, senaryo doğrulama ve kart üretimi çalışmaz. Motorun tamamı için yukarıdaki plugin kurulumunu kullanın.
-
-[Gemini CLI](https://github.com/google-gemini/gemini-cli) mi kullanıyorsunuz? `.gemini/extensions/ab-test-playbook/` aynı skill’leri, kuralları ve denetim agent’larını taşır; aynı kaynak dosyalardan `scripts/build_gemini.py` ile üretilir:
-
-```bash
-git clone https://github.com/ali-demirbas/ab-test-playbook.git
-cd ab-test-playbook/.gemini/extensions/ab-test-playbook && gemini extensions link .
-```
-
-**Codex.** Repoda bir Codex plugin manifesti (`.codex-plugin/plugin.json`) ve marketplace dosyası (`.agents/plugins/marketplace.json`) da var:
-
-```bash
-codex plugin marketplace add ali-demirbas/ab-test-playbook
-```
-
-Ardından bir Codex oturumunda `/plugins` açıp **ab-test-playbook**’u kurun. Codex beş skill’i kurallar, arşiv ve script’lerle birlikte kurar; iki denetim agent’ı Claude Code alt agent’larıdır ve bu yol Claude Code plugin’i kadar kapsamlı test edilmedi.
-
-**claude.ai (skill yükleme).** Her skill, kuralların, senaryo arşivinin, şablonların ve script’lerin kendi kopyasını taşıyan bir ZIP olarak paketlenebilir:
-
-```bash
-git clone https://github.com/ali-demirbas/ab-test-playbook.git && cd ab-test-playbook
-python3 scripts/build_skill_zips.py --out dist
-```
-
-Her `dist/<skill>.zip` dosyasını Özelleştir (Customize) > Skill’ler (Skills) > + > Skill oluştur (Create skill) > Skill yükle (Upload a skill) yoluyla yükleyin; kod çalıştırma Ayarlar (Settings) > Yetenekler (Capabilities) altında açık olmalı. `ab-test` diğer dördüne yönlendirdiği için beşini de yükleyin. claude.ai bir skill açıklamasını 200 karakterle sınırlar, bu yüzden ZIP’ler daha kısa, gözden geçirilmiş bir açıklama kullanır; talimatlar aynıdır. Orada headless Chromium olmadığı için kartlar, Görsel kontrol bölümünde anlatıldığı gibi UNVERIFIED etiketli önizleme olarak çıkar.
-
-### Görsel kontrol (nihai kart için gerekli)
-
-Bir kart ancak `scripts/render_check.mjs` onu Chromium’da çizdikten ve görsel incelemeci görüntüye baktıktan sonra nihai olur. Rehberin geri kalanı Python standart kütüphanesiyle çalışır; bu kısım Node.js 18 veya üstü ister. Playwright’ı bir kez, reponun dışına kurun:
+**2. Görsel kontrolü açın (isteğe bağlı, önerilir).** Terminalde bir kez çalıştırın:
 
 ```bash
 npm i --prefix ~/.abtest-visual playwright && npx --prefix ~/.abtest-visual playwright install chromium
 ```
 
-`render_check.mjs`, `~/.abtest-visual/node_modules` klasörünü kendisi bulur. Linux’ta sistem kütüphaneleri için `install` sözcüğünden sonra `--with-deps` ekleyin. `NODE_PATH` yalnızca Playwright başka bir yerdeyse, `CHROMIUM_PATH=/yol/chrome-headless-shell` yalnızca kendi tarayıcı dosyanızı kullanacaksanız gerekir. Denemek için önce klonunuza geçin:
+Bu adımı atlasanız da kartlarınızı alırsınız, "görsel olarak kontrol edilmedi" işaretli önizleme olarak. Sonradan kurarsanız aynı kartlar kontrol edilip tamamlanır.
 
-```bash
-cd ab-test-playbook
-node scripts/render_check.mjs --strict docs/demo/scenario-card.html
-```
-
-Son stderr satırı sonucu söyler:
-
-| Çıkış | Sonuç | Anlamı |
-|---|---|---|
-| 0 | `VERIFIED` | Çizildi, hata yok |
-| 1 | `VISUAL_CHECK_FAILED` | Çizildi, kartta düzeltilecek bir yerleşim hatası var |
-| 2 | kullanım hatası | Bilinmeyen seçenek, kart yok ya da dosya bulunamadı |
-| 3 | `VISUAL_CHECK_UNAVAILABLE` | Playwright veya Chromium yok, hiçbir şey ölçülmedi |
-
-Çıkış 3’te incelemecinin kararı `UNVERIFIED` olur, hiçbir kart nihai olmaz: taslak, açıkça UNVERIFIED diye etiketlenmiş bir önizleme olarak gelir. Kontrol kurulunca aynı taslak kontrol edilip tamamlanır. `--shot` ve `--half`, kartın yanına `card-<ad>.png` ve `card-<ad>-800.png` yazar.
-
-### Güncelleme
+**3. Kart isteyin.** Sayfanızın ekran görüntüsünü Claude Code'a yapıştırıp şunu yazın:
 
 ```
-/plugin marketplace update ab-test-playbook
-/plugin update ab-test-playbook@ab-test-playbook
+/ab-test bu sayfa için test tasarla
 ```
 
-Güncellemeler yalnızca plugin’in sürüm numarası değişince gelir. `/plugin` kurulu sürümü gösterir; [CHANGELOG](CHANGELOG.md)’dakinden geride kalıyorsa iki komutu da çalıştırıp Claude Code’u yeniden başlatın. Yerel bir klon `git pull` ile güncellenir.
+Elinizde ekran görüntüsü yoksa arşivden başlayın:
 
-**Eski bir Claude Code’da `claude plugin validate`.** Plugin önerisi (relevance) özelliğinden önceki sürümler (ör. 2.1.117), `.claude-plugin/marketplace.json` için `Unrecognized key: "relevance"` bildirir. Zararsızdır: bu anahtar yalnızca Claude Code’un plugin’i önermesini sağlar; ekleme, kurma ve güncelleme o sürümlerde de çalışır, güncel sürümler anahtarı doğrular.
+```
+/ab-test ödeme sayfam için test öner
+```
 
-## Kullanım
+En fazla tek soru sorar (hangi problemi çözdüğünüz). Trafik, araç ya da bütçe sormaz. Yalnızca `/ab-test` yazarsanız kısa bir menü gelir.
+
+Codex, Gemini CLI ya da claude.ai mı kullanıyorsunuz, güncelleme mi yapacaksınız, bir şey ters mi görünüyor? [Kurulum, güncelleme ve sorun giderme](docs/install.tr.md) sayfasına bakın.
+
+## Neler isteyebilirsiniz
 
 | Siz şöyle dersiniz | Şu olur |
 |---|---|
-| `/ab-test suggest`: “checkout sayfam için test öner” | Arşivden uyan senaryoları seçer, önceliğe göre sıralar, en iyi üçünü kısa kayıt olarak, her birini bir HTML kartla teslim eder |
-| `/ab-test design`: “buna test tasarla” (+ ekran görüntüsü, URL ya da kendi sayfanızın tarifi) | Sayfanız için aynı çerçevede yeni, tek-değişkenli bir senaryo tasarlar |
-| `/ab-test audit`: “bu doğru kurulmuş mu?” | Bir öneriyi veya varyant çiftini denetler: confound, vekil birincil metrik, uyuşmayan payda, eksik ya da tümleyen guardrail, erişilebilirlik, düzenlenen alan ve uyum kapıları, dark pattern, uygulanabilirlik |
-| “Bu anlamlı mı?” / “Kaç ziyaretçi lazım?” | Kapsam dışı (bkz. [Kapsam](#kapsam)): test aracınızın kendi raporunu gösteren tek satır ve test planını denetleme teklifi |
-| “2. öneriyi detaylandır” / “explain proposal 2” | O önerinin üç kutusunu doldurur, sohbette gerekçesiyle birlikte düz metin olarak verir; kart olduğu gibi kalır |
-| `/ab-test card`: “bunu karta çevir” | Senaryoyu tek dosyalık 16:9 bir HTML kart olarak render eder: testin sorusu ve değişikliği halkayla işaretlenip adlandırılmış Variant A/B mockup’ları |
-| Yalnızca `/ab-test` | Her alt komut için birer örnek istemle kısa bir menü gösterir, soru sormaz |
+| `/ab-test design`: "buna test tasarla" ve ekran görüntüsü, adres ya da tarif | Sayfanız için en fazla üç yeni tek değişkenli test tasarlar, her biri kartıyla gelir |
+| `/ab-test suggest`: "ürün sayfam için test öner" | Arşivden uyan fikirleri seçer, yüksek, orta, düşük diye sıralar ve ilk üçünü çizer |
+| `/ab-test audit`: "bu test doğru kurulmuş mu?" ve planınız | Planı trafik almadan önce denetler: tek varyantta iki değişiklik, asıl sonucun yerine geçen tıklama metriği, eksik guardrail, erişilebilirlik ve uyum açıkları, dark pattern (kullanıcıyı yanıltan tasarım) |
+| `/ab-test card`: "bunu karta çevir" | Elinizdeki senaryoyu kart olarak çizer |
+| "2. öneriyi detaylandır" | Tek bir önerinin ayrıntısını sohbette verir: test edilmesi gerekenler, takip edilecek KPI'lar, yapılmaması gerekenler |
+| "Bu anlamlı mı?" | Kapsam dışı. Test aracınızın raporunu gösteren tek satır ve planı denetleme teklifi |
 
-Bir sayfa paylaştığınızda (ekran görüntüsü, URL ya da kendi sayfanızın tarifi), router baştan yalnızca tek bir çoktan seçmeli soru sorar: hangi problemi çözdüğünüz. Senaryo üretmeden önce başka hiçbir şey sormaz; trafik, araç veya kurulum sorusu yok. Mesajınız problemi zaten söylüyor ya da testi adıyla istiyorsa bu soru atlanır. Ekran görüntüsünde göze çarpan bir sorun alanı varsa önce onun kartları gelir, soru kartlardan sonra sorulur. Örneklem büyüklüğü, süre ya da anlamlılık düzeyi hiçbir zaman söylenmez; yalnızca temel dönüşüm oranını ve ziyaretçi sayısını siz kendiniz verirseniz bir betik yakalanabilecek etkinin kaba aralığını ve bir karar bandı yazar, sayfa bu trafikle test edilemiyorsa bunu söyler ve kart yerine alternatif önerir. Marka kaynağı akışı hiçbir zaman durdurmaz: ekran görüntüsü veya sayfa paylaştıysanız marka renkleri doğrudan oradan alınır; yoksa nötr palet kullanılır, sonradan gönderdiğiniz bir marka kılavuzu onun yerini alır. Not düşülmez, soru sorulmaz, cevap beklenmez. Bir tur varsayılan olarak en fazla üç güçlü öneri üretir (`suggest` ya da `design` fark etmez) ve her biri hemen kendi HTML kartı olur; sohbette öneri başına yalnızca başlık, tek etiket satırı (öncelik, kaynak, kanıt), neden işe yarayabileceğini söyleyen kısa bir `Neden:` satırı ve kart dosyası kalır, kayıt ikinci kez yazılmaz. Liste asla şişirilmez: tek güçlü senaryo tam bir yanıttır, sayıyı tamamlamak için zayıf aday eklenmez. Açıkça istediğiniz bir test her zaman üretilir; zayıfsa sohbetteki tek satır zayıflığını söyler ve daha güçlü alternatifin adını verir. Üçten fazla güçlü aday varsa en iyi üçü üretilir, kalanların sayısı tek satırla teklif edilir. Bir tur en fazla bir soru sorar; gereken diğer bilgiler varsayım olarak belirtilir ve sonraki turda sorulur.
+Bütün komutlar, uçtan uca bir oturum ve test hafızası dosyası (`.abtest-history.md`, kaybetmiş bir test yeniden önerilmesin diye) [başvuru](docs/reference.tr.md) sayfasında.
 
-## Bir oturum nasıl görünür
+## Neden kullanılır
 
-Uçtan uca bir ürün sayfası örneği:
+| Sistem olmadan | A/B Test Builder ile |
+|---|---|
+| Test fikirleri hafızadan ya da o gün akla gelenden çıkar | Fikirler 221 senaryoluk arşivden sıralı gelir ya da sayfanız için gerekçesi yazılarak tasarlanır. "Daha dikkat çekici olur" gerekçe sayılmaz |
+| Varyant B sessizce iki şeyi değiştirir, sonuç açıklanamaz | Test başına tek değişken. İkinci bir incelemeci çizilen kartta gizli ikinci farkı arar |
+| Beş metrik izlenir, hiçbiri kararı vermez | Kararı tek birincil KPI verir, bozulmaması gerekeni tek guardrail korur |
+| Kupon alanını gizlemek geliri artırır, çünkü kodu olan artık tam fiyat öder ve bu kazanç gibi okunur | Bir kullanıcı faydasına dokunan değişiklikte gelir hedefi, o faydayı koruyan guardrail olmadan reddedilir |
+| Biri isterse dark pattern yayına girer | İstense bile reddedilir, nedeni söylenir |
 
-**Siz:** bir ürün sayfasının ekran görüntüsünü paylaşırsınız.
+Karşılaştırmanın tamamı [başvuru](docs/reference.tr.md#neden-rastgele-test-etmek-yerine-bir-rehber) sayfasında.
 
-**Tek soru sorar:** hangi problemi çözmeye çalıştığınıza dair tek bir çoktan seçmeli soru (kullanıcılar akışa giriyor ama bitirmiyor / hiç başlamıyor / geliyor ama niteliksiz dönüşüyor / belirli bir problemim yok, sen bak). Trafik, araç veya kurulum sorusu yok; senaryo üretmek için hiçbiri gerekli değil.
+## Onu dürüst tutan şeyler
 
-**Doğrudan** en fazla üç öneri döndürür, “hangisini açayım” gibi bir gidiş-geliş olmadan. Her biri senaryo JSON’unda duran kısa bir kayıttır (mekanizma, değişken, paydasıyla birincil KPI, “bozulmamalı” biçiminde guardrail) ve yalnızca karşılaştırmayı gösteren, kendi kendine yeten bir HTML karttır: soru, yan yana Variant A ve B, halkayla işaretlenip adlandırılmış değişiklik. Sohbette yalnızca bir başlık, tek cümlelik bir `Neden:` satırı ve öncelik, kaynak ve kanıt etiketini taşıyan tek bir etiket satırı kalır: derlenmiş bir arşiv örüntüsüne dayanıyorsa `Kanıt: arşiv örüntüsü` (kazanmış bir test değil, denemeye değer bir fikir), bir sezgiyse `Kanıt: sezgi`, süslenmeden, olduğu gibi söylenir. Variant A sayfanın ekrandaki hâlidir, asla yeniden tasarlanmaz. Tek güçlü senaryo tam bir yanıttır; kota doldurmak için zayıf aday eklenmez. Üçten fazla güçlü aday mı var? En iyi üçünü üretir, gerisini teklif eder. Birinin ayrıntısını isterseniz (“2’yi detaylandır”) üç kutusu ve düz metin bir açıklama sohbette gelir.
-
-<p align="center">
-  <img src="assets/example-card.png" alt="Örnek senaryo kartı: kupon alanını “İndirim kodum var” bağlantısının arkasına almak geliri artırır mı? Üstte soru, altında yan yana Variant A ve Variant B, değişen öğe halkayla işaretli ve etiketli." width="900">
-</p>
-
-<p align="center"><sub>Bir arşiv senaryosundan uyarlanmış kayıttan üretilmiş kart: kurgusal ürün ve mağaza, nötr palet (sayfa ya da marka kılavuzu paylaşılmadı). `ab-test card`’ın her senaryo için render ettiği şey budur, elle yapılmış bir mockup değil. <a href="docs/index.html">HTML versiyonu</a> · kaynak <a href="examples/">examples/</a>’da</sub></p>
-
-**Her senaryo şunlarla birlikte gelir:** kaydı (senaryo JSON’unda) ve tasarlanan bir test için kartlardan sonra sohbete bir kez yazılan kısa kurulum notları: hedef kitle, maruz kalma anı (kimin teste girmiş sayılacağı; ör. değişiklik bir akordeonun içindeyse yalnızca onu açanlar), dışlamalar ve eşzamanlı testler, uyum onayı ya da B’nin erişilebilirlik kontrolü gibi yayın öncesi kapılar. Birincil KPI ve guardrail orada tekrarlanmaz; bir araç belirttiyseniz notlar onun dilini kullanır. Bilmediği bir şey “sizden gelmesi gerekiyor” diye yazılır, asla tahmin edilmez. Kartlardan sonra ilk öneri için tek sayfalık bir karar özeti gelir: soru, neden şimdi, ne değişiyor, KPI ve guardrail, B kazanır, kaybeder ya da belirgin fark çıkmazsa ne yapılacağı. Ardından kartın kendisi gelir (paylaştığınız ekran görüntüsünden alınan marka renkleri; yoksa nötr palet).
-
-**Test, test aracınızda bitti** → nasıl gittiğini aracın kendi raporu söyler. `.abtest-history.md` dosyasına bir satır ekleyin (tarih, sayfa, tek değişken, aracınızın raporladığı sonuç, akılda tutulacak örüntü); sıradaki öneri, tasarım ya da denetim bunu okur: zaten kaybetmiş bir değişken gerekçesiz yeniden önerilmez, küçük testlerin art arda fark üretmediği bir sayfaya daha yapısal bir fikir gelir.
-
-## İçinde ne var
-
-```
-skills/          ab-test (router) + suggest / design / audit / card
-agents/          scenario-critic: senaryo render edilmeden önce metodolojik denetim
-                 mockup-reviewer: iki mockup’ın tam olarak tek bir şeyde farklılaştığını kontrol eder
-knowledge/       methodology.md · mockup-style.md · kpi-glossary.md (105 kanonik KPI adı, her biri paydasıyla)
-                 scenarios/: 13 aşama dosyasında derlenmiş senaryolar (TR): ana sayfa ve landing, arama ve filtreleme,
-                 kategori, ürün detay, sepet ve ödeme, teşekkür sayfası, panel, form ve kayıt, fiyatlandırma,
-                 mobil uygulama, SaaS/B2B, arayüz öğeleri, finans, sigorta ve bireysel emeklilik
-scripts/         validate_scenarios.py: senaryo arşivi için format kontrolü
-                 build_card.py: deterministik kart render’ı; şablonu doldurur, metni kaçırır, kendini drift’e karşı doğrular;
-                 önce A/B fark manifestli bir taslak, nihai kartı ise yalnızca iki inceleme damgasıyla üretir
-                 validate_scenario_json.py: bir senaryoyu şemaya ve kapı kurallarına göre kontrol eder; --fingerprint denetçi damgası için
-                 validate_input.py: dosya olarak verdiğiniz girdideki talimat-biçimli metni ve script payload’larını işaretler
-                 validate.sh: repo tutarlılığı; frontmatter, iç bağlantılar, plugin-root referansları, kural atıfları
-                 check_frontmatter.py: her skill ve agent frontmatter’ını kurulum araçlarının okuduğu gibi ayrıştırır
-                 build_gemini.py · build_llms_full.py: Gemini CLI eklentisini ve docs/llms-full.txt dosyasını üretir
-                 build_skill_zips.py: her skill’i claude.ai için kendi başına yeten bir ZIP olarak paketler
-                 canary_report.py: arşivin atıfsız kopyalarını bulmak için ayırt edici arama ifadeleri türetir
-                 render_check.mjs: kartı headless Chromium’da ölçer; boyut, kırpılma, boş ekran, halka çakışması,
-                 yazı boyutu, kontrast (nihai kart için gerekli; Node ve Playwright ister)
-templates/       scenario-card.html · abtest-history.md · abtest-backlog.md (test hafızası ve backlog şablonları)
-                 scenario.schema.json: araçtan bağımsız test tanımı, herhangi bir deney platformuna taşınabilir
-tests/           validator’lar ve kart üreticisi için birim testleri
-evals/           manuel kabul testleri: üç temel akış (suggest, kupon zararı örneğiyle design, audit), ortak kurallar (tur başına tek soru,
-                 ret, enjeksiyon, kapsam dışı sonuç isteği, istek üzerine ayrıntı, iki incelemeden sonra teslim, test edilmiş gibi sunulmayan arşiv
-                 kanıtı), kart gerçekçiliği ve kapılar (halkanın içindeki ikinci değişiklik, erişilebilirlik ölçütleri), düzenlemeye tabi
-                 sigorta/emeklilik akışı, kullanıcının ısrarla istediği zayıf test ve İngilizce konuşma
-examples/        uçtan uca kartlarına kadar götürülen örnek senaryo kayıtları ve kusurlu bir test önerisinin denetimi
-docs/            architecture.md · design-notes.md · örnek kartlar (demo/) ve demo sayfası (index.html)
-```
-
-Yaygın A/B test ve CRO sorularının bu rehberin kendi metodolojisinden yanıtları için [FAQ.md](FAQ.md)’ye bakın (İngilizce).
-
-Bir senaryo katkısı: mevcut dosyaların üç-kutu formatını izleyin, sonra repo kontrollerini çalıştırın. İçlerindeki senaryo validator’ı arşiv dosyaları için kutu başına beş madde, bir `Değişken: … · Fark: …` satırı, KPI listesinde bir guardrail, bir cihaz/segment sorusu ve tipografi kurallarını zorunlu kılar. (Sayfanız için üretilen bir öneri ise kısa bir kayıttır; kutu başına 3 ile 6 maddelik üç kutusu yalnızca ayrıntılı görünümde yer alır.) Ayrıntılar [CONTRIBUTING.md](CONTRIBUTING.md) dosyasında (İngilizce).
-
-```bash
-bash scripts/validate.sh
-```
-
-## Test hafızası
-
-Projenizde bir `.abtest-history.md` tutun (`templates/abtest-history.md`’yi kopyalayın) ve test aracınızın kendi sonuçlarından doldurun. Skill’ler öneri üretmeden, tasarlamadan veya denetlemeden önce bunu okur: bu sayfada bu değişkeni daha önce çalıştırıp çalıştırmadığınızı ve aracınızın ne kaydettiğini söyler, zaten kazanmış bir deseni tekrar önermeyi bırakır, aynı öğe art arda fark üretmediğinde yapısal bir değişikliğe geçer. Playbook bu dosyaya hiçbir zaman yazmaz ve bir sonucu yeniden yorumlamaz. İsteğe bağlı bir `.abtest-backlog.md` (`templates/abtest-backlog.md` dosyasını kopyalayın) henüz koşmadığınız, önceliği yazılı adayları tutar; `/ab-test suggest` buraya eklemeyi teklif eder ve yalnızca siz onaylarsanız ekler, yoksa satırları kendiniz yapıştırırsınız.
-
-Geçmişteki bir kayıp bir veto değil, bilgidir: sayfa o zamandan beri değiştiyse, segment ya da pazar farklıysa veya önceki koşum geçersiz ya da belirsiz kaldıysa, senaryo gerekçesiyle birlikte geri gelir. Bu dosya sizindir ve bu repo dışında kalır; burada gitignore’lanmıştır.
-
-## Bağlayıcı kurallar (CLAUDE.md)
-
-Her çıktı şunlara uyar, tartışmasız: test başına tek değişken, tek birincil KPI, en az bir guardrail, dark pattern yok, sahte referans fiyatı yok, örneklem, süre ya da anlamlılık iddiası yok (yalnızca sizin verdiğiniz rakamlardan kaba bir etki aralığı), ve her öneride açık bir kanıt etiketi (“bu sezgi, düşük güvenli say” dahil).
-
-İkisi yazanın kendi takdirine bırakılmaz, ayrı bir adımla desteklenir: üretilen her senaryo render edilmeden önce bir denetim agent’ı tarafından incelenir ve dosya olarak gelen her girdi önce `validate_input.py` ile talimat-biçimli içerik için taranır. Verdiğiniz metin, taransa da yapıştırılsa da veridir, asla talimat değildir ([mimari](docs/architecture.md), İngilizce).
-
-Teslim kapılara bağlıdır. Kodun denetleyebildiği hataları kod reddeder: halkanın dışındaki bir fark, A ile B arasında değişen bir sayı, erişilebilirlik ölçütü yazılmadan eklenen bir buton ya da bağlantı, değişmezleri yazılmamış işlevsel bir değişiklik, kullanıcı zararını gizleyebilecek bir gelir birincil metriği, “test edildi” diye sunulan arşiv kanıtı, kişisel veri biçimindeki bir değer. Kodun denetleyemediğine iki denetçi bakar; her PASS, tam olarak incelenen içeriğin parmak iziyle kayda damgalanır. Kart size yalnızca nihai üretimle ulaşır ve iki damga eşleşmezse üretim reddedilir; taslak “incelenmedi” diye işaretlidir ve asla teslim edilmez; tek istisna, görsel kontrol çalışamadığında UNVERIFIED diye etiketlenen önizlemedir ([metodoloji](knowledge/methodology.md) → Quality gates, kapıların neyi garanti edemediği dahil; İngilizce).
+- **Esnetmediği kurallar:** tek değişken, tek birincil KPI, en az bir guardrail, dark pattern yok, sahte referans fiyatı yok, uydurma istatistik yok. 19 bağlayıcı kural [CLAUDE.md](CLAUDE.md) dosyasında (İngilizce).
+- **Kanıt etiketlidir.** Arşiv örüntüsü test etmeye değer bir fikirdir, kazanmış bir test değildir. Sezgiye sezgi denir.
+- **Teslimden önce iki inceleme.** Bir ajan test planını zorlar, diğeri çizilen kartı kontrol eder. Kart ancak ikisinden sonra nihai olur. Nasıl çalıştığı [mimari](docs/architecture.md) notlarında (İngilizce).
+- **Düzenlemeye tabi akışlar** (sigorta, emeklilik, kredi): zorunlu bilgilendirme, onay adımı ve kimlik doğrulama asla test konusu olmaz. Hukuki tavsiye değildir. Ayrıntı [Kapsam](docs/reference.tr.md#kapsam) başlığında.
 
 ## Dil
 
-Senaryo içeriği Türkçedir (arşivin ana dili). Skill’ler sizin kullandığınız dilde yanıt verir; metrik kısaltmaları (CR, AOV, LCP, SQL) olduğu gibi kalır.
+Skill'ler yazdığınız dilde yanıt verir, kartlar da o dilde gelir. Senaryo arşivinin kendisi Türkçedir. Metrik kısaltmaları (CR, AOV, LCP) olduğu gibi kalır.
 
-## Kapsam
+## Daha fazlası
 
-Bu ne: bir senaryo arşivi, disiplinli bir tasarım ve denetim metodolojisi, her senaryo için şema doğrulaması ve her birini incelenebilir bir HTML karta çeviren bir kart üreticisi.
-
-Bu playbook A/B test önerir, tasarlar, denetler ve görselleştirir. Sonuç analizi yapmaz; örneklem, süre, anlamlılık veya kazanan hesaplamaz (uygulanabilirlik betiği yalnızca sizin verdiğiniz rakamlardan kaba bir etki aralığı yazar). Bunun için test aracınızın kendi raporunu kullanın. Bir analitik ya da test aracına bağlanmaz, koşan bir testi izlemez; canlı uygulamanızı, kodunu ya da staging ortamını da çalıştırıp test etmez: kartlar varyantların çizimidir, bir uygulamanın kontrolü değildir. Düzenlemeye tabi akışlarda (sigorta, emeklilik, kredi) zorunlu bir bilgilendirmeyi, bir onay adımını ya da kimlik doğrulamayı asla test konusu yapmaz; düzenlenen bir gösterimi değiştiren varyantı hedef pazarın kuralı doğrulanana kadar bekletir, böyle bir akışın içindeki diğer her test için uyum onayını yayın öncesi kapı yapar. Hukuki tavsiye değildir.
+- [Canlı demo](https://ali-demirbas.github.io/ab-test-playbook/): Türkçe ve İngilizce örnek kartlar
+- [SSS](FAQ.md): önce neyi test etmeli, guardrail, düşük trafik, sık yapılan hatalar (İngilizce)
+- [Kurulum, güncelleme ve sorun giderme](docs/install.tr.md): bütün kurulum yolları ve görsel kontrol
+- [Başvuru](docs/reference.tr.md): bütün komutlar, tam bir oturum, repoda ne var, kapsam
+- [Örnekler](examples/): uçtan uca taşınmış bir senaryo kaydı ve hatalı bir planın denetimi
+- [Katkı](CONTRIBUTING.md) · [Değişiklik günlüğü](CHANGELOG.md) · [Gizlilik](PRIVACY.md)
+- Bir şey çalışmıyor mu? [Issue açın](https://github.com/ali-demirbas/ab-test-playbook/issues)
 
 ## Lisans
 
-MIT: kullanın, kendi işinize uyarlayın, elinizde iyi bir senaryo varsa geri gönderin. Kötü bir testi yayınlamaktan sizi kurtardıysa, bir yıldız sıradaki kişinin bunu bulmasına yardım eder.
+MIT. Kullanın, kendi işinize uyarlayın, elinizde iyi bir senaryo varsa geri gönderin. Kötü bir testi yayınlamaktan sizi kurtardıysa, bir yıldız sıradaki kişinin bunu bulmasına yardım eder.
+
+---
+
+[Ali Demirbaş](https://alidemirbas.com.tr) tarafından geliştirildi

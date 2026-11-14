@@ -3,14 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A/B Test Builder: A/B test engine for Claude Code</title>
-<meta name="description" content="A/B test engine for Claude Code: suggests, designs and audits test scenarios, and renders each one as a ready HTML card. 221 curated scenarios, adversarial review, and a methodology that refuses dark patterns.">
-<link rel="canonical" href="https://github.com/ali-demirbas/ab-test-playbook">
+<title>A/B Test Builder</title>
+<meta name="description" content="Turn a screenshot of your page into single-variable A/B test plans with a primary KPI and a guardrail, reviewed by two agents and drawn as a side-by-side card. A Claude Code plugin.">
+<link rel="canonical" href="https://ali-demirbas.github.io/ab-test-playbook/">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://github.com/ali-demirbas/ab-test-playbook">
-<meta property="og:title" content="A/B Test Builder: A/B testing and CRO for Claude Code">
-<meta property="og:description" content="221 experiment scenarios, single-variable test design, plan auditing, and a rendered HTML card per scenario.">
-<meta property="og:image" content="https://raw.githubusercontent.com/ali-demirbas/ab-test-playbook/main/docs/preview-card.png">
+<meta property="og:url" content="https://ali-demirbas.github.io/ab-test-playbook/">
+<meta property="og:title" content="A/B Test Builder: from a screenshot to an A/B test card">
+<meta property="og:description" content="Single-variable test plans with a primary KPI and a guardrail, reviewed by two agents and shown side by side. Runs inside Claude Code.">
+<meta property="og:image" content="https://ali-demirbas.github.io/ab-test-playbook/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Markdown alternates. The rel=alternate pattern is the same one RSS has used
      for two decades, and it is what actually reaches assistants: a chat tool
@@ -22,20 +24,13 @@
 <link rel="alternate" type="text/markdown" href="llms.txt" title="Documentation index as Markdown">
 <style>
   :root {
-    --navy: #14293d;
-    --teal: #1f7a72;
-    --teal-soft: #e2f0ee;
-    --amber: #b26a12;
-    --ink: #16202a;
-    --muted: #5b6b7a;
-    --rule: #d8dee5;
-    --paper: #f4f6f8;
-    --card: #ffffff;
+    --navy: #14293d; --teal: #1f7a72; --teal-soft: #e2f0ee; --ink: #16202a; --muted: #5b6b7a;
+    --rule: #d8dee5; --paper: #f4f6f8; --card: #ffffff; --btn-ink: #ffffff;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --navy: #cfe0ee; --teal: #5cb8ae; --teal-soft: #17302e; --amber: #d59a4c;
-      --ink: #e6ecf2; --muted: #97a6b5; --rule: #2a3642; --paper: #10161d; --card: #171f28;
+      --navy: #cfe0ee; --teal: #5cb8ae; --teal-soft: #17302e; --ink: #e6ecf2; --muted: #97a6b5;
+      --rule: #2a3642; --paper: #10161d; --card: #171f28; --btn-ink: #0d1318;
     }
   }
   * { box-sizing: border-box; }
@@ -44,35 +39,60 @@
     font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 3.5rem 1.25rem 5rem; }
-  header { border-bottom: 1px solid var(--rule); padding-bottom: 1.75rem; margin-bottom: 2.25rem; }
-  h1 { margin: 0 0 .5rem; font-size: clamp(1.7rem, 4vw, 2.3rem); letter-spacing: -.01em; color: var(--navy); }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 2.5rem 1rem 4rem; }
+  header { margin-bottom: 1.5rem; }
+  h1 { margin: 0 0 .5rem; font-size: clamp(1.8rem, 5vw, 2.5rem); letter-spacing: -.01em; color: var(--navy); }
   .tag {
     display: inline-block; font-size: .72rem; letter-spacing: .09em; text-transform: uppercase;
     color: var(--teal); background: var(--teal-soft); padding: .22rem .5rem; border-radius: 3px; margin-bottom: .9rem;
   }
-  .lede { font-size: 1.06rem; color: var(--muted); max-width: 62ch; margin: 0; }
-  h2 { font-size: 1.15rem; margin: 2.5rem 0 .75rem; color: var(--navy); }
-  p { max-width: 66ch; }
+  .lede { font-size: 1.08rem; color: var(--muted); max-width: 64ch; margin: 0; }
+  h2 { font-size: 1.2rem; margin: 2.75rem 0 .75rem; color: var(--navy); }
+  p, ul, ol { max-width: 68ch; }
   a { color: var(--teal); }
-  ul { max-width: 66ch; padding-left: 1.1rem; }
-  li { margin-bottom: .4rem; }
+  ul, ol { padding-left: 1.2rem; }
+  li { margin-bottom: .45rem; }
   code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .88em; }
   pre {
-    background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
-    padding: .9rem 1rem; overflow-x: auto;
+    background: var(--card); border: 1px solid var(--rule); border-radius: 6px;
+    padding: .85rem 1rem; overflow-x: auto; max-width: 100%; margin: .5rem 0 1rem;
   }
-  .demo {
-    background: var(--card); border: 1px solid var(--rule); border-radius: 4px;
-    padding: .75rem; margin: 1rem 0;
+  .tabs { display: flex; gap: .4rem; margin: 0 0 .6rem; }
+  .tabs button {
+    font: inherit; font-size: .9rem; padding: .35rem .8rem; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--rule); background: var(--card); color: var(--ink);
   }
-  /* The card is a fixed 1600 × 900 page; it is scaled to the column, keeping 16:9. */
-  .demo-frame { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 3px; background: #f4f5f7; }
-  .demo-frame iframe { position: absolute; top: 0; left: 0; width: 1600px; height: 900px; border: 0;
-    transform: scale(var(--s, .4975)); transform-origin: 0 0; }
-  .demo-note { font-size: .84rem; color: var(--muted); margin: .6rem .25rem 0; }
-  .rule-list li strong { color: var(--navy); }
-  footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); font-size: .88rem; color: var(--muted); }
+  .tabs button[aria-pressed="true"] { background: var(--navy); color: var(--paper); border-color: var(--navy); }
+  .demo { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: .6rem; }
+  .demo img { display: block; width: 100%; height: auto; border-radius: 4px; }
+  .demo .q { display: none; }
+  .halves { display: none; }
+  /* Phone: a 1600 px card scaled to 390 px is unreadable, so the same PNG is
+     shown as its two halves, A above B, each at full width, under the question. */
+  @media (max-width: 640px) {
+    .demo .whole { display: none; }
+    .demo .q { display: block; font-weight: 700; color: var(--navy); margin: .3rem .3rem .6rem; line-height: 1.35; }
+    .halves { display: grid; gap: .6rem; }
+    .half { position: relative; overflow: hidden; aspect-ratio: 800 / 790; border-radius: 4px; background: #f4f5f7; }
+    .half img { position: absolute; top: -13.9%; left: 0; width: 200%; max-width: none; border-radius: 0; }
+    .half.b img { left: -100%; }
+  }
+  .demo-note { font-size: .86rem; color: var(--muted); margin: .7rem .25rem 0; max-width: none; }
+  .cta { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1.1rem 0 0; }
+  .btn {
+    display: inline-block; padding: .6rem 1.1rem; border-radius: 6px; text-decoration: none; font-weight: 600;
+    border: 1px solid var(--teal); color: var(--teal); background: transparent;
+  }
+  .btn.primary { background: var(--teal); color: var(--btn-ink); }
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin-top: 2rem; }
+  .three div { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: .9rem 1rem; }
+  .three strong { display: block; color: var(--navy); margin-bottom: .25rem; }
+  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
+  .gallery a { display: block; background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: .4rem; text-decoration: none; font-size: .86rem; color: var(--muted); }
+  .gallery img { display: block; width: 100%; height: auto; border-radius: 4px; margin-bottom: .35rem; }
+  @media (max-width: 640px) { .three, .gallery { grid-template-columns: 1fr; } }
+  .req { font-size: .93rem; color: var(--muted); }
+  footer { margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); font-size: .88rem; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -81,26 +101,82 @@
   <header>
     <span class="tag">Claude Code plugin</span>
     <h1>A/B Test Builder</h1>
-    <p class="lede">An A/B test engine for Claude Code. It suggests test scenarios from a curated archive, designs them for your page against a written methodology, audits plans you already have, and renders every scenario as a single-file HTML card.</p>
+    <p class="lede">Turn a screenshot of your page into single-variable A/B test plans, each with one primary KPI and one guardrail (a metric that must not get worse), reviewed by two agents and drawn as a side-by-side card.</p>
   </header>
 
-  <h2>What a scenario card looks like</h2>
-  <p>Rendered below with no install and no build step: this is the real output of <code>scripts/build_card.py</code> run against a sample record, not a mockup of one.</p>
+  <div class="tabs" role="group" aria-label="Card language">
+    <button type="button" data-lang="en" aria-pressed="true">English</button>
+    <button type="button" data-lang="tr" aria-pressed="false">Türkçe</button>
+  </div>
 
   <div class="demo">
-    <div class="demo-frame">
-      <iframe src="demo/scenario-card.html" title="Example scenario card: does moving the coupon field behind an “I have a discount code” link increase revenue?" loading="lazy"></iframe>
+    <p class="q" id="card-q">Does moving the coupon field behind an “I have a discount code” link increase revenue?</p>
+    <a class="whole" id="card-link" href="demo/scenario-card-en.html"><img id="card-img" src="demo/scenario-card-en.png" width="1600" height="900" alt="Example card: does moving the coupon field behind an “I have a discount code” link increase revenue? Variant A shows an open coupon field, Variant B a link, and the change is ringed in both."></a>
+    <div class="halves" aria-hidden="true">
+      <div class="half a"><img src="demo/scenario-card-en.png" alt=""></div>
+      <div class="half b"><img src="demo/scenario-card-en.png" alt=""></div>
     </div>
-    <p class="demo-note">The test's question, then Variant A and Variant B side by side, large, with the changed element ringed in red and named in a few words. That is all a card shows: the record behind it (the problem, the mechanism, the primary KPI, the guardrail, evidence and priority) stays in the scenario JSON. <a href="demo/scenario-card.html">Open full size</a>. The same card on other screen types: <a href="demo/sample-desktop-product.html">desktop product page</a> · <a href="demo/sample-app-home.html">app home screen</a> · <a href="demo/sample-saas-form.html">demo-request form</a>.</p>
+    <p class="demo-note">A real card, as the plugin draws it for every test: the question, Variant A and Variant B, and the one change ringed and named. Open the card itself: <a href="demo/scenario-card-en.html">English</a> · <a href="demo/scenario-card.html" lang="tr">Türkçe</a>. The plan behind it (the problem, the reason it should work, the primary KPI and the guardrail) stays in the chat and the scenario file.</p>
   </div>
   <script>
-    // Fit the fixed-size card to the column; without script it stays at the default scale.
-    for (const box of document.querySelectorAll('.demo-frame')) {
-      const fit = () => box.style.setProperty('--s', box.clientWidth / 1600);
-      if ('ResizeObserver' in window) new ResizeObserver(fit).observe(box);
-      fit();
-    }
+    // Language switch for the sample card. Without script the English card stays,
+    // and the Turkish one is one link away in the note above.
+    (function () {
+      var cards = {
+        en: { img: 'demo/scenario-card-en.png', html: 'demo/scenario-card-en.html',
+              q: 'Does moving the coupon field behind an “I have a discount code” link increase revenue?' },
+        tr: { img: 'demo/scenario-card.png', html: 'demo/scenario-card.html',
+              q: 'Kupon alanını “İndirim kodum var” bağlantısının arkasına almak geliri artırır mı?' }
+      };
+      var buttons = document.querySelectorAll('.tabs button');
+      function show(lang) {
+        var c = cards[lang];
+        document.getElementById('card-img').src = c.img;
+        document.getElementById('card-link').href = c.html;
+        var q = document.getElementById('card-q'); q.textContent = c.q; q.lang = lang;
+        document.querySelectorAll('.half img').forEach(function (i) { i.src = c.img; });
+        buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === lang)); });
+      }
+      buttons.forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.lang); }); });
+      if (location.hash === '#tr') show('tr');
+    })();
   </script>
+
+  <div class="cta">
+    <a class="btn primary" href="#install">Install</a>
+    <a class="btn" href="https://github.com/ali-demirbas/ab-test-playbook">View on GitHub</a>
+    <a class="btn" href="https://github.com/ali-demirbas/ab-test-playbook/blob/main/README.tr.md" lang="tr">Türkçe anlatım</a>
+  </div>
+
+  <div class="three">
+    <div><strong>You give</strong>A screenshot, a URL or a short description of your page. Or just a page type, such as “my checkout”.</div>
+    <div><strong>You get</strong>One to three test plans: one change, why it should work, one primary KPI, one guardrail, and a card like the one above.</div>
+    <div><strong>It does not</strong>Calculate sample size, significance or a winner, or connect to your tools. Results stay in your testing tool.</div>
+  </div>
+
+  <h2>More sample cards</h2>
+  <div class="gallery">
+    <a href="demo/sample-desktop-product.html"><img src="demo/sample-desktop-product.png" width="1600" height="900" loading="lazy" alt="Sample card on a desktop product page (in Turkish)">Desktop product page</a>
+    <a href="demo/sample-app-home.html"><img src="demo/sample-app-home.png" width="1600" height="900" loading="lazy" alt="Sample card on a mobile app home screen (in Turkish)">Mobile app home screen</a>
+    <a href="demo/sample-saas-form.html"><img src="demo/sample-saas-form.png" width="1600" height="900" loading="lazy" alt="Sample card on a signup form (in Turkish)">Signup form</a>
+  </div>
+  <p class="demo-note">These three are in Turkish. Cards come in the language you write in.</p>
+
+  <h2 id="install">First card in 3 steps</h2>
+  <p class="req"><strong>Requirements:</strong> Claude Code and Python 3.9 or newer. Node 18 or newer and Playwright are needed only for the final visual check (step 2).</p>
+  <ol>
+    <li><strong>Install the plugin.</strong> Type these in Claude Code:
+<pre><code>/plugin marketplace add ali-demirbas/ab-test-playbook
+/plugin install ab-test-playbook@ab-test-playbook</code></pre>
+      A/B Test Builder is the display name; the plugin installs as <code>ab-test-playbook</code>.</li>
+    <li><strong>Turn on the visual check (optional, recommended).</strong> Run this once in a terminal. It installs Playwright and Chromium outside your projects:
+<pre><code>npm i --prefix ~/.abtest-visual playwright &amp;&amp; npx --prefix ~/.abtest-visual playwright install chromium</code></pre>
+      Skip it and you still get your cards, as previews marked “not visually checked”. Run it later and the same cards get checked and finished.</li>
+    <li><strong>Ask for a card.</strong> Paste a screenshot of your page and type:
+<pre><code>/ab-test design a test for this page</code></pre>
+      No screenshot at hand? <code>/ab-test suggest tests for my checkout page</code> starts from an archive of 221 curated scenarios. A bare <code>/ab-test</code> shows a short menu.</li>
+  </ol>
+  <p>Codex, Gemini CLI, claude.ai, updating and troubleshooting: <a href="https://github.com/ali-demirbas/ab-test-playbook/blob/main/docs/install.md">install guide</a>. The skills-only route (<code>npx skills add</code>) copies the instructions without the rules, the archive and the scripts, so use the plugin install above.</p>
 
   <h2>What makes it opinionated</h2>
   <ul class="rule-list">
@@ -108,32 +184,15 @@
     <li><strong>One primary KPI, always a guardrail.</strong> Five metrics of equal weight is not a measurement plan. Every scenario names the metric that decides, and at least one that must not break.</li>
     <li><strong>No dark patterns, and protections are not test subjects.</strong> Fake scarcity, hidden totals and uncloseable modals are refused. So is treating bot checks, identity verification or legal consent steps as friction to remove.</li>
     <li><strong>Evidence is labelled.</strong> Every proposal states whether it rests on your own data, an archive pattern (a curated idea, not a test result), a sector observation, or intuition, and says so when it is weak.</li>
+    <li><strong>Two reviews before delivery.</strong> One agent challenges the test plan, another checks that the two drawn variants differ in exactly one thing. A card is final only with both, plus the visual check from step 2.</li>
     <li><strong>No statistics.</strong> It proposes, designs, audits and visualizes tests; sample size, duration, significance and the winner come from your testing tool's own reporting, never from a guess.</li>
-  </ul>
-
-  <h2>Install</h2>
-  <pre><code># in Claude Code: add the marketplace, then install the plugin
-/plugin marketplace add ali-demirbas/ab-test-playbook
-/plugin install ab-test-playbook@ab-test-playbook</code></pre>
-  <p>The plugin installs as <code>ab-test-playbook</code>; A/B Test Builder is its display name.</p>
-
-  <p>Then, inside Claude Code: <code>/ab-test suggest</code>, <code>/ab-test design</code>, <code>/ab-test audit</code>, <code>/ab-test card</code>. A bare <code>/ab-test</code> shows a short menu with one example prompt for each.</p>
-
-  <p><strong>Skills only, limited:</strong> <code>npx skills add ali-demirbas/ab-test-playbook --all</code> copies the five skill instructions but not the binding rules, the scenario archive, the scripts or the review agents, so archive suggestions, scenario validation and card rendering do not work. Use the plugin install above for the full engine. Requires <code>python3</code> 3.9 or newer on PATH; the scripts use the standard library only.</p>
-
-  <h2>What is inside</h2>
-  <ul>
-    <li><strong>221 curated scenarios</strong> across journey stages (e-commerce, mobile app, SaaS, and regulated finance, insurance and pension flows), each already carrying the three boxes.</li>
-    <li><strong>Short proposals.</strong> At most three strong ones per turn, each a compact record (the problem, a one-sentence mechanism, the variable, the primary KPI, the guardrail, evidence and priority) with a card that shows only the comparison; chat shows a title and one tag line, and the three boxes come on request.</li>
-    <li><strong>A plan audit:</strong> confounds, a proxy primary, mismatched denominators, guardrails that measure nothing, missing compliance or accessibility gates and dark patterns, caught before the test takes traffic.</li>
-    <li><strong>Adversarial review:</strong> a methodology critic reads every generated scenario, and a mockup reviewer checks the two variants differ in exactly one thing, before anything reaches you.</li>
-    <li><strong>Gated delivery:</strong> code refuses what it can check (a difference outside the ring, a changed number, an added button without accessibility criteria, a revenue win that could hide user harm), and the final card builds only with both reviewers' stamps matching exactly what they reviewed.</li>
-    <li><strong>A portable schema:</strong> a test definition independent of any experimentation platform.</li>
   </ul>
 
   <footer>
     Source, methodology and the full scenario archive:
-    <a href="https://github.com/ali-demirbas/ab-test-playbook">github.com/ali-demirbas/ab-test-playbook</a> · MIT
+    <a href="https://github.com/ali-demirbas/ab-test-playbook">github.com/ali-demirbas/ab-test-playbook</a> · MIT ·
+    <a href="https://github.com/ali-demirbas/ab-test-playbook/blob/main/FAQ.md">FAQ</a> ·
+    <a href="https://github.com/ali-demirbas/ab-test-playbook/issues">Report a problem</a>
     <br>
     Reading this with an assistant? The whole documentation set is one Markdown file:
     <a href="llms-full.txt">llms-full.txt</a>, or just the index, <a href="llms.txt">llms.txt</a>.
