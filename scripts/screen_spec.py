@@ -45,7 +45,15 @@ card.change, exactly one:
   {"op": "replace", "target": id, "node": node, "label": "..", "label_a": ".."}
   {"op": "remove", "target": id, "label": ".."}
   {"op": "move_after"|"move_before", "target": id, "to": id, "label_a": "..", "label_b": ".."}
-  {"op": "edit", "target": id, "set": {key: value, ..}, "label": ".."}
+  {"op": "edit", "target": id, "set": {key: value, ..}, "label": "..", "ring": "node"}
+An edit rings only what it changes: on a plan the button, the price, the name,
+the badge or the feature list; on a field its label or its box; on an item its
+name, meta or price (RING_PARTS). An edit that touches several parts, a
+colour or size of the node itself, or carries "ring": "node" rings the whole
+node. label_pos is where the author would like the label ("above", the
+default, or "below"); the builder keeps it when the label is clear there and
+tries the other positions when it isn't (build_card.label_placement). The room
+the label needs is the template's, never the screen's.
 Any op may add "linked": [{"target": <a card.soft id>, "set": {..}}]: the
 variable's linked consequences (an annual-default toggle switches the prices
 under it), edits applied in B only to nodes card.soft rings in both arms.
@@ -66,7 +74,6 @@ import html
 import re
 
 GAP = 16            # the template's own rhythm between a screen's siblings (.screen gap)
-LABEL_ROOM = 36     # room for a ring label placed below or above the ringed node (pill + offset)
 BLEED = 20          # the screen's side (and bottom) padding a band bleeds through (.screen padding)
 BLEED_TOP = 14      # the screen's top padding, bled through by a band that opens the screen
 MAX_SOFT = 2
@@ -104,6 +111,15 @@ OPS = ("insert_after", "insert_before", "replace", "remove", "move_after", "move
 OP_DIFFERENCE = {"insert_after": "add", "insert_before": "add", "replace": "change", "edit": "change",
                  "remove": "remove", "move_after": "move", "move_before": "move"}
 LABEL_POSITIONS = ("below", "above")
+# What an edit rings instead of the whole node: {kind: {set key: part}}. A plan's "per" belongs to its
+# price, its "cta_style" to its button; a field's placeholder ("field"), value and select are its box.
+RING_PARTS = {
+    "plan": {"cta": "cta", "cta_style": "cta", "price": "price", "per": "price", "name": "name", "badge": "badge",
+             "features": "features"},
+    "field": {"label": "label", "field": "box", "text": "box", "value": "box", "select": "box"},
+    "item": {"name": "name", "meta": "meta", "price": "price"},
+}
+RING_TARGETS = ("part", "node")
 CTA_STYLES = ("filled", "outline", "ghost")
 BADGE_STYLES = ("warn", "brand")
 STEP_STATES = ("done", "on")
@@ -289,11 +305,12 @@ def form_problems(card, lang="en"):
 # ------------------------------------------------------------------ the tree
 
 class _Node(object):
-    __slots__ = ("kind", "value", "props", "kids", "raw", "ring", "soft")
+    __slots__ = ("kind", "value", "props", "kids", "raw", "ring", "part", "soft")
 
     def __init__(self, kind, value, props, kids, raw):
         self.kind, self.value, self.props, self.kids, self.raw = kind, value, props, kids, raw
         self.ring = None   # (label, pos) when this node carries the ring in this arm
+        self.part = None   # the part of the node the ring goes around (RING_PARTS), None = the whole node
         self.soft = None   # (note or "") when this node carries a soft ring
 
     @property
@@ -614,6 +631,15 @@ def _header(node, lang, extra):
     return "<div%s>%s</div>" % (_attrs(["r-header"], decls), "".join(parts))
 
 
+def _ring(node, html_, part=None):
+    """`html_` inside the node's ring when the ring goes around `part` (None: the whole node)."""
+    if not node.ring or node.part != part:
+        return html_
+    label, pos = node.ring
+    pos_attr = ' data-pos="%s"' % pos if pos else ""
+    return '<div class="hl" data-note="%s"%s>%s</div>' % (esc(label), pos_attr, html_)
+
+
 def _field(node, extra):
     p, v = node.props, node.value
     classes = ["r-field"]
@@ -624,7 +650,8 @@ def _field(node, extra):
     shown = p["value"] if "value" in p else v
     field = "<div%s>%s</div>" % (_attrs(classes, _decls(node) + ([] if "label" in p else extra)), esc(shown))
     if "label" in p:
-        return "<div%s><div class=\"r-label\">%s</div>%s</div>" % (_attrs([], extra), esc(p["label"]), field)
+        return "<div%s>%s%s</div>" % (_attrs([], extra), _ring(node, '<div class="r-label">%s</div>' % esc(p["label"]),
+                                                               "label"), _ring(node, field, "box"))
     return field
 
 
@@ -633,15 +660,16 @@ def _plan(node, extra):
     classes = ["r-plan"] + (["featured"] if v.get("featured") else [])
     body = []
     if v.get("badge"):
-        body.append('<div><span class="r-badge brand">%s</span></div>' % esc(v["badge"]))
-    body.append('<div class="r-plan-name">%s</div>' % esc(v["name"]))
+        body.append(_ring(node, '<div><span class="r-badge brand">%s</span></div>' % esc(v["badge"]), "badge"))
+    body.append(_ring(node, '<div class="r-plan-name">%s</div>' % esc(v["name"]), "name"))
     per = '<span class="r-per">%s</span>' % esc(v["per"]) if v.get("per") else ""
-    body.append('<div class="r-plan-price">%s%s</div>' % (esc(v["price"]), per))
+    body.append(_ring(node, '<div class="r-plan-price">%s%s</div>' % (esc(v["price"]), per), "price"))
     if v.get("features"):
-        body.append('<ul class="r-plan-feat">%s</ul>' % "".join("<li>%s</li>" % esc(f) for f in v["features"]))
+        body.append(_ring(node, '<ul class="r-plan-feat">%s</ul>' % "".join("<li>%s</li>" % esc(f) for f in v["features"]),
+                          "features"))
     if v.get("cta"):
         cta_classes = ["r-cta"] + ([v["cta_style"]] if v.get("cta_style") in ("outline", "ghost") else [])
-        body.append('<div class="%s">%s</div>' % (" ".join(cta_classes), esc(v["cta"])))
+        body.append(_ring(node, '<div class="%s">%s</div>' % (" ".join(cta_classes), esc(v["cta"])), "cta"))
     return "<div%s>%s</div>" % (_attrs(classes, _decls(node) + extra), "".join(body))
 
 
@@ -688,10 +716,10 @@ def _element(node, lang, extra, top):
         classes = ["r-line"] + (["total"] if p.get("total") else [])
         return "<div%s><span>%s</span><span>%s</span></div>" % (_attrs(classes, d + extra), esc(v[0]), esc(v[1]))
     if k == "item":
-        body = '<div class="r-name">%s</div>' % esc(v["name"])
+        body = _ring(node, '<div class="r-name">%s</div>' % esc(v["name"]), "name")
         if v.get("meta"):
-            body += '<div class="r-meta">%s</div>' % esc(v["meta"])
-        price = '<div class="r-price">%s</div>' % esc(v["price"]) if v.get("price") else ""
+            body += _ring(node, '<div class="r-meta">%s</div>' % esc(v["meta"]), "meta")
+        price = _ring(node, '<div class="r-price">%s</div>' % esc(v["price"]), "price") if v.get("price") else ""
         return ('<div%s><div class="ph img r-thumb"></div><div class="r-item-body">%s</div>%s</div>'
                 % (_attrs(["r-item"], d + extra), body, price))
     if k == "plan":
@@ -742,16 +770,17 @@ def _element(node, lang, extra, top):
 def _render(node, margins, lang, top):
     """One node with its margin declarations, inside its soft/ring wrappers.
 
-    A ringed node's non-negative margins (its rhythm and its label's room) sit
-    on the ring element, so the ring hugs the content and the label lies in
-    the room between the ring and its neighbour. A negative margin (a band's
-    bleed) stays on the node: the ring itself never pulls."""
+    A ringed node's non-negative margins (its rhythm) sit on the ring element,
+    so the ring hugs the content. A negative margin (a band's bleed) stays on
+    the node: the ring itself never pulls. A ring around a part of the node
+    (node.part) is drawn by the node's own renderer (_ring)."""
     outer = []
-    if node.ring:
+    whole = node.ring and node.part is None
+    if whole:
         outer = [m for m in margins if not m.split(":", 1)[1].lstrip().startswith("-")]
         margins = [m for m in margins if m not in outer]
     out = _element(node, lang, margins, top)
-    if node.ring:
+    if whole:
         label, pos = node.ring
         pos_attr = ' data-pos="%s"' % pos if pos else ""
         style = ' style="%s"' % ";".join(outer) if outer else ""
@@ -764,31 +793,17 @@ def _render(node, margins, lang, top):
 
 def _margins(node, gap, last, top):
     """The spacing declarations of a child: the rhythm (or its "mb") to the next
-    sibling, plus the room a ring label placed below or above it needs. At the
-    top level the template's own gap already separates siblings, so only the
-    difference is written.
+    sibling. At the top level the template's own gap already separates
+    siblings, so only the difference is written.
 
     _render moves these declarations onto the ring element when the node is
-    ringed, so the room lies outside the ring (card_problems allows a
-    non-negative margin-top or margin-bottom on a ring). On a neighbour it
-    would change A, which must stay byte-identical across records that share
-    a screen."""
+    ringed (card_problems allows a non-negative margin-top or margin-bottom on
+    a ring). The room a ring label needs is not written here: the template
+    opens it outside the ring, on the side the builder puts the label."""
     wanted = node.props.get("mb", gap) if not last else 0
-    mt = 0
-    if node.ring:
-        pos = node.ring[1]
-        if pos == "below":
-            wanted = max(wanted, LABEL_ROOM)
-        elif pos == "above":
-            mt = LABEL_ROOM
     if top:
         wanted = wanted - GAP if wanted else 0
-        mt = mt - GAP if mt else 0
-    elif last:
-        wanted = wanted if node.ring and node.ring[1] == "below" else 0
     out = []
-    if mt:
-        out.append("margin-top:%dpx" % mt)
     if wanted:
         out.append("margin-bottom:%dpx" % wanted)
     return out
@@ -824,7 +839,7 @@ def _change_keys(op):
         return base + ("label", "label_pos")
     if op in ("move_after", "move_before"):
         return base + ("to", "label_a", "label_b", "label_pos")
-    return base + ("set", "label", "label_a", "label_pos")
+    return base + ("set", "label", "label_a", "label_pos", "ring")
 
 
 def _apply_edit(node, settings, lang, problems):
@@ -962,10 +977,30 @@ def _apply(root_a, root_b, change, lang, problems):
         new = _parse(raw, "card.change.set", parent_b is root_b, lang, problems, ids)
         if new is None:
             return
-        new.ring = (note, pos)
+        want = change.get("ring", "part")
+        if want not in RING_TARGETS:
+            problems.append(_m("change_key", lang, key="ring", want="\"node\" (ring the whole node) or left out"))
+            return
+        parts = set(RING_PARTS.get(new.kind, {}).get(key) for key in settings)
+        # One part changed: ring that part, when the arm that carries a ring draws it.
+        part = parts.pop() if want == "part" and len(parts) == 1 else None
+        node_a = parent_a.kids[ia]
+        ringed_a = _str(change.get("label_a"))
+        if part and not (_has_part(new, part) and (not ringed_a or _has_part(node_a, part))):
+            part = None
+        new.ring, new.part = (note, pos), part
         parent_b.kids[ib] = new
-        if _str(change.get("label_a")):
-            parent_a.kids[ia].ring = (change["label_a"].strip(), pos)
+        if ringed_a:
+            node_a.ring, node_a.part = (change["label_a"].strip(), pos), part
+
+
+def _has_part(node, part):
+    """Whether `node` draws `part` as an element of its own (so a ring can go around it)."""
+    if node.kind == "field":
+        return "label" in node.props  # without a label the field is its box: the node itself
+    if part in ("name", "price") and node.kind == "plan" or part == "name":
+        return True
+    return bool(node.value.get(part))
 
 
 def _apply_soft(roots, soft, target, lang, problems):

@@ -504,11 +504,14 @@ def normalize(scenario, msg_lang=None):
     if note_pos not in NOTE_POSITIONS:
         die("note_pos must be 'above' or 'below', got %r" % note_pos)
 
-    phone_scale = card.get("phone_scale", 1.2)
-    if isinstance(phone_scale, bool) or phone_scale not in PHONE_SCALES:
-        die("card.phone_scale must be 1, 1.2 (default) or 1.4, got %r" % (phone_scale,))
-    if phone_scale != 1.2 and device not in ("phone", "phone-web"):
+    # Optional since the builder picks the scale itself (auto_scale); a value given here is used as it is.
+    phone_scale = card.get("phone_scale")
+    if phone_scale is not None and (isinstance(phone_scale, bool) or phone_scale not in PHONE_SCALES):
+        die("card.phone_scale must be 1, 1.2 or 1.4 (or left out: the builder picks the scale), got %r" % (phone_scale,))
+    if phone_scale not in (None, 1.2) and device not in ("phone", "phone-web"):
         die("card.phone_scale applies to a phone frame (device phone or phone-web), not %r" % device)
+    if device not in ("phone", "phone-web"):
+        phone_scale = None
     inherited = card.get("inherited_contrast") or []
     if inherited:
         if basis != "shared_page":
@@ -527,11 +530,13 @@ def normalize(scenario, msg_lang=None):
             if not in_a or in_a != in_b:
                 die("card.inherited_contrast: %r must be the text of an element drawn the same in both arms "
                     "(A has it %d time(s), B %d)" % (item["text"], in_a, in_b))
-    web_scale = card.get("web_scale", 1)
-    if isinstance(web_scale, bool) or web_scale not in WEB_SCALES:
-        die("card.web_scale must be 1 (default), 1.2 or 1.4, got %r" % (web_scale,))
-    if web_scale != 1 and device != "web":
+    web_scale = card.get("web_scale")
+    if web_scale is not None and (isinstance(web_scale, bool) or web_scale not in WEB_SCALES):
+        die("card.web_scale must be 1, 1.2 or 1.4 (or left out: the builder picks the scale), got %r" % (web_scale,))
+    if web_scale not in (None, 1) and device != "web":
         die("card.web_scale applies to a desktop browser frame (device web), not %r" % device)
+    if device != "web":
+        web_scale = None
 
     mismatch = difference_problems(scenario, msg_lang or _MSG_LANG)
     if mismatch:
@@ -553,7 +558,8 @@ def normalize(scenario, msg_lang=None):
         "brand": card.get("brand"),
         "mockup_basis": basis,
         "note_pos": note_pos,
-        "phone_scale": PHONE_SCALE_ATTR[phone_scale],
+        # The record's explicit scale, or None: the builder picks it (card_layout).
+        "phone_scale_value": phone_scale,
         "web_scale": web_scale,
         "inherited_contrast": [{"text": i["text"].strip(), "color": i["color"].lower()} for i in inherited],
         # True when the two mockups were compiled from card.screen + card.change (screen_spec.py).
@@ -2942,13 +2948,6 @@ def css_string(value):
     return '"%s"' % "".join(out)
 
 
-def web_scale_css(scale):
-    """card.web_scale → one zoom rule for the browser frame, or nothing (default 1)."""
-    if scale == 1:
-        return ""
-    return "  .browser{zoom:%s}\n" % scale
-
-
 def brand_css(brand):
     """card.brand → one :root override line inside <style>, or nothing."""
     if not brand:
@@ -2969,6 +2968,656 @@ def brand_css(brand):
     if not decls:
         return ""
     return "  :root{%s}" % ";".join(decls)
+
+
+# ------------------------------------------------------------ layout estimate
+#
+# The builder has no browser, and a card's bytes must be the same on every
+# machine (the review stamps are over them). So the two layout decisions the
+# author used to guess are made here, from an ESTIMATE of how the template's
+# CSS lays the mockup out: the frame's scale (auto_scale) and where the ring
+# label goes (label_placement). The estimate knows the template's components
+# (their paddings, gaps, minimum heights and font tokens; LAYOUT_TOKENS mirrors
+# the template and tests/test_card_visual_fixes.py keeps the two in step) and
+# measures text with average glyph widths, erring wide so a wrapped line is
+# counted rather than missed. It is deliberately not exact: the scale aims at
+# FILL_TARGET of the stage and leaves the rest as margin, and render_check.mjs
+# still measures the real render (clipping, label overlap) as the safety net.
+
+CARD_W, CARD_H = 1600, 900
+COLUMN_W = 728          # (1600 - 2 × 48 - 48) / 2
+STAGE_H = 741           # 900 - 40 (padding) - 75 (title box) - 12 (gap) - 32 (padding)
+FRAME_BUDGET = 701      # the stage minus the pill (30px) and the gap under it (10px)
+PHONE_W = 420
+DEFAULT_PHONE_SCALE = 1.2
+# Under 1 only as far as the smallest component text (13px) stays at 12px: 13 × 0.93 = 12.09.
+AUTO_SCALE_MIN, AUTO_SCALE_MAX = 0.93, 1.4
+FILL_TARGET = 0.93      # the estimated fill a browser frame's scale stays within (its text wraps: more margin)
+FILL_HIGH = 0.96        # the same for a phone; its default scale is kept up to this fill
+FILL_LOW = 0.66         # under this the default phone scale leaves the stage empty: grow (render_check fails at 0.62)
+LABEL_PX, LABEL_H, LABEL_PAD, LABEL_OFFSET, LABEL_ROOM, LABEL_CLEAR = 14, 22, 20, 4, 34, 6
+RING_GROW = 7           # outline-offset 4 + outline 3
+LAYOUT_TOKENS = {
+    "phone": {"fs": 15, "sm": 13, "ctl": 14, "h": 19, "lg": 17, "xl": 26, "tap": 44, "tapsm": 44, "lh": 1.4,
+              "pad": (14, 20, 20)},
+    "web": {"fs": 16, "sm": 14, "ctl": 15, "h": 22, "lg": 18, "xl": 28, "tap": 44, "tapsm": 36, "lh": 1.45,
+            "pad": (20, 24, 24)},
+}
+SHEET_PAD = (14, 19, 20)
+# class → (font token or px, weight, line-height or None for the screen's)
+_FONTS = {
+    "r-h": ("h", 600, 1.3), "r-sub": ("sm", 400, 1.45), "r-name": ("fs", 600, None), "r-meta": ("sm", 400, None),
+    "r-price": ("fs", 600, None), "r-label": ("sm", 500, None), "r-help": ("sm", 400, None),
+    "r-link": ("fs", 600, None), "r-plan-name": ("fs", 600, None), "r-plan-price": ("xl", 700, 1.2),
+    "r-stars": ("sm", 400, None), "r-banner": ("sm", 600, None), "r-logo": ("lg", 700, None),
+    "r-now": ("lg", 700, None), "r-old": ("sm", 400, None), "r-per": ("sm", 400, None), "r-info": ("sm", 400, 1.45),
+    "r-check": ("ctl", 400, 1.45), "r-radio": ("ctl", 400, 1.45), "r-cta": ("fs", 600, None),
+    "r-field": ("fs", 400, None), "r-search": ("fs", 400, None), "r-chip": ("ctl", 400, None),
+    "r-line": ("fs", 400, None), "r-plan-feat": ("sm", 400, None), "r-header": ("sm", 400, None),
+    "r-tabs": ("ctl", 400, None), "r-steps": (13, 400, None), "r-badge": (13, 600, 1.2), "r-suggest": ("ctl", 400, None),
+}
+# column containers: class → (padding top/bottom, padding left/right, border, gap)
+_COLUMNS = {"r-card": (14, 14, 1, 10), "r-plan": (16, 16, 1, 8), "r-tile": (12, 12, 1, 6), "r-modal": (20, 20, 0, 12),
+            "hero": (18, 18, 0, 8), "r-plan-feat": (0, 0, 0, 4)}
+_FIT_RING = ("r-link", "r-label", "r-name", "r-meta", "r-price", "r-plan-name", "r-plan-price")
+_OUT_OF_FLOW = (STICKY_CLASS, "r-overlay")
+
+
+def _char_em(ch):
+    """A glyph's advance in em for a UI sans (system font, Inter, Segoe), a little wide on purpose."""
+    if ch in "  ":
+        return 0.28
+    if ch in "ilıjİI.,:;'|!·’‘":
+        return 0.27
+    if ch in "ftr()[]/-\"“”":
+        return 0.37
+    if ch in "mwMW@%":
+        return 0.87
+    if ch.isdigit():
+        return 0.6
+    if ch.isupper():
+        return 0.68
+    return 0.55
+
+
+def text_width(text, size, weight=400):
+    """The estimated width in px of one line of `text` at `size` px."""
+    return sum(_char_em(ch) for ch in text) * size * (1.05 if weight >= 600 else 1.0)
+
+
+def _wrap_lines(text, width, size, weight=400):
+    """How many lines `text` takes in `width` px (greedy word wrap); 0 for no text."""
+    words = text.split()
+    if not words:
+        return 0
+    width = max(width, size)
+    space = _char_em(" ") * size
+    lines, cur = 1, 0.0
+    for word in words:
+        w = text_width(word, size, weight)
+        if cur and cur + space + w > width:
+            lines, cur = lines + 1, 0.0
+        if w > width:  # one word wider than the line breaks inside itself
+            lines += int(w // width)
+            w = w % width
+        cur = cur + space + w if cur else w
+    return lines
+
+
+def _css_px(value):
+    m = re.match(r"^(-?\d+(?:\.\d+)?)(?:px)?$", (value or "").strip())
+    return float(m.group(1)) if m else None
+
+
+def _css_sides(value):
+    """A margin or padding shorthand as (top, right, bottom, left) px; unknown parts are 0."""
+    parts = [(_css_px(p) or 0.0) for p in (value or "").split()][:4]
+    if not parts:
+        return (0.0, 0.0, 0.0, 0.0)
+    if len(parts) == 1:
+        return (parts[0],) * 4
+    if len(parts) == 2:
+        return (parts[0], parts[1], parts[0], parts[1])
+    if len(parts) == 3:
+        return (parts[0], parts[1], parts[2], parts[1])
+    return tuple(parts)
+
+
+class _Box:
+    """One laid-out element: its border box (w, h), margins, and its children at (dx, dy)."""
+
+    def __init__(self, node, w, h, kids=(), painted=False, text=False):
+        self.node, self.w, self.h, self.kids = node, w, h, list(kids)
+        self.tw = w  # the width its text or paint takes (a one-line text is narrower than its box)
+        self.mt = self.mb = 0.0
+        self.painted, self.text, self.out = painted, text, False
+
+
+def _is_inline(k):
+    return isinstance(k, str) or (k.tag in INLINE_TAGS or k.tag == "br") and not k.is_ring and all(_is_inline(x) for x in k.kids)
+
+
+class _Layout:
+    """The estimate of one arm's screen. `pos` is where the ring label goes
+    ("above" or "below"): its room is part of the layout."""
+
+    def __init__(self, device, pos="above"):
+        self.t = LAYOUT_TOKENS["web" if device == "web" else "phone"]
+        self.pos = pos
+
+    def font_of(self, node, font):
+        size, weight, lh = font
+        for cls in node.classes:
+            spec = _FONTS.get(cls)
+            if spec:
+                size = self.t[spec[0]] if isinstance(spec[0], str) else spec[0]
+                weight = spec[1]
+                lh = spec[2] or lh
+        if "total" in node.classes and "r-line" in node.classes:
+            size, weight = self.t["lg"], 700
+        if "sm" in node.classes and "r-cta" in node.classes:
+            size = self.t["sm"]
+        if node.tag in ("b", "strong"):
+            weight = 700
+        for prop, val in _style_decls(node.attrs.get("style") or ""):
+            if prop == "font-size" and _css_px(val):
+                size = _css_px(val)
+            elif prop == "font-weight" and val.isdigit():
+                weight = int(val)
+            elif prop == "line-height" and re.match(r"^\d+(\.\d+)?$", val):
+                lh = float(val)
+        return (size, weight, lh)
+
+    def intrinsic(self, node, font):
+        """The width an element takes when nothing stretches it (a chip, a badge, a price)."""
+        if isinstance(node, str):
+            return text_width(" ".join(node.split()), font[0], font[1])
+        font = self.font_of(node, font)
+        cls = node.classes
+        pad = 30 if "r-chip" in cls else 20 if "r-badge" in cls else 38 if "r-cta" in cls else 26 if "r-field" in cls else 0
+        if "r-thumb" in cls:
+            return 52.0
+        style = dict(_style_decls(node.attrs.get("style") or ""))
+        if _css_px(style.get("width")) is not None:
+            return _css_px(style.get("width"))
+        inline = [k for k in node.kids if _is_inline(k)]
+        if len(inline) == len(node.kids):
+            return text_width(_node_text(node), font[0], font[1]) + pad
+        return max([self.intrinsic(k, font) for k in node.kids] or [0.0]) + pad
+
+    def text_box(self, node, w, font, pad_w=0.0, pad_h=0.0, min_h=0.0, painted=False):
+        size, weight, lh = font
+        text = _node_text(node) if isinstance(node, Node) else " ".join(node.split())
+        lines = _wrap_lines(text, w - pad_w, size, weight)
+        box = _Box(node if isinstance(node, Node) else None, w, max(min_h, lines * size * lh + pad_h),
+                   painted=painted, text=bool(lines))
+        box.tw = min(w, text_width(text, size, weight) + pad_w) if lines == 1 else w
+        return box
+
+    def column(self, node, kids, w, font, gap=0.0, pad=(0.0, 0.0), border=0.0, painted=False):
+        """Children stacked top to bottom (a flex column or plain blocks)."""
+        inner = w - 2 * pad[1] - 2 * border
+        boxes, y, first = [], pad[0] + border, True
+        run = []
+
+        def flush():
+            nonlocal y, first
+            if run and "".join(k if isinstance(k, str) else _node_text(k) for k in run).strip():
+                text = " ".join((k if isinstance(k, str) else _node_text(k)) for k in run)
+                b = self.text_box(text, inner, font)
+                if not first:
+                    y += gap
+                boxes.append((pad[1] + border, y, b))
+                y += b.h
+                first = False
+            del run[:]
+
+        for k in kids:
+            if _is_inline(k):
+                run.append(k)
+                continue
+            flush()
+            b = self.lay(k, inner, font)
+            if b.out:
+                boxes.append((pad[1] + border, y, b))
+                continue
+            if not first:
+                y += gap
+            y += b.mt
+            boxes.append((pad[1] + border, y, b))
+            y += b.h + b.mb
+            first = False
+        flush()
+        return _Box(node, w, y + pad[0] + border, boxes, painted=painted)
+
+    def row(self, node, kids, w, font, gap, widths=None, align="end", pad=(0.0, 0.0), border=0.0):
+        """Children side by side: equal shares, or the given widths (None = share the rest)."""
+        kids = [k for k in kids if not (isinstance(k, str) and not k.strip())]
+        inner = w - 2 * pad[1] - 2 * border
+        n = max(1, len(kids))
+        if widths is None:
+            widths = [(inner - gap * (n - 1)) / n] * n
+        else:
+            fixed = sum(x for x in widths if x is not None)
+            free = [x for x in widths if x is None]
+            share = max(0.0, inner - fixed - gap * (n - 1)) / max(1, len(free))
+            widths = [share if x is None else x for x in widths]
+        laid = [self.text_box(k, wk, font) if isinstance(k, str) else self.lay(k, wk, font)
+                for k, wk in zip(kids, widths)]
+        height = max([b.mt + b.h + b.mb for b in laid] or [0.0])
+        boxes, x = [], pad[1] + border
+        for b, wk in zip(laid, widths):
+            outer = b.mt + b.h + b.mb
+            dy = (height - outer) if align == "end" else (height - outer) / 2.0 if align == "center" else 0.0
+            boxes.append((x, pad[0] + border + dy + b.mt, b))
+            x += wk + gap
+        return _Box(node, w, height + 2 * pad[0] + 2 * border, boxes)
+
+    def wrap(self, node, kids, w, font, gap, item_h):
+        """Intrinsic-width items that wrap (chips)."""
+        boxes, x, y = [], 0.0, 0.0
+        for k in kids:
+            if isinstance(k, str):
+                continue
+            iw = min(w, self.intrinsic(k, font))
+            if x and x + iw > w:
+                x, y = 0.0, y + item_h + gap
+            b = self.lay(k, iw, font)
+            b.h = max(b.h, item_h) if not b.mt and not b.mb else b.h
+            boxes.append((x, y + b.mt, b))
+            x += iw + gap
+        return _Box(node, w, y + item_h if boxes else 0.0, boxes)
+
+    def lay(self, node, w, font):
+        """The box of one element in `w` px of available width."""
+        t, cls = self.t, node.classes
+        font = self.font_of(node, font)
+        size, weight, lh = font
+        style = dict(_style_decls(node.attrs.get("style") or ""))
+        kids = node.kids
+        elems = [k for k in kids if isinstance(k, Node)]
+        if FOLD_CLASS in cls or BREAK_CLASS in cls:
+            box = _Box(node, w, 0.0)
+            box.out = True
+            return box
+        if _css_px(style.get("width")) is not None:
+            w = min(w, _css_px(style.get("width")))
+        if "max-width" in style and _css_px(style["max-width"]) is not None:
+            w = min(w, _css_px(style["max-width"]))
+        pad = [0.0, 0.0, 0.0, 0.0]
+        if "padding" in style:
+            pad = list(_css_sides(style["padding"]))
+        for i, side in enumerate(("top", "right", "bottom", "left")):
+            if _css_px(style.get("padding-" + side)) is not None:
+                pad[i] = _css_px(style["padding-" + side])
+        own_pad = bool(pad[0] or pad[1] or pad[2] or pad[3])
+
+        col = next((c for c in _COLUMNS if c in cls), None)
+        if any(c in cls for c in _OUT_OF_FLOW):
+            box = self.column(node, kids, w, font, pad=(10.0, 20.0) if STICKY_CLASS in cls else (20.0, 20.0))
+            box.out = True
+            return box
+        if col:
+            pv, ph_, border, gap = _COLUMNS[col]
+            if "featured" in cls:
+                border = 2
+            box = self.column(node, kids, w, font, gap=gap, pad=(pv, ph_), border=border,
+                              painted=col not in ("r-plan-feat",))
+        elif "r-field" in cls or "r-search" in cls:
+            box = self.text_box(node, w, font, pad_w=26, min_h=t["tap"], painted=True)
+            box.tw = w
+        elif "r-cta" in cls:
+            tight = any(c in getattr(a, "classes", ()) for a in _ancestors(node) for c in ("r-plan", "r-tile"))
+            box = self.text_box(node, w, font, pad_w=22 if tight else 38, min_h=t["tapsm"] if "sm" in cls else t["tap"],
+                                painted=True)
+            box.tw = w
+        elif "r-progress" in cls:
+            box = _Box(node, w, 8.0, painted=True)
+        elif "r-divider" in cls:
+            box = _Box(node, w, 1.0, painted=True)
+        elif "r-thumb" in cls:
+            box = _Box(node, 52.0, 52.0, painted=True)
+        elif "ph" in cls and "img" in cls:
+            box = _Box(node, w, 150.0, painted=True)
+        elif "r-chip" in cls:
+            box = _Box(node, min(w, text_width(_node_text(node), size, weight) + 30), 36.0, painted=True, text=True)
+        elif "r-badge" in cls:
+            box = _Box(node, min(w, text_width(_node_text(node), size, weight) + 20), size * 1.2 + 8, painted=True, text=True)
+        elif "r-check" in cls or "r-radio" in cls:
+            box = self.text_box(node, w, font, pad_w=30, min_h=20.0)
+        elif "r-info" in cls:
+            box = self.text_box(node, w, font, pad_w=48, pad_h=20, painted=True)
+            box.tw = w
+        elif "r-banner" in cls:
+            box = self.text_box(node, w, font, pad_w=24, pad_h=20, painted=True)
+            box.tw = w
+        elif "r-steps" in cls:
+            box = _Box(node, w, 9 + size * lh, text=True)
+        elif "r-tabs" in cls:
+            box = _Box(node, w, 21 + size * lh, text=True)
+        elif "r-header" in cls:
+            inner = max(t["lg"] * lh, 22.0) if elems else size * lh
+            box = _Box(node, w, inner + 20 + (0 if "filled" in cls else 1), text=True, painted="filled" in cls)
+        elif "r-line" in cls:
+            box = _Box(node, w, size * lh + (13 if "total" in cls else 0), text=True)
+        elif "r-item" in cls:
+            widths = [52.0 if "r-thumb" in k.classes else None if "r-item-body" in k.classes
+                      else self.intrinsic(k, font) for k in elems]
+            box = self.row(node, elems, w, font, 12.0, widths=widths, align="center")
+        elif "r-chips" in cls:
+            box = self.wrap(node, kids, w, font, 8.0, 36.0)
+        elif "r-grid" in cls:
+            n = 3 if "c3" in cls else 2
+            rows = [elems[i:i + n] for i in range(0, len(elems), n)]
+            boxes, y = [], 0.0
+            for i, group in enumerate(rows):
+                wk = (w - 12.0 * (n - 1)) / n
+                laid = [self.lay(k, wk, font) for k in group]
+                rh = max(b.mt + b.h + b.mb for b in laid)
+                for j, b in enumerate(laid):
+                    b.h = max(b.h, rh - b.mt - b.mb)  # grid items stretch to the row
+                    boxes.append((j * (wk + 12.0), y + b.mt, b))
+                y += rh + (12.0 if i < len(rows) - 1 else 0.0)
+            box = _Box(node, w, y, boxes)
+        elif "r-row" in cls:
+            box = self.row(node, elems, w, font, 12.0, align="end")
+        elif "r-suggest" in cls:
+            box = _Box(node, w, 2 + sum(22 + size * lh + 1 for _ in elems), painted=True, text=True)
+            box.mt = -8.0
+        elif style.get("display") in ("flex", "inline-flex") and "column" not in style.get("flex-direction", ""):
+            gap = _css_px(style.get("gap")) or 0.0
+            align = {"center": "center", "flex-end": "end", "end": "end"}.get(style.get("align-items"), "start")
+            # items keep their own width while they fit side by side; else they share the row
+            widths = [min(w, self.intrinsic(k, font)) for k in elems]
+            if sum(widths) + gap * (len(widths) - 1) > w or any("flex" in dict(_style_decls(k.attrs.get("style") or ""))
+                                                              for k in elems):
+                widths = None
+            box = self.row(node, elems, w, font, gap, widths=widths, align=align, pad=(pad[0], pad[3]))
+            pad = [0.0, 0.0, 0.0, 0.0]
+        elif all(_is_inline(k) for k in kids):
+            box = self.text_box(node, w, font, pad_w=pad[1] + pad[3])
+        else:
+            gap = _css_px(style.get("gap")) or 0.0 if style.get("display") == "flex" else 0.0
+            # column() pads top and bottom alike, so only the side padding goes in; the rest is added below
+            box = self.column(node, kids, w, font, gap=gap, pad=(0.0, pad[3]))
+        if own_pad and not col:
+            box.h += pad[0] + pad[2]
+            for i, (dx, dy, b) in enumerate(box.kids):
+                box.kids[i] = (dx, dy + pad[0], b)
+        if _css_px(style.get("height")) is not None:
+            box.h = _css_px(style["height"])
+        if _css_px(style.get("min-height")) is not None:
+            box.h = max(box.h, _css_px(style["min-height"]))
+        if "background" in style or "border" in style:
+            box.painted = True
+        # margins: the component's own, the inline style's, then the label's room on a ring (it wins)
+        mt = 2.0 if "r-meta" in cls else 6.0 if "r-help" in cls else box.mt
+        mb = 6.0 if "r-label" in cls else 0.0
+        if "margin" in style:
+            sides = _css_sides(style["margin"])
+            mt, mb = sides[0], sides[2]
+        if _css_px(style.get("margin-top")) is not None:
+            mt = _css_px(style["margin-top"])
+        if _css_px(style.get("margin-bottom")) is not None:
+            mb = _css_px(style["margin-bottom"])
+        if node.is_ring:
+            if (node.attrs.get("data-note") or "").strip() and not self.in_sticky(node):
+                if self.pos == "below":
+                    mb = float(LABEL_ROOM)
+                else:
+                    mt = float(LABEL_ROOM)
+            if len(elems) == 1 and len(kids) == 1 and any(c in elems[0].classes for c in _FIT_RING):
+                box.w = min(box.w, self.intrinsic(elems[0], font))
+            if style.get("align-self") in ("flex-start", "start", "flex-end", "end", "center") or \
+                    style.get("width") == "fit-content":
+                box.w = min(box.w, max([self.intrinsic(k, font) for k in kids] or [box.w]))
+        box.mt, box.mb = mt, mb
+        return box
+
+    @staticmethod
+    def in_sticky(node):
+        n = node.parent
+        while n is not None:
+            if STICKY_CLASS in getattr(n, "classes", ()):
+                return True
+            n = n.parent
+        return False
+
+    def screen(self, kids, w, sticky=False, pad=None):
+        """A screen's content: (height with its padding, boxes at absolute (x, y, box))."""
+        pad = pad or self.t["pad"]
+        base = (self.t["fs"], 400, self.t["lh"])
+        body = self.column(None, kids, w - 2 * pad[1], base, gap=16.0)
+        bottom = self.t["tap"] + 60 if sticky else pad[2]
+        flat = []
+
+        def walk(box, x, y, anc):
+            flat.append((box, x, y, anc))
+            for dx, dy, kid in box.kids:
+                walk(kid, x + dx, y + dy, anc + [box])
+
+        walk(body, float(pad[1]), float(pad[0]), [])
+        return pad[0] + body.h + bottom, flat
+
+
+def _screen_parts(root):
+    """The root's children as the screens the layout draws: ("first", kids),
+    then ("below", kids) after a fold, or one part per stage."""
+    if any(FOLD_CLASS in k.classes for k in root.kids if isinstance(k, Node)):
+        first, rest = _split_kids(root, FOLD_CLASS)[:2]
+        return [("first", first), ("below", rest)]
+    runs = _split_kids(root, BREAK_CLASS)
+    if len(runs) > 1:
+        return [("stage", run) for run in runs]
+    return [("first", root.kids)]
+
+
+def frame_estimate(root, device, layout, width=None, pos="above"):
+    """The estimated height (CSS px inside the frame's zoom) of one arm's frame
+    and of what hangs under it: (frame, below). `width` is a browser frame's
+    layout width (the column's width over its zoom)."""
+    lay = _Layout(device, pos)
+    web = device == "web"
+    w = (width or COLUMN_W) - 2 if web else PHONE_W - 2
+    chrome = 2 + (45 if web else 40 + (44 if device == "phone-web" else 0))
+    if not web:
+        chrome += 67 if layout.get("toolbar") else 0
+        chrome += 46 if layout.get("bottom_nav") else 0
+    frame = below = 0.0
+    for kind, kids in _screen_parts(root):
+        if kind == "below":
+            h, _ = lay.screen(kids, w, pad=SHEET_PAD)
+            below = 13 * 1.3 + 6 + 2 + h
+        else:
+            h, _ = lay.screen(kids, w, sticky=bool(layout.get("sticky")))
+            frame = max(frame, chrome + h)
+    return frame, below
+
+
+def auto_scale(trees, device, layout, pos=("above", "above")):
+    """The scale the frames are drawn at when the record names none.
+
+    A phone keeps its one default size (DEFAULT_PHONE_SCALE) whenever that fits
+    and fills the stage reasonably; a screen too long for it is drawn smaller
+    (down to 1), one that would leave most of the stage empty larger (up to
+    1.4). A browser frame always fills its column, so its scale decides how
+    much of the stage's height the page takes: the largest of 1.4 … 1 whose
+    estimated height stays within FILL_TARGET. Stage phones keep their fixed
+    size (None)."""
+    if layout.get("stages", 1) > 1:
+        return None
+    if device == "web":
+        steps = [round(AUTO_SCALE_MAX - 0.05 * i, 2) for i in range(int(round((AUTO_SCALE_MAX - AUTO_SCALE_MIN) / 0.05)) + 1)]
+        for z in steps:
+            tall = max(frame_estimate(t, device, layout, COLUMN_W / z, p)[0] for t, p in zip(trees, pos))
+            if tall * z <= FILL_TARGET * FRAME_BUDGET:
+                return z
+        return AUTO_SCALE_MIN
+    worst = (0.0, 0.0)
+    for tree, p in zip(trees, pos):
+        frame, below = frame_estimate(tree, device, layout, pos=p)
+        if frame + below > sum(worst):
+            worst = (frame, below)
+    logical = sum(worst)
+    fixed = 10.0 if worst[1] else 0.0  # the gap between the phone and its sheet is outside the zoom
+    if not logical:
+        return DEFAULT_PHONE_SCALE
+    fill = (logical * DEFAULT_PHONE_SCALE + fixed) / FRAME_BUDGET
+    if FILL_LOW <= fill <= FILL_HIGH:
+        return DEFAULT_PHONE_SCALE
+    fit = int(100 * (FILL_HIGH * FRAME_BUDGET - fixed) / logical) / 100.0
+    if fill > FILL_HIGH:
+        return max(AUTO_SCALE_MIN, min(DEFAULT_PHONE_SCALE, fit))
+    return min(AUTO_SCALE_MAX, max(DEFAULT_PHONE_SCALE, fit))
+
+
+LABEL_MSG = {
+    "too_wide": ("variant {v}: the ring label “{note}” is about {w}px wide and the screen {screen}px: it fits at no "
+                 "position; shorten it to two to four words",
+                 "varyant {v}: “{note}” halka etiketi yaklaşık {w}px, ekran {screen}px genişliğinde: hiçbir konuma "
+                 "sığmıyor; iki ila dört kelimeye kısaltın"),
+    "crowded": ("variant {v}: no position keeps the ring label “{note}” clear of {what}; it was placed {pos} with the "
+                "least overlap: check the render, or shorten the label",
+                "varyant {v}: “{note}” halka etiketi hiçbir konumda {what} öğesinden uzak kalmıyor; en az örten konuma "
+                "({pos}) kondu: görüntüyü kontrol edin ya da etiketi kısaltın"),
+}
+
+
+def _label_overlap(lay_boxes, ring_at, label):
+    """(area, what) of the worst overlap between a label rect and the screen's other elements, the
+    clearance included; elements inside the ring and around it don't count."""
+    ring_box = ring_at[0]
+    inside = set()
+
+    def mark(box):
+        inside.add(id(box))
+        for _, _, kid in box.kids:
+            mark(kid)
+
+    mark(ring_box)
+    lx, ly, lr, lb = label
+    worst = (0.0, "")
+    for box, x, y, anc in lay_boxes:
+        if id(box) in inside or any(id(a) in inside for a in anc) or box.out or any(a.out for a in anc):
+            continue
+        if not (box.text or box.painted):
+            continue
+        if any(a is box for a in ring_at[3]):
+            continue
+        ox = min(lr + LABEL_CLEAR, x + box.tw) - max(lx - LABEL_CLEAR, x)
+        oy = min(lb + LABEL_CLEAR, y + box.h) - max(ly - LABEL_CLEAR, y)
+        if ox > 0 and oy > 0 and ox * oy > worst[0]:
+            what = _short(_node_text(box.node), 28) if box.node is not None and _node_text(box.node) else "an element"
+            worst = (ox * oy, what)
+    return worst
+
+
+def label_placement(root, device, layout, declared, name="B", width=None, lang="en", notes=None):
+    """Where one arm's ring label goes: "<above|below> <end|start>".
+
+    Tried in order: the declared side (the ring's data-pos, card.note_pos or
+    the screen spec's label_pos; "above" when none) at the ring's right edge
+    ("end"), then at its left edge ("start"), then the other side the same
+    way. The first position whose label lies inside the screen and clear of
+    every other element wins. The room on the label's side is the template's
+    (32px outside the ring), so a label never needs the author's spacing. A
+    label wider than the screen fits nowhere: the card is refused. When every
+    position overlaps something the least-overlapping one is used and a note
+    is left for the reviewer (render_check measures the real render)."""
+    found = rings(root)
+    if not found or not (found[0].attrs.get("data-note") or "").strip():
+        return "%s end" % declared
+    ring = found[0]
+    note = " ".join(ring.attrs["data-note"].split())
+    tokens = LAYOUT_TOKENS["web" if device == "web" else "phone"]
+    width = (width or COLUMN_W) - 2 if device == "web" else PHONE_W - 2
+    label_w = text_width(note, LABEL_PX, 700) + LABEL_PAD
+    if _Layout.in_sticky(ring):
+        return "above end"  # the pinned bar's label has its own place above the bar
+    in_overlay = any("r-overlay" in getattr(n, "classes", ()) for n in _ancestors(ring))
+    best = None
+    other = "below" if declared == "above" else "above"
+    for pos in (declared, other):
+        lay = _Layout(device, pos)
+        for kind, kids in _screen_parts(root):
+            pad = SHEET_PAD if kind == "below" else tokens["pad"]
+            h, flat = lay.screen(kids, width, sticky=bool(layout.get("sticky")) and kind != "below", pad=pad)
+            hit = next((item for item in flat if item[0].node is ring), None)
+            if hit is None:
+                continue
+            box, x, y, anc = hit
+            if label_w > width - 4:
+                die(_t(*LABEL_MSG["too_wide"], lang=lang).format(v=name, note=note, w=int(round(label_w)), screen=int(width)))
+            top = y - LABEL_OFFSET - LABEL_H if pos == "above" else y + box.h + LABEL_OFFSET
+            for anchor in ("end", "start"):
+                left = x + box.w + RING_GROW - label_w if anchor == "end" else x - RING_GROW
+                rect = (left, top, left + label_w, top + LABEL_H)
+                inside = rect[0] >= 2 and rect[2] <= width - 2 and rect[1] >= 2 and rect[3] <= h - 2
+                area, what = (0.0, "") if in_overlay else _label_overlap(flat, hit, rect)
+                if inside and not area:
+                    return "%s %s" % (pos, anchor)
+                score = area + (0 if inside else 1e6)
+                if best is None or score < best[0]:
+                    best = (score, "%s %s" % (pos, anchor), what)
+    if best is None:
+        return "%s end" % declared
+    if notes is not None:
+        notes.append(_t(*LABEL_MSG["crowded"], lang=lang).format(v=name, note=note, what="“%s”" % best[2] if best[2] else "the screen edge",
+                                                             pos=best[1]))
+    return best[1]
+
+
+def _ancestors(node):
+    n = node.parent
+    while n is not None:
+        yield n
+        n = n.parent
+
+
+def declared_label_pos(root, note_pos):
+    """The side the author asked for: the ring's data-pos, else card.note_pos."""
+    for ring in rings(root):
+        pos = ring.attrs.get("data-pos")
+        if pos in NOTE_POSITIONS:
+            return pos
+    return note_pos if note_pos in NOTE_POSITIONS else "above"
+
+
+def scale_text(value):
+    """A scale as the card writes it: 1, 1.2, 1.13."""
+    return ("%.2f" % value).rstrip("0").rstrip(".")
+
+
+def scale_css(device, scale):
+    """The one CSS line that draws the frames at `scale` (nothing at the template's default)."""
+    if scale is None:
+        return ""
+    if device == "web":
+        return "" if scale == 1 else "  .browser{zoom:%s}\n" % scale_text(scale)
+    return "" if scale == DEFAULT_PHONE_SCALE else "  .phone,.below{zoom:%s}\n" % scale_text(scale)
+
+
+def card_layout(view, lang="en", notes=None):
+    """The builder's layout decisions for a normalized view:
+    {"scale": float or None, "mode": "auto"|"manual"|"fixed", "labels": (A, B)}."""
+    device, layout = view["device"], dict(layout_of(view), bottom_nav=has_bottom_nav(view))
+    trees = [parse_markup(view[key], lang)[0] for key in ("variant_a", "variant_b")]
+    if any(t is None for t in trees):
+        return {"scale": None, "mode": "fixed", "labels": ("above end", "above end")}
+    declared = [declared_label_pos(t, view.get("note_pos")) for t in trees]
+    explicit = view.get("web_scale") if device == "web" else view.get("phone_scale_value")
+    if layout.get("stages", 1) > 1:
+        scale, mode = None, "fixed"  # stage phones keep their own size
+    elif explicit is not None:
+        scale, mode = float(explicit), "manual"
+    else:
+        scale, mode = auto_scale(trees, device, layout, declared), "auto"
+    width = COLUMN_W / scale if device == "web" and scale else None
+    labels = tuple(label_placement(t, device, layout, d, name, width, lang, notes)
+                   for t, d, name in zip(trees, declared, ("A", "B")))
+    if mode == "auto" and tuple(lab.split()[0] for lab in labels) != tuple(declared):
+        scale = auto_scale(trees, device, layout, [lab.split()[0] for lab in labels])
+    return {"scale": scale, "mode": mode, "labels": labels}
 
 
 # ------------------------------------------------------------------- building
@@ -3016,13 +3665,20 @@ def build(template_text, scenario, warnings=None, lang=None, manifest=None):
     values = frame_values(view)
     layout = layout_of(view)
     text = apply_layout(apply_frame(COMMENT_RE.sub("", template_text), view["device"], has_bottom_nav(view)), layout)
+    # The two layout decisions the author no longer guesses: the frames' scale and each ring label's place.
+    decided = card_layout(view, lang, warnings)
+    phone = view["device"] in ("phone", "phone-web") and decided["scale"] is not None
     values.update({
         "{{TITLE}}": escape(view["title"]),
         "{{LANG}}": view["lang"],
         "{{DEVICE}}": view["device"],
         "{{NOTE_POS}}": view["note_pos"],
-        "{{PHONE_SCALE}}": view["phone_scale"],
-        "{{BRAND_CSS}}": brand_css(view["brand"]) + web_scale_css(view["web_scale"]),
+        "{{PHONE_SCALE}}": scale_text(decided["scale"] if phone else DEFAULT_PHONE_SCALE),
+        "{{SCALE_MODE}}": decided["mode"],
+        "{{LABEL_A}}": decided["labels"][0],
+        "{{LABEL_B}}": decided["labels"][1],
+        "{{BRAND_CSS}}": "\n".join(line for line in (brand_css(view["brand"]), scale_css(
+            view["device"], decided["scale"]).rstrip("\n")) if line),
     })
     # Screens go in raw: this is the generative region, checked above. A screen
     # with a fold or stage breaks goes in as its pieces (layout_values).
@@ -3205,14 +3861,18 @@ def preflight(scenario, lang="en"):
 
 REVIEWERS = {"scenario_critic": "scenario-critic", "mockup_reviewer": "mockup-reviewer"}
 FINGERPRINT_RE = re.compile(r"^[0-9a-f]{64}$")
-DRAFT_BANNER = {"tr": "TASLAK · incelenmedi", "en": "DRAFT · not reviewed"}
-# The draft marker is a tab hanging from the card's top edge at its right
-# corner, inside the card's 40px top padding: absolutely positioned, so it
-# overlays the card without moving anything in it (the draft lays out exactly
-# like the final card it stands for) and covers no content.
-DRAFT_RIBBON_STYLE = ("position:absolute;top:0;right:48px;z-index:20;padding:8px 14px;border-radius:0 0 8px 8px;"
-                      "background:#b42318;color:#ffffff;font:700 13px/1 -apple-system,\"Segoe UI\",Inter,Roboto,"
-                      "\"Helvetica Neue\",Arial,sans-serif;letter-spacing:.04em;white-space:nowrap;pointer-events:none")
+DRAFT_BANNER = {"tr": "Önizleme · görsel kontrol yapılmadı", "en": "Preview · not visually checked"}
+# The draft marker is a pill in the card's 40px top padding at its right
+# corner: absolutely positioned, so it overlays the card without moving
+# anything in it (the draft lays out exactly like the final card it stands
+# for) and covers no content. Calm on purpose: a draft is the normal step
+# before the visual review, not an alarm, so it says what it is in plain words
+# on a neutral slate pill (white on #374151, 10.3:1). It still can't pass for a
+# final card: the pill is on every draft, and so is the draft meta tag that
+# --stamp, --check and the reviewer read.
+DRAFT_RIBBON_STYLE = ("position:absolute;top:8px;right:48px;z-index:20;padding:6px 12px;border-radius:999px;"
+                      "background:#374151;color:#ffffff;font:600 13px/1 -apple-system,\"Segoe UI\",Inter,Roboto,"
+                      "\"Helvetica Neue\",Arial,sans-serif;white-space:nowrap;pointer-events:none")
 CARD_OPEN_RE = re.compile(r'<div class="card"[^>]*>\n')
 MANIFEST_SUFFIX = ".manifest.json"
 
@@ -3220,19 +3880,19 @@ MANIFEST_SUFFIX = ".manifest.json"
 # "critical"`: feasibility, legality or single-variable status rests on a fact
 # the user hasn't confirmed) builds a CONDITIONAL card. Unlike the draft
 # ribbon this one is part of the final card: the user sees that the proposal
-# waits on an answer. It hangs from the card's top edge at the LEFT corner, so
-# on the draft of a conditional card both ribbons show; like the draft ribbon
-# it is absolutely positioned inside the card's 40px top padding and moves
-# nothing. Light on purpose (a small amber note, not a second title): amber
-# text on a light amber surface with a thin amber border, 12px, 7.0:1. Once the
-# user confirms, the assumption leaves the record (critic again), and the card
-# builds without the ribbon.
+# waits on an answer. It sits in the card's 40px top padding at the LEFT, above
+# the title's first letter, so on the draft of a conditional card both ribbons
+# show; like the draft ribbon it is absolutely positioned and moves nothing.
+# It is the card's most important caveat, so it has to survive a thumbnail: a
+# filled amber pill, white 14px bold on #b45309 (5.0:1), 8px off the card's
+# edge. Once the user confirms, the assumption leaves the record (critic
+# again), and the card builds without the ribbon.
 CONDITIONAL_BANNER = {"tr": "KOŞULLU · doğrulama gerekli", "en": "CONDITIONAL · needs verification"}
 CONDITIONAL_SUMMARY = "conditional card (not implementation-ready)"
 CONDITIONAL_META = '<meta name="abtest-status" content="conditional">\n'
-CONDITIONAL_RIBBON_STYLE = ("position:absolute;top:0;left:48px;z-index:20;padding:5px 10px;border:1px solid #fcd34d;"
-                            "border-top:0;border-radius:0 0 6px 6px;background:#fffbeb;color:#92400e;"
-                            "font:600 12px/1 -apple-system,\"Segoe UI\",Inter,Roboto,\"Helvetica Neue\",Arial,sans-serif;"
+CONDITIONAL_RIBBON_STYLE = ("position:absolute;top:8px;left:48px;z-index:20;padding:6px 12px;border-radius:999px;"
+                            "background:#b45309;color:#ffffff;"
+                            "font:700 14px/1 -apple-system,\"Segoe UI\",Inter,Roboto,\"Helvetica Neue\",Arial,sans-serif;"
                             "letter-spacing:.02em;white-space:nowrap;pointer-events:none")
 
 

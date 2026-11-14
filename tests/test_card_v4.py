@@ -175,7 +175,7 @@ class TestDraftRibbon(unittest.TestCase):
     def test_the_ribbon_takes_no_space(self):
         style = re.search(r'id="abtest-draft" role="status" style="([^"]*)"', self.draft).group(1)
         self.assertIn("position:absolute", style)
-        self.assertIn("top:0", style)
+        self.assertIn("top:8px", style)
         self.assertIn("pointer-events:none", style)
         for prop in ("margin", "position:relative", "position:static", "transform"):
             self.assertNotIn(prop, style)
@@ -185,8 +185,8 @@ class TestDraftRibbon(unittest.TestCase):
             self.assertIn(decl, card)
 
     def test_the_ribbon_text(self):
-        self.assertIn(">TASLAK · incelenmedi</div>", self.draft)
-        self.assertIn(">DRAFT · not reviewed</div>", bc.draft_html(self.final, "en"))
+        self.assertIn(">Önizleme · görsel kontrol yapılmadı</div>", self.draft)
+        self.assertIn(">Preview · not visually checked</div>", bc.draft_html(self.final, "en"))
 
 
 class TestLayoutRules(unittest.TestCase):
@@ -221,7 +221,7 @@ class TestLayoutRules(unittest.TestCase):
         for decl in ("width:420px", "border:1px solid #d1d5db", "border-radius:36px", "--fs:15px", "--tap:44px"):
             self.assertIn(decl, phone)
         self.assertIn("width:100%", browser)
-        self.assertIn("--fs:14px", browser)
+        self.assertIn("--fs:16px", browser)  # legible when the card is shown at half size
         for rule in (phone, browser):
             self.assertNotRegex(rule, r"(^|;)\s*height:")
             self.assertNotRegex(rule, r"min-height:(?!0;)")  # min-height:0 only lets it shrink
@@ -235,7 +235,7 @@ class TestLayoutRules(unittest.TestCase):
         for decl in ("outline:3px solid var(--ring)", "outline-offset:4px", "border-radius:10px"):
             self.assertIn(decl, ring)
         label = css_rule(".hl[data-note]::after")
-        for decl in ("right:-7px", "background:var(--ring)", "color:#ffffff", "font-size:12.5px", "font-weight:600",
+        for decl in ("right:-7px", "background:var(--ring)", "color:#ffffff", "font-size:14px", "font-weight:700",
                      "border-radius:999px"):
             self.assertIn(decl, label)
 
@@ -244,16 +244,18 @@ class TestLayoutRules(unittest.TestCase):
         sizes += [float(v) for v in re.findall(r"--fs[\w-]*:([\d.]+)px", STYLE)]
         self.assertTrue(sizes)
         self.assertGreaterEqual(min(sizes), 12, sorted(sizes)[:5])
-        # The only scaling is a phone frame as a whole (proportions kept) and its continuation sheet at the same
-        # scale: card.phone_scale 1 / 1.2 / 1.4; stage phones at .8 with larger size variables. Nothing scales text alone.
+        # The only scaling is a frame as a whole (proportions kept) and its continuation sheet at the same
+        # scale: the template's default 1.2, any other scale is one line the builder writes (scale_css);
+        # stage phones at .8 with larger size variables. Nothing scales text alone.
         self.assertEqual(re.findall(r"zoom:[^;}]*", re.sub(r"/\*.*?\*/", "", STYLE, flags=re.S)),
-                         ["zoom:1.2", "zoom:1", "zoom:1.4", "zoom:1.2", "zoom:1", "zoom:1.4", "zoom:.8"])
+                         ["zoom:1.2", "zoom:1.2", "zoom:.8"])
         stage = css_rule(".card .stage-col>.phone")
         stage_sizes = [float(v) for v in re.findall(r"--fs[\w-]*:([\d.]+)px", stage)]
         self.assertTrue(stage_sizes)
         self.assertGreaterEqual(min(stage_sizes) * 0.8, 12)  # rendered size inside a stage phone
         self.assertIn("zoom:1.2", css_rule(".phone"))
-        self.assertIn("zoom:1", css_rule('.card[data-phone-scale="1"] .phone'))
+        self.assertEqual(bc.scale_css("phone", 1), "  .phone,.below{zoom:1}\n")
+        self.assertEqual(bc.scale_css("phone", 1.2), "")
         self.assertNotRegex(STYLE, r"transform:\s*scale")
 
     def test_neutral_palette(self):

@@ -406,8 +406,8 @@ class TestConditionalCard(unittest.TestCase):
 
     def test_the_ribbon_is_distinct_and_takes_no_space(self):
         style = bc.CONDITIONAL_RIBBON_STYLE
-        for decl in ("position:absolute", "top:0", "pointer-events:none", "background:#fffbeb", "color:#92400e",
-                     "border:1px solid #fcd34d", "12px"):
+        for decl in ("position:absolute", "top:8px", "pointer-events:none", "background:#b45309", "color:#ffffff",
+                     "14px"):
             self.assertIn(decl, style)
         self.assertNotIn("margin", style)
         self.assertNotIn("right:48px", style)  # the draft ribbon's corner: both show on a conditional draft
@@ -422,7 +422,7 @@ class TestConditionalCard(unittest.TestCase):
     def test_the_draft_of_a_conditional_card(self):
         final = bc.final_html(TEMPLATE, conditional())[0]
         draft = bc.draft_html(final, "tr")
-        self.assertIn(">TASLAK · incelenmedi</div>", draft)
+        self.assertIn(">Önizleme · görsel kontrol yapılmadı</div>", draft)
         self.assertIn(">KOŞULLU · doğrulama gerekli</div>", draft)
         # The first status meta a reader finds says draft.
         first = draft.index('<meta name="abtest-status"')

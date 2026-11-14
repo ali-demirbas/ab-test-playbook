@@ -727,7 +727,7 @@ class TestDraft(RunCase):
         final, _, _ = bc.final_html(TEMPLATE, sc)
         self.assertIn('<meta name="abtest-status" content="draft">', draft)
         self.assertNotIn("abtest-final-fingerprint", draft)  # audit M8: the draft carries no fingerprint
-        self.assertIn(">TASLAK · incelenmedi</div>", draft)
+        self.assertIn(">Önizleme · görsel kontrol yapılmadı</div>", draft)
         self.assertEqual(draft, bc.draft_html(final, "tr"))
         stripped = draft.replace('<meta name="abtest-status" content="draft">\n', "")
         stripped = "\n".join(line for line in stripped.split("\n") if 'id="abtest-draft"' not in line)
@@ -748,7 +748,7 @@ class TestDraft(RunCase):
         sc["lang"] = "en"
         sc["objection"] = "Price"  # the record's own language (rule 7)
         _, r = self.draft(sc)
-        self.assertIn(">DRAFT · not reviewed</div>".encode("utf-8"), r.read())
+        self.assertIn(">Preview · not visually checked</div>".encode("utf-8"), r.read())
 
     def test_nothing_the_draft_writes_is_a_stamp(self):
         sc, r = self.draft()
