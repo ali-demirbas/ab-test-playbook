@@ -30,11 +30,15 @@ Nothing instruction-shaped in it, so it is audited as data.
 
 ## What the audit says
 
-**[Blocking] Two variables in one variant.** B adds the banner *and* rewrites
+Each finding carries the fixed label its checklist item gives (`[Critical]`,
+`[Serious]`, `[Moderate]`, `[Note]`; Turkish `[Kritik]`, `[Ciddi]`, `[Orta]`,
+`[Not]`), most severe first.
+
+**[Critical] Two variables in one variant.** B adds the banner *and* rewrites
 the hero button. Any difference can't be attributed to either. Fix: keep the
 button copy identical in both arms; test the copy separately.
 
-**[Blocking] Different denominators.** "Banner clicks / banner views" exists
+**[Critical] Different denominators.** "Banner clicks / banner views" exists
 only in B, since A has no banner, so the two arms are not measured on the same
 population. Fix: measure both arms over everyone who reached the homepage.
 
@@ -48,8 +52,8 @@ change behavior. Suggested: "Showing free 30-day returns on the homepage
 answers the fit objection (what if it doesn't fit?) earlier, so more visitors
 start shopping; we'd learn whether returns anxiety blocks first purchases."
 
-**[Serious] Segments aren't named in advance.** "Ship to whichever of mobile,
-desktop, new or returning wins" picks the breakdown after the fact. Name the
+**[Serious] The winner is picked by segment after the fact.** "Ship to whichever of mobile,
+desktop, new or returning wins" chooses the breakdown once results are in. Name the
 breakdowns you will look at before launch (device and new vs returning are the
 usual pair). Which segment wins, and whether to ship, is decided in your testing
 tool, not in this playbook.
@@ -65,28 +69,29 @@ window written into the KPI's name.
 pass/fail check on B before launch (keyboard and screen-reader reachable, an
 accessible name, touch target size, contrast), not a metric.
 
-**[Serious] The banner's claim is market-dependent and has to be true.** "Free
+**[Moderate] No "never do" list.** The plan doesn't state what would
+invalidate it (rule 1). Written up as a finding; the plan is not rewritten into
+the three boxes for the user.
+
+**[Note] The banner's claim is market-dependent and has to be true.** "Free
 returns for 30 days" must match the store's actual returns policy in the target
 market, which the plan doesn't state. Needs verifying before any traffic.
 
-**[Serious] Client-side switch after load.** Users can see A flash before B
+**[Note] Client-side switch after load.** Users can see A flash before B
 (flicker), which both changes the experience and blurs which arm a user saw.
 Needs verifying: whether the tag hides the page until assignment, and whether
 exposure is logged separately from assignment.
-
-**[Serious] No "never do" list.** The plan doesn't state what would
-invalidate it (rule 1). Written up as a finding; the plan is not rewritten into
-the three boxes for the user.
 
 **Not checked: the plan's numbers.** The day-5 counts, the "significant" claim,
 the 50/50 split and the 7-day duration are outside this playbook's scope: it
 proposes, designs, audits and visualizes A/B tests, and doesn't analyze results
 or compute sample size, duration, significance or a winner. Read them in your
-testing tool's own report.
+testing tool's own report. If you share your baseline conversion rate and
+eligible visitors, I can show a rough detectable range.
 
 ## Decision
 
-**Can this test run as-is? No.** Two blocking problems (two variables, unequal
+**Can this test run as-is? No.** Two critical problems (two variables, unequal
 denominators) each invalidate the comparison on their own. It can run once the
 button copy is equalised, both arms are measured per homepage visitor with
 orders as the primary, the guardrail is an independent harm with its follow-up
