@@ -116,6 +116,23 @@ git clone https://github.com/ali-demirbas/ab-test-playbook.git
 cd ab-test-playbook/.gemini/extensions/ab-test-playbook && gemini extensions link .
 ```
 
+**Codex.** The repo also carries a Codex plugin manifest (`.codex-plugin/plugin.json`) and marketplace (`.agents/plugins/marketplace.json`):
+
+```bash
+codex plugin marketplace add ali-demirbas/ab-test-playbook
+```
+
+Then open `/plugins` in a Codex session and install **ab-test-playbook**. Codex installs the five skills with the rules, archive and scripts next to them; the two review agents are Claude Code subagents, and this route is not tested as fully as the Claude Code plugin.
+
+**claude.ai (skill upload).** Each skill can be packaged as a ZIP that carries its own copy of the rules, the scenario archive, the templates and the scripts:
+
+```bash
+git clone https://github.com/ali-demirbas/ab-test-playbook.git && cd ab-test-playbook
+python3 scripts/build_skill_zips.py --out dist
+```
+
+Upload each `dist/<skill>.zip` in Customize > Skills > + > Create skill > Upload a skill, with code execution turned on under Settings > Capabilities. Upload all five, since `ab-test` routes to the other four. claude.ai limits a skill description to 200 characters, so the ZIPs use a shorter, reviewed description; the instructions are unchanged. There is no headless Chromium there, so cards come out as previews labelled UNVERIFIED, as described under Visual check.
+
 ### Visual check (needed for a final card)
 
 A card becomes final only after `scripts/render_check.mjs` has rendered it in Chromium and the mockup reviewer has looked at the image. The rest of the playbook stays Python standard library; this part needs Node.js 18 or newer. Install Playwright once, outside the repo:
@@ -203,6 +220,7 @@ scripts/         validate_scenarios.py - format check for the scenario archive
                  validate.sh - repo consistency: frontmatter, internal links, plugin-root refs, rule citations
                  check_frontmatter.py - parses every skill and agent front matter the way installers do
                  build_gemini.py · build_llms_full.py - generate the Gemini CLI extension and docs/llms-full.txt
+                 build_skill_zips.py - packages each skill as a self-contained ZIP for claude.ai
                  canary_report.py - derives distinctive search phrases for spotting unattributed copies of the archive
                  render_check.mjs - measures a card in headless Chromium: size, clipping, blank screen, ring overlaps,
                  text size, contrast (needed for a final card; needs Node and Playwright)

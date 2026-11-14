@@ -14,3 +14,6 @@ abtest-card-*.html
 # Playwright installed into the clone by mistake (README → Visual check installs it outside).
 node_modules/
 package-lock.json
+# claude.ai skill ZIPs from scripts/build_skill_zips.py (release attachments, never committed)
+dist/
+*.zip

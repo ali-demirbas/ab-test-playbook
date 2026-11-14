@@ -99,6 +99,23 @@ git clone https://github.com/ali-demirbas/ab-test-playbook.git
 cd ab-test-playbook/.gemini/extensions/ab-test-playbook && gemini extensions link .
 ```
 
+**Codex.** Repoda bir Codex plugin manifesti (`.codex-plugin/plugin.json`) ve marketplace dosyası (`.agents/plugins/marketplace.json`) da var:
+
+```bash
+codex plugin marketplace add ali-demirbas/ab-test-playbook
+```
+
+Ardından bir Codex oturumunda `/plugins` açıp **ab-test-playbook**’u kurun. Codex beş skill’i kurallar, arşiv ve script’lerle birlikte kurar; iki denetim agent’ı Claude Code alt agent’larıdır ve bu yol Claude Code plugin’i kadar kapsamlı test edilmedi.
+
+**claude.ai (skill yükleme).** Her skill, kuralların, senaryo arşivinin, şablonların ve script’lerin kendi kopyasını taşıyan bir ZIP olarak paketlenebilir:
+
+```bash
+git clone https://github.com/ali-demirbas/ab-test-playbook.git && cd ab-test-playbook
+python3 scripts/build_skill_zips.py --out dist
+```
+
+Her `dist/<skill>.zip` dosyasını Özelleştir (Customize) > Skill’ler (Skills) > + > Skill oluştur (Create skill) > Skill yükle (Upload a skill) yoluyla yükleyin; kod çalıştırma Ayarlar (Settings) > Yetenekler (Capabilities) altında açık olmalı. `ab-test` diğer dördüne yönlendirdiği için beşini de yükleyin. claude.ai bir skill açıklamasını 200 karakterle sınırlar, bu yüzden ZIP’ler daha kısa, gözden geçirilmiş bir açıklama kullanır; talimatlar aynıdır. Orada headless Chromium olmadığı için kartlar, Görsel kontrol bölümünde anlatıldığı gibi UNVERIFIED etiketli önizleme olarak çıkar.
+
 ### Görsel kontrol (nihai kart için gerekli)
 
 Bir kart ancak `scripts/render_check.mjs` onu Chromium’da çizdikten ve görsel incelemeci görüntüye baktıktan sonra nihai olur. Rehberin geri kalanı Python standart kütüphanesiyle çalışır; bu kısım Node.js 18 veya üstü ister. Playwright’ı bir kez, reponun dışına kurun:
@@ -186,6 +203,7 @@ scripts/         validate_scenarios.py: senaryo arşivi için format kontrolü
                  validate.sh: repo tutarlılığı; frontmatter, iç bağlantılar, plugin-root referansları, kural atıfları
                  check_frontmatter.py: her skill ve agent frontmatter’ını kurulum araçlarının okuduğu gibi ayrıştırır
                  build_gemini.py · build_llms_full.py: Gemini CLI eklentisini ve docs/llms-full.txt dosyasını üretir
+                 build_skill_zips.py: her skill’i claude.ai için kendi başına yeten bir ZIP olarak paketler
                  canary_report.py: arşivin atıfsız kopyalarını bulmak için ayırt edici arama ifadeleri türetir
                  render_check.mjs: kartı headless Chromium’da ölçer; boyut, kırpılma, boş ekran, halka çakışması,
                  yazı boyutu, kontrast (nihai kart için gerekli; Node ve Playwright ister)

@@ -12,7 +12,34 @@
       "name": "ab-test-playbook",
       "source": "./",
       "description": "A/B test engine: suggests scenarios by journey stage from a pattern archive, designs single-variable experiments, audits test plans and renders each scenario as an A/B comparison card. It proposes, designs, audits and visualizes tests; it does not analyze results.",
-      "version": "3.1.0"
+      "version": "3.1.0",
+      "category": "marketing",
+      "tags": [
+        "ab-testing",
+        "cro",
+        "experimentation",
+        "conversion-rate-optimization",
+        "test-design",
+        "test-plan-audit"
+      ],
+      "relevance": {
+        "topic": "A/B testing",
+        "signals": {
+          "cwd": [
+            "**/*ab-test*",
+            "**/*abtest*",
+            "**/*split-test*",
+            "**/*experiment*"
+          ],
+          "filesRead": [
+            "**/.abtest-history.md",
+            "**/.abtest-backlog.md",
+            "**/abtest-card-*.html",
+            "**/*ab-test*.md",
+            "**/*experiment*.md"
+          ]
+        }
+      }
     }
   ]
 }

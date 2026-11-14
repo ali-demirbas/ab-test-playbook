@@ -1,0 +1,20 @@
+{
+  "name": "ab-test-playbook",
+  "interface": {
+    "displayName": "A/B Test Playbook"
+  },
+  "plugins": [
+    {
+      "name": "ab-test-playbook",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Marketing"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Current skills",
+      "description": "Install these. ab-test routes to the other four.",
+      "skills": ["ab-test", "ab-test-suggest", "ab-test-design", "ab-test-audit", "ab-test-card"]
+    },
+    {
+      "title": "Old names",
+      "description": "Not in the repository any more: abtest-* were renamed to ab-test-*, and ab-test-results was removed in 3.0.0.",
+      "skills": ["abtest", "abtest-suggest", "abtest-design", "abtest-audit", "abtest-card", "abtest-results", "ab-test-results"]
+    }
+  ]
+}
