@@ -87,5 +87,17 @@ class TestSuggestContextQuestion(unittest.TestCase):
         self.assertEqual(len(re.findall(r"\((\d)\) ", rule)), 9)  # kinds 7, 8 and 9 keep their numbers
 
 
+class TestDesignRateQuestion(unittest.TestCase):
+    def test_rate_for_a_step_asks_where_inside_it(self):
+        step = [line for line in read("skills", "ab-test-design", "SKILL.md").splitlines()
+                if line.startswith("1. **Problem first")][0]
+        self.assertIn("**A rate given for a step**", step)
+        self.assertIn("multiple choice of this step's own parts", step)
+        self.assertIn("unless the message says", step)
+        self.assertIn("after the scenarios", step)  # delivered first: the question doesn't hold the turn
+        rule = [line for line in read("CLAUDE.md").splitlines() if line.startswith("19. ")][0]
+        self.assertIn("where inside a step the loss happens", rule)
+
+
 if __name__ == "__main__":
     unittest.main()
