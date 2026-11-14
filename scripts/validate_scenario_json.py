@@ -107,7 +107,8 @@ ERRORS (exit 1):
     confidence level ("%95 güven", "95% confidence"), a pre-registered plan, a
     decision or stopping rule, a winner ("kazanan B", "winner") or a ship
     condition ("ship B if ahead", "B öndeyse yayına alınır"); a negated rule
-    phrase ("kazanan seçmez", "no decision rule") states the boundary and passes
+    phrase ("kazanan seçmez", "no decision rule") states the boundary and passes,
+    and so does an outcome left to its owner ("B önde çıkarsa: karar sahibinde")
   * a lagging primary or metric guardrail (returns, cancellations, churn,
     repeat purchase, refunds) carries its window in the name (rule 3)
   * the file itself: a key written twice in one object, an integer longer
@@ -349,12 +350,17 @@ MSG = {
                           "(rules 9, 10)"),
     "exposure_missing": ("exposure: test edilen öğe koşullu görünüyor ({word!r}); kimin maruz sayıldığını, öğenin "
                          "gerçekten ekrana geldiği ve iki kolda aynı noktada kaydedilen tetikleyiciyle yazın; tüm "
-                         "sayfa ziyaretçisi etkiyi seyreltir",
+                         "sayfa ziyaretçisi etkiyi seyreltir. Örnek: \"exposure\": \"Kargo akordeonunun başlığı ekrana gelen "
+                         "kullanıcılar; tetikleyici iki kolda aynı noktada kaydedilir.\"",
                          "exposure: the tested element is shown conditionally ({word!r}); write who counts as "
                          "exposed, the trigger at which it is actually on screen, logged at the same point in both "
-                         "arms; counting every page visitor dilutes the effect"),
-    "exposure_arms": ("exposure: tetikleyicinin iki kolda aynı noktada kaydedildiği yazılmamış (“iki kolda”)",
-                      "exposure: it doesn't say the trigger is logged at the same point in both arms (\"both arms\")"),
+                         "arms; counting every page visitor dilutes the effect. Example: \"exposure\": \"Users whose screen shows "
+                         "the shipping accordion header; the trigger is logged at the same point in both arms.\""),
+    "exposure_arms": ("exposure: tetikleyicinin iki kolda aynı noktada kaydedildiği yazılmamış; metne “iki kolda”, "
+                      "“her iki kolda” ya da “A ve B” ile yazın, ör. “…; tetikleyici iki kolda aynı noktada kaydedilir.”",
+                      "exposure: it doesn't say the trigger is logged at the same point in both arms; write it with "
+                      "\"both arms\", \"each arm\" or \"A and B\", e.g. \"…; the trigger is logged at the same "
+                      "point in both arms.\""),
     "objection_lang": ("objection: {val!r} kaydın dilinde değil ({lang}); {want!r} yazın (kural 7)",
                        "objection: {val!r} isn't in the record's language ({lang}); write {want!r} (rule 7)"),
     "statistics": ("{path}: {word!r} istatistik dili; bu playbook örneklem, süre, anlamlılık, güç, kazanan ya da "
@@ -545,6 +551,44 @@ MSG = {
 }
 
 
+# A missing field added in a later version gets how to fill it, in the record's
+# language: a 3.1 record has no priority.inputs, and "missing required field"
+# alone doesn't say what goes there (methodology.md → Prioritization).
+INPUTS_HINT = (
+    "; 3.2.0'da eklendi, dört girdi yazın: evidence (user_data / behaviour_data / archive_or_research / "
+    "intuition), main_path (true/false), noticeable (true/false), effort (low / medium / high); tier bunların "
+    "puanının bandıdır (6-7 high, 3-5 medium, 0-2 low). Örnek: \"inputs\": {{\"evidence\": \"archive_or_research\", "
+    "\"main_path\": true, \"noticeable\": true, \"effort\": \"low\"}} (methodology.md → Prioritization)",
+    "; added in 3.2.0, write the four inputs: evidence (user_data / behaviour_data / archive_or_research / "
+    "intuition), main_path (true/false), noticeable (true/false), effort (low / medium / high); the tier is the "
+    "band of their score (6-7 high, 3-5 medium, 0-2 low). Example: \"inputs\": {{\"evidence\": "
+    "\"archive_or_research\", \"main_path\": true, \"noticeable\": true, \"effort\": \"low\"}} "
+    "(methodology.md → Prioritization)")
+INPUT_HINTS = {
+    "evidence": ("; şunlardan biri: user_data / behaviour_data / archive_or_research / intuition "
+                 "(evidence.level'e uygun)",
+                 "; one of user_data / behaviour_data / archive_or_research / intuition (matching evidence.level)"),
+    "main_path": ("; true ya da false: öğe ana dönüşüm yolunda ya da ilk ekranda mı",
+                  "; true or false: is the element on the main conversion path or above the fold"),
+    "noticeable": ("; true ya da false: kullanıcı B'yi öğeye geldikten birkaç saniye içinde fark eder mi",
+                   "; true or false: does a user notice B within a few seconds of reaching the element"),
+    "effort": ("; şunlardan biri: low (metin, stil, sıra) / medium (ön yüz işi) / high (arka uç, uygulama sürümü, "
+               "operasyon)",
+               "; one of low (copy, style, order) / medium (front-end work) / high (backend, an app release, an "
+               "operational change)"),
+}
+REQUIRED_HINTS = {("priority", "inputs"): INPUTS_HINT}
+REQUIRED_HINTS.update({("priority.inputs", key): hint for key, hint in INPUT_HINTS.items()})
+
+
+def required_hint(lang, path, key):
+    """The how-to-fill clause for a missing field, or ""."""
+    pair = REQUIRED_HINTS.get((path, key))
+    if not pair:
+        return ""
+    return (pair[1] if lang == "en" else pair[0]).format()
+
+
 def msg(_lang, _key, **kw):
     tr, en = MSG[_key]
     return (en if _lang == "en" else tr).format(**kw)
@@ -655,7 +699,7 @@ def walk(value, schema, path, errors, root, lang="tr"):
         props = schema.get("properties", {})
         for key in schema.get("required", []):
             if key not in value:
-                errors.append(msg(lang, "required", path=shown, key=key))
+                errors.append(msg(lang, "required", path=shown, key=key) + required_hint(lang, path, key))
         if schema.get("additionalProperties") is False:
             for key in value:
                 if key not in props:
@@ -992,6 +1036,14 @@ STATISTICS_RE = re.compile(
 STATISTICS_NEGATED_AFTER_RE = re.compile(
     r"\w*(?:m[ae]z|m[ae]y\w*|m[ae]m\w*|m[ıiuü]yor\w*|m[ae]di\w*|m[ae]k\s+(?:yok|değil))\b|\s+(?:etme\w*|edilme\w*|"
     r"yok|değil\w*)\b", re.IGNORECASE)
+# An outcome handed to its owner names options, not a rule (the stakeholder brief:
+# "B önde çıkarsa (test aracının sonucuna göre): karar sahibinde; olası adım …",
+# "If B leads (per the testing tool's result): the owner's call; …"). Only right after
+# the condition, an optional parenthesis and a colon or comma between them, so
+# "B önde çıkarsa yayına alınır; karar sahibinde" stays a ship condition.
+STATISTICS_DEFERRED_AFTER_RE = re.compile(
+    r"\s*(?:\([^()]{0,80}\))?\s*[:,]?\s*(?:karar(?:ı)?\s+sahibin(?:de|e|in\w*)\b|(?:the\s+)?owner['’]s\s+"
+    r"(?:call|decision)\b|(?:the\s+)?owner\s+decides\b)", re.IGNORECASE)
 # "tested with a screen reader" describes a check, not a result.
 OVERCLAIM_RE = re.compile(
     r"(?<!\w)(?:kanıtlanmış(?:tır)?|kanıtlandı|test\s+edilmiş(?:tir)?|test\s+edildi(?:ği)?|kazanmış(?:tır)?"
@@ -1911,8 +1963,39 @@ CONDITIONAL_TR = ("akordeon", "sekme", "modal", "pop-up", "popup", "açılır pe
 CONDITIONAL_EN = ("accordion", "modal", "pop-up", "popup", "overlay", "bottom sheet", "dialog", "collapsed",
                   "collapsible", "below the fold", "expandable", "tab", "tabbed", "drawer", "dropdown", "drop-down", "tooltip", "popover", "flyout")
 CONDITIONAL_RE = keywords(CONDITIONAL_TR, CONDITIONAL_EN)
-NOT_CONDITIONAL = ("tab bar", "sekme çubuğu")
+# Prefixes that start like a conditional word but aren't one: a bottom tab bar is
+# always on screen, a keyboard's Tab key or tab order is no hidden region, a
+# "modality" is no modal.
+NOT_CONDITIONAL = ("tab bar", "sekme çubuğu", "tab key", "tab order", "tab tuş", "tab sıra", "tab index", "modalit")
+# Keyboard Tab ("press Tab", "Tab'a basınca" is caught by the suffix rule).
+KEYBOARD_TAB_BEFORE_RE = re.compile(r"(?:press|pressing|presses|hit|hitting|bas(?:ın|arak|ınca)?)\s+$", re.IGNORECASE)
+# A dropdown is mostly a visible select field ("a country dropdown above the
+# fold"); it hides the tested element only when something sits in it or its
+# list is named ("in the dropdown", "a dropdown menu", "a dropdown holds the options").
+DROPDOWN_WORDS = ("dropdown", "dropdowns", "drop-down", "drop-downs")
+DROPDOWN_INSIDE_BEFORE_RE = re.compile(r"(?:in|inside|within|under|behind|into|from)\s+(?:\S+\s+){0,2}$",
+                                       re.IGNORECASE)
+DROPDOWN_INSIDE_AFTER_RE = re.compile(r"(?:['’]s)?(?:\s+\S+){0,2}?\s+(?:menus?|lists?|panels?|options|items|holds|"
+                                      r"contains|hides|shows|reveals|opens)\b", re.IGNORECASE)
 BOTH_ARMS_RE = re.compile(r"iki\s+kol|her\s+iki\s+kol|both\s+arms|each\s+arm|A\s+ve\s+B|A\s+and\s+B", re.IGNORECASE)
+
+
+def conditional_hit(text):
+    """The first word saying the tested element is shown conditionally, or None.
+    Whole words only (CONDITIONAL_RE): "table", "stable" and "tablet" aren't
+    "tab"; a keyboard Tab and a plain select-field dropdown aren't hidden regions."""
+    for m in CONDITIONAL_RE.finditer(text):
+        word = m.group(0)
+        if text[m.start():].casefold().startswith(NOT_CONDITIONAL):
+            continue
+        low = word.casefold()
+        if low in ("tab", "tabs") and KEYBOARD_TAB_BEFORE_RE.search(text[:m.start()]):
+            continue
+        if low in DROPDOWN_WORDS and not (DROPDOWN_INSIDE_BEFORE_RE.search(text[:m.start()])
+                                          or DROPDOWN_INSIDE_AFTER_RE.match(text, m.end())):
+            continue
+        return word
+    return None
 
 
 def check_exposure(scenario, errors, lang="tr"):
@@ -1920,7 +2003,7 @@ def check_exposure(scenario, errors, lang="tr"):
     identically in both arms."""
     parts = [scenario.get("problem"), scenario.get("variable")]
     parts += [v.get("description") for v in _list(scenario.get("variants")) if isinstance(v, dict)]
-    word = first_hit(CONDITIONAL_RE, " ".join(p for p in parts if isinstance(p, str)), NOT_CONDITIONAL)
+    word = conditional_hit(" ".join(p for p in parts if isinstance(p, str)))
     exposure = scenario.get("exposure")
     if word and not _filled(exposure):
         errors.append(msg(lang, "exposure_missing", word=word))
@@ -2007,10 +2090,14 @@ def check_statistics(scenario, errors, lang="tr"):
 def statistics_hit(text):
     """The first statistics phrase in `text`, or None. A decision-rule or
     winner phrase that is negated ("bu test kazanan seçmez", "no decision
-    rule", "kazanan ilan etmeyin") states the rule 5 boundary, not a rule."""
+    rule", "kazanan ilan etmeyin") states the rule 5 boundary, not a rule; one
+    whose outcome is left to its owner ("B önde çıkarsa …: karar sahibinde")
+    names options, not a rule."""
     for m in STATISTICS_RE.finditer(text):
         if m.group("rule"):
             if NEGATION_BEFORE_RE.search(text[:m.start()]):
+                continue
+            if STATISTICS_DEFERRED_AFTER_RE.match(text, m.end()):
                 continue
             if STATISTICS_NEGATED_AFTER_RE.match(text, m.end()) or re.search(
                     r"m[ae](?:z|y|m|di)\w*$|m[ıiuü]yor\w*$", m.group(0), re.IGNORECASE):

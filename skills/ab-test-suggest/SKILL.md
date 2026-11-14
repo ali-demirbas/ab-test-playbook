@@ -2,9 +2,9 @@
 name: ab-test-suggest
 description: Suggest A/B test scenarios for a page type or journey stage from a curated pattern archive, ranked by priority. Use when the user asks "what should I test", "what should I A/B test on my checkout / product page / pricing page", "give me A/B test ideas", "CRO ideas", "which tests should I run first", "test öner", "hangi testleri yapmalıyım", "anasayfam için test fikirleri", "ne test edeyim". Writes at most three strong scenarios from knowledge/scenarios/ as records, each delivered as an HTML card via ab-test-card. Use it when NO page of the user's own is shared (no screenshot, URL or described flow), or on a direct /ab-test-suggest; a shared page goes to ab-test-design, a plan to review to ab-test-audit.
 metadata:
-  version: 3.2.0
+  version: 3.2.1
   category: recommend
-  updated: 2026-11-10
+  updated: 2026-11-14
 ---
 
 # ab-test-suggest: Archive Test Suggestions
@@ -111,7 +111,7 @@ After the list, one line each, only when it applies, in this order:
 - the user asked for suggestions beyond their own ideas and no other candidate passed the bar: "Bu sayfa için başka güçlü aday bulamadım."
 - the history reminder, only when the user mentions past tests or a variable may already have been tested ("Geçmiş test sonuçlarını `.abtest-history.md` olarak tutarsan önerileri onlara göre süzerim.")
 
-Then the two `feasibility.py` lines as printed, only when the user gave the numbers; the stakeholder brief for scenario 1 (`${CLAUDE_PLUGIN_ROOT}/templates/stakeholder-brief.md`; a file only when asked); then at most one question, one sentence (rule 19), e.g. "2 güçlü aday daha var, devam edeyim mi?" No line about colors or the brand (rule 12), no review or elimination text.
+Then the two `feasibility.py` lines as printed, only when the user gave the numbers; the stakeholder brief for scenario 1 (`${CLAUDE_PLUGIN_ROOT}/templates/stakeholder-brief.md`: why now and the three outcome lines only; a file only when asked); then at most one question, one sentence (rule 19), e.g. "2 güçlü aday daha var, devam edeyim mi?" No line about colors or the brand (rule 12), no review or elimination text.
 
 ## Detail on request
 
