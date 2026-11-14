@@ -1,4 +1,4 @@
-# ab-test-playbook: 221 deney senaryolu A/B test ve CRO rehberi
+# A/B Test Builder: 221 deney senaryolu A/B test ve CRO rehberi
 
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
@@ -26,7 +26,7 @@ Yeni bir öneri bu kutuları tekrarlamaz. On parçalık kısa, yapılandırılm�
 
 ## Neden rastgele test etmek yerine bir rehber
 
-| Rehber olmadan | ab-test-playbook ile |
+| Rehber olmadan | A/B Test Builder ile |
 |---|---|
 | Test fikirleri hafızadan ya da o gün akla gelenden gelir | 221 senaryoluk arşivden önceliğe göre sıralanır (Yüksek / Orta / Düşük, tek cümlelik gerekçeyle) ya da belirtilmiş bir mekanizmayla üretilir; “daha dikkat çekici olur” kabul edilen bir gerekçe değildir |
 | Plan, B’de iki değişiklikle, birincil metrik olarak bir tıklamayla ya da hiçbir şey ölçmeyen bir guardrail’le yayına girer | `/ab-test audit` confound’ları, uyuşmayan paydaları, asıl sonucun yerine geçen vekil metriği, birincilin tümleyeni olan guardrail’i ve eksik uyum ya da erişilebilirlik kapılarını test trafik almadan önce işaretler |

@@ -1,7 +1,7 @@
 {
   "name": "ab-test-playbook",
   "interface": {
-    "displayName": "A/B Test Playbook"
+    "displayName": "A/B Test Builder"
   },
   "plugins": [
     {
