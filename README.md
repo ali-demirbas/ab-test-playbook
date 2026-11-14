@@ -77,6 +77,8 @@ In Claude Code:
 /plugin install ab-test-playbook@ab-test-playbook
 ```
 
+A/B Test Builder is the display name; the plugin installs as `ab-test-playbook`, and every command uses that name.
+
 Or clone and add as a local plugin:
 
 ```bash
@@ -150,6 +152,8 @@ With exit 3 the reviewer's verdict is `UNVERIFIED`, so no card becomes final: yo
 ```
 
 Updates arrive only when the plugin's version number changes. `/plugin` shows the installed version; if it is behind the [CHANGELOG](CHANGELOG.md), run both commands and restart Claude Code. A local clone updates with `git pull`.
+
+**`claude plugin validate` on an older Claude Code.** Releases that predate plugin relevance suggestions (2.1.117, for example) report `Unrecognized key: "relevance"` for `.claude-plugin/marketplace.json`. It is safe: that key only lets Claude Code suggest the plugin, adding, installing and updating work on those releases, and current releases validate it.
 
 ## Usage
 

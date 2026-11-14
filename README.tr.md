@@ -77,6 +77,8 @@ Claude Code içinde:
 /plugin install ab-test-playbook@ab-test-playbook
 ```
 
+A/B Test Builder görünen addır; plugin `ab-test-playbook` adıyla kurulur ve bütün komutlar bu adı kullanır.
+
 Ya da klonlayıp yerel bir plugin olarak ekleyin:
 
 ```bash
@@ -150,6 +152,8 @@ Son stderr satırı sonucu söyler:
 ```
 
 Güncellemeler yalnızca plugin’in sürüm numarası değişince gelir. `/plugin` kurulu sürümü gösterir; [CHANGELOG](CHANGELOG.md)’dakinden geride kalıyorsa iki komutu da çalıştırıp Claude Code’u yeniden başlatın. Yerel bir klon `git pull` ile güncellenir.
+
+**Eski bir Claude Code’da `claude plugin validate`.** Plugin önerisi (relevance) özelliğinden önceki sürümler (ör. 2.1.117), `.claude-plugin/marketplace.json` için `Unrecognized key: "relevance"` bildirir. Zararsızdır: bu anahtar yalnızca Claude Code’un plugin’i önermesini sağlar; ekleme, kurma ve güncelleme o sürümlerde de çalışır, güncel sürümler anahtarı doğrular.
 
 ## Kullanım
 

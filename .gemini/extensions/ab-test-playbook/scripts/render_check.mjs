@@ -994,7 +994,7 @@ async function main(argv) {
     return 2;
   }
   const unavailable = (why) => {
-    console.error(`render_check: ${why}\nrender_check: ${STATUS[3]}: nothing was measured; the card stays unverified (README → Visual check)`);
+    console.error(`render_check: ${why}\nrender_check: ${STATUS[3]}: nothing was measured; the card stays unverified`);
     return 3;
   };
   const playwright = loadPlaywright();

@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 3.2.1 - 2026-11-14
+
+### Planning
+- The stakeholder brief no longer pre-decides anything. Each outcome leaves the decision to its owner and lists the next-step options; no ship or revert command, no margin. The brief shrinks to why now and the three outcome lines, since the record already holds the rest.
+- The rule 5 gate passes an outcome handed to its owner ("B önde çıkarsa: karar sahibinde"); a ship condition is still refused.
+- Audit runs `scripts/feasibility.py` when the user gives a baseline rate and visitors, and still never checks a plan's statistical claims.
+- Feasibility runs before the problem question, and every verdict has its routing: "small changes not detectable" keeps out a B nobody would notice and cosmetic-only changes.
+- Exposure keywords match in a UI sense only: a keyboard Tab, a plain select-field dropdown and "modality" no longer require `exposure`.
+
+### Cards
+- Screen spec gains an `accordion` node: a header with its +/− state and the body only when open; `edit` {"open": true} opens it in B.
+- The card skill names the one-time visual check install itself, so the claude.ai ZIP no longer points to a README it doesn't carry.
+
+### Upgrading from 3.1
+- A 3.1 record fails with `priority: missing required field 'inputs'`. The message now lists the four inputs, their allowed values and an example; the exposure messages carry an example too. See `examples/README.md` → Upgrading a record from 3.1.
+
+### Naming and install
+- The display name is A/B Test Builder everywhere, including the docs page and `docs/llms.txt`; the plugin still installs as `ab-test-playbook`.
+- README notes that `claude plugin validate` on CLI releases older than plugin relevance suggestions reports the `relevance` key, and that this is safe.
+
 ## 3.2.0 - 2026-11-14
 
 ### Planning

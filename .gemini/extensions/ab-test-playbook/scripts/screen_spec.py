@@ -74,10 +74,19 @@ MAX_SOFT = 2
 MIN_PX_CHANGE = 8
 PX_PROPS = ("mb", "height", "radius")
 CONTAINER_EDITABLE = ("bg", "border", "radius", "height", "mb", "pad", "gap")
+# An accordion's own state and header are one element each: opening it by
+# default ("open": true) or rewording its header is a single change.
+ACCORDION_EDITABLE = CONTAINER_EDITABLE + ("open", "title")
+ACC_OPEN_SIGN, ACC_CLOSED_SIGN = "\u2212", "+"
+ACC_BOX_STYLE = "border-top:1px solid #e5e7eb;border-bottom:1px solid #e5e7eb"
+ACC_HEAD_STYLE = ("display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;"
+                  "font-weight:600;color:#111827")
+ACC_SIGN_STYLE = "font-size:20px;font-weight:400;line-height:1;color:#374151"
+ACC_BODY_STYLE = "padding-bottom:14px;color:#374151"
 
 KINDS = ("header", "h", "sub", "text", "field", "row", "cta", "link", "help", "info", "check", "radio",
          "chips", "tabs", "steps", "progress", "line", "item", "plan", "badge", "banner", "img", "divider",
-         "gap", "band", "fold", "stage", "sticky", "stack")
+         "gap", "band", "fold", "stage", "sticky", "stack", "accordion")
 COMMON_PROPS = ("id", "mb", "fg", "bg", "border", "radius", "height")
 EXTRA_PROPS = {
     "text": ("align",),
@@ -89,7 +98,7 @@ EXTRA_PROPS = {
     "badge": ("style",),
 }
 TOP_ONLY = ("fold", "stage", "sticky")
-CONTAINERS = ("row", "band", "stack", "sticky")
+CONTAINERS = ("row", "band", "stack", "sticky", "accordion")
 OPS = ("insert_after", "insert_before", "replace", "remove", "move_after", "move_before", "edit")
 # The difference type each op draws (card_problems checks the record's difference against the rings).
 OP_DIFFERENCE = {"insert_after": "add", "insert_before": "add", "replace": "change", "edit": "change",
@@ -342,6 +351,9 @@ def _parse(raw, path, top, lang, problems, ids):
     elif kind in ("band", "stack"):
         kids = [n for n in (_parse(v, "%s.%s.items[%d]" % (path, kind, i), False, lang, problems, ids)
                             for i, v in enumerate(value["items"])) if n is not None]
+    elif kind == "accordion":
+        kids = [n for n in (_parse(v, "%s.accordion.items[%d]" % (path, i), False, lang, problems, ids)
+                            for i, v in enumerate(value.get("items") or [])) if n is not None]
     elif kind == "sticky":
         one = _parse(value, "%s.sticky" % path, False, lang, problems, ids)
         kids = [one] if one is not None else []
@@ -435,6 +447,12 @@ def _check_value(kind, v, path, lang, problems):
         ok = isinstance(v, dict) and isinstance(v.get("items"), list) and len(v["items"]) >= 1 \
             and all(k in ("items", "gap") for k in v) and ("gap" not in v or (_is_int(v["gap"]) and v["gap"] >= 0))
         want = "{\"items\": [nodes], \"gap\": px}"
+    elif kind == "accordion":
+        ok = isinstance(v, dict) and _str(v.get("title")) and all(k in ("title", "open", "items") for k in v) \
+            and ("open" not in v or isinstance(v["open"], bool)) \
+            and ("items" not in v or (isinstance(v["items"], list) and len(v["items"]) >= 1)) \
+            and (not v.get("open") or bool(v.get("items")))
+        want = "{\"title\": .., \"open\": bool, \"items\": [nodes]} (an open accordion needs its items)"
     if not ok:
         problems.append(_m("value", lang, path=path, kind=kind, want=want, got=v))
     return ok
@@ -701,6 +719,19 @@ def _element(node, lang, extra, top):
             decls.append("background:%s" % v["bg"].lower())
         decls += d
         return "<div%s>\n%s\n</div>" % (_attrs([], decls + extra), _children(node.kids, GAP, lang, False))
+    if k == "accordion":
+        is_open = bool(v.get("open"))
+        # Drawn with inline style, the same in both arms (a template class would
+        # change every shipped card's bytes): a header row with its +/- state,
+        # and the body only when open.
+        head = ('<div role="button" aria-expanded="%s" style="%s"><span>%s</span>'
+                '<span style="%s">%s</span></div>'
+                % ("true" if is_open else "false", ACC_HEAD_STYLE, esc(v["title"]), ACC_SIGN_STYLE,
+                   ACC_OPEN_SIGN if is_open else ACC_CLOSED_SIGN))
+        body = ""
+        if is_open and node.kids:
+            body = '<div style="%s">\n%s\n</div>' % (ACC_BODY_STYLE, _children(node.kids, GAP, lang, False))
+        return "<div%s>%s%s</div>" % (_attrs([], [ACC_BOX_STYLE] + d + extra), head, body)
     if k == "stack":
         gap = v.get("gap", GAP)
         return "<div%s>\n%s\n</div>" % (_attrs([], ["display:flex", "flex-direction:column"] + d + extra),
@@ -805,7 +836,8 @@ def _apply_edit(node, settings, lang, problems):
     if kind in CONTAINERS:
         # A container's colour or content reaches every element inside it: one edit would
         # change several texts at once. Only the container's own box may be edited.
-        bad = [key for key in settings if key not in CONTAINER_EDITABLE]
+        editable = ACCORDION_EDITABLE if kind == "accordion" else CONTAINER_EDITABLE
+        bad = [key for key in settings if key not in editable]
         if bad:
             problems.append(_m("edit_container", lang, kind=kind, key=bad[0]))
             return None
@@ -1018,7 +1050,8 @@ def _empty_containers(roots, op, lang, problems):
         def visit(node, where):
             for i, kid in enumerate(node.kids):
                 here = "%s[%d]" % (where, i)
-                if kid.kind in CONTAINERS and kid.kind != "sticky" and not kid.kids:
+                drawn = kid.kind != "accordion" or bool(kid.value.get("open"))  # a closed one hides its body
+                if kid.kind in CONTAINERS and kid.kind != "sticky" and drawn and not kid.kids:
                     problems.append(_m("empty_container", lang, op=op, kind=kid.kind, where=here, arm=arm))
                 if kid.kids:
                     visit(kid, here)

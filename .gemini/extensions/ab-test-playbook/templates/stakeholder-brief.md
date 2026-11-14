@@ -1,29 +1,23 @@
 # Stakeholder brief
 
-The last block of a turn that delivered cards (CLAUDE.md rule 9), before the turn's one question: one brief, for scenario 1 only (another on request), in the record's language. Every value comes from the record, the page or the user; nothing is invented. No statistic, threshold or number the user didn't give (rules 5, 10): the outcomes name the testing tool's result in words. Asked for as a file: the same block as `abtest-brief-<slug>.md`, never unasked.
+The last block of a turn that delivered cards (CLAUDE.md rule 9), before the turn's one question: one brief, for scenario 1 only (another on request), in the record's language. It carries only what the record, the card and the tag line don't: why now, and the three possible outcomes with the next steps open to the owner. The title, problem, A and B, KPI and guardrail are already in the record and on the card, and aren't repeated here (rule 9).
 
-Fill: `Soru` / `Question` is the title; `Neden şimdi` / `Why now` the problem plus the evidence label and what it rests on; `Ne değişiyor` / `What changes` A and B in a few words; the KPI and guardrail with their denominators. A guardrail check is written "<criterion> (yayın öncesi, geçti/kaldı)" / "(before launch, pass/fail)". The margin is the user's figure when they gave one, else the fixed wording below.
+Nothing is pre-decided. Each outcome names the testing tool's result in words and leaves the decision with its owner, listing the options; no ship or revert command, no statistic, threshold, margin or number the user didn't give (rules 5, 10). Asked for as a file: the same block as `abtest-brief-<slug>.md`, never unasked.
+
+Fill: `Neden şimdi` / `Why now` is what the evidence rests on, in plain words (from `evidence.note`; the evidence label is already in the tag line). The three outcome lines are fixed wording.
 
 ```
 **Karar özeti: <n>. senaryo**
-Soru: <title>
-Neden şimdi: <problem>; kanıt: <kendi verin / arşiv örüntüsü / sektör gözlemi / sezgi>, <what it rests on>.
-Ne değişiyor: <A> yerine <B>; başka hiçbir şey değişmez.
-Birincil KPI: <primary_kpi.name> (<denominator>).
-Guardrail: <guardrail.name> <düşmemeli / artmamalı> (<denominator>); tolerans payını test aracında sahibi belirler.
-B kazanırsa (test aracının sonucuna göre): B yayına alınır.
-B kaybederse: A’ya dönülür, öğrenilen kendi test geçmişine yazılır.
-Belirgin fark yoksa: A kalır; aynı soruna daha cesur tek bir değişiklik denenir ya da konu kapatılır.
+Neden şimdi: <what the evidence rests on>.
+B önde çıkarsa (test aracının sonucuna göre): karar sahibinde; olası adım B’yi yaymak.
+B geride kalırsa: karar sahibinde; olası adım A’da kalıp öğrenileni test geçmişine yazmak.
+Belirgin fark yoksa: karar sahibinde; olası adımlar A’da kalmak, aynı soruna daha cesur tek bir değişiklik denemek ya da konuyu kapatmak.
 ```
 
 ```
 **Stakeholder brief: scenario <n>**
-Question: <title>
-Why now: <problem>; evidence: <your own data / archive pattern / industry observation / intuition>, <what it rests on>.
-What changes: <B> instead of <A>; nothing else changes.
-Primary KPI: <primary_kpi.name> (<denominator>).
-Guardrail: <guardrail.name> must not <drop / rise> (<denominator>); the tolerated margin is the owner's call, set in the testing tool.
-If B wins (per the testing tool's result): ship B.
-If B loses: revert to A and record the learning in your test history.
-If no clear difference: keep A; try a bolder single change on the same problem, or stop.
+Why now: <what the evidence rests on>.
+If B leads (per the testing tool's result): the owner's call; a possible step is rolling B out.
+If B trails: the owner's call; a possible step is keeping A and recording the learning in your test history.
+If no clear difference: the owner's call; possible steps are keeping A, trying a bolder single change on the same problem, or closing the topic.
 ```

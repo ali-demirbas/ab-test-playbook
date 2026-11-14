@@ -1,6 +1,6 @@
 {
   "name": "ab-test-playbook",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "A/B Test Builder, an A/B testing and CRO engine: suggests test scenarios by journey stage from a 221-scenario pattern archive, designs single-variable experiments for your page, audits test proposals and renders each scenario as a side-by-side HTML card. It proposes, designs, audits and visualizes; it does not analyze results.",
   "author": {
     "name": "Ali Demirbaş"

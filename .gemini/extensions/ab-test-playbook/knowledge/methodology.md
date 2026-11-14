@@ -175,7 +175,7 @@ The mechanism is the record's `mechanism` field: exactly one sentence, resting o
 
 A third-tier candidate with a strong mechanism is still suggested; this isn't a ban, it's a tie-break criterion under equal conditions. The ranking is a heuristic priority, not a measured outcome. The user's test memory (rule 16) overrides this ranking **only for the same component or the same mechanism**: a CTA-color test having won in the past doesn't mean every cosmetic candidate now jumps ahead of structural ones.
 
-These four filters don't replace prioritization, they run before it: the lens answers "is this idea worth suggesting at all," priority (Prioritization below) answers "which of the remaining ones goes first." The impact tiers above are what the impact part of a priority rationale weighs, and they break a tie between two candidates of the same score.
+These four filters don't replace prioritization, they run before it: the lens answers "is this idea worth suggesting at all," priority (Prioritization below) answers "which of the remaining ones goes first." The impact tiers above break a tie between two candidates of the same score; they aren't a score input.
 
 ## Variable isolation
 
@@ -214,7 +214,7 @@ These four filters don't replace prioritization, they run before it: the lens an
 
 *Evidence: established experimentation practice.* Every record carries its most important guardrail or functional protection (CLAUDE.md rule 3): a metric in "must not drop / must not rise" form (`must_not_decrease` / `must_not_increase`) with its denominator, or a pass/fail check with its criterion. It measures an independent harm (KPI rules: never the complement of the primary). The detail view may list more guardrails.
 
-- **A harm to watch, not a threshold.** A guardrail names what must not get worse; it carries no numeric tolerance margin, no "read after N days" and no decision rule. How a finished test is read belongs to the user's testing tool (rule 5); a tolerated margin is the owner's decision there, and the stakeholder brief quotes one only when the user gave it.
+- **A harm to watch, not a threshold.** A guardrail names what must not get worse; it carries no numeric tolerance margin, no "read after N days" and no decision rule. How a finished test is read belongs to the user's testing tool (rule 5); a tolerated margin is the owner's decision there, and the stakeholder brief carries none: it names next-step options per outcome and leaves the decision to the owner.
 - **A lagging guardrail names its window in the KPI name.** Returns, cancellations, churn or a payment stop happen after exposure, so the window is part of the definition ("İade Oranı (30 gün)"). A window that is legal or product-specific (a withdrawal period) is taken from the product terms, never guessed. When the only harm is lagging, a leading companion that shows the same harm sooner (payment error rate, support contacts in the first 7 days) is worth adding to the list.
 
 **Pass/fail guardrails.** Some guardrails aren't rates: accessibility (keyboard and screen-reader completion, touch target, contrast, motion), mandatory legal copy intact, security controls untouched. They are written as a check with a criterion instead of a "must not rise" metric and run as pre-start gates (Test hygiene → Pre-start gates). Accessibility's triggers, criteria and wording: Accessibility checks.
@@ -337,7 +337,14 @@ A page known to be low-traffic (the user said so, or it's obvious from the page'
 | over 15%, up to 30% | detectable for bold changes only |
 | over 30% | not testable at this traffic |
 
-Its two lines go into chat as printed, a range and a one-line caveat; never computed by hand, never a promise, never a sample size or duration to aim for. "Bold changes only" steers to the boldest single-variable B on the main path. "Not testable" means no test card: one line says so and offers the alternatives above (a bolder single change on the main path, a higher-traffic page with the same problem, qualitative research such as user tests or surveys). The single-variable rule stays (rule 4).
+Its two lines go into chat as printed, a range and a one-line caveat; never computed by hand, never a promise, never a sample size or duration to aim for. The script runs first in the turn, before the problem question (rule 13), so a page that can't be tested costs no extra turn. Routing by verdict:
+
+- **Small changes detectable:** no limit from traffic.
+- **Small changes not detectable:** a B a user wouldn't notice within seconds (`noticeable: false`) or a third-tier cosmetic change (the impact ranking: colour, corner radius, font, micro-spacing) doesn't pass the gate.
+- **Bold changes only:** only a bold B on the main path passes (`main_path` and `noticeable` true, a first- or second-tier change).
+- **Not testable:** no test card and no problem question: the two lines, then one line with the alternatives (a bolder single change on the main path, a higher-traffic page with the same problem, qualitative research such as user tests or surveys), then stop.
+
+An explicit ask that fails its band is still produced with its "Stronger alternative:" line giving the traffic reason (rule 9). The single-variable rule stays (rule 4).
 
 ## Scope: single-variable A/B, not multivariate (MVT)
 

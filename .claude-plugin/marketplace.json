@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "A/B Test Builder for Claude Code: 221 experiment scenarios (e-commerce, mobile app, SaaS, finance, insurance and pension), single-variable test design, plan audits and rendered HTML scenario cards.",
-    "version": "3.2.0"
+    "version": "3.2.1"
   },
   "plugins": [
     {
       "name": "ab-test-playbook",
       "source": "./",
       "description": "A/B Test Builder: suggests scenarios by journey stage from a pattern archive, designs single-variable experiments, audits test plans and renders each scenario as an A/B comparison card. It proposes, designs, audits and visualizes tests; it does not analyze results.",
-      "version": "3.2.0",
+      "version": "3.2.1",
       "category": "marketing",
       "tags": [
         "ab-testing",

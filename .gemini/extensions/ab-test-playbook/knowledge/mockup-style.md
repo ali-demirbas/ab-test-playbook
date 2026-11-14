@@ -69,6 +69,7 @@ The producer describes the screen, the builder draws it: `card.screen` is a node
 | `line` [label, value] (+ total) · `item` {name, meta, price} · `plan` {name, price, per, featured, badge, cta, cta_style, features} | `.r-line(.total)` · `.r-item` · `.r-plan` |
 | `badge` text (+ style warn/brand) · `banner` · `img` height · `divider` · `gap` px | `.r-badge` · `.r-banner` · `.ph.img` · `.r-divider` · spacer |
 | `band` {bg, items [], pad [top, bottom]} · `stack` {items [], gap} | full-bleed region · plain flex column |
+| `accordion` {title, open, items []} | a bordered section: the header row with its state sign (`+` closed, `−` open) and the body only when `open` (an open one needs `items`); `edit` {"set": {"open": true}} opens it in B as one change, the sign following the state, `title` rewords the header |
 | `fold` · `stage` · `sticky` node (only with a fold) | `.r-fold` · `.r-stage-break` · `.r-sticky` |
 
 Change ops (exactly one; every op carries the ring `label`, `label_pos` above/below): `insert_after` / `insert_before` {target, node} · `replace` {target, node, label_a optional: rings A too} · `remove` {target}: ring on A, B genuinely empty · `move_after` / `move_before` {target, to, label_a, label_b}: ring in both arms · `edit` {target, set {key: value}}: one property of one node. `card.soft` names up to two ids wrapped in `.hl-soft`. Unknown kind, missing target, duplicate id or two changes stop the build; nothing falls back silently.
