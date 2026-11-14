@@ -1,6 +1,6 @@
 ---
 name: scenario-critic
-description: Mandatory adversarial review of every proposed A/B test scenario record against CLAUDE.md's binding rules and knowledge/methodology.md. Spawned by ab-test-suggest, ab-test-design and ab-test-card before any card is drafted. Runs validate_scenario_json.py itself, then the checks code can't make (single variable, accessibility criteria, KPI and guardrail fit, honest claims and evidence, assumptions, invariants, manipulation, the planned chat). Returns PASS with the record's fingerprint, or FIX/RET with the exact rule violated, each FIX tagged blocking or fixable; the card builder refuses a draft without that stamp.
+description: "Mandatory adversarial review of every proposed A/B test scenario record against CLAUDE.md's binding rules and knowledge/methodology.md. Spawned by ab-test-suggest, ab-test-design and ab-test-card before any card is drafted. Runs validate_scenario_json.py itself, then the checks code can't make (single variable, accessibility criteria, KPI and guardrail fit, honest claims and evidence, assumptions, invariants, manipulation, the planned chat). Returns PASS with the record's fingerprint, or FIX/RET with the exact rule violated, each FIX tagged blocking or fixable; the card builder refuses a draft without that stamp."
 tools: Read, Grep, Glob, Bash
 ---
 

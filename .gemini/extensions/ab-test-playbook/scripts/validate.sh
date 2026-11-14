@@ -204,14 +204,6 @@ for page in ('docs/index.html',):
 link_re = re.compile(r'\]\(([^)\s]+?)(?:#[^)]*)?\)')
 SKIP_PREFIXES = ('http://', 'https://', 'mailto:', 'tel:', '#', '${')
 
-# A link to this repo's own GitHub Pages site is an internal link written the
-# long way; skipping it as "external" is how the published site ends up
-# shipping a 404 that nothing in the repo can see.
-with open('.claude-plugin/plugin.json', encoding='utf-8') as f:
-    repo_url = json.load(f)['repository']
-owner, repo = repo_url.rstrip('/').split('/')[-2:]
-SITE_PREFIX = f"https://{owner}.github.io/{repo}/"
-
 for dirpath, dirs, files in os.walk('.'):
     dirs[:] = [d for d in dirs
                if d not in ('.git', 'node_modules', 'output', '__pycache__')
@@ -226,12 +218,7 @@ for dirpath, dirs, files in os.walk('.'):
                     target = m.group(1)
                     if '<' in target or '{' in target:  # placeholder
                         continue
-                    if target.startswith(SITE_PREFIX):
-                        # Pages serves docs/ as the site root.
-                        rel = target[len(SITE_PREFIX):] or 'index.html'
-                        resolved = os.path.normpath(os.path.join('docs', rel))
-                        label = f"{target} (published site)"
-                    elif target.startswith(SKIP_PREFIXES):
+                    if target.startswith(SKIP_PREFIXES):
                         continue
                     else:
                         resolved = os.path.normpath(os.path.join(dirpath, target))

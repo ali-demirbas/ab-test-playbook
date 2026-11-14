@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 3.2.2 - 2026-11-14
+
+- Directory listing fields in `plugin.json`: display name "A/B Test Builder", documentation, support, privacy policy and terms links. Claude Code versions that predate these keys report them in `claude plugin validate` but still install the plugin.
+- `PRIVACY.md`: the plugin collects no data and makes no network calls.
+- Skill and agent descriptions are quoted in their front matter so no parser misreads a colon or a hash.
+- `validate.sh` drops the link check for the retired documentation site.
+
 ## 3.2.1 - 2026-11-14
 
 ### Planning

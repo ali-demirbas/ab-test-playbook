@@ -59,31 +59,31 @@ SHORT_DESCRIPTIONS = {
         "A/B test router for A/B test, split test, experiment or CRO requests: "
         "routes to suggest, design, audit or card. Results and sample-size "
         "questions get a short out-of-scope answer.",
-        "2e7c90369ebbef7d94128b4e72649b48b38d5d393314a35de4d9578251713bb5",
+        "ae9b16d93dba0c16d8b6eb843d881470a41e875b7fa764a46502b4981bd68129",
     ),
     "ab-test-suggest": (
         "Suggests up to three ranked A/B test ideas for a page type or journey "
         "stage from a 221-scenario archive, when no page of the user's own is "
         "shared. Each idea becomes an HTML card.",
-        "7426c7fc33c48cb4a6dff66cf2cb05f7338822f9c9f444035996deab0cb1da24",
+        "9c7bc87ac05e4ee98a6f43bedb804546054aac49087257ed6c7bbe84418a5074",
     ),
     "ab-test-design": (
         "Designs a new single-variable A/B test for the user's own page, "
         "screenshot, URL or flow description: hypothesis, one variable, primary "
         "KPI, guardrail, priority and an HTML card.",
-        "f7eda3bbc2c1e523ab92e6c6d8f83ba8482befa89d630d46ca74f54053f41024",
+        "c58fc3eb1bdc95eeeb990c81fb0e6c8c90ae57e3104d9ab60a9450ea9f5759ea",
     ),
     "ab-test-audit": (
         "Audits an A/B test plan, brief or variant pair before launch: "
         "confounds, multi-variable changes, proxy KPIs, missing guardrails, "
         "dark patterns and regulated-flow gates.",
-        "432ac9a519d351f00c6cb4ec33a079eea06d0a80bad40eda5787f5374603e94d",
+        "91da49e2c5599628414f4885cda87f8d0fbf88866ce5c338ad04a12173976ad2",
     ),
     "ab-test-card": (
         "Renders an A/B test scenario record as a 16:9 HTML card with Variant A "
         "and B mockups side by side and the changed element ringed. Runs after "
         "ab-test-suggest and ab-test-design.",
-        "6f6c9d336f924de0180df5cf0b6ac22f87602e6e50aa877f36ceac5f795a247f",
+        "35b0c69bb05648b359e86b0185fad7cf9074b20f11c4119ef6ff70716e0b0eb3",
     ),
 }
 

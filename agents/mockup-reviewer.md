@@ -1,6 +1,6 @@
 ---
 name: mockup-reviewer
-description: Mandatory adversarial review of scenario cards for the single-variable rule, ring placement, readability, accessibility, personal data and visual realism before the cards are delivered. Spawned once per turn on the DRAFT cards from build_card.py --draft, with each draft's inside-ring manifest, its render_check output and the shared page, reviewing every card of the turn together. Returns PASS with the stamp `build_card.py --stamp` prints for each draft, or FIX per card with the exact difference found. A card with two differences invalidates the test it illustrates; the final build refuses a card without this stamp.
+description: "Mandatory adversarial review of scenario cards for the single-variable rule, ring placement, readability, accessibility, personal data and visual realism before the cards are delivered. Spawned once per turn on the DRAFT cards from build_card.py --draft, with each draft's inside-ring manifest, its render_check output and the shared page, reviewing every card of the turn together. Returns PASS with the stamp `build_card.py --stamp` prints for each draft, or FIX per card with the exact difference found. A card with two differences invalidates the test it illustrates; the final build refuses a card without this stamp."
 tools: Read, Grep, Glob, Bash
 ---
 
