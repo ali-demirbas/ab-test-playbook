@@ -103,11 +103,27 @@ class TestOutput(unittest.TestCase):
 
 class TestInputs(unittest.TestCase):
     def test_rate_strictly_between_zero_and_one(self):
-        for bad in ("0", "1", "1.5", "-0.1", "abc", "nan", "100%", "0%"):
+        for bad in ("0", "1", "100", "150", "-0.1", "-3", "abc", "nan", "inf", "100%", "0%"):
             code, out, err = run("--rate", bad, "--visitors", "1000", "--lang", "en")
             self.assertEqual(code, 2, bad)
             self.assertEqual(out, "")
             self.assertIn("between 0 and 1", err)
+
+    def test_bare_number_above_one_is_a_percentage(self):
+        # "3" means 3%, "2.5" means 2.5%; the output line names the rate used
+        for bare, frac, shown in (("3", "0.03", "conversion 3%"), ("2.5", "0.025", "conversion 2.5%"),
+                                  ("2,5", "0.025", "conversion 2.5%"), ("62", "0.62", "conversion 62%")):
+            code, out, err = run("--rate", bare, "--visitors", "1200", "--lang", "en")
+            self.assertEqual(code, 0, err)
+            self.assertIn(shown, out, bare)
+            self.assertEqual(out, run("--rate", frac, "--visitors", "1200", "--lang", "en")[1], bare)
+        self.assertIn("dönüşüm %3,", run("--rate", "3", "--visitors", "1200")[1])
+
+    def test_fraction_keeps_meaning_a_fraction(self):
+        self.assertAlmostEqual(fz.parse_rate("0.5"), 0.5)
+        self.assertAlmostEqual(fz.parse_rate("0.99"), 0.99)
+        self.assertAlmostEqual(fz.parse_rate("0.5%"), 0.005)
+        self.assertAlmostEqual(fz.parse_rate("1.5"), 0.015)
 
     def test_turkish_percent_forms(self):
         for good in ("%2,5", "2,5%", "%2.5", "0,025"):
@@ -126,7 +142,7 @@ class TestInputs(unittest.TestCase):
         self.assertIn("weeks must be", run("--rate", "0.02", "--visitors", "100", "--weeks", "0", "--lang", "en")[2])
 
     def test_turkish_errors_start_with_a_capital(self):
-        _, _, err = run("--rate", "2", "--visitors", "100")
+        _, _, err = run("--rate", "1", "--visitors", "100")
         self.assertTrue(err.startswith("Hata:"), err)
 
     def test_cli_never_prints_a_traceback(self):
