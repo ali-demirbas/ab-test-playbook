@@ -269,10 +269,11 @@
       "type": "object",
       "required": [
         "tier",
-        "rationale"
+        "rationale",
+        "inputs"
       ],
       "additionalProperties": false,
-      "description": "Rule 9: a tier plus a one-sentence rationale that weighs, in words, impact (where in the funnel the change acts), confidence (the evidence label) and ease (copy, style or order vs. a new flow or backend work). No numeric scores. A strong candidate passes the mechanism gate and is medium or high. Stated in chat, not printed on the card.",
+      "description": "Rule 9: the tier is derived from the score of the four evidence-led inputs (methodology.md → Prioritization): evidence (user_data 3, behaviour_data 2, archive_or_research 1, intuition 0) + main_path 1 + noticeable 1 + effort (low 2, medium 1, high 0); 6-7 high, 3-5 medium, 0-2 low, medium at most with a critical assumption. The validator recomputes it and refuses a tier that doesn't match. A strong candidate passes the mechanism gate and is medium or high. Stated in chat, not printed on the card.",
       "properties": {
         "tier": {
           "type": "string",
@@ -285,7 +286,47 @@
         "rationale": {
           "type": "string",
           "minLength": 1,
-          "description": "One sentence in the scenario's language, naming impact, confidence and ease in words."
+          "description": "One sentence in the scenario's language, naming in words what the inputs rest on (the evidence, the funnel point, the effort)."
+        },
+        "inputs": {
+          "type": "object",
+          "required": [
+            "evidence",
+            "main_path",
+            "noticeable",
+            "effort"
+          ],
+          "additionalProperties": false,
+          "description": "The score inputs, each checked by scenario-critic against the page and the evidence.",
+          "properties": {
+            "evidence": {
+              "type": "string",
+              "enum": [
+                "user_data",
+                "behaviour_data",
+                "archive_or_research",
+                "intuition"
+              ],
+              "description": "user_data: the user's own analytics or test history; behaviour_data: the user's own behaviour evidence (recordings, heatmaps, user tests, surveys); both need evidence.level user_data. archive_or_research: evidence.level archive or sector. intuition: evidence.level intuition."
+            },
+            "main_path": {
+              "type": "boolean",
+              "description": "The tested element sits on the main conversion path or above the fold."
+            },
+            "noticeable": {
+              "type": "boolean",
+              "description": "A user would notice B within a few seconds of reaching the element."
+            },
+            "effort": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ],
+              "description": "low: copy, style or order; medium: front-end work; high: backend work, a native app release or an operational change."
+            }
+          }
         }
       }
     },
@@ -367,6 +408,11 @@
       "type": "string",
       "minLength": 1,
       "description": "Why a number (a price, amount, percentage, count or rating) legitimately differs between the A and B mockups, e.g. in a price test. Without it build_card.py refuses any numeric difference."
+    },
+    "exposure": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Who counts as exposed: the trigger at which the tested element is actually on screen, logged identically in both arms (methodology.md → KPI denominator → Exposure point). Required when the element sits in an accordion, modal, tab or below the fold (checked by the validator); the setup notes repeat it."
     },
     "review": {
       "type": "object",

@@ -27,11 +27,11 @@
 **Girdi B (gönüllü verilen trafik):** "Sepet sayfam ayda ~40 bin ziyaretçi alıyor, dönüşüm %3. Test öner."
 
 **Beklenen davranış:**
-1. Senaryolar Girdi A’daki gibi gelir. Verilen trafik ve dönüşüm oranı örneklem, süre ya da fizibilite hesabına çevrilmez; böyle bir not yazılmaz (kural 5).
+1. Senaryolar Girdi A’daki gibi gelir. Kullanıcı rakamları kendisi verdiği için `feasibility.py --rate 3% --visitors 40000 --per month` bir kez çalıştırılır ve iki satırı olduğu gibi yazılır (kaba aralık ve tek satırlık uyarı); el ile tahmin, örneklem ya da süre yazılmaz (kural 5).
 2. Kullanıcı ayrıca süre sorarsa tek satırlık kapsam dışı cümlesi verilir: playbook örneklem, süre, anlamlılık veya kazanan hesaplamaz, bunun için test aracının kendi raporu kullanılır.
 
 **Düşme koşulları:**
-- Verilen sayılardan örneklem, süre ya da “kaç haftada sonuç alırsın” tahmini üretilmesi.
+- Verilen sayılardan örneklem, süre ya da “kaç haftada sonuç alırsın” tahmini üretilmesi; fizibilitenin betik çalıştırılmadan el ile hesaplanması ya da sonuç sözü gibi yazılması.
 - Trafik bilgisinin senaryoların önüne “önce bunu çözelim” diye konması.
 
 **Girdi C (pazara bağlı aday, pazar bilinmiyor):** "Ödeme sayfamda taksit seçeneğini öne çıkaran testler öner." (Pazar belirtilmemiş, sayfa yok.)

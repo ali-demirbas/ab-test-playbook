@@ -45,7 +45,9 @@ One JSON file per scenario, written once by the producing skill; `card` may be w
   "guardrail": {"name": "<independent harm>", "kind": "metric", "denominator": "<same in both arms>", "direction": "must_not_increase|must_not_decrease"},
   "source": "archive|adapted|generated", "adapted_from": "<exact archive title>", "source_note": "<generated only>",
   "evidence": {"level": "user_data|archive|sector|intuition", "note": "<what it rests on; why it's low-confidence when it is>"},
-  "priority": {"tier": "high|medium|low", "rationale": "<one sentence: impact, confidence, ease>"},
+  "priority": {"tier": "<the band of the inputs' score>", "rationale": "<one sentence: what the inputs rest on>",
+               "inputs": {"evidence": "user_data|behaviour_data|archive_or_research|intuition", "main_path": true, "noticeable": true, "effort": "low|medium|high"}},
+  "exposure": "<the trigger, logged at the same point in both arms; required for an accordion, modal, tab or below-the-fold element>",
   "objection": "<Güven|Fiyat|Uygunluk|Zamanlama|Çaba|Netlik, or Trust|Price|Fit|Timing|Effort|Clarity>",
   "warnings": [{"type": "regulation|accessibility|market|feasibility|privacy", "text": "<one sentence>"}],
   "invariants": ["<a function that works identically in both arms>"],
@@ -59,7 +61,7 @@ One JSON file per scenario, written once by the producing skill; `card` may be w
 - **Invariants (rule 4).** When B touches a link, field, coupon, payment, search, filter or form: 1 to 5 checkable sentences (the code applies in the same step, totals are calculated the same way, an invalid code gets the same message); otherwise omit. `numeric_change` only when a number differs on purpose (a price test, or an amount computed from the page, such as the sum left to free shipping), saying why.
 - **Warnings.** Only when one applies, at most three, one sentence each: `accessibility` with rule 3's criteria for the element ("Before launch B must pass a keyboard and screen-reader review: the new link is keyboard-reachable, announced by its visible text, moves focus to the field it opens, has a 44×44 pt target and 4.5:1 contrast."); `regulation` for rule 11 (b) ("Compliance must approve B's exact copy before the test takes traffic."); `market`, `feasibility`, `privacy` naming the dependency.
 - **Assumptions (rule 10).** At most three. `critical` (with `question`) when feasibility, legality or the single variable rests on a fact the user didn't give: write it instead of inventing the fact or dropping a strong idea; the tier is then medium at most and the rationale says what it waits for. `visual` (no question) for representative names, photos and decoration; usually omitted.
-- **Evidence and priority (rules 9, 10).** `evidence.note` says what the record rests on and, for `intuition` or `sector`, why it's low-confidence; a source the user named goes in the note. No refused claim anywhere in the record. The rationale weighs impact, confidence and ease in words; ease is low for backend work, a native app release or an operational change.
+- **Evidence and priority (rules 9, 10).** `evidence.note` says what the record rests on and, for `intuition` or `sector`, why it's low-confidence; a source the user named goes in the note. No refused claim anywhere in the record. The tier is the band of the inputs' score (6-7 high, 3-5 medium, 0-2 low; `methodology.md` → Prioritization), the validator recomputes it; `effort` is high for backend work, a native app release or an operational change.
 
 ## The card object
 

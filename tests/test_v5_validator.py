@@ -444,7 +444,8 @@ class TestAssumptions(unittest.TestCase):
         self.assertTrue(has(e, "priority.tier:") and has(e, "medium at most"), e)
         self.assertTrue(has(errs(sc, "tr"), "priority.tier:"))
         sc["assumptions"] = [dict(VISUAL)]
-        self.assertEqual(errs(sc), [])
+        # Without the critical item the tier is the score's band: an archive pattern scores 5/7, medium.
+        self.assertTrue(has(errs(sc), "which is 'medium'"), errs(sc))
         sc["priority"]["tier"] = "medium"
         sc["assumptions"] = [dict(CRITICAL)]
         self.assertEqual(errs(sc), [])

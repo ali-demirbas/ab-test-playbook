@@ -57,7 +57,8 @@ def coupon():
         "source": "adapted",
         "adapted_from": ARCHIVE_TITLE,
         "evidence": {"level": "archive", "note": "Arşivde derlenmiş bir test fikrine dayanıyor, bir test sonucu değil."},
-        "priority": {"tier": "medium", "rationale": "Sepetten çıkışı hedefliyor, kanıt arşiv örüntüsü ve iş küçük."},
+        "priority": {"tier": "medium", "rationale": "Sepetten çıkışı hedefliyor, kanıt arşiv örüntüsü ve iş küçük.",
+                     "inputs": {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"}},
         "lang": "tr",
     }
 
@@ -79,9 +80,26 @@ def plain(**changes):
         "source": "generated",
         "source_note": "Arşivde bu sayfanın başlık uzunluğuna uyan bir senaryo yok.",
         "evidence": {"level": "intuition"},
-        "priority": {"tier": "medium", "rationale": "Ürün sayfasında karar anını hedefliyor, kanıt sezgi, iş yalnızca metin."},
+        "priority": {"tier": "medium", "rationale": "Ürün sayfasında karar anını hedefliyor, kanıt sezgi, iş yalnızca metin.",
+                     "inputs": {"evidence": "intuition", "main_path": True, "noticeable": True, "effort": "low"}},
     }
     sc.update(changes)
+    return sc
+
+
+# Score inputs that land in the medium band for each evidence level (methodology.md → Prioritization).
+MEDIUM_INPUTS = {
+    "user_data": {"evidence": "user_data", "main_path": False, "noticeable": False, "effort": "low"},
+    "sector": {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"},
+    "archive": {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"},
+    "intuition": {"evidence": "intuition", "main_path": True, "noticeable": True, "effort": "low"},
+}
+
+
+def with_evidence(sc, evidence):
+    """The record with another evidence level and the medium-band inputs that go with it."""
+    sc["evidence"] = evidence
+    sc["priority"]["inputs"] = dict(MEDIUM_INPUTS[evidence["level"]])
     return sc
 
 
@@ -305,6 +323,7 @@ class TestAccessibility(unittest.TestCase):
     def test_modal_needs_focus_and_closing(self):
         sc = with_b(plain(), "Sepete ekleyince açılır pencere çıkar")
         sc["invariants"] = ["Ürün iki kolda da sepete aynı adımla eklenir."]
+        sc["exposure"] = "Sepete ekle dokunuşunda, iki kolda aynı noktada kaydedilir."
         sc["warnings"] = [{"type": "accessibility", "text": A11Y_TEXT}]
         e = errs(sc)
         self.assertTrue(has(e, "does not state: taking focus when it opens, a visible close control, closing with Esc"), e)
@@ -621,8 +640,12 @@ class TestArchiveSource(unittest.TestCase):
         self.assertTrue(has(errs(sc, "tr"), "kanıt 'intuition' iken öncelik 'high' olamaz"), errs(sc, "tr"))
         sc["priority"]["tier"] = "medium"
         self.assertEqual(errs(sc), [])
+        # An archive pattern alone never scores high (1+1+1+2 = 5/7); the user's own data can.
         sc = coupon()
         sc["priority"]["tier"] = "high"
+        self.assertTrue(has(errs(sc), "doesn't match the inputs' score: 1+1+1+2 = 5/7"), errs(sc))
+        sc["evidence"] = {"level": "user_data", "note": "GA4 raporuna göre sepette kupon kutusunda çıkış yoğun."}
+        sc["priority"]["inputs"]["evidence"] = "user_data"
         self.assertEqual(errs(sc), [])
 
 
@@ -661,8 +684,8 @@ class TestClaims(unittest.TestCase):
                             (phrase, errs(sc)))
 
     def test_users_own_data_may_report_its_result(self):
-        sc = coupon()
-        sc["evidence"] = {"level": "user_data", "note": "Geçen ay bu sayfada test edildi ve kazandı, %12 artış görüldü."}
+        sc = with_evidence(coupon(), {"level": "user_data",
+                                      "note": "Geçen ay bu sayfada test edildi ve kazandı, %12 artış görüldü."})
         self.assertEqual(errs(sc), [])
 
     def test_a_guarantee_is_never_written(self):
@@ -741,11 +764,12 @@ class TestEvidenceNote(unittest.TestCase):
     def test_user_data_and_sector_say_what_they_rest_on(self):
         for level in ("user_data", "sector"):
             for evidence in ({"level": level}, {"level": level, "note": "  "}):
-                e = errs(plain(evidence=evidence))
+                e = errs(with_evidence(plain(), evidence))
                 self.assertIn("evidence.note: '%s' evidence says what it rests on (which data, which industry "
                               "observation) (rule 10)" % level, e)
-            self.assertTrue(has(errs(plain(evidence={"level": level}), "tr"), "neye dayandığı yazılır"))
-            self.assertEqual(errs(plain(evidence={"level": level, "note": "Benzer ürün sayfalarında sık görülür."})), [])
+            self.assertTrue(has(errs(with_evidence(plain(), {"level": level}), "tr"), "neye dayandığı yazılır"))
+            self.assertEqual(errs(with_evidence(plain(), {"level": level,
+                                                          "note": "Benzer ürün sayfalarında sık görülür."})), [])
 
     def test_archive_and_intuition_need_no_note(self):
         self.assertEqual(errs(plain(evidence={"level": "intuition"})), [])

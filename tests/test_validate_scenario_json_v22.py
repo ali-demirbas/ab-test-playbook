@@ -52,7 +52,8 @@ def base():
         "source": "generated",
         "source_note": "Arşivde bu sayfanın kupon bağlantısına uyan bir senaryo yok.",
         "evidence": {"level": "sector", "note": "Sepet sayfalarında sık görülen bir kaçak; bu sayfada ölçülmedi."},
-        "priority": {"tier": "medium", "rationale": "Ödeme öncesi kaçağı hedefliyor, kanıt sektör gözlemi, iş küçük."},
+        "priority": {"tier": "medium", "rationale": "Ödeme öncesi kaçağı hedefliyor, kanıt sektör gözlemi, iş küçük.",
+                     "inputs": {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"}},
     }
 
 

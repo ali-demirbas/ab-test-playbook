@@ -29,6 +29,14 @@ ERRORS (exit 1):
     record's variable is a translation code cannot compare) and both keep its
     Fark as their difference (değiştir/ekle/taşı/kaldır = change/add/move/
     remove); an archive or adapted record is never labelled 'intuition'
+  * priority (rule 9): the tier is the band of the score of priority.inputs
+    (evidence user_data 3 / behaviour_data 2 / archive_or_research 1 /
+    intuition 0, + main_path 1, + noticeable 1, + effort low 2 / medium 1 /
+    high 0; 6-7 high, 3-5 medium, 0-2 low, medium at most with a critical
+    assumption), and the evidence input matches evidence.level
+  * exposure: a tested element in an accordion, modal, tab or below the
+    first view (problem, variable or a variant says so) carries `exposure`,
+    and it says the trigger is logged at the same point in both arms
   * evidence (rule 10): user_data and sector say what they rest on in
     evidence.note; intuition is never priority high; title, problem,
     mechanism, the priority rationale and the evidence note never write
@@ -331,6 +339,22 @@ MSG = {
                         "kritik bir olguya dayanan öneri en fazla 'medium' olur (kural 9, 10)",
                         "priority.tier: 'high' with a critical assumption ({text!r}); a proposal resting on an "
                         "unverified critical fact is medium at most (rules 9, 10)"),
+    "priority_band": ("priority.tier: {tier!r} girdilerin puanıyla uyuşmuyor: {calc} = {score}/7, bu da {band!r} "
+                      "demek (6-7 high, 3-5 medium, 0-2 low; kritik varsayımla en fazla medium; kural 9)",
+                      "priority.tier: {tier!r} doesn't match the inputs' score: {calc} = {score}/7, which is {band!r} "
+                      "(6-7 high, 3-5 medium, 0-2 low; medium at most with a critical assumption; rule 9)"),
+    "priority_evidence": ("priority.inputs.evidence: {inp!r}, evidence.level {level!r} ile uyuşmuyor; {want} yazın "
+                          "(kural 9, 10)",
+                          "priority.inputs.evidence: {inp!r} doesn't match evidence.level {level!r}; write {want} "
+                          "(rules 9, 10)"),
+    "exposure_missing": ("exposure: test edilen öğe koşullu görünüyor ({word!r}); kimin maruz sayıldığını, öğenin "
+                         "gerçekten ekrana geldiği ve iki kolda aynı noktada kaydedilen tetikleyiciyle yazın; tüm "
+                         "sayfa ziyaretçisi etkiyi seyreltir",
+                         "exposure: the tested element is shown conditionally ({word!r}); write who counts as "
+                         "exposed, the trigger at which it is actually on screen, logged at the same point in both "
+                         "arms; counting every page visitor dilutes the effect"),
+    "exposure_arms": ("exposure: tetikleyicinin iki kolda aynı noktada kaydedildiği yazılmamış (“iki kolda”)",
+                      "exposure: it doesn't say the trigger is logged at the same point in both arms (\"both arms\")"),
     "objection_lang": ("objection: {val!r} kaydın dilinde değil ({lang}); {want!r} yazın (kural 7)",
                        "objection: {val!r} isn't in the record's language ({lang}); write {want!r} (rule 7)"),
     "statistics": ("{path}: {word!r} istatistik dili; bu playbook örneklem, süre, anlamlılık, güç, kazanan ya da "
@@ -1820,6 +1844,90 @@ def check_evidence(scenario, errors, lang="tr"):
     check_claims(scenario, errors, lang)
 
 
+# ---- priority score (rule 9; contract: methodology.md → Prioritization)
+#
+# A light evidence-led score: evidence weighs most, then where the element sits,
+# whether B is noticeable and the effort. The tier is derived from it, never
+# chosen; the critic checks each input against the page and the evidence.
+SCORE_EVIDENCE = {"user_data": 3, "behaviour_data": 2, "archive_or_research": 1, "intuition": 0}
+SCORE_EFFORT = {"low": 2, "medium": 1, "high": 0}
+SCORE_MAX = 7
+# (lowest score, tier), highest first.
+SCORE_BANDS = ((6, "high"), (3, "medium"), (0, "low"))
+# evidence.level → the score inputs it allows.
+EVIDENCE_INPUTS = {"user_data": ("user_data", "behaviour_data"), "archive": ("archive_or_research",),
+                   "sector": ("archive_or_research",), "intuition": ("intuition",)}
+
+
+def priority_score(inputs):
+    """(score, the sum written out) for valid inputs, or None when an input is
+    missing or not one of the schema's values (the schema reports that)."""
+    if not isinstance(inputs, dict):
+        return None
+    ev, eff = inputs.get("evidence"), inputs.get("effort")
+    main, notice = inputs.get("main_path"), inputs.get("noticeable")
+    if ev not in SCORE_EVIDENCE or eff not in SCORE_EFFORT or not isinstance(main, bool) \
+            or not isinstance(notice, bool):
+        return None
+    parts = (SCORE_EVIDENCE[ev], int(main), int(notice), SCORE_EFFORT[eff])
+    return sum(parts), "+".join(str(n) for n in parts)
+
+
+def score_tier(score, capped=False):
+    """The tier a score falls in; a critical assumption caps it at medium."""
+    tier = next(name for low, name in SCORE_BANDS if score >= low)
+    return "medium" if capped and tier == "high" else tier
+
+
+def check_priority(scenario, errors, lang="tr"):
+    """Rule 9: the tier is the band of the inputs' score, and the evidence
+    input agrees with evidence.level (intuition can never be high)."""
+    priority = _obj(scenario.get("priority"))
+    inputs = _obj(priority.get("inputs"))
+    level = _obj(scenario.get("evidence")).get("level")
+    allowed = EVIDENCE_INPUTS.get(level)
+    if allowed and inputs.get("evidence") in SCORE_EVIDENCE and inputs["evidence"] not in allowed:
+        errors.append(msg(lang, "priority_evidence", inp=inputs["evidence"], level=level,
+                          want=" / ".join(repr(a) for a in allowed)))
+    scored = priority_score(inputs)
+    tier = priority.get("tier")
+    if scored is None or tier not in ("high", "medium", "low"):
+        return
+    capped = any(isinstance(a, dict) and a.get("type") == "critical" for a in _list(scenario.get("assumptions")))
+    band = score_tier(scored[0], capped)
+    if tier != band and not (capped and tier == "high"):  # high with a critical item: assumption_high says it
+        errors.append(msg(lang, "priority_band", tier=tier, calc=scored[1], score=scored[0], band=band))
+
+
+# ---- exposure point (methodology.md → KPI denominator → Exposure point)
+#
+# A tested element shown only after the user opens something, or below the
+# first view, needs its trigger: counting every page visitor adds users who
+# could never react. Read off where the element sits in A (problem, variable,
+# A's description) and in B; a heuristic like the keyword lists above.
+CONDITIONAL_TR = ("akordeon", "sekme", "modal", "pop-up", "popup", "açılır pencere", "alt sayfa", "diyalog",
+                  "katlanır", "katlı", "ilk ekranın altı", "ekranın altında", "sayfanın altında", "kaydırınca",
+                  "kaydırmadan görünmeyen")
+CONDITIONAL_EN = ("accordion", "modal", "pop-up", "popup", "overlay", "bottom sheet", "dialog", "collapsed",
+                  "collapsible", "below the fold", "expandable", "tab", "tabbed")
+CONDITIONAL_RE = keywords(CONDITIONAL_TR, CONDITIONAL_EN)
+NOT_CONDITIONAL = ("tab bar", "sekme çubuğu")
+BOTH_ARMS_RE = re.compile(r"iki\s+kol|her\s+iki\s+kol|both\s+arms|each\s+arm|A\s+ve\s+B|A\s+and\s+B", re.IGNORECASE)
+
+
+def check_exposure(scenario, errors, lang="tr"):
+    """A conditionally shown element carries its exposure trigger, logged
+    identically in both arms."""
+    parts = [scenario.get("problem"), scenario.get("variable")]
+    parts += [v.get("description") for v in _list(scenario.get("variants")) if isinstance(v, dict)]
+    word = first_hit(CONDITIONAL_RE, " ".join(p for p in parts if isinstance(p, str)), NOT_CONDITIONAL)
+    exposure = scenario.get("exposure")
+    if word and not _filled(exposure):
+        errors.append(msg(lang, "exposure_missing", word=word))
+    elif _filled(exposure) and isinstance(exposure, str) and not BOTH_ARMS_RE.search(exposure):
+        errors.append(msg(lang, "exposure_arms"))
+
+
 # The six objection lenses (methodology.md → The idea-generation lens), English → Turkish.
 OBJECTIONS = {"Trust": "Güven", "Price": "Fiyat", "Fit": "Uygunluk", "Timing": "Zamanlama", "Effort": "Çaba",
               "Clarity": "Netlik"}
@@ -1878,7 +1986,7 @@ def check_statistics(scenario, errors, lang="tr"):
     """Rule 5: no field of the record itself states a statistic or a numeric score."""
     primary, guardrail = _obj(scenario.get("primary_kpi")), _obj(scenario.get("guardrail"))
     pairs = [(key, scenario.get(key)) for key in ("title", "problem", "mechanism", "variable", "source_note",
-                                                  "numeric_change", "stage", "market", "objection")]
+                                                  "numeric_change", "exposure", "stage", "market", "objection")]
     pairs += [("variants[%d].description" % i, v.get("description"))
               for i, v in enumerate(_list(scenario.get("variants"))) if isinstance(v, dict)]
     pairs += [("priority.rationale", _obj(scenario.get("priority")).get("rationale")),
@@ -2116,6 +2224,8 @@ def validate(scenario, schema, lang="tr"):
         check_variants(scenario, errors, lang)
         check_source(scenario, errors, lang)
         check_evidence(scenario, errors, lang)
+        check_priority(scenario, errors, lang)
+        check_exposure(scenario, errors, lang)
         check_statistics(scenario, errors, lang)
         check_objection(scenario, errors, lang)
         check_assumptions(scenario, errors, lang)
