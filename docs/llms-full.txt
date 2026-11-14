@@ -473,7 +473,7 @@ This playbook proposes, designs, audits and visualizes A/B tests. It doesn't ana
 
 ## What should I A/B test first?
 
-Rank candidates by evidence, not gut feeling. Each candidate's tier (high, medium or low) is the band of a small score, a light version of the PXL method: the evidence behind it (your own analytics or test history 3, your own behaviour data such as recordings, heatmaps or surveys 2, an archive pattern or sourced research 1, intuition 0), whether the element is on the main path or above the fold (1), whether a user notices the change (1), and the effort (low 2, medium 1, high 0). 6 to 7 is high, 3 to 5 medium, 0 to 2 low, and a critical assumption caps it at medium, so only your own data can reach high. The inputs are stored in the record and the validator recomputes the band. Ties go to the change at the more important funnel point, then the simpler build, then the lower guardrail risk.
+Rank candidates by evidence, not gut feeling. Each candidate's tier (high, medium or low) is the band of a small score, an evidence-first scoring: the evidence behind it (your own analytics or test history 3, your own behaviour data such as recordings, heatmaps or surveys 2, an archive pattern or sourced research 1, intuition 0), whether the element is on the main path or above the fold (1), whether a user notices the change (1), and the effort (low 2, medium 1, high 0). 6 to 7 is high, 3 to 5 medium, 0 to 2 low, and a critical assumption caps it at medium, so only your own data can reach high. The inputs are stored in the record and the validator recomputes the band. Ties go to the change at the more important funnel point, then the simpler build, then the lower guardrail risk.
 
 ## What's a primary metric, and why only one?
 
@@ -784,7 +784,7 @@ These four filters don't replace prioritization, they run before it: the lens an
 
 ## Prioritization
 
-*Evidence: archive practice; a light version of the PXL method's evidence-first scoring.* Each scenario's tier (high / medium / low; the tag line prints "Öncelik: Orta" / "Priority: Medium") is the band of a score of four inputs recorded in `priority.inputs`, never chosen:
+*Evidence: archive practice; a light evidence-first scoring.* Each scenario's tier (high / medium / low; the tag line prints "Öncelik: Orta" / "Priority: Medium") is the band of a score of four inputs recorded in `priority.inputs`, never chosen:
 
 | Input | Points |
 |---|---|

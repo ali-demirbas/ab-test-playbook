@@ -109,6 +109,12 @@ class TestInputs(unittest.TestCase):
             self.assertEqual(out, "")
             self.assertIn("between 0 and 1", err)
 
+    def test_turkish_percent_forms(self):
+        for good in ("%2,5", "2,5%", "%2.5", "0,025"):
+            code, out, _ = run("--rate", good, "--visitors", "1200", "--lang", "en")
+            self.assertEqual(code, 0, good)
+            self.assertIn("27%", out, good)
+
     def test_visitors_positive(self):
         for bad in ("0", "-5", "many", "inf"):
             code, _, err = run("--rate", "0.02", "--visitors", bad, "--lang", "en")

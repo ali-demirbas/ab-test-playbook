@@ -1907,9 +1907,9 @@ def check_priority(scenario, errors, lang="tr"):
 # A's description) and in B; a heuristic like the keyword lists above.
 CONDITIONAL_TR = ("akordeon", "sekme", "modal", "pop-up", "popup", "açılır pencere", "alt sayfa", "diyalog",
                   "katlanır", "katlı", "ilk ekranın altı", "ekranın altında", "sayfanın altında", "kaydırınca",
-                  "kaydırmadan görünmeyen")
+                  "kaydırmadan görünmeyen", "çekmece", "açılır menü", "açılır liste", "ipucu balonu", "araç ipucu")
 CONDITIONAL_EN = ("accordion", "modal", "pop-up", "popup", "overlay", "bottom sheet", "dialog", "collapsed",
-                  "collapsible", "below the fold", "expandable", "tab", "tabbed")
+                  "collapsible", "below the fold", "expandable", "tab", "tabbed", "drawer", "dropdown", "drop-down", "tooltip", "popover", "flyout")
 CONDITIONAL_RE = keywords(CONDITIONAL_TR, CONDITIONAL_EN)
 NOT_CONDITIONAL = ("tab bar", "sekme çubuğu")
 BOTH_ARMS_RE = re.compile(r"iki\s+kol|her\s+iki\s+kol|both\s+arms|each\s+arm|A\s+ve\s+B|A\s+and\s+B", re.IGNORECASE)

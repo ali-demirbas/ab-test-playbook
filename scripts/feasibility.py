@@ -89,8 +89,8 @@ def verdict(mde):
 
 def parse_rate(raw):
     text = str(raw).strip().replace(",", ".")
-    percent = text.endswith("%")
-    value = float(text.rstrip("%").strip())
+    percent = text.endswith("%") or text.startswith("%")
+    value = float(text.strip("%").strip())
     if percent:
         value /= 100.0
     if not math.isfinite(value) or not 0.0 < value < 1.0:

@@ -135,7 +135,9 @@ class TestExposure(unittest.TestCase):
 
     def test_other_conditional_places(self):
         for text in ("Bilgi ilk ekranın altında duruyor", "Detay bir sekmede", "Shipping sits below the fold",
-                     "Details are in a collapsed panel", "A modal shows the fee"):
+                     "Details are in a collapsed panel", "A modal shows the fee",
+                     "The fee sits in a drawer", "A dropdown holds the options", "A tooltip explains the fee",
+                     "Ücret açılır menüde görünüyor", "Seçenekler bir çekmecede"):
             sc = plain()
             sc["variants"][0]["description"] = text
             self.assertTrue(has(errs(sc), "exposure:"), text)

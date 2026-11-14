@@ -237,7 +237,7 @@ These four filters don't replace prioritization, they run before it: the lens an
 
 ## Prioritization
 
-*Evidence: archive practice; a light version of the PXL method's evidence-first scoring.* Each scenario's tier (high / medium / low; the tag line prints "Öncelik: Orta" / "Priority: Medium") is the band of a score of four inputs recorded in `priority.inputs`, never chosen:
+*Evidence: archive practice; a light evidence-first scoring.* Each scenario's tier (high / medium / low; the tag line prints "Öncelik: Orta" / "Priority: Medium") is the band of a score of four inputs recorded in `priority.inputs`, never chosen:
 
 | Input | Points |
 |---|---|
