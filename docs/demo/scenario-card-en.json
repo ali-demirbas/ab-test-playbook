@@ -1,0 +1,79 @@
+{
+  "id": "cart-checkout-coupon-field-en-01",
+  "title": "Does moving the coupon field behind an “I have a discount code” link increase revenue?",
+  "problem": "An open coupon box in the cart can send shoppers without a code off the site to look for one.",
+  "mechanism": "With the coupon field behind an “I have a discount code” link, shoppers without a code are reminded less of a discount they lack and have less reason to leave the cart to look for one, while shoppers with a code open it from the link.",
+  "variable": "Visibility of the coupon code field",
+  "variants": [
+    {
+      "id": "A",
+      "description": "The coupon field sits open as a box in the cart"
+    },
+    {
+      "id": "B",
+      "description": "The coupon field is behind an “I have a discount code” link"
+    }
+  ],
+  "difference": "change",
+  "primary_kpi": {
+    "name": "Revenue per Visitor (RPV)",
+    "denominator": "Visitors assigned to the test (assigned on reaching the cart page, the same trigger in both arms)",
+    "direction": "increase"
+  },
+  "guardrail": {
+    "name": "Visitors Placing a Coupon Order Rate",
+    "kind": "metric",
+    "denominator": "Visitors assigned to the test",
+    "direction": "must_not_decrease"
+  },
+  "invariants": [
+    "A valid code is applied with the same step in both arms.",
+    "The discount reaches the subtotal and the total with the same calculation in both arms.",
+    "An invalid or expired code gets the same error message in both arms."
+  ],
+  "warnings": [
+    {
+      "type": "accessibility",
+      "text": "The new “I have a discount code” link must be keyboard reachable, be read by that name in a screen reader, move focus to the coupon field when opened, have a touch target of at least 44×44 pt and a text contrast of at least 4.5:1."
+    }
+  ],
+  "source": "adapted",
+  "adapted_from": "Açık kupon kodu alanı sepet terkini artırır mı?",
+  "evidence": {
+    "level": "archive",
+    "note": "Rests on a test idea curated in the archive, not on a test result."
+  },
+  "priority": {
+    "tier": "medium",
+    "rationale": "It targets leaving the cart at the last step before payment but could lower code use, the evidence is an archive pattern rather than this page's data, and moving the coupon box behind a link is a small interface job.",
+    "inputs": {
+      "evidence": "archive_or_research",
+      "main_path": true,
+      "noticeable": true,
+      "effort": "low"
+    }
+  },
+  "lang": "en",
+  "stage": "cart-checkout",
+  "device": "phone-web",
+  "market": "US",
+  "objection": "Price",
+  "card": {
+    "difference": "change",
+    "url": "store.example/cart",
+    "mockup_basis": "representative",
+    "variant_a": "<div class=\"r-h\">My cart</div>\n          <div class=\"r-item\" style=\"margin-bottom:20px\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Velvet Jacket</div>\n              <div class=\"r-meta\">Size M · Qty 1</div>\n            </div>\n            <div class=\"r-price\">$89.00</div>\n          </div>\n          <div class=\"hl\" data-note=\"Coupon field open\">\n            <div class=\"r-label\">Your coupon code</div>\n            <div class=\"r-field empty\">Enter your code here</div>\n          </div>\n          <div class=\"r-line\"><span>Subtotal</span><span>$89.00</span></div>\n          <div class=\"r-line total\"><span>Total</span><span>$89.00</span></div>\n          <div class=\"r-cta\">Go to checkout</div>",
+    "variant_b": "<div class=\"r-h\">My cart</div>\n          <div class=\"r-item\" style=\"margin-bottom:20px\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Velvet Jacket</div>\n              <div class=\"r-meta\">Size M · Qty 1</div>\n            </div>\n            <div class=\"r-price\">$89.00</div>\n          </div>\n          <div class=\"r-link hl\" data-note=\"Coupon behind link\" style=\"align-self:flex-start;line-height:44px\">I have a discount code</div>\n          <div class=\"r-line\"><span>Subtotal</span><span>$89.00</span></div>\n          <div class=\"r-line total\"><span>Total</span><span>$89.00</span></div>\n          <div class=\"r-cta\">Go to checkout</div>",
+    "phone_scale": 1.4
+  },
+  "review": {
+    "scenario_critic": {
+      "verdict": "PASS",
+      "fingerprint": "7eb380fcd5d29cabc1516fbab13ce84bab1a17e9b549a2e2a60ee1ccb33861a8"
+    },
+    "mockup_reviewer": {
+      "verdict": "PASS",
+      "fingerprint": "13297e1a1d79095e5583ee2f7990d9bf8a94b26fd32546372349a1264ef1f10f"
+    }
+  }
+}
