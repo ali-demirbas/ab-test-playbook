@@ -18,10 +18,10 @@ metadata:
 Every card: the core of `mockup-style.md` (The card, Frames, Ring and label, Realism level, Personal data is never copied, Numbers the mockup needs but must not invent), which is everything above its `# On demand` heading:
 
 ```bash
-awk '/^# On demand/{exit} 1' ${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md --until "On demand"
 ```
 
-On demand, one section by name: `awk -v h='## <title>' 'index($0,h)==1{p=1;print;next} p&&/^##? /{exit} p' ${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md`
+On demand, one section by name: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md "<title>"`
 
 | When | Section |
 |---|---|

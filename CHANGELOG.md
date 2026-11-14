@@ -28,6 +28,9 @@ All notable changes to this project are documented here. Format loosely follows 
 - Design, given a rate for a step, asks where inside the step the loss happens.
 - The critic checks idea diversity across a set and that each record stands on its own when pasted.
 
+### Speed
+- The skills and the critic read one methodology section, one mockup-style section or one archive block with `scripts/read_section.py` instead of `awk` one-liners, so the only command a user has to allow is `python3`.
+
 ## 3.2.2 - 2026-11-14
 
 - Directory listing fields in `plugin.json`: display name "A/B Test Builder", documentation, support, privacy policy and terms links. Claude Code versions that predate these keys report them in `claude plugin validate` but still install the plugin.

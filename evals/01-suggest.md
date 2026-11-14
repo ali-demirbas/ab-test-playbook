@@ -47,7 +47,7 @@
 **Girdi D (kısa kayıt):** “Ürün detay sayfam için test öner.” (Sayfa paylaşılmamış; `product-detail.md` içinde uyan çok sayıda senaryo var.)
 
 **Beklenen davranış:**
-1. Arşiv yalnızca `grep -nE '^## |Değişken:' <dosya>` ile listelenen başlıklar ve kısa listeye giren bloklar (başlık satırından sonraki `---` ayracına kadar, ör. `sed -n` ya da `awk` ile) üzerinden okunur; hiçbir aşama dosyası baştan sona, bütün dosyalar hiçbir zaman okunmaz. KPI adı `kpi-glossary.md` içinde `grep` ile aranır, sözlük bütün olarak okunmaz. `methodology.md` turun başında okunmaz; bir karar gerektirdiğinde (düzenleme, erişilebilirlik, hassas alan, etik) yalnızca ilgili bölüm okunur. Bunlar araç çağrıları kaydında görülür.
+1. Arşiv yalnızca `grep -nE '^## |Değişken:' <dosya>` ile listelenen başlıklar ve kısa listeye giren bloklar (başlık satırından sonraki `---` ayracına kadar, `python3 scripts/read_section.py <dosya> --line <başlık satırı>` ile) üzerinden okunur; hiçbir aşama dosyası baştan sona, bütün dosyalar hiçbir zaman okunmaz. KPI adı `kpi-glossary.md` içinde `grep` ile aranır, sözlük bütün olarak okunmaz. `methodology.md` turun başında okunmaz; bir karar gerektirdiğinde (düzenleme, erişilebilirlik, hassas alan, etik) yalnızca ilgili bölüm okunur. Bunlar araç çağrıları kaydında görülür.
 2. Tur en fazla 3 kayıt döndürür. Her kayıt `validate_scenario_json.py` ile hatasız geçer ve on bilgiyi taşır: soru biçiminde `title`, `problem`, tek cümlelik `mechanism`, `variable`, iki varyant ve `difference`, paydasıyla `primary_kpi`, `guardrail`, `source` (`adapted_from` ile) ve `evidence`, gerekçeli `priority`, yalnızca gerekiyorsa `warnings`. Kayıtta `detail` yoktur; üç kutu yeniden üretilmez.
 3. Sohbet her senaryo için tam olarak dört satırdır:
    ```

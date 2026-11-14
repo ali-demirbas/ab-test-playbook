@@ -110,6 +110,7 @@ scripts/         validate_scenarios.py - format check for the scenario archive
                  a draft with an A/B diff manifest, then the final card only with both review stamps
                  validate_scenario_json.py - checks a scenario against the schema and the gate rules; --fingerprint for the critic's stamp
                  validate_input.py - flags instruction-shaped text and script payloads in files you hand over
+                 read_section.py - prints one section of a knowledge file or one archive block, so the skills need no awk or sed
                  validate.sh - repo consistency: frontmatter, internal links, plugin-root refs, rule citations
                  check_frontmatter.py - parses every skill and agent front matter the way installers do
                  build_gemini.py · build_llms_full.py - generate the Gemini CLI extension and docs/llms-full.txt

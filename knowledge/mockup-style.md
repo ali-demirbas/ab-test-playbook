@@ -1,7 +1,7 @@
 # Visual Language: Scenario Card and Mockup Rules
 
-**Core, read for every card:** The card · Frames · Ring and label · Realism level · Screen spec · Personal data is never copied · Numbers the mockup needs but must not invent (all above "# On demand": `awk '/^# On demand/{exit} 1' ${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md`).
-**On demand, when the card needs it:** Components (`.r-*` markup) · Special cases (steppers, fold and sticky bar, stages, soft ring, carousels and dots, text buttons, modals, photo backgrounds) · Brand · Card layout · Draft and final card · render_check (`awk -v h='## <title>' 'index($0,h)==1{p=1;print;next} p&&/^##? /{exit} p' ${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md`).
+**Core, read for every card:** The card · Frames · Ring and label · Realism level · Screen spec · Personal data is never copied · Numbers the mockup needs but must not invent (all above "# On demand": `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md --until "On demand"`).
+**On demand, when the card needs it:** Components (`.r-*` markup) · Special cases (steppers, fold and sticky bar, stages, soft ring, carousels and dots, text buttons, modals, photo backgrounds) · Brand · Card layout · Draft and final card · render_check (`python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/mockup-style.md "<title>"`).
 `ab-test-card`, the card template, `build_card.py` and `render_check.mjs` follow this spec.
 
 ## The card

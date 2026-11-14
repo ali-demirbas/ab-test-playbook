@@ -19,7 +19,7 @@ metadata:
 
   ```bash
   grep -nE '^## |Değişken:' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
-  awk -v s=<title line> 'NR>=s { if (NR>s && (/^---$/ || /^## /)) exit; print }' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
+  python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md --line <title line> [<title line> ...]
   ```
 
   Before calling a candidate `generated`, one title-only grep across all stage files: `grep -n '^## .*<element keyword>' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/*.md`.
@@ -27,7 +27,7 @@ metadata:
 - **Methodology:** only the section a decision needs, never at the start of a turn:
 
   ```bash
-  awk -v h='## <section title>' 'index($0,h)==1{p=1;print;next} p&&/^## /{exit} p' ${CLAUDE_PLUGIN_ROOT}/knowledge/methodology.md
+  python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/methodology.md "<section title>"
   ```
 
   | Decision | Section |

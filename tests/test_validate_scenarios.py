@@ -477,18 +477,14 @@ if __name__ == "__main__":
 
 
 class TestArchiveBlockRead(unittest.TestCase):
-    """The skills read one archive block with grep + awk; a block must not bleed into its neighbour."""
+    """The skills read one archive block with grep + read_section.py --line; a block must not bleed into its neighbour."""
 
     ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 
     @classmethod
     def setUpClass(cls):
-        import re
-        import shutil
-        cls.awk = shutil.which("awk")
         with open(os.path.join(cls.ROOT, "skills", "ab-test-suggest", "SKILL.md"), encoding="utf-8") as fh:
-            m = re.search(r"awk -v s=<title line> '([^']+)'", fh.read())
-        cls.program = m.group(1)
+            assert "scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md --line <title line>" in fh.read()
         with open(os.path.join(cls.ROOT, "knowledge", "scenarios", "thank-you.md"), encoding="utf-8") as fh:
             cls.text = fh.read()
 
@@ -502,7 +498,8 @@ class TestArchiveBlockRead(unittest.TestCase):
         with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as fh:
             fh.write(text)
         try:
-            out = subprocess.run([self.awk, "-v", "s=%d" % hits[0], self.program, fh.name],
+            out = subprocess.run([sys.executable, os.path.join(self.ROOT, "scripts", "read_section.py"),
+                                  fh.name, "--line", str(hits[0])],
                                  capture_output=True, text=True, check=True).stdout
         finally:
             os.unlink(fh.name)
@@ -512,16 +509,12 @@ class TestArchiveBlockRead(unittest.TestCase):
         return next(l for l in text.split("\n") if l.startswith("## "))[3:]
 
     def test_an_intact_block_is_read_whole_and_alone(self):
-        if not self.awk:
-            self.skipTest("awk not found")
         block = self.read_block(self.text, self.first_title(self.text))
         self.assertEqual(block.count("\n## "), 0)
         self.assertTrue(block.startswith("## "))
         self.assertIn("Değişken:", block)
 
     def test_a_missing_separator_stops_at_the_next_title(self):
-        if not self.awk:
-            self.skipTest("awk not found")
         first = self.text.index("\n## ")
         cut = self.text.index("\n---\n", first)
         broken = self.text[:cut] + self.text[cut + 4:]  # the first block's closing --- removed

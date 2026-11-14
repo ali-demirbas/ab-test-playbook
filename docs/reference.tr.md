@@ -110,6 +110,7 @@ scripts/         validate_scenarios.py: senaryo arşivi için format kontrolü
                  önce A/B fark manifestli bir taslak, nihai kartı ise yalnızca iki inceleme damgasıyla üretir
                  validate_scenario_json.py: bir senaryoyu şemaya ve kapı kurallarına göre kontrol eder; --fingerprint denetçi damgası için
                  validate_input.py: dosya olarak verdiğiniz girdideki talimat-biçimli metni ve script payload’larını işaretler
+                 read_section.py: bilgi dosyasının tek bölümünü ya da arşivin tek bloğunu yazdırır, beceriler awk ve sed istemez
                  validate.sh: repo tutarlılığı; frontmatter, iç bağlantılar, plugin-root referansları, kural atıfları
                  check_frontmatter.py: her skill ve agent frontmatter’ını kurulum araçlarının okuduğu gibi ayrıştırır
                  build_gemini.py · build_llms_full.py: Gemini CLI eklentisini ve docs/llms-full.txt dosyasını üretir
