@@ -51,7 +51,13 @@
   },
   "priority": {
     "tier": "medium",
-    "rationale": "Öneriden artırıma giden yolun girişini etkiliyor ama native uygulamaya buton eklemek sürüm ve mağaza onayı isteyen orta ölçekli bir iş, kanıt arşiv örüntüsü ve yayından önce uyum onayı gerekiyor."
+    "rationale": "Öneriden artırıma giden yolun girişini etkiliyor ama native uygulamaya buton eklemek sürüm ve mağaza onayı isteyen orta ölçekli bir iş, kanıt arşiv örüntüsü ve yayından önce uyum onayı gerekiyor.",
+    "inputs": {
+      "evidence": "archive_or_research",
+      "main_path": true,
+      "noticeable": true,
+      "effort": "high"
+    }
   },
   "lang": "tr",
   "stage": "finance-pension",
@@ -76,7 +82,7 @@
   "review": {
     "scenario_critic": {
       "verdict": "PASS",
-      "fingerprint": "e4d21165a7c4392bbd53132e6e67894c0de68ec8b35e7f91b7a5e941cd7de1d4"
+      "fingerprint": "493fe4f60251f23ac790e4c9f5833ab91907746e3d4833687ffc42bbda9518e5"
     },
     "mockup_reviewer": {
       "verdict": "PASS",

@@ -54,8 +54,14 @@
     "note": "Arşivde derlenmiş bir test fikrine dayanıyor, bir test sonucu değil."
   },
   "priority": {
-    "tier": "high",
-    "rationale": "Talebin gönderildiği son adımda doğrudan iş sonucuna dokunuyor ve tek bir alanı kaldırmak küçük bir form işi, ama kanıt bu sayfanın verisi değil arşiv örüntüsü ve önce CRM kuralının bu alana bağlı olmadığı doğrulanmalı."
+    "tier": "medium",
+    "rationale": "Talebin gönderildiği son adımda doğrudan iş sonucuna dokunuyor ve tek bir alanı kaldırmak küçük bir form işi, ama kanıt bu sayfanın verisi değil arşiv örüntüsü ve önce CRM kuralının bu alana bağlı olmadığı doğrulanmalı.",
+    "inputs": {
+      "evidence": "archive_or_research",
+      "main_path": true,
+      "noticeable": true,
+      "effort": "low"
+    }
   },
   "lang": "tr",
   "stage": "saas-b2b",
@@ -73,7 +79,7 @@
   "review": {
     "scenario_critic": {
       "verdict": "PASS",
-      "fingerprint": "13c59872b522e12047a86bb54441fd9f0bdb55d56e4def6a822a6cce63495fcd"
+      "fingerprint": "18fbe9621393eef1f92db99e05280ff45d389a7de914c99ef7406415ebe81ae9"
     },
     "mockup_reviewer": {
       "verdict": "PASS",

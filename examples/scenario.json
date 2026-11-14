@@ -45,7 +45,13 @@
   },
   "priority": {
     "tier": "medium",
-    "rationale": "Ödeme öncesi son adımda sepetten çıkışı hedefliyor ama kod kullanımını düşürebilir, kanıt bu sayfanın verisi değil arşiv örüntüsü ve kupon kutusunu bir bağlantının arkasına almak küçük bir arayüz işi."
+    "rationale": "Ödeme öncesi son adımda sepetten çıkışı hedefliyor ama kod kullanımını düşürebilir, kanıt bu sayfanın verisi değil arşiv örüntüsü ve kupon kutusunu bir bağlantının arkasına almak küçük bir arayüz işi.",
+    "inputs": {
+      "evidence": "archive_or_research",
+      "main_path": true,
+      "noticeable": true,
+      "effort": "low"
+    }
   },
   "lang": "tr",
   "stage": "cart-checkout",
@@ -63,7 +69,7 @@
   "review": {
     "scenario_critic": {
       "verdict": "PASS",
-      "fingerprint": "ddf25059338974b919c017bd28f81392b107f1fdf440a04181192a05f3a0bd0b"
+      "fingerprint": "2a4026cf85485c54a443a679c787266c7a25a2ecf6e518206e8213ecb98bfeee"
     },
     "mockup_reviewer": {
       "verdict": "PASS",

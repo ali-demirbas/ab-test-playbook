@@ -46,7 +46,13 @@
   },
   "priority": {
     "tier": "medium",
-    "rationale": "Satın alma kararının verildiği ürün sayfasında fiyatın yanındaki bir kaygıyı hedefliyor ve yalnızca bir bloğun yerini değiştirmek küçük bir şablon işi, ama kanıt bu sayfanın verisi değil arşiv örüntüsü."
+    "rationale": "Satın alma kararının verildiği ürün sayfasında fiyatın yanındaki bir kaygıyı hedefliyor ve yalnızca bir bloğun yerini değiştirmek küçük bir şablon işi, ama kanıt bu sayfanın verisi değil arşiv örüntüsü.",
+    "inputs": {
+      "evidence": "archive_or_research",
+      "main_path": true,
+      "noticeable": true,
+      "effort": "low"
+    }
   },
   "lang": "tr",
   "stage": "product-detail",
@@ -64,7 +70,7 @@
   "review": {
     "scenario_critic": {
       "verdict": "PASS",
-      "fingerprint": "3343b7e34e7e269823ab8fe3a606f47899f88bea745e7c86ae1ed58ec175760d"
+      "fingerprint": "18bbeff67c053dda1a2bb6d392a6c4c3b5bca152187130503c42cf4b4cb75ba3"
     },
     "mockup_reviewer": {
       "verdict": "PASS",

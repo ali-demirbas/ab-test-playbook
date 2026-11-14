@@ -60,7 +60,8 @@ def base_scenario():
         "source": "adapted",
         "adapted_from": ARCHIVE_TITLE,
         "evidence": {"level": "archive"},
-        "priority": {"tier": "medium", "rationale": "Sepetteki kaçağı hedefliyor, kanıt arşiv örüntüsü ve iş küçük."},
+        "priority": {"tier": "medium", "rationale": "Sepetteki kaçağı hedefliyor, kanıt arşiv örüntüsü ve iş küçük.",
+                     "inputs": {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"}},
     }
 
 
@@ -241,7 +242,7 @@ class TestStructure(unittest.TestCase):
         self.assertEqual(sorted(SCHEMA["properties"]), sorted([
             "id", "title", "problem", "mechanism", "variable", "variants", "difference", "primary_kpi", "guardrail",
             "source", "adapted_from", "source_note", "evidence", "priority", "warnings", "invariants",
-            "numeric_change", "assumptions", "review", "lang", "stage", "device", "market", "objection", "detail",
+            "numeric_change", "exposure", "assumptions", "review", "lang", "stage", "device", "market", "objection", "detail",
             "card"]))
         self.assertIs(SCHEMA["additionalProperties"], False)
 
@@ -323,7 +324,10 @@ class TestSourceAndPriority(unittest.TestCase):
         errs = errors_for(evidence={"level": "intuition"})
         self.assertTrue(any("rule 8" in e for e in errs), errs)
         self.assertEqual(errors_for(source="generated", source_note="Arşivde uyan senaryo yok.",
-                                    evidence={"level": "intuition"}), [])
+                                    evidence={"level": "intuition"},
+                                    priority={"tier": "medium", "rationale": self.RATIONALE, "inputs": {
+                                        "evidence": "intuition", "main_path": True, "noticeable": True,
+                                        "effort": "low"}}), [])
 
     RATIONALE = "Sepetteki kaçağı hedefliyor, kanıt arşiv örüntüsü ve yalnızca alanın görünümü değişiyor."
 
@@ -332,11 +336,18 @@ class TestSourceAndPriority(unittest.TestCase):
         del sc["priority"]
         self.assertTrue(any("missing required field 'priority'" in e for e in validate(sc, SCHEMA)))
 
+    INPUTS = {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"}
+
     def test_priority_tier_enum(self):
-        for tier in ("high", "medium", "low"):
-            self.assertEqual(errors_for(priority={"tier": tier, "rationale": self.RATIONALE}), [], tier)
+        user_data = {"level": "user_data", "note": "GA4 raporuna göre sepette kupon kutusunda çıkış yoğun."}
+        for tier, evidence, inputs in (
+                ("high", user_data, dict(self.INPUTS, evidence="user_data")),
+                ("medium", {"level": "archive"}, self.INPUTS),
+                ("low", {"level": "archive"}, dict(self.INPUTS, main_path=False, noticeable=False, effort="high"))):
+            self.assertEqual(errors_for(evidence=evidence, priority={"tier": tier, "rationale": self.RATIONALE,
+                                                                     "inputs": inputs}), [], tier)
         for tier in ("orta", "Medium", "very-high", 3):
-            errs = errors_for(priority={"tier": tier, "rationale": self.RATIONALE})
+            errs = errors_for(priority={"tier": tier, "rationale": self.RATIONALE, "inputs": self.INPUTS})
             self.assertTrue(any(e.startswith("priority.tier:") for e in errs), (tier, errs))
 
     def test_priority_rationale_is_required_and_not_empty(self):
