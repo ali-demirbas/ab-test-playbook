@@ -99,5 +99,26 @@ class TestDesignRateQuestion(unittest.TestCase):
         self.assertIn("where inside a step the loss happens", rule)
 
 
+class TestCriticIdeaQuality(unittest.TestCase):
+    def setUp(self):
+        self.critic = read("agents", "scenario-critic.md")
+
+    def test_set_level_diversity_check(self):
+        section = self.critic.split("## Set-level checks")[1].split("## Verdict")[0]
+        self.assertIn("**Idea diversity.**", section)
+        self.assertIn("one objection lens", section)
+        self.assertIn("impact ranking", section)
+        self.assertIn("Explicit asks are exempt", section)
+
+    def test_paste_test_asks_for_an_observed_element(self):
+        item = [line for line in self.critic.splitlines() if line.startswith("2. **Problem.**")][0]
+        self.assertIn("pasted unchanged onto any page", item)
+        self.assertIn("FIX [fixable]: tie the proposal to an element observed on this page", item)
+
+    def test_report_format_is_unchanged(self):
+        self.assertIn('1. [blocking|fixable] <check> (rule <n>): "<quoted text>" → <what to write instead>', self.critic)
+        self.assertIn("verdict: PASS <fingerprint> | FIX | RET", self.critic)
+
+
 if __name__ == "__main__":
     unittest.main()
