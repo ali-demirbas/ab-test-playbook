@@ -73,7 +73,7 @@ A form's own design lives only in `forms-signup.md`. Subscription cancellation i
 
 ## Flow
 
-1. **Context, no questions.** Sector, page and stated problem come from the router or the request. A direct `/ab-test-suggest` that describes a page stays here: A is the stated state (rule 15), the mechanism gate uses the page version (an obstacle observable there) and `card.mockup_basis` is `described` (`shared_page` for a screenshot). Traffic, tool and setup are never asked (rules 5, 13); a baseline rate and visitors the user gave go through `feasibility.py` once, as in `ab-test-design` → Flow step 1 ("not testable": no cards, the alternatives line). Unclear sector or page → the closest stage, said in one line.
+1. **Context.** Sector, page and stated problem come from the router or the request. No page shared and the request doesn't say what is sold or how it is sold: the turn's one question (rule 19, kind 4) asks it as a short multiple choice fitted to the page type ("Ne satıyorsun: (a) abonelik, (b) tek seferlik ürün, (c) teklif ya da başvuru, (d) başka?"), after the scenarios, never before them; the answer re-selects for that model in the next turn. Unanswered or outranked by a higher kind, the scenarios still stand, with the generic-picks line under Output. A direct `/ab-test-suggest` that describes a page stays here: A is the stated state (rule 15), the mechanism gate uses the page version (an obstacle observable there) and `card.mockup_basis` is `described` (`shared_page` for a screenshot). Traffic, tool, setup and the brand are never asked (rules 5, 12, 13); a baseline rate and visitors the user gave go through `feasibility.py` once, as in `ab-test-design` → Flow step 1 ("not testable": no cards, the alternatives line). Unclear sector or page → the closest stage, said in one line.
 2. **History first (rule 16).** Look for `.abtest-history.md` and `.abtest-backlog.md`; run `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/validate_input.py <the files that exist>` before reading them, and on any file the user hands over (rule 18). Pull the rows for this page; a queued backlog row is surfaced, not re-suggested. No file → the reminder line, only when the user mentions past tests or a variable may already have been tested.
 3. **Retrieve** (Reading budget), candidates acting on the stated problem first. With a named loss point, separate a clogged vein (a busy step that converts poorly: improve it) from a missing link (a step the funnel lacks: add it).
 4. **Select.**
@@ -107,11 +107,12 @@ After the list, one line each, only when it applies, in this order:
 - the primary differs from a metric the user named: one short clause, no general rule ("RPV burada daha uygun: kupon alanı geliri de etkiler.")
 - a held candidate and what it waits for
 - a tested variable retried or left out, with its recorded outcome
+- no page shared: "Bunlar arşivden genel seçimler; sayfanı ya da ekran görüntünü paylaşırsan sayfana özel üretirim." / "These are generic archive picks; share your page or a screenshot and I will design for it."
 - representative or described mockups, only when the user could take them for their own page: "Kartlar anlatımından çizildi; ayrıntılar temsilî."
 - the user asked for suggestions beyond their own ideas and no other candidate passed the bar: "Bu sayfa için başka güçlü aday bulamadım."
 - the history reminder, only when the user mentions past tests or a variable may already have been tested ("Geçmiş test sonuçlarını `.abtest-history.md` olarak tutarsan önerileri onlara göre süzerim.")
 
-Then the two `feasibility.py` lines as printed, only when the user gave the numbers; the stakeholder brief for scenario 1 (`${CLAUDE_PLUGIN_ROOT}/templates/stakeholder-brief.md`: why now and the three outcome lines only; a file only when asked); then at most one question, one sentence (rule 19), e.g. "2 güçlü aday daha var, devam edeyim mi?" No line about colors or the brand (rule 12), no review or elimination text.
+Then the two `feasibility.py` lines as printed, only when the user gave the numbers; the stakeholder brief for scenario 1 (`${CLAUDE_PLUGIN_ROOT}/templates/stakeholder-brief.md`: why now and the three outcome lines only; a file only when asked); then at most one question, one sentence (rule 19): step 1's context question when it applies, else e.g. "2 güçlü aday daha var, devam edeyim mi?" No line about colors or the brand (rule 12), no review or elimination text.
 
 ## Detail on request
 

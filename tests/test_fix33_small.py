@@ -66,5 +66,26 @@ class TestAuditScanAndOffer(unittest.TestCase):
         self.assertIn("I can show a rough detectable range", read("examples", "audit-example.md"))
 
 
+class TestSuggestContextQuestion(unittest.TestCase):
+    def setUp(self):
+        self.skill = read("skills", "ab-test-suggest", "SKILL.md")
+
+    def test_context_question_replaces_the_ban(self):
+        self.assertNotIn("Context, no questions", self.skill)
+        step = [line for line in self.skill.splitlines() if line.startswith("1. **Context.**")][0]
+        self.assertIn("multiple choice", step)
+        self.assertIn("rule 19", step)
+        self.assertIn("never before them", step)  # the question doesn't hold the turn
+
+    def test_generic_picks_line_in_both_languages(self):
+        self.assertIn("Bunlar arşivden genel seçimler", self.skill)
+        self.assertIn("These are generic archive picks", self.skill)
+
+    def test_rule_19_ranks_the_context_question(self):
+        rule = [line for line in read("CLAUDE.md").splitlines() if line.startswith("19. ")][0]
+        self.assertIn("with no page shared, what is sold and how", rule)
+        self.assertEqual(len(re.findall(r"\((\d)\) ", rule)), 9)  # kinds 7, 8 and 9 keep their numbers
+
+
 if __name__ == "__main__":
     unittest.main()
