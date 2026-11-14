@@ -235,6 +235,11 @@ class TestNodeKinds(unittest.TestCase):
         ({"stack": {"items": [{"h": "Bir"}, {"sub": "İki"}], "gap": 4}},
          ['<div style="display:flex;flex-direction:column">\n<div class="r-h" style="margin-bottom:4px">Bir</div>\n'
           '<div class="r-sub">İki</div>\n</div>']),
+        ({"accordion": {"title": "Kargo ve iade"}},
+         ['<div role="button" aria-expanded="false"', '<span>Kargo ve iade</span>', '>+</span></div></div>']),
+        ({"accordion": {"title": "Kargo ve iade", "open": True, "items": [{"text": "Ücretsiz iade."}]}},
+         ['aria-expanded="true"', '>\u2212</span></div><div style="padding-bottom:14px;color:#374151">\n'
+          '<div>Ücretsiz iade.</div>\n</div>']),
     ]
 
     def test_every_kind_compiles_to_its_component(self):

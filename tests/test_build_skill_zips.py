@@ -72,6 +72,22 @@ class TestZips(unittest.TestCase):
                         ok = target in names or any(n.startswith(target.rstrip("/") + "/") for n in names)
                         self.assertTrue(ok, "%s -> %s missing" % (member, ref))
 
+    def test_no_pointer_to_a_readme_the_zip_does_not_carry(self):
+        """3.2.1: the card skill sent claude.ai users to "README → Visual check",
+        which no ZIP contains; the install command is now stated inline."""
+        pointer = re.compile(r"README(?:\.md)?\s*(?:→|->|>)")
+        for name, path in self.zips.items():
+            with zipfile.ZipFile(path) as zf:
+                names = zf.namelist()
+                self.assertFalse([n for n in names if os.path.basename(n).startswith("README")], name)
+                for member in names:
+                    if member.endswith(b.TEXT_EXT):
+                        text = zf.read(member).decode("utf-8")
+                        self.assertIsNone(pointer.search(text), member)
+        with zipfile.ZipFile(self.zips["ab-test-card"]) as zf:
+            skill = zf.read("ab-test-card/SKILL.md").decode("utf-8")
+        self.assertIn("npm i --prefix ~/.abtest-visual playwright", skill)
+
     def test_scripts_run_inside_the_unpacked_zip(self):
         tmp = tempfile.mkdtemp()
         try:
