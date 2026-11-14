@@ -2,7 +2,7 @@
 name: ab-test-design
 description: Design a NEW single-variable A/B test for the user's specific page, feature or funnel step, as a compact scenario record. Use when the user shares a page, screenshot, URL, wireframe or feature description and asks "design an experiment for this", "design a test for this page", "how should I test this", "set up an A/B test for this", "create a test plan", "write a hypothesis for this", "what variant should I try", "bunun için test tasarla", "bu akışta ne test edilir", "hipotez kur", "buna nasıl test kurarım". Also splits a multivariate request into single-variable tests. Produces at most three strong scenarios (problem, mechanism, the one variable, Variant A/B, primary KPI, guardrail, priority) with an HTML card each, plus short tool-agnostic setup notes. When a page, URL or screenshot is shared, use this skill; when none is shared and the user wants ideas, use ab-test-suggest instead. To check a plan you already wrote, see ab-test-audit.
 metadata:
-  version: 3.1.0
+  version: 3.2.0
   category: generate
   updated: 2026-11-10
 ---

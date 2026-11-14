@@ -2,7 +2,7 @@
 name: ab-test-audit
 description: Audit a proposed A/B test plan, brief or mockup pair for design flaws before it runs. Use when the user says "review my experiment", "is this test set up correctly", "what is wrong with this test", "check my A/B test", "is my test plan valid", "did I set this up right", "does this test have a confound", "test planımı denetle", "bu test doğru mu kurulmuş", "testimde sorun var mı", or shares variant designs or a test brief asking what is wrong. Checks UX and CRO fit, the hypothesis and its mechanism, confounds and multi-variable changes, the primary KPI choice and click-proxy primaries, denominators, missing or non-independent guardrails, isolation and concurrent tests on the same screen, multivariate bundling, dark patterns and weakened protections, sensitive fields, regulated-area and compliance gates, accessibility, privacy and feasibility. Statistical claims in a plan are outside its scope and aren't checked.
 metadata:
-  version: 3.1.0
+  version: 3.2.0
   category: audit
   updated: 2026-11-10
 ---

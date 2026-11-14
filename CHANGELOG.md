@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 3.2.0 - 2026-11-14
+
+### Planning
+- Priority is the band of an evidence-led score (a light PXL): evidence 0 to 3, main path 1, noticeable 1, effort 0 to 2; 6 to 7 high, 3 to 5 medium, 0 to 2 low, a critical assumption caps it at medium. The inputs live in `priority.inputs` and the validator recomputes the band.
+- Setup notes name the exposure trigger. An element inside an accordion, modal or tab or below the fold counts only users who see it, the same way in both arms; the validator requires `exposure` for those records.
+- A one-page stakeholder brief follows the cards: question, why now, what changes, KPI and guardrail, and the action if B wins, loses or shows no clear difference. Template: `templates/stakeholder-brief.md`.
+- Rule 5 gains one exception: when the user gives a baseline rate and visitors, `scripts/feasibility.py` prints a rough detectable relative effect for 2 and 4 weeks and a verdict. It sets no sample size, duration or stopping rule. A "not testable" verdict routes to alternatives instead of a card.
+
+### Install and discovery
+- Codex manifests (`.codex-plugin/`, `.agents/plugins/marketplace.json`) and per-skill ZIPs for claude.ai upload (`scripts/build_skill_zips.py`).
+- Marketplace category, tags and relevance metadata, a plugin icon, and `skills.sh.json` grouping retired skill names.
+
 ## 3.1.0 - 2026-11-10
 
 ### Safer visual check

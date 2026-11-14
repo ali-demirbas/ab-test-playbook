@@ -2,7 +2,7 @@
 name: ab-test
 description: A/B test engine router. Use when the user says "abtest", "A/B test", "A/B/n", "split test", "multivariate test", "experiment", "CRO", "improve conversion", "dönüşümü nasıl artırırım", "Hangi varyant daha iyi olur?", "test öner", "hangi testi yapmalıyım", "fiyat testi", "test planımı denetle", "deney tasarla", any /ab-test subcommand or a bare /ab-test (shows a menu), or when a request could match more than one ab-test-* skill, so the router disambiguates instead of guessing. Also for requests that may not be A/B questions (a diagnosis, a measurement setup, a decision already made), a delivered scenario's detail ("detay", "neden bu", "üç kutuyu göster"), and results or sizing questions ("anlamlı mı", "kazandı mı", "kaç ziyaretçi lazım", "is it significant", "sample size"), which get the one-line out-of-scope answer. Routes to ab-test-suggest (archive ideas), ab-test-design (a new test for your page), ab-test-audit (review a plan) and ab-test-card (render a scenario).
 metadata:
-  version: 3.1.0
+  version: 3.2.0
   category: router
   updated: 2026-11-10
 ---

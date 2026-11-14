@@ -2,7 +2,7 @@
 name: ab-test-card
 description: Render an A/B test scenario record as a single-file 16:9 HTML card that shows only the comparison (the test's question-form title above a large Variant A/B mockup pair, the changed element ringed and labelled) and nothing else. Use when the user says "make a card for this test", "turn this into a card", "visualise this test", "render this scenario", "make a slide out of this", "show me the two variants side by side", "kart yap", "görselleştir", "slayt formatına çevir", "bunu karta bas". Runs automatically for every scenario produced by ab-test-suggest and ab-test-design (CLAUDE.md rule 9), so it rarely needs to be invoked directly. Output is self-contained HTML with no external assets, built deterministically by scripts/build_card.py from the scenario's own JSON and delivered only after scenario-critic and mockup-reviewer pass.
 metadata:
-  version: 3.1.0
+  version: 3.2.0
   category: render
   updated: 2026-11-10
 ---

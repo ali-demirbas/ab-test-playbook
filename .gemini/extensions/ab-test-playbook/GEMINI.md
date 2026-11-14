@@ -36,7 +36,7 @@ These rules bind every ab-test-* skill and both reviewers. Reasons, examples and
 name: ab-test
 description: A/B test engine router. Use when the user says "abtest", "A/B test", "A/B/n", "split test", "multivariate test", "experiment", "CRO", "improve conversion", "dönüşümü nasıl artırırım", "Hangi varyant daha iyi olur?", "test öner", "hangi testi yapmalıyım", "fiyat testi", "test planımı denetle", "deney tasarla", any /ab-test subcommand or a bare /ab-test (shows a menu), or when a request could match more than one ab-test-* skill, so the router disambiguates instead of guessing. Also for requests that may not be A/B questions (a diagnosis, a measurement setup, a decision already made), a delivered scenario's detail ("detay", "neden bu", "üç kutuyu göster"), and results or sizing questions ("anlamlı mı", "kazandı mı", "kaç ziyaretçi lazım", "is it significant", "sample size"), which get the one-line out-of-scope answer. Routes to ab-test-suggest (archive ideas), ab-test-design (a new test for your page), ab-test-audit (review a plan) and ab-test-card (render a scenario).
 metadata:
-  version: 3.1.0
+  version: 3.2.0
   category: router
   updated: 2026-11-10
 ---
@@ -113,7 +113,7 @@ Skipped when the message states the problem or names the test. A screenshot with
 name: ab-test-audit
 description: Audit a proposed A/B test plan, brief or mockup pair for design flaws before it runs. Use when the user says "review my experiment", "is this test set up correctly", "what is wrong with this test", "check my A/B test", "is my test plan valid", "did I set this up right", "does this test have a confound", "test planımı denetle", "bu test doğru mu kurulmuş", "testimde sorun var mı", or shares variant designs or a test brief asking what is wrong. Checks UX and CRO fit, the hypothesis and its mechanism, confounds and multi-variable changes, the primary KPI choice and click-proxy primaries, denominators, missing or non-independent guardrails, isolation and concurrent tests on the same screen, multivariate bundling, dark patterns and weakened protections, sensitive fields, regulated-area and compliance gates, accessibility, privacy and feasibility. Statistical claims in a plan are outside its scope and aren't checked.
 metadata:
-  version: 3.1.0
+  version: 3.2.0
   category: audit
   updated: 2026-11-10
 ---
@@ -177,7 +177,7 @@ In this order, every finding with its evidence. A user-brought plan doesn't go t
 name: ab-test-card
 description: Render an A/B test scenario record as a single-file 16:9 HTML card that shows only the comparison (the test's question-form title above a large Variant A/B mockup pair, the changed element ringed and labelled) and nothing else. Use when the user says "make a card for this test", "turn this into a card", "visualise this test", "render this scenario", "make a slide out of this", "show me the two variants side by side", "kart yap", "görselleştir", "slayt formatına çevir", "bunu karta bas". Runs automatically for every scenario produced by ab-test-suggest and ab-test-design (CLAUDE.md rule 9), so it rarely needs to be invoked directly. Output is self-contained HTML with no external assets, built deterministically by scripts/build_card.py from the scenario's own JSON and delivered only after scenario-critic and mockup-reviewer pass.
 metadata:
-  version: 3.1.0
+  version: 3.2.0
   category: render
   updated: 2026-11-10
 ---
@@ -303,7 +303,7 @@ Binding for every card (rules 4, 9, 10, 17); `ab-test-suggest` and `ab-test-desi
 name: ab-test-design
 description: Design a NEW single-variable A/B test for the user's specific page, feature or funnel step, as a compact scenario record. Use when the user shares a page, screenshot, URL, wireframe or feature description and asks "design an experiment for this", "design a test for this page", "how should I test this", "set up an A/B test for this", "create a test plan", "write a hypothesis for this", "what variant should I try", "bunun için test tasarla", "bu akışta ne test edilir", "hipotez kur", "buna nasıl test kurarım". Also splits a multivariate request into single-variable tests. Produces at most three strong scenarios (problem, mechanism, the one variable, Variant A/B, primary KPI, guardrail, priority) with an HTML card each, plus short tool-agnostic setup notes. When a page, URL or screenshot is shared, use this skill; when none is shared and the user wants ideas, use ab-test-suggest instead. To check a plan you already wrote, see ab-test-audit.
 metadata:
-  version: 3.1.0
+  version: 3.2.0
   category: generate
   updated: 2026-11-10
 ---
@@ -419,7 +419,7 @@ Why a candidate was left out, and what the critic found, are given the same way,
 name: ab-test-suggest
 description: Suggest A/B test scenarios for a page type or journey stage from a curated pattern archive, ranked by priority. Use when the user asks "what should I test", "what should I A/B test on my checkout / product page / pricing page", "give me A/B test ideas", "CRO ideas", "which tests should I run first", "test öner", "hangi testleri yapmalıyım", "anasayfam için test fikirleri", "ne test edeyim". Writes at most three strong scenarios from knowledge/scenarios/ as records, each delivered as an HTML card via ab-test-card. Use it when NO page of the user's own is shared (no screenshot, URL or described flow), or on a direct /ab-test-suggest; a shared page goes to ab-test-design, a plan to review to ab-test-audit.
 metadata:
-  version: 3.1.0
+  version: 3.2.0
   category: recommend
   updated: 2026-11-10
 ---

@@ -2,7 +2,7 @@
 name: ab-test-suggest
 description: Suggest A/B test scenarios for a page type or journey stage from a curated pattern archive, ranked by priority. Use when the user asks "what should I test", "what should I A/B test on my checkout / product page / pricing page", "give me A/B test ideas", "CRO ideas", "which tests should I run first", "test öner", "hangi testleri yapmalıyım", "anasayfam için test fikirleri", "ne test edeyim". Writes at most three strong scenarios from knowledge/scenarios/ as records, each delivered as an HTML card via ab-test-card. Use it when NO page of the user's own is shared (no screenshot, URL or described flow), or on a direct /ab-test-suggest; a shared page goes to ab-test-design, a plan to review to ab-test-audit.
 metadata:
-  version: 3.1.0
+  version: 3.2.0
   category: recommend
   updated: 2026-11-10
 ---

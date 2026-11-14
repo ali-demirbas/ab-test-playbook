@@ -8,7 +8,7 @@ This playbook proposes, designs, audits and visualizes A/B tests. It doesn't ana
 
 ## What should I A/B test first?
 
-Rank candidates by priority, not gut feeling. Each candidate gets a tier (high, medium or low) with a one-sentence reason that weighs, in words, impact (where in the funnel the change acts and what decision it touches), confidence (the evidence behind it) and ease (a copy or ordering change versus a new flow or backend work). There is no numeric score: the reason is what makes the tier checkable. Where a page already gives you real signal (your own data, or a test your history file records as won on a similar page), that carries more confidence than intuition; say so out loud rather than presenting every idea with equal certainty. Ties go to the change at the more important funnel point, then the simpler build, then the lower guardrail risk.
+Rank candidates by evidence, not gut feeling. Each candidate's tier (high, medium or low) is the band of a small score, a light version of the PXL method: the evidence behind it (your own analytics or test history 3, your own behaviour data such as recordings, heatmaps or surveys 2, an archive pattern or sourced research 1, intuition 0), whether the element is on the main path or above the fold (1), whether a user notices the change (1), and the effort (low 2, medium 1, high 0). 6 to 7 is high, 3 to 5 medium, 0 to 2 low, and a critical assumption caps it at medium, so only your own data can reach high. The inputs are stored in the record and the validator recomputes the band. Ties go to the change at the more important funnel point, then the simpler build, then the lower guardrail risk.
 
 ## What's a primary metric, and why only one?
 
@@ -20,7 +20,7 @@ Metrics that must not get worse while your primary metric improves: margin, refu
 
 ## My traffic is low. Can I still run an A/B test?
 
-Sometimes, but not with a subtle change on a quiet page. The playbook doesn't ask for your traffic or compute what it can detect; when a page is known to be low-traffic it says, in words, that it is hard to test and offers ways around it: a bolder, more structural change instead of a small one, moving the test upstream to a busier step of the funnel that carries the same problem, qualitative methods (a short usability test, session recordings, an exit survey) that find what's wrong without a split, or a before/after comparison with its weaker causal claim stated. Whether a given test can conclude on your traffic is a question for your testing tool.
+Sometimes, but not with a subtle change on a quiet page. The playbook never asks for your traffic. If you give it yourself (a baseline conversion rate and visitors), it runs `scripts/feasibility.py`, which prints the rough smallest relative effect a 2 and 4 week test could detect and a plain verdict (small changes detectable / small changes not detectable / bold changes only / not testable at this traffic). It is a rough range, not a promise, and it sets no sample size, duration or stopping rule. When the verdict is "not testable", or a page is known to be low-traffic, it offers ways around it instead of a card: a bolder, more structural change instead of a small one, moving the test upstream to a busier step of the funnel that carries the same problem, qualitative methods (a short usability test, session recordings, an exit survey) that find what's wrong without a split, or a before/after comparison with its weaker causal claim stated. Whether a given test can conclude on your traffic is a question for your testing tool.
 
 ## Can I test several changes at once?
 
@@ -40,7 +40,7 @@ Through gates that code and two reviewers share. The validator and the card buil
 
 ## What do I get besides the card?
 
-For a designed test, short setup notes written once in chat after the cards: the target audience (who is included and excluded), where the variant appears, exclusions and concurrent tests, and the pre-start gates (compliance sign-off on the variant's exact copy in a regulated flow, an accessibility check of the variant, or "none"). The primary KPI and the guardrail are already in each record and aren't repeated. Anything the playbook doesn't know is written as "needs to come from the user", never guessed. Split ratios, durations and decision rules aren't in them: those belong to your testing tool.
+For a designed test, short setup notes written once in chat after the cards: the target audience (who is included and excluded), the exposure trigger (who counts as exposed: for an element inside an accordion, modal or tab or below the fold, only users who actually see it, counted the same way in both arms, so unexposed users don't dilute the result), exclusions and concurrent tests, and the pre-start gates (compliance sign-off on the variant's exact copy in a regulated flow, an accessibility check of the variant, or "none"). The primary KPI and the guardrail are already in each record and aren't repeated. Anything the playbook doesn't know is written as "needs to come from the user", never guessed. Split ratios, durations and decision rules aren't in them: those belong to your testing tool.
 
 ## What are common A/B testing mistakes that invalidate a result?
 
