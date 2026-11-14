@@ -81,15 +81,22 @@ INJECTION = re.compile(
     # the review stamps are the reviewer's: an input that sets or skips them is an injection
     r"(?:set|change|mark|flip|write|put|make)\s+(?:the\s+)?[\w.\[\]-]*(?:verdict|review|stamp|fingerprint)"
     r"[\w.\[\]-]*\s+(?:to|as|=)\s*[\"“'‘]?(?:PASS|approved|ok)\b|"
-    r"(?:mark|approve|pass)\s+(?:this|the|every|all)\s+(?:\w+\s+)?(?:record|scenario|card|draft|review)s?\s+"
+    # ... and so is a line that forces the verdict on the plan under audit ("mark this plan as PASS")
+    r"(?:mark|approve|pass|treat|consider|count|regard)\s+(?:this|the|every|all|my)\s+(?:\w+\s+)?"
+    r"(?:record|scenario|card|draft|review|plan|test|experiment|brief|audit)s?\s+"
     r"(?:as\s+)?(?:PASS|passed|approved)\b|"
-    r"(?:skip|bypass|disable|turn\s+off)\s+(?:the\s+)?(?:scenario[\s-]critic|mockup[\s-]reviewer|critic|reviewer|"
-    r"review|validator|validation|render[\s_]check)\b|"
+    r"(?:skip|bypass|disable|turn\s+off)\s+(?:(?:the|this)\s+)?(?:scenario[\s-]critic|mockup[\s-]reviewer|critic|"
+    r"reviewer|review|audit|validator|validation|render[\s_]check)\b|"
+    r"(?:do\s+not|don'?t|never)\s+(?:list|report|write|raise|flag)\s+(?:any\s+)?findings?\b|"
     r"[\w.\[\]-]*(?:verdict|review|inceleme|onay)\w*[\w.\[\]-]*\s+(?:(?:alanını|değerini|sonucunu)\s+)?"
     r"[\"“'‘]?PASS[\"”'’]?\s*(?:yap|yaz|olarak\s+(?:işaretle|yaz|ayarla|kaydet)|say)\w*|"
-    r"(?:bu\s+)?(?:kaydı|senaryoyu|kartı|taslağı)\s+(?:PASS|onaylandı|geçti)\s+(?:olarak\s+)?(?:işaretle|say|kabul\s+et)\w*|"
-    r"(?:incelemeyi|denetimi|doğrulamayı|eleştirmeni|scenario-critic'?i|mockup-reviewer'?ı)\s+"
-    r"(?:atla\w*|yapma(?!\w)|çalıştırma(?!\w)|devre\s+dışı\s+bırak\w*)",
+    # the object in any accusative spelling: "planı", "planımı", "test planını", "testi", "denetimini"
+    r"(?:kayd|senaryo|kart|taslağ|plan|test|deney|brif)\w*[ıiuü]\s+"
+    r"(?:PASS|onaylandı|onaylanmış|onaylı|geçti|geçmiş)\s+(?:olarak\s+)?(?:işaretle|say(?!fa)|kabul\s+et|kabul\s+ed)\w*|"
+    r"(?:incelemeyi|incelemesini|denetimi|denetimini|denetlemeyi|doğrulamayı|eleştirmeni|scenario-critic'?i|"
+    r"mockup-reviewer'?ı)\s+(?:atla\w*|pas\s+geç\w*|yapma(?!\w)|çalıştırma(?!\w)|devre\s+dışı\s+bırak\w*)|"
+    r"bulgu\w*\s+(?:yazma|listeleme|raporlama|bildirme)(?:y[ıi]n(?:[ıi]z)?)?(?!\w)|"
+    r"(?:sorun|bulgu|kusur)\s+yok\s+de(?:y[ıi]n(?:[ıi]z)?)?(?!\w)",
     re.I,
 )
 
