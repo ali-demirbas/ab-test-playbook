@@ -410,12 +410,13 @@ class TestOps(unittest.TestCase):
     def test_label_pos_below_adds_room_for_the_label(self):
         a, b = compiled(SIMPLE, {"op": "insert_after", "target": "mail", "node": {"help": "Satır"},
                                  "label": "Gerekçe satırı", "label_pos": "below"})
-        # The room is a margin on the ring, outside it: the ring hugs the line and the label lies in the room.
-        self.assertIn('<div class="hl" data-note="Gerekçe satırı" data-pos="below" style="margin-bottom:20px">'
+        # label_pos is the author's wish (data-pos); the room is the template's, opened outside the ring on the
+        # side the builder puts the label, so the compiler writes no margin for it.
+        self.assertIn('<div class="hl" data-note="Gerekçe satırı" data-pos="below">'
                       '<div class="r-help">Satır</div></div>', b)
         _, b2 = compiled(SIMPLE, {"op": "insert_after", "target": "mail", "node": {"help": "Satır"},
                                   "label": "Gerekçe satırı", "label_pos": "above"})
-        self.assertIn('data-pos="above" style="margin-top:20px"><div class="r-help">Satır</div></div>', b2)
+        self.assertIn('data-pos="above"><div class="r-help">Satır</div></div>', b2)
 
     def test_a_target_inside_a_band_or_row(self):
         screen = [{"band": {"items": [{"row": [{"field": "Ay", "id": "ay"}, {"field": "Yıl", "id": "yil"}]}]}}]
@@ -425,7 +426,7 @@ class TestOps(unittest.TestCase):
         self.assertEqual(gate("change", a, b), [])
 
     def test_the_ring_wrapper_carries_only_its_margins(self):
-        change = {"op": "insert_after", "target": "mail", "node": {"help": "Satır", "mb": 12, "fg": "#000000"},
+        change = {"op": "insert_after", "target": "mail", "node": {"help": "Satır", "mb": 36, "fg": "#000000"},
                   "label": "Satır", "label_pos": "below"}
         a, b = compiled(SIMPLE, change)
         self.assertIn('<div class="hl" data-note="Satır" data-pos="below" style="margin-bottom:20px">'

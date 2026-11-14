@@ -417,7 +417,7 @@ class TestSoftRing(unittest.TestCase):
         for decl in ("outline:2px dashed var(--ring)", "outline-offset:4px"):
             self.assertIn(decl, rule)
         label = re.search(r"\.hl-soft\[data-note\]::after\{([^}]*)\}", STYLE).group(1)
-        for decl in ("background:#ffffff", "color:var(--ring)", "border:1px solid var(--ring)", "font-size:12px"):
+        for decl in ("background:#ffffff", "color:var(--ring)", "border:1px solid var(--ring)", "font-size:13px"):
             self.assertIn(decl, label)
 
 
@@ -428,26 +428,26 @@ class TestPillsRibbonScale(unittest.TestCase):
         self.assertIn(".pill-a,.pill-b{background:#ffffff;border:1px solid #d1d5db;color:#111827}", STYLE)
         self.assertNotRegex(STYLE, r"(?m)^\s*\.pill-[ab]\{")
 
-    def test_conditional_ribbon_is_light(self):
+    def test_conditional_ribbon_is_a_visible_pill(self):
         style = bc.CONDITIONAL_RIBBON_STYLE
-        for decl in ("background:#fffbeb", "color:#92400e", "border:1px solid #fcd34d", "font:600 12px/1",
-                     "position:absolute", "top:0", "pointer-events:none"):
+        for decl in ("background:#b45309", "color:#ffffff", "font:700 14px/1", "border-radius:999px",
+                     "position:absolute", "top:8px", "left:48px", "pointer-events:none"):
             self.assertIn(decl, style)
-        self.assertNotIn("#b45309", style)
 
     def test_phone_scale_accepts_1_1_2_and_1_4(self):
         for value, attr in ((1, "1"), (1.2, "1.2"), (1.4, "1.4")):
             with self.subTest(value=value):
                 html = builds(record(ITEMS + RING_A, RING_A + ITEMS, phone_scale=value))[0]
                 self.assertIn('data-phone-scale="%s"' % attr, html)
-        self.assertIn("zoom:1.4", re.search(r'\.card\[data-phone-scale="1\.4"\] \.phone\{([^}]*)\}', STYLE).group(1))
-        self.assertIn("zoom:1.4", re.search(r'\.card\[data-phone-scale="1\.4"\] \.below\{([^}]*)\}', STYLE).group(1))
+                self.assertIn('data-scale="manual"', html)
+                # one line the builder writes; the template's default (1.2) needs none
+                self.assertEqual(html.count(".phone,.below{zoom:%s}" % attr), 0 if value == 1.2 else 1)
 
     def test_other_scales_are_refused(self):
         for value in (1.3, 0.8, "1.4"):
             with self.subTest(value=value):
                 msg = die_text(bc.build, TEMPLATE, record(ITEMS + RING_A, RING_A + ITEMS, phone_scale=value))
-                self.assertIn("card.phone_scale must be 1, 1.2 (default) or 1.4", msg)
+                self.assertIn("card.phone_scale must be 1, 1.2 or 1.4", msg)
 
 
 CHIPS = '<div class="r-chips"><span class="r-chip%s">Aylık</span><span class="r-chip%s">Yıllık</span></div>'
@@ -519,17 +519,20 @@ class TestWebScale(unittest.TestCase):
     def sc(self, **card):
         return record(self.A, self.B, difference="add", device="web", variable="Ücretsiz kargo bilgisi", **card)
 
-    def test_default_writes_no_zoom_rule(self):
-        html, _, _ = builds(self.sc())
+    def test_an_explicit_1_writes_no_zoom_rule(self):
+        html, _, _ = builds(self.sc(web_scale=1))
         self.assertNotIn(".browser{zoom:", html)
+        self.assertIn('data-scale="manual"', html)
 
     def test_scale_writes_one_zoom_rule(self):
         for scale in (1.2, 1.4):
             html, _, _ = builds(self.sc(web_scale=scale))
             self.assertEqual(html.count(".browser{zoom:%s}" % scale), 1)
 
-    def test_default_bytes_equal_an_explicit_1(self):
-        self.assertEqual(builds(self.sc())[0], builds(self.sc(web_scale=1))[0])
+    def test_without_a_scale_the_builder_picks_one(self):
+        html = builds(self.sc())[0]
+        self.assertIn('data-scale="auto"', html)
+        self.assertEqual(len(re.findall(r"\.browser\{zoom:1(?:\.\d+)?\}", html)), 1)  # a short page is enlarged
 
     def test_other_values_are_refused(self):
         for bad in (1.3, 2, True, "1.4"):

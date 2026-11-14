@@ -543,7 +543,7 @@ class TestRenderCheckInChromium(unittest.TestCase):
         final = quiet(bc.final_html, TEMPLATE, example())[0][0]
         target = '>İndirim kodum var</div>'
         assert final.count(target) == 1
-        cover = ('<span style="position:absolute;left:0;top:-70px;width:330px;height:60px;'
+        cover = ('<span style="position:absolute;left:0;top:-104px;width:330px;height:60px;'
                  'background:#ffffff"></span>')
         cases = {
             "clean": final,

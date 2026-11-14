@@ -584,7 +584,7 @@
         },
         "change": {
           "type": "object",
-          "description": "Exactly one operation on one node of card.screen, the tested element, with the ring's label: {\"op\": insert_after|insert_before|replace|remove|move_after|move_before|edit, \"target\": <node id>, ..}. insert_*: node + label (difference add); replace: node + label (+ label_a); remove: label (difference remove); move_*: to + label_a + label_b (difference move); edit: set {property: value} + label (difference change). label_pos below|above places the label. linked (optional, any op): a list of {\"target\": <node id>, \"set\": {property: value}}, the variable's forced consequences, applied to B only; each target must be in card.soft (drawn with the soft ring in both arms), and an edit or replace with linked differences needs label_a."
+          "description": "Exactly one operation on one node of card.screen, the tested element, with the ring's label: {\"op\": insert_after|insert_before|replace|remove|move_after|move_before|edit, \"target\": <node id>, ..}. insert_*: node + label (difference add); replace: node + label (+ label_a); remove: label (difference remove); move_*: to + label_a + label_b (difference move); edit: set {property: value} + label (difference change); the ring goes around the part that changed (a plan's button or price, a field's label), \"ring\": \"node\" rings the whole node. label_pos below|above is where the author would like the label; the builder keeps it when the label is clear there. linked (optional, any op): a list of {\"target\": <node id>, \"set\": {property: value}}, the variable's forced consequences, applied to B only; each target must be in card.soft (drawn with the soft ring in both arms), and an edit or replace with linked differences needs label_a."
         },
         "soft": {
           "type": "array",
@@ -670,7 +670,7 @@
             1,
             1.4
           ],
-          "description": "Phone frames only (device phone or phone-web). 1.2 (default) draws the 420px screen 504px wide so it fills its column; 1 keeps it at 420px so a tall screen (a whole form with its consent boxes) fits the stage instead of being clipped; 1.4 enlarges a short screen that would leave most of the stage empty. The continuation sheet under the phone (.r-fold) takes the same scale; stage phones (.r-stage-break) keep their own fixed size."
+          "description": "Optional override; leave it out and the builder picks the scale from the content (1.2 by default, smaller for a long screen, 1.4 for a very short one). Phone frames only (device phone or phone-web). 1.2 draws the 420px screen 504px wide; 1 keeps it at 420px; 1.4 enlarges a short screen. The continuation sheet under the phone (.r-fold) takes the same scale; stage phones (.r-stage-break) keep their own fixed size."
         },
         "web_scale": {
           "type": "number",
@@ -679,7 +679,7 @@
             1.2,
             1.4
           ],
-          "description": "Desktop browser frames only (device web). 1 (default) draws the page at its natural size; 1.2 or 1.4 zoom the whole frame (proportions kept) so a short page, such as a cart summary or a pricing row, fills more of the stage and the change reads at a glance."
+          "description": "Optional override; leave it out and the builder picks the largest scale at which the page fits the stage. Desktop browser frames only (device web). 1 draws the page at its natural size; 1.2 or 1.4 zoom the whole frame (proportions kept)."
         },
         "inherited_contrast": {
           "type": "array",
@@ -723,7 +723,7 @@
             "above",
             "below"
           ],
-          "description": "Default position of every ring label; a single ring can override with data-pos."
+          "description": "Where the author would like every ring label; a single ring can say otherwise with data-pos. The builder keeps it when the label is clear there and moves the label when it is not."
         }
       }
     }

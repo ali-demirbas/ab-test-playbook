@@ -6,7 +6,7 @@ Bu dosyadaki girdiler İngilizcedir; kural 7’yi (çıktı dili kullanıcının
 
 **Beklenen davranış:**
 1. Bütün çıktı İngilizcedir: sohbetteki başlık, etiket satırı (“Priority: Medium · Source: from archive · Evidence: archive pattern”), “Why: …” satırı ve kart dosyası; listeden sonraki satırlar (“Before you start: …”, “Conditional (1): …”), kaydın metinleri ve kartın içeriği. Arşiv Türkçe yazılmıştır; senaryo metni İngilizceye çevrilir ve bağlama yerelleştirilir, Türkçe cümle kartta kalmaz.
-2. Kart `lang: "en"` ile üretilir: başlık, mockup metinleri ve halka etiketleri İngilizcedir, taslak bandı “DRAFT · not reviewed”, koşullu kartın bandı “CONDITIONAL · to verify” der. Ayrıntı istenirse sohbette verilen üç kutunun başlıkları da İngilizcedir (“What to test”, “Primary KPIs to track”, “Never do”) ve birincil KPI “Primary” diye işaretlenir.
+2. Kart `lang: "en"` ile üretilir: başlık, mockup metinleri ve halka etiketleri İngilizcedir, taslak bandı “Preview · not visually checked”, koşullu kartın bandı “CONDITIONAL · to verify” der. Ayrıntı istenirse sohbette verilen üç kutunun başlıkları da İngilizcedir (“What to test”, “Primary KPIs to track”, “Never do”) ve birincil KPI “Primary” diye işaretlenir.
 3. Pazar belli olduğu için (ABD) pazar sorusu sorulmaz; taksit gibi pazara bağlı bir senaryo ABD pazarına uymuyorsa önerilmez ya da bağımlılığı tek satırla yazılır (kural 11: dil pazarı göstermez, burada pazar ayrıca söylenmiştir).
 4. Trafik, araç ve marka kılavuzu sorulmaz.
 

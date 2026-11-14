@@ -25,7 +25,7 @@ have stamped the record ([`knowledge/methodology.md`](../knowledge/methodology.m
 python3 scripts/validate_scenario_json.py --fingerprint examples/scenario.json
 
 # 2. Draft: needs the scenario-critic stamp matching that fingerprint.
-#    Writes the card with a "DRAFT · not reviewed" banner and the inside-ring
+#    Writes the card with a "Preview · not visually checked" banner and the inside-ring
 #    manifest next to it (<out>.manifest.json); the draft has no fingerprint
 python3 scripts/build_card.py --draft \
   --template templates/scenario-card.html \

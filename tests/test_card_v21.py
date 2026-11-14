@@ -187,7 +187,8 @@ class TestHighlight(unittest.TestCase):
         self.assertNotIn("background", rule)
 
     def test_label_position_options(self):
-        self.assertIn('.hl[data-pos="below"]::after', TEMPLATE)
+        # The label's side is the builder's decision, written on the arm (.variant[data-label]).
+        self.assertIn('.variant[data-label~="below"] .hl[data-note]::after', TEMPLATE)
         built = build(TEMPLATE, flat(note_pos="below"))
         self.assertIn('data-note-pos="below"', built)
         self.assertIn('data-note-pos="above"', build(TEMPLATE, flat()))
