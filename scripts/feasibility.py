@@ -25,7 +25,9 @@ Verdict, on the longest run shown (methodology.md → Traffic feasibility):
 Usage:
   feasibility.py --rate 0.025 --visitors 1200 [--per day|week|month]
                  [--arms 2] [--weeks 2 4] [--lang tr|en]
-  --rate also takes a percentage written with "%" ("2.5%").
+  --rate is a fraction (0.025), a percentage written with "%" ("2.5%"), or a
+  bare number above 1 and up to 100 read as a percentage ("3" is 3%, "2.5" is
+  2.5%). The output line names the rate used.
 """
 import argparse
 import math
@@ -49,7 +51,8 @@ TEXT = {
                 "ölçülebilir en küçük göreli fark {rows}. {verdict}.",
         "caveat": "Kaba bir normal yaklaşım (%80 güç, iki yönlü alfa 0,05), sonuç sözü değil; testin sonucunu test "
                   "aracının kendi raporu okur.",
-        "err_rate": "Hata: dönüşüm oranı 0 ile 1 arasında olmalı (ör. 0.025 ya da 2.5%); verilen: {v}",
+        "err_rate": "Hata: dönüşüm oranı 0 ile 1 arasında bir kesir ya da 100'ün altında bir yüzde olmalı "
+                    "(ör. 0.025, 2.5 ya da 2.5%); verilen: {v}",
         "err_visitors": "Hata: ziyaretçi sayısı pozitif bir sayı olmalı; verilen: {v}",
         "err_arms": "Hata: kol sayısı en az 2 olmalı; verilen: {v}",
         "err_weeks": "Hata: hafta sayısı pozitif bir sayı olmalı; verilen: {v}",
@@ -64,7 +67,8 @@ TEXT = {
                 "{arms} arms): smallest detectable relative difference {rows}. {verdict}.",
         "caveat": "A rough normal approximation (80% power, two-sided alpha 0.05), not a promise of a result; the "
                   "testing tool's own reporting reads the test.",
-        "err_rate": "Error: the conversion rate must be between 0 and 1 (e.g. 0.025 or 2.5%); got: {v}",
+        "err_rate": "Error: the conversion rate must be a fraction between 0 and 1 or a percentage below 100 "
+                    "(e.g. 0.025, 2.5 or 2.5%); got: {v}",
         "err_visitors": "Error: the visitor count must be a positive number; got: {v}",
         "err_arms": "Error: arms must be at least 2; got: {v}",
         "err_weeks": "Error: weeks must be a positive number; got: {v}",
@@ -91,7 +95,7 @@ def parse_rate(raw):
     text = str(raw).strip().replace(",", ".")
     percent = text.endswith("%") or text.startswith("%")
     value = float(text.strip("%").strip())
-    if percent:
+    if percent or 1.0 < value <= 100.0:  # a bare "3" or "2.5" is a percentage; exactly 1 stays an error
         value /= 100.0
     if not math.isfinite(value) or not 0.0 < value < 1.0:
         raise ValueError
@@ -145,7 +149,7 @@ def report(rate, daily, arms, weeks, lang):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Rough MDE from the user's own numbers (rule 5).")
-    parser.add_argument("--rate", required=True, help="baseline conversion rate, 0-1 or with %%")
+    parser.add_argument("--rate", required=True, help="baseline conversion rate: 0-1, or a percentage (3 or 3%%)")
     parser.add_argument("--visitors", required=True, help="eligible visitors (all arms together)")
     parser.add_argument("--per", choices=sorted(DAYS), default="day", help="the period --visitors counts")
     parser.add_argument("--arms", default="2", help="arms including the control (default 2)")
