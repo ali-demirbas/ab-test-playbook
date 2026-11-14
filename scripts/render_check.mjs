@@ -75,8 +75,11 @@
 //                    the first view and cover no first-view content; a ring whose
 //                    label says pinned (PINNED_RE) must sit in an .r-sticky.
 //   short screen     One phone per arm that fills less than 62% of the stage
-//                    while a larger card.phone_scale still fits: the scale to use
-//                    is named (an error with --strict, else a warning).
+//                    while a larger scale still fits: the scale to use is named
+//                    (an error with --strict, else a warning). The builder picks
+//                    the scale itself (build_card.py auto_scale) and enlarges a
+//                    short screen, so this fires only when its estimate was off
+//                    or the record names a scale that is too small.
 //   stages           Several phones in one column (.r-stage-break): each one is
 //                    checked like a frame (clipping, rings, text at its rendered
 //                    size, i.e. computed size × the phone's zoom) and needs a
@@ -146,7 +149,8 @@ export const LIMITS = {
   sheetWidthPx: 1.5,
 };
 
-// card.phone_scale values the builder accepts; 1.2 is the template default.
+// card.phone_scale values a record may name (optional: the builder picks the scale itself); 1.2 is the
+// template default and the phone's one size unless the content needs another.
 export const PHONE_SCALES = [1, 1.2, 1.4];
 export const DEFAULT_PHONE_SCALE = 1.2;
 
@@ -557,7 +561,9 @@ export function judge(m, opts = {}) {
   const single = m.variants.every((v) => !(v.stages && v.stages.length > 1) && (v.frame.kind === "phone" || v.frame.kind === "phone-web"));
   const clipped = m.variants.some((v) => v.screen.scrollH > v.screen.clientH + 1);
   if (m.phoneScale !== undefined && m.phoneScale !== null && single && !clipped && m.stage.h > 0) {
-    const scale = PHONE_SCALES.includes(m.phoneScale) ? m.phoneScale : DEFAULT_PHONE_SCALE;
+    // The scale the card was drawn at: the builder picks any value from 0.93 to 1.4 (auto_scale) when the record
+    // names none, so it is read as written, not matched against the three values a record may name.
+    const scale = m.phoneScale > 0 ? m.phoneScale : DEFAULT_PHONE_SCALE;
     // The shortest arm decides: both arms share one scale, and the larger one must still fit for both.
     const short = m.variants.reduce((x, y) => (span(y).h < span(x).h ? y : x));
     const h = span(short).h;

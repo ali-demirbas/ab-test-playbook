@@ -154,6 +154,10 @@ Usage:
 
 --draft  build the review draft (ribbon, meta tag, manifest) instead of the
          final card.
+--no-png a final build also writes card-<name>.png next to the card when
+         Node and Playwright are there (render_check.mjs --shot) and prints
+         its path; without them it says so in one line and the build still
+         succeeds. --no-png (or ABTEST_NO_PNG=1) skips the image.
 --stamp  mockup-reviewer only, after a PASS: print the stamp for that draft.
 --check  confirm a delivered card is the reviewed final, byte for byte.
 --lang   language of the builder's own messages (en, the default, or tr).
@@ -4264,6 +4268,54 @@ def _read_bytes(path):
         return fh.read()
 
 
+PNG_MSG = {
+    "written": ("png: {path}", "png: {path}"),
+    "failed_check": ("png: {path} (render_check reported a visual problem on this card: run it with --strict and read "
+                     "the errors)",
+                     "png: {path} (render_check bu kartta görsel bir sorun bildirdi: --strict ile çalıştırıp hataları "
+                     "okuyun)"),
+    "no_node": ("png: not written (Node.js was not found; the card itself is complete)",
+                "png: yazılmadı (Node.js bulunamadı; kartın kendisi tamam)"),
+    "unavailable": ("png: not written (Playwright or Chromium is not installed; the card itself is complete)",
+                    "png: yazılmadı (Playwright ya da Chromium kurulu değil; kartın kendisi tamam)"),
+    "error": ("png: not written (the screenshot step did not finish; the card itself is complete)",
+              "png: yazılmadı (ekran görüntüsü adımı tamamlanmadı; kartın kendisi tamam)"),
+}
+
+
+def png_path(card_path):
+    """Where render_check --shot puts a card's image: card-<name>.png next to it (abtest-card-x.html → card-x.png)."""
+    base = os.path.basename(card_path)
+    base = base[:-5] if base.lower().endswith(".html") else base
+    return os.path.join(os.path.dirname(os.path.abspath(card_path)), "card-%s.png" % re.sub(r"^abtest-card-", "", base))
+
+
+def write_png(card_path, lang="en", timeout=120):
+    """The final card as a PNG next to it, drawn by render_check.mjs (--shot): the same Chromium render the
+    visual check measures, no dependency of its own. Returns (path or None, the one line to print). Never
+    raises and never fails the build: without Node, Playwright or Chromium the card is complete as HTML."""
+    import shutil
+    import subprocess
+    idx = 1 if lang == "tr" else 0
+    node = shutil.which("node")
+    script = os.path.join(_HERE, "render_check.mjs")
+    if not node or not os.path.isfile(script):
+        return None, PNG_MSG["no_node"][idx]
+    target = png_path(card_path)
+    try:
+        if os.path.isfile(target):
+            os.remove(target)  # a stale image must not pass for this build's
+        done = subprocess.run([node, script, "--shot", card_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                              timeout=timeout)
+    except (OSError, subprocess.SubprocessError):
+        return None, PNG_MSG["error"][idx]
+    if done.returncode == 3:
+        return None, PNG_MSG["unavailable"][idx]
+    if not os.path.isfile(target):
+        return None, PNG_MSG["error"][idx]
+    return target, PNG_MSG["failed_check" if done.returncode == 1 else "written"][idx].format(path=target)
+
+
 def _run(args, lang):
     mode = "stamp" if args.stamp else "check" if args.check else "draft" if args.draft else "final"
     for path in (args.template, args.scenario):
@@ -4351,12 +4403,16 @@ def _run(args, lang):
         print("final fingerprint: %s" % final_fp)
         print(_t("reviews: scenario-critic PASS, mockup-reviewer PASS (both stamps match)",
                  "incelemeler: scenario-critic PASS, mockup-reviewer PASS (iki damga da eşleşiyor)", lang))
+        if getattr(args, "png", False):
+            print(write_png(args.out, lang)[1])
     for note in warnings:
         warn(note)
     return 0
 
 
-def main(argv):
+def main(argv, png=False):
+    """`png`: a final build also writes the card's PNG (write_png). On for the command line; a caller
+    that imports this module asks for it."""
     global _MSG_LANG
     ap = argparse.ArgumentParser(description="Build a scenario card from the template.")
     ap.add_argument("--template", required=True, help="path to templates/scenario-card.html")
@@ -4371,7 +4427,10 @@ def main(argv):
                     help="check that a delivered card file is byte for byte the reviewed final card; writes nothing")
     ap.add_argument("--lang", choices=("en", "tr"), default="en",
                     help="language of this tool's messages (default: en)")
+    ap.add_argument("--no-png", action="store_true",
+                    help="final build: don't write card-<name>.png next to the card")
     args = ap.parse_args(argv)
+    args.png = png and not args.no_png and not os.environ.get("ABTEST_NO_PNG")
     modes = [m for m in (args.stamp, args.check) if m] + (["draft"] if args.draft else [])
     if len(modes) > 1:
         ap.error("--draft, --stamp and --check don't combine")
@@ -4397,4 +4456,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main(sys.argv[1:], png=True))

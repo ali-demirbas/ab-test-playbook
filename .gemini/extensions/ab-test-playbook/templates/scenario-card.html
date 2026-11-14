@@ -277,8 +277,9 @@
        Kart karşılaştırmanın kendisidir: üstte kaydın başlığı (soru), altında iki sütun; her sütunda
        "Variant A" / "Variant B" hapı ve cihaz çerçevesi. Kaydın başka hiçbir metni karta yazılmaz.
 
-       KART  1600 × 900 sabit, iç boşluk 40px 48px. Başlık en fazla 2 satır. Sütun genişliği 728px,
-             sütunlar arası 48px; çerçeveler ortalanır ve ÜSTTEN hizalanır (A ile B aynı y'de başlar).
+       KART  1600 × 900 sabit, iç boşluk 40px 48px 32px. Başlık en fazla 2 satır; başlık kutusu hep iki
+             satır yüksekliğindedir, haplar her kartta y=127'de, çerçeveler y=167'de başlar. Sütun genişliği
+             728px, sütunlar arası 48px; çerçeveler ortalanır ve ÜSTTEN hizalanır.
        ÇERÇEVELER  (yükseklik = içerik; en fazla sahne yüksekliği, taşan içerik kesilir ve
                     render_check.mjs bunu hata sayar: ekranın ilgili kısmını çizin)
          device: phone      → 420px telefon + durum çubuğu; sekme çubuğu YALNIZCA card.bottom_nav ile
@@ -288,8 +289,10 @@
          device: web        → sütunu dolduran tarayıcı (üç nokta + adres çubuğu, card.url)
          card.url  kullanıcının verdiği adres aynen; adres verilmemiş, tarif edilen sayfa için temsilî
                    <ad>.example (ör. magaza.example/sepet)
-         card.phone_scale  1 (uzun ekran), 1.2 (varsayılan), 1.4 (kısa ekran sahneyi doldursun)
-       ÖLÇÜ  telefonda taban 15px, web'de 14px; başlık 18-19px; yardım/meta 13px; 12px altı yok;
+         ÖLÇEK  yazılmaz: build_card.py içeriğe göre seçer (telefon varsayılan 1.2; uzun ekran 0.93'e kadar
+                küçülür, çok kısa ekran 1.4'e büyür; tarayıcı 0.93-1.4). card.phone_scale / card.web_scale
+                (1, 1.2, 1.4) yazılırsa o kullanılır.
+       ÖLÇÜ  telefonda taban 15px, web'de 16px; başlık 19-22px; yardım/meta 13-14px; 12px altı yok;
              telefonda buton (.r-cta) ve alan (.r-field) en az 44px.
 
        DEĞİŞEN ÖĞE (.hl) ve card.difference:
@@ -302,10 +305,10 @@
          <div class="hl-soft" data-note="Toplam güncellenir"><div class="r-line total">…</div></div>
          yalnızca kartta bir .hl varken, kol başına en fazla 2, halkanın içinde ya da etrafında değil;
          içindeki sayı farkı yine numeric_change ister.
-       Etiket (data-note, 2-4 kelime) halkanın sağ üst köşesinin dışına oturur; bir öğeyi örtüyorsa
-       data-pos="below" (tek halka) ya da card.note_pos: "below" (tüm kart).
-       NEFES PAYI: halka çevresindeki öğeleri örtmez (halka öğenin 7px dışına çizilir); etiket
-       halkanın üstünde ~31px yer ister. Ekranın üst kenarındaki bir öğenin etiketi alta alınır.
+       Etiket (data-note, 2-4 kelime, 14px) halkanın dışına oturur; yerini build_card.py seçer: önce
+       istenen taraf (data-pos="below", card.note_pos ya da label_pos; yoksa üst), sonra diğer konumlar. Etiketin
+       durduğu tarafta halkanın dışında 34px yer şablondan gelir; yazar boşluk eklemez.
+       NEFES PAYI: halka çevresindeki öğeleri örtmez (halka öğenin 7px dışına çizilir).
 
        BİLEŞENLER (yalnızca CSS; işaretleme örnekleri):
          Başlık çubuğu   <div class="r-header"><span class="r-logo">Marka</span><span class="r-nav"><span>Ürünler</span><span>Kampanyalar</span></span><span class="r-tel">0850 000 00 00</span></div>
