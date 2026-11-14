@@ -90,7 +90,7 @@ The last stderr line names the outcome:
 | 2 | usage error | Unknown flag, no card, missing file |
 | 3 | `VISUAL_CHECK_UNAVAILABLE` | Playwright or Chromium missing, nothing measured |
 
-With exit 3 the reviewer's verdict is `UNVERIFIED`, so no card becomes final: you get the draft as a preview clearly labelled UNVERIFIED. Once the check is installed, the same draft is checked and finished. `--shot` and `--half` write `card-<name>.png` and `card-<name>-800.png` next to the card.
+With exit 3 the reviewer's verdict is `UNVERIFIED`, so no card becomes final: you get the draft as a preview clearly labelled UNVERIFIED. Once the check is installed, the same draft is checked and finished. `--shot` and `--half` write `card-<name>.png` and `card-<name>-800.png` next to the card. A final build writes `card-<name>.png` next to the card as well (`--no-png` skips it).
 
 ## Update
 

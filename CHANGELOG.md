@@ -2,6 +2,32 @@
 
 All notable changes to this project are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 3.3.0 - 2026-11-15
+
+### First impression
+- README and README.tr are short and open with an example card, three bullets and a 3-step start. The English README shows an English card built through the real pipeline.
+- Install, update and troubleshooting moved to `docs/install.md`; the long reference material moved to `docs/reference.md`. Both have Turkish versions.
+- `docs/index.html` is the live demo page, with a language switch, a phone layout and a social preview image.
+- The bare `/ab-test` menu leads with one recommended start and says whether the visual check is installed.
+- A card that could not be visually checked arrives with a calm note and the one-time install command, with no error wording.
+
+### Cards
+- The builder picks the frame scale from the content. `card.phone_scale` and `card.web_scale` are optional overrides.
+- The Variant A and Variant B pills sit at the same height on every card.
+- Ring labels are 14 px and the builder places each one where it is clear of the screen.
+- An edit rings only the part that changed in a plan, field or item; `"ring": "node"` rings the whole node.
+- The conditional ribbon is a filled amber pill. The draft ribbon reads "Önizleme · görsel kontrol yapılmadı" / "Preview · not visually checked".
+- The final build writes `card-<name>.png` next to the card; `--no-png` skips it. Without Node or Playwright the build says so and still succeeds.
+- `validate.sh` rebuilds the English demo card too, so a template change cannot leave it stale.
+
+### Audit and ideas
+- Audit gives every checklist item a fixed severity label and offers a rough feasibility range when a baseline rate and visitors are given.
+- `feasibility.py` reads a bare rate between 1 and 100 as a percentage.
+- The input scan catches lines that try to force a verdict, and audit scans a pasted plan too.
+- Suggest, with no page shared, asks what is sold and names its picks generically.
+- Design, given a rate for a step, asks where inside the step the loss happens.
+- The critic checks idea diversity across a set and that each record stands on its own when pasted.
+
 ## 3.2.2 - 2026-11-14
 
 - Directory listing fields in `plugin.json`: display name "A/B Test Builder", documentation, support, privacy policy and terms links. Claude Code versions that predate these keys report them in `claude plugin validate` but still install the plugin.

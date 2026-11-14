@@ -39,7 +39,7 @@ Sırada neyi test edeceğine karar veren growth, CRO ve ürün ekipleri için. K
 npm i --prefix ~/.abtest-visual playwright && npx --prefix ~/.abtest-visual playwright install chromium
 ```
 
-Bu adımı atlasanız da kartlarınızı alırsınız, "görsel olarak kontrol edilmedi" işaretli önizleme olarak. Sonradan kurarsanız aynı kartlar kontrol edilip tamamlanır.
+Bu adımı atlasanız da kartlarınızı alırsınız, "görsel kontrol yapılmadı" işaretli önizleme olarak. Sonradan kurarsanız aynı kartlar kontrol edilip tamamlanır.
 
 **3. Kart isteyin.** Sayfanızın ekran görüntüsünü Claude Code'a yapıştırıp şunu yazın:
 

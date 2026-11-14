@@ -90,7 +90,7 @@ Son stderr satırı sonucu söyler:
 | 2 | kullanım hatası | Bilinmeyen seçenek, kart yok ya da dosya bulunamadı |
 | 3 | `VISUAL_CHECK_UNAVAILABLE` | Playwright veya Chromium yok, hiçbir şey ölçülmedi |
 
-Çıkış 3’te incelemecinin kararı `UNVERIFIED` olur, hiçbir kart nihai olmaz: taslak, açıkça UNVERIFIED diye etiketlenmiş bir önizleme olarak gelir. Kontrol kurulunca aynı taslak kontrol edilip tamamlanır. `--shot` ve `--half`, kartın yanına `card-<ad>.png` ve `card-<ad>-800.png` yazar.
+Çıkış 3’te incelemecinin kararı `UNVERIFIED` olur, hiçbir kart nihai olmaz: taslak, açıkça UNVERIFIED diye etiketlenmiş bir önizleme olarak gelir. Kontrol kurulunca aynı taslak kontrol edilip tamamlanır. `--shot` ve `--half`, kartın yanına `card-<ad>.png` ve `card-<ad>-800.png` yazar. Nihai üretim de kartın yanına `card-<ad>.png` yazar (`--no-png` bunu atlar).
 
 ## Güncelleme
 

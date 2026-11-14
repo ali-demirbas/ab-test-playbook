@@ -134,6 +134,7 @@ echo "== 6. Card builder produces the reviewed cards from the template =="
 # 1) and an existing output is left as it was.
 CARD_TMP=$(mktemp -d) || exit 1
 for pair in "examples/scenario.json:docs/demo/scenario-card.html" \
+            "docs/demo/scenario-card-en.json:docs/demo/scenario-card-en.html" \
             "examples/samples/desktop-product.json:docs/demo/sample-desktop-product.html" \
             "examples/samples/app-home.json:docs/demo/sample-app-home.html" \
             "examples/samples/saas-form.json:docs/demo/sample-saas-form.html"; do

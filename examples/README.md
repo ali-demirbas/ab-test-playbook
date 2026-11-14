@@ -89,7 +89,10 @@ It fails on a card that isn't 1600 × 900, a title over two lines, frame
 content that is clipped, a blank phone screen, a ring or label covering screen
 elements, text below 12px or contrast below 4.5:1, and A and B frames that
 aren't top-aligned or the same width; it warns on a frame too small for its
-stage (`--strict` makes that fail too). `--shot` writes a PNG.
+stage (`--strict` makes that fail too). `--shot` writes a PNG. A final build
+writes `card-<name>.png` next to the card on its own (`--no-png` skips it), and
+the scale fields `card.phone_scale` and `card.web_scale` are optional: the
+builder picks the scale from the content.
 
 Validation and the card build run in CI on every push, so a change to the
 template or the schema that would break a real card fails the build rather than
