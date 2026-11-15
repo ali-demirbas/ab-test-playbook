@@ -345,5 +345,21 @@ class TestChat(unittest.TestCase):
         self.assertIn("priority.tier", err)
 
 
+
+class TestCardTheme(unittest.TestCase):
+    def test_dark_passes_and_an_unknown_theme_is_refused(self):
+        sc = plain(card={"device": "web", "url": "magaza.example", "mockup_basis": "representative",
+                         "screen": [{"h": "Uzun ürün başlığı", "id": "baslik"}],
+                         "change": {"op": "edit", "target": "baslik", "set": {"h": "Kısa başlık"},
+                                    "label": "Kısa başlık"}})
+        base = [e for e in errs(sc) if "card.theme" in e]
+        self.assertEqual(base, [])
+        for theme in ("light", "dark"):
+            sc["card"]["theme"] = theme
+            self.assertEqual([e for e in errs(sc) if "theme" in e], [], theme)
+        sc["card"]["theme"] = "sepia"
+        self.assertTrue(has(errs(sc), "card.theme: 'sepia' is not one of ['light', 'dark']"), errs(sc))
+
+
 if __name__ == "__main__":
     unittest.main()

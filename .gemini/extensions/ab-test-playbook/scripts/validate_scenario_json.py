@@ -117,6 +117,8 @@ ERRORS (exit 1):
     and so does an outcome left to its owner ("B önde çıkarsa: karar sahibinde")
   * a lagging primary or metric guardrail (returns, cancellations, churn,
     repeat purchase, refunds) carries its window in the name (rule 3)
+  * a placeholder new_record.py left (any string still carrying ⟦…⟧,
+    the card included): the skeleton's hints are replaced, never shipped
   * the file itself: a key written twice in one object, an integer longer
     than MAX_INT_DIGITS (both pass json.load silently or with a traceback)
   * variants are "A" then "B", and the current page is A (rule 15)
@@ -377,6 +379,10 @@ MSG = {
                     "{max} karakterlik tek cümledir",
                     "must_be_true.belief: {n} characters; the one belief the test needs is one sentence of at most "
                     "{max}"),
+    "placeholder": ("{path}: yer tutucu değiştirilmemiş: {val!r}; ⟦…⟧ içindeki tarifi bu sayfanın gerçek değeriyle "
+                    "değiştirin (new_record.py iskeleti)",
+                    "{path}: placeholder not replaced: {val!r}; replace the ⟦…⟧ hint with this page's real value "
+                    "(new_record.py skeleton)"),
     "assumption_question": ("{path}: kritik bir varsayım onu çözecek tek kısa soruyu taşır (turun tek sorusu en kritik "
                             "olanıdır, kural 19)",
                             "{path}: a critical assumption carries the one short question that settles it (the "
@@ -2708,9 +2714,44 @@ def check_card(scenario, errors, lang="tr"):
                                             card.get("bottom_nav_active"), lang))
 
 
+# new_record.py marks every value its author still has to write as ⟦hint⟧; a record that still carries one is a
+# skeleton, never a record (the brackets appear in no real copy).
+PLACEHOLDER_RE = re.compile(r"⟦[^⟦⟧]*⟧|[⟦⟧]")
+
+
+def _all_strings(node, path=""):
+    if isinstance(node, str):
+        yield path, node
+    elif isinstance(node, dict):
+        for key, value in node.items():
+            for item in _all_strings(value, "%s.%s" % (path, key) if path else str(key)):
+                yield item
+    elif isinstance(node, list):
+        for i, value in enumerate(node):
+            for item in _all_strings(value, "%s[%d]" % (path, i)):
+                yield item
+
+
+def placeholder_paths(scenario):
+    """(path, the first placeholder) of every string that still carries a ⟦hint⟧."""
+    out = []
+    for path, text in _all_strings(scenario):
+        m = PLACEHOLDER_RE.search(text)
+        if m:
+            out.append((path, m.group(0)))
+    return out
+
+
+def check_placeholders(scenario, errors, lang="tr"):
+    for path, hint in placeholder_paths(scenario):
+        errors.append(msg(lang, "placeholder", path=path, val=hint))
+
+
 def validate(scenario, schema, lang="tr"):
     """Errors only. lint() returns the warnings."""
     errors = []
+    if isinstance(scenario, dict):
+        check_placeholders(scenario, errors, lang)
     walk(scenario, schema, "", errors, schema, lang)
     if isinstance(scenario, dict):
         check_kpis(scenario, errors, lang)

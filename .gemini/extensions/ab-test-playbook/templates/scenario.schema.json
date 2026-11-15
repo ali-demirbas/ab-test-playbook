@@ -694,6 +694,14 @@
           ],
           "description": "Metadata for the mockup reviewer, never printed: what the mockup is drawn from. shared_page → compare variant A with the shared page; described → rebuilt from the user's description; representative → a representative example (the chat says so in one line). Absent = shared_page when a variant is_current, representative otherwise."
         },
+        "theme": {
+          "type": "string",
+          "enum": [
+            "light",
+            "dark"
+          ],
+          "description": "The card's colour theme; optional, light when absent. The mockups keep the page's own colours in both themes."
+        },
         "phone_scale": {
           "type": "number",
           "enum": [
