@@ -1,6 +1,6 @@
 # Eval 11: son denetim, yeniden koşulan dokuz senaryo
 
-3.0.0 öncesi son denetimde yeniden koşulan dokuz senaryonun beklenen ana davranışları. Her girdide genel ölçütler de geçerlidir: sohbette senaryo başına beş satır (başlık, etiket satırı, en fazla 140 karakterlik `Neden:` satırı, `Doğru olmalı:` satırı, kart dosyası), listeden sonra yalnızca geçerli satırlar ve her bilgi bir kez (scenario-critic planlanan sohbetin tamamını görür), en fazla bir soru ve tek cümle (iki ya da daha çok kritik varsayımda numaralı teyit listesi tek soru sayılır), hiçbir dilde uzun tire yok, iki damga olmadan kart yok (hızlı kipin etiketli taslakları dışında).
+3.0.0 öncesi son denetimde yeniden koşulan dokuz senaryonun beklenen ana davranışları. Her girdide genel ölçütler de geçerlidir: sohbette senaryo başına altı satır (başlık, etiket satırı, en fazla 140 karakterlik `Neden:` satırı, `Doğru olmalı:` ve `Önce yokla:` satırları, kart dosyası), listeden sonra yalnızca geçerli satırlar ve her bilgi bir kez (scenario-critic planlanan sohbetin tamamını görür), en fazla bir soru ve tek cümle (iki ya da daha çok kritik varsayımda numaralı teyit listesi tek soru sayılır), hiçbir dilde uzun tire yok, iki damga olmadan kart yok (hızlı kipin etiketli taslakları dışında).
 
 **Girdi A (kupon bağlantı arkasında):** Sepet sayfası, açık kupon kutusu; problem: kod aramaya gidiyorlar.
 - `difference: change`; B’de kutu “İndirim kodum var” bağlantısının arkasındadır, halka B’dedir.
@@ -21,8 +21,8 @@
 - Kullanıcı fiyatı doğrulayınca varsayım kaldırılır, kayıt yeniden incelenir, kart bantsız yazılır.
 
 **Girdi E (onboarding’de “Atla”):** Uygulama tanıtım slaytlarına “Atla” metin butonu ekleniyor.
-- Buton ekranın kendi metin renginde bir metin olarak çizilir (`Special cases` → Text buttons); erişilebilirlik uyarısı dokunma alanını, ekran okuyucu adını ve klavyeyi sayar.
-- Birincil tamamlanan kayıt; guardrail daha sonraki bir adım (ör. 7 günlük aktivasyon). Yerel uygulama sürümü gerektiği için kolaylık düşük, gerekçe bunu söyler.
+- Buton ekranın kendi metin renginde bir metin olarak çizilir (`knowledge/mockup-style/special-cases.md`, “Text buttons” maddesi); erişilebilirlik uyarısı dokunma alanını, ekran okuyucu adını ve klavyeyi sayar.
+- Birincil tamamlanan kayıt; guardrail daha sonraki bir adım (ör. 7 günlük aktivasyon). Yerel uygulama sürümü gerektiği için emek orta, yüksek değil (yalnızca sürüm gerektiren değişiklik orta emektir); gerekçe bunu söyler.
 
 **Girdi F (yumuşak kayıt duvarı korunur):** B kayıt duvarını kapatılabilir yumuşak bir pencereye çeviriyor; ilk kayıtta odak ve Esc ölçütleri eksik.
 - scenario-critic eksikleri ilk turda birlikte, `[fixable]` olarak bildirir; üretici tarif edilen ölçütleri ekler, sonraki incelemede PASS gelir. Öneri düşürülmez, `[blocking]` sayılmaz.

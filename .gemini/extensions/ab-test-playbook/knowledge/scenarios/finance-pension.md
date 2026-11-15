@@ -128,7 +128,7 @@ On the introduction screen of a service that manages fund allocation on the cust
 
 Değişken: Öneri slaytındaki eylem butonu · Fark: ekle
 
-Etiket: id=fp-003 · mercek=Netlik · düzey=görsel · sektör=finans · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+Etiket: id=fp-003 · mercek=Netlik · düzey=görsel · sektör=finans · pazar=global · emek=orta · durum=güncel · tarih=2026-11
 
 EN: Does adding a button that names the promise to a slide offering a personal recommendation pay off?
 

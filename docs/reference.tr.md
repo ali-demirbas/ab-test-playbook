@@ -107,7 +107,9 @@ Her kart 1600 × 900’dür: üstte soru, altında yan yana A ve B, değişiklik
 skills/          ab-test (router) + suggest / design / audit / card
 agents/          scenario-critic: senaryo render edilmeden önce metodolojik denetim, tek tur
                  mockup-reviewer: iki mockup’ın tam olarak tek bir şeyde farklılaştığını kontrol eder (ikisi de Sonnet’te çalışır)
-knowledge/       methodology.md · mockup-style.md · kpi-glossary.md (kanonik KPI adları, her biri paydası ve İngilizce adıyla)
+knowledge/       methodology.md · kpi-glossary.md (kanonik KPI adları, her biri paydası ve İngilizce adıyla)
+                 mockup-style.md: kartın çekirdeği, her kartta okunur; mockup-style/: özel durumlar, ham markup, hızlı kip,
+                 taslak ve nihai kart, render_check; her biri yalnızca tetikleyicisi geçerliyse okunur
                  scenarios/: 13 aşama dosyasında derlenmiş 217 senaryo, Türkçe yazılmış, İngilizce başlık, etiket satırı ve
                  İngilizce gövdeyle (FORMAT.md): ana sayfa ve landing, arama ve filtreleme,
                  kategori, ürün detay, sepet ve ödeme, teşekkür sayfası, panel, form ve kayıt, fiyatlandırma,
@@ -130,6 +132,8 @@ scripts/         validate_scenarios.py: senaryo arşivi için format kontrolü
                  render_check.mjs: kartı headless Chromium’da ölçer; boyut, kırpılma, boş ekran, halka çakışması,
                  yazı boyutu, kontrast (nihai kart için gerekli; Node ve Playwright ister)
 templates/       scenario-card.html · abtest-history.md · abtest-backlog.md (test hafızası ve backlog şablonları)
+                 record-checklist.md: bir kaydın nasıl yazıldığı; iskelet, ilk doğrulama listesi, alan rehberi
+                 stakeholder-brief.md · audit-output.md: turun kapanış özeti ve istenince verilen başlamadan önce listesi
                  scenario.schema.json: araçtan bağımsız test tanımı, herhangi bir deney platformuna taşınabilir
 tests/           validator’lar ve kart üreticisi için birim testleri
 evals/           manuel kabul testleri: üç temel akış (suggest, kupon zararı örneğiyle design, audit), ortak kurallar (tur başına tek soru,

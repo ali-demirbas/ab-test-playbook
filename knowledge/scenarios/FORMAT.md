@@ -20,7 +20,7 @@ Every line is required. The tag keys keep this order and every key is present.
 | `düzey` | element: `görsel`, `gezinme`, `bilgi`, `form`, `metin`, `güven`, `sosyal-kanıt`, `sürtünme`; structural: `teklif`, `fiyat`, `kişiselleştirme`, `akış`, `elde-tutma`, `onboarding` | What kind of change it is (below) |
 | `sektör` | `genel`, `e-ticaret`, `moda`, `saas`, `b2b`, `finans`, `ilan`; one or two, comma-separated | Where the pattern applies; `genel` is any site or app |
 | `pazar` | `TR`, `global` | `TR`: rests on a Turkey-specific practice or rule (card installments, the national ID number); `global`: no single-market assumption, a market note may still apply |
-| `emek` | `düşük`, `orta`, `yüksek` | The record's `priority.inputs.effort`: copy, style or order; front-end work; backend, a native app release or an operational or commercial change |
+| `emek` | `düşük`, `orta`, `yüksek` | The record's `priority.inputs.effort`: copy, style or order; front-end work or a change that ships in a native app release; backend or an operational or commercial change |
 | `durum` | `güncel`, `klasik` | `klasik`: a dated pattern kept for reference; suggested only when the user names it |
 | `tarih` | `2026-11` | The month the block was last reviewed |
 

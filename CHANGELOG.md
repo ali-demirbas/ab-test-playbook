@@ -2,7 +2,61 @@
 
 All notable changes to this project are documented here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
-## 3.3.0 - 2026-11-15
+## 3.4.0 - 2026-11-15
+
+### Speed
+- One critic round. A finding is `[fixable]` (exact text in the small-fix fields, applied by the main session without a re-call, the stamp stays valid) or `[blocking]` (the only reason to call the critic again). Safeguards are add-only after the round: the stamp records the warnings, accessibility criteria, invariants and exposure the critic saw, and the builder refuses a record with fewer.
+- Both reviewers run on Sonnet, and their instructions keep the bar strict.
+- Fast mode ("hızlı", "taslak", "quick", "fast", "draft", or the menu): the validator only, quick drafts labelled on the card and in chat; "tamamla" / "finish" runs both reviews and builds the final cards.
+- `new_record.py` prints a skeleton record with what the validator decides already filled in; a `⟦…⟧` hint left in is refused.
+- `validate_scenario_json.py --chat` prints the chat lines a record fixes, so they are copied, never composed. The critic's mechanical checks (result claims, glossary names) run in the validator.
+- Refusals carry the corrected value: the glossary pair, the accessibility text, the target size, the invariant, and for the card the fold, alignment, plan node, pinned bar, a difference outside the ring and clipping.
+- What a card turn reads before writing is more than halved: the card skill, the new `templates/record-checklist.md` and the mockup core total 32.8 KB, against 74.6 KB in 3.2.2 with the schema and the worked example, which are no longer read. Special cases, raw markup, fast mode, the draft and final card and render_check live in `knowledge/mockup-style/`, one file per trigger. A design turn reads 70.0 KB before producing (3.2.2: 108.8 KB), suggest 66.4 KB (103.3 KB); `tests/test_reading_budget.py` holds each flow under a ceiling and checks that every reference resolves.
+
+### Ideas and chat
+- Priority is the band of a score out of 9 from five inputs, with the new `impact` (structural, persuasive, cosmetic); bands 7-9 high, 4-6 medium, 0-3 low; the tag line shows the score ("Öncelik: Orta (6/9)"). A change that ships in a native app release is medium effort, not high.
+- Each scenario has a "Doğru olmalı:" / "Must be true:" line and an "Önce yokla:" / "Probe first:" line with a cheap check before the test.
+- An order line says which test runs first and what comes next after a win or a loss ("Sıra: 1 → 2 …").
+- A held idea gets its path in one line: what to confirm, then which test opens.
+- With more than three strong candidates, the strongest one left out is named in one line.
+- One stakeholder brief, for scenario 1, plus one line offering the others.
+- Several open critical assumptions are asked as one numbered confirmation list, the turn's one question.
+- One canonical set of evidence labels ("industry observation", never "sector observation").
+- No em dash in any language.
+- The screen inventory is saved to `.abtest-screen-<page>.md` and reused by a later turn on the same screenshot or URL.
+
+### Audit
+- The output opens with a severity-ordered summary table and a one-sentence decision; details only for critical rows.
+- It closes with a fixed plan (still one variable) and a one-line offer to turn it into a card.
+- A coverage line names the headings with no finding.
+- Two new checks: targeting versus measurement scope, and the exposure point of a change in a collapsed or below-the-fold element.
+- A Turkish audit example sits beside the English one; eval 03 adds a sound plan, an embedded instruction line and a pasted plan.
+
+### Archive
+- 217 scenarios after merging four twin pairs; mobile-web blocks moved out of `mobile-app.md`.
+- Every block has an `Etiket:` tag line (id, lens, level, sector, market, effort, status, month), an English title and variable, and a full English body; `read_section.py --lang` reads one language.
+- One English name per KPI, the same as the glossary.
+- Five weak blocks rewritten; freshness notes on five blocks whose ground shifted; consent requests out of scope.
+- 3 to 6 items per box. Blocks whose only extra work is a native app release are tagged `emek=orta`.
+
+### Cards
+- Desktop components: logo strips, a big price with the old one struck through, star ratings, columns, a right-aligned menu and the "end of first screen" line.
+- The Variant pills are in the card's language, and A reads "· Mevcut" / "· Current" when it is the user's own page.
+- Photo placeholders get a light gradient and a picture icon.
+- On a pinned-bar card, the arm without the bar shows the page continuing instead of white space.
+- `card.theme: "dark"` darkens the ground, title and pills; the mockups keep the page's colours.
+- `build_card.py --share` writes a 1200 × 630 share image of a final card; `--overview` writes one page of a turn's cards.
+
+### Docs
+- Fewer permission prompts: one allowlist for the plugin's scripts, with what each rule covers.
+- A glossary of the terms the playbook uses, in both languages.
+- A "New to the terminal?" start in the install guide.
+
+### Upgrading from 3.2
+- A record saved under 3.2 lacks `priority.inputs.impact` and fails validation. Start it again from `new_record.py`, or add `impact` as the validator's message says and recheck the tier against the new bands.
+- Critic stamps written under 3.2 are void, since the stamp now records what the critic reviewed. Each record needs one new critic pass before its card is rebuilt.
+
+## 3.3.0 - 2026-11-15 (not released separately; shipped in 3.4.0)
 
 ### First impression
 - README and README.tr are short and open with an example card, three bullets and a 3-step start. The English README shows an English card built through the real pipeline.

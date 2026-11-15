@@ -68,7 +68,7 @@
 
 **Beklenen davranış:**
 1. Kaydın `difference` değeri `move`dur; `card.difference` ya hiç yoktur ya da aynı türü söyler. Farklı bir tür yazılırsa `build_card.py` kartı reddeder; taşıma “ekle” ya da “kaldır” olarak çizilmez.
-2. İki kol aynı ilk görünümü ve aynı yerde aynı kesik çizgiyi (katlama işareti) çizer. A’da buton çizginin altında, B’de ilk görünümün altında sabit olarak halkalanır; her halkanın etiketi kendi kolundaki konumu söyler (A “Buton sayfanın sonunda”, B “Buton ekranda sabit”), butonun içeriği aynıdır. Manifestte tek bir “taşındı” halkası vardır, değişiklik yoktur (`mockup-style.md` → Special cases).
+2. İki kol aynı ilk görünümü ve aynı yerde aynı kesik çizgiyi (katlama işareti) çizer. A’da buton çizginin altında, B’de ilk görünümün altında sabit olarak halkalanır; her halkanın etiketi kendi kolundaki konumu söyler (A “Buton sayfanın sonunda”, B “Buton ekranda sabit”), butonun içeriği aynıdır. Manifestte tek bir “taşındı” halkası vardır, değişiklik yoktur (`knowledge/mockup-style/special-cases.md`, “Fold and sticky bar” maddesi).
 3. Kartta sayfa metni ve halka etiketleri dışında açıklama yoktur (“kaydırınca”, “sonraki adım” gibi not yazılmaz).
 
 **Düşme koşulları:**

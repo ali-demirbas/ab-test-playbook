@@ -107,7 +107,9 @@ Every card is 1600 × 900, the question on top and A and B side by side, the cha
 skills/          ab-test (router) + suggest / design / audit / card
 agents/          scenario-critic - adversarial methodology review before a scenario is rendered, one round
                  mockup-reviewer - checks the two mockups differ in exactly one thing (both run on Sonnet)
-knowledge/       methodology.md · mockup-style.md · kpi-glossary.md (canonical KPI names, each with its denominator and English name)
+knowledge/       methodology.md · kpi-glossary.md (canonical KPI names, each with its denominator and English name)
+                 mockup-style.md - the card's core, read for every card; mockup-style/ - special cases, raw markup, fast mode,
+                 draft and final card, render_check: each read only when its trigger applies
                  scenarios/ - 217 curated scenarios in 13 stage files, Turkish with an English title, tag line and English body
                  (FORMAT.md): home and landing, search and filtering,
                  category, product detail, cart and checkout, thank-you, dashboard, forms and signup, pricing,
@@ -130,6 +132,8 @@ scripts/         validate_scenarios.py - format check for the scenario archive
                  render_check.mjs - measures a card in headless Chromium: size, clipping, blank screen, ring overlaps,
                  text size, contrast (needed for a final card; needs Node and Playwright)
 templates/       scenario-card.html · abtest-history.md · abtest-backlog.md - test memory and backlog
+                 record-checklist.md - how a record is written: the skeleton, the first-validation list, field guidance
+                 stakeholder-brief.md · audit-output.md - the turn's closing brief and the pre-start list given on request
                  scenario.schema.json - tool-agnostic test definition, portable to any experimentation platform
 tests/           unit tests for the validators and the card builder
 evals/           manual acceptance tests: the three core flows (suggest, design incl. the coupon harm case, audit), cross-cutting rules (one question

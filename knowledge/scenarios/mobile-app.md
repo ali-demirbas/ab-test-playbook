@@ -8,7 +8,7 @@ Yolculuk aşaması: yüklü uygulamanın içindeki akışlar (onboarding, izinle
 
 Değişken: Öncelikli servis ikonunun boyutu · Fark: değiştir
 
-Etiket: id=ma-001 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+Etiket: id=ma-001 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
 
 EN: Does enlarging service icons change behavior?
 
@@ -124,7 +124,7 @@ Requiring sign-up as soon as the app opens (a hard wall) can make users leave be
 
 Değişken: Push izninin istendiği an · Fark: değiştir
 
-Etiket: id=ma-003 · mercek=Zamanlama · düzey=onboarding · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+Etiket: id=ma-003 · mercek=Zamanlama · düzey=onboarding · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
 
 EN: When should push permission be requested: at launch or after the first value?
 
@@ -188,7 +188,7 @@ Showing the permission request at launch gets a “Don’t Allow” from most us
 
 Değişken: Yükleme ekranındaki kampanya mesajı · Fark: ekle
 
-Etiket: id=ma-004 · mercek=Fiyat · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+Etiket: id=ma-004 · mercek=Fiyat · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
 
 EN: Does a message on the loading screen affect sales?
 
@@ -248,7 +248,7 @@ Loading screens usually go to waste. Showing a campaign or benefit message in th
 
 Değişken: İlk kullanım arayüz ipuçları · Fark: ekle
 
-Etiket: id=ma-005 · mercek=Netlik · düzey=onboarding · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+Etiket: id=ma-005 · mercek=Netlik · düzey=onboarding · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
 
 EN: Does showing interface tips on first use pay off?
 
@@ -308,7 +308,7 @@ Short bubbles placed over the app introduce hard-to-find functions on first use.
 
 Değişken: İzin öncesi açıklama ekranı · Fark: ekle
 
-Etiket: id=ma-006 · mercek=Güven · düzey=onboarding · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+Etiket: id=ma-006 · mercek=Güven · düzey=onboarding · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
 
 EN: Does a screen that explains why, shown before a permission request, pay off?
 
@@ -428,7 +428,7 @@ Instead of the same “next step” for everyone, offering a suggestion based on
 
 Değişken: Profil tamamlama göstergesi · Fark: ekle
 
-Etiket: id=ma-008 · mercek=Netlik · düzey=onboarding · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+Etiket: id=ma-008 · mercek=Netlik · düzey=onboarding · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
 
 EN: Does showing a profile completion percentage get missing fields filled in?
 
