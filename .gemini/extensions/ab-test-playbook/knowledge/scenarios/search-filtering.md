@@ -8,6 +8,10 @@ Yolculuk aşaması: kullanıcı ne istediğini biliyor veya keşfediyor; arama k
 
 Değişken: Filtre uygulama biçimi · Fark: değiştir
 
+Etiket: id=sf-001 · mercek=Çaba · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should filters apply instantly or all at once?
+
 Anında filtreleme hızlı geri bildirim verir; toplu filtreleme daha kontrollü bir deneyim sunar. Hangisinin keşif ve dönüşümde daha iyi çalıştığı ölçülmelidir.
 
 **Test edilmesi gerekenler**
@@ -37,12 +41,15 @@ Anında filtreleme hızlı geri bildirim verir; toplu filtreleme daha kontrollü
 
 Değişken: Arama alanının görünürlük düzeyi · Fark: değiştir
 
+Etiket: id=sf-002 · mercek=Çaba · düzey=gezinme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: How visible should the search bar be?
+
 Arama çubuğunun konumu ve görünürlüğü, kullanıcının ürün keşif davranışını değiştirebilir. Bunun dönüşüme yansıyıp yansımadığı ölçülmelidir.
 
 **Test edilmesi gerekenler**
 - Konum: Header’da mı, menü içinde mi, yalnızca ikon olarak mı?
 - Görünürlük: Açık arama alanı mı, sadece ikon mu daha çok tıklanıyor?
-- Sonraki test: Kazanan görünürlük sabitken placeholder metni (“Ürün ara…” / “Favori markanı yaz”) ayrı bir testte arama başlatmayı artırıyor mu?
 - Menü etkisi: Arama alanı öne çıkınca kategori menüsüyle gezinme azalıyor mu, yani arama menünün yerini mi alıyor?
 - Cihaz: Mobilde ve masaüstünde görünürlük ihtiyacı aynı mı?
 
@@ -65,6 +72,10 @@ Arama çubuğunun konumu ve görünürlüğü, kullanıcının ürün keşif dav
 ## Arama kutusundaki önceki arama önerilerini kaldırmak dönüşümü etkiliyor mu?
 
 Değişken: Önceki arama önerileri · Fark: kaldır
+
+Etiket: id=sf-003 · mercek=Çaba · düzey=gezinme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does removing past-search suggestions from the search box affect conversion?
 
 Arama kutusu açıldığında önceki aramaları varsayılan öneri olarak listelemek aramaya başlamayı hızlandırır ama kullanıcıyı eski aramalarına geri çeker. Bu varsayılan öneri listesini kaldırmak (geçmişe erişim ayrı bir bağlantıda kalır) keşif sürecini ve karar hızını değiştirebilir.
 
@@ -95,6 +106,10 @@ Arama kutusu açıldığında önceki aramaları varsayılan öneri olarak liste
 
 Değişken: Sıfır sonuç ekranındaki öneri blokları · Fark: ekle
 
+Etiket: id=sf-004 · mercek=Çaba · düzey=gezinme · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does the zero-results page keep users from leaving?
+
 Sonuç bulunamayan arama, terk oranı en yüksek ekranlardan biridir. Boş bir ekran yerine yazım önerisi, popüler kategoriler ve benzer ürünler sunmak bu trafiği kurtarabilir.
 
 **Test edilmesi gerekenler**
@@ -123,6 +138,10 @@ Sonuç bulunamayan arama, terk oranı en yüksek ekranlardan biridir. Boş bir e
 ## Arama sonuçlarında varsayılan sıralama ne olmalı?
 
 Değişken: Arama sonuçlarının varsayılan sıralaması · Fark: değiştir
+
+Etiket: id=sf-005 · mercek=Uygunluk · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: What should the default sort order of search results be?
 
 Varsayılan sıralama, kullanıcıların büyük çoğunluğunun gördüğü tek sıralamadır. İlgi düzeyi, çok satan ve fiyat sıralamaları farklı kullanıcı gruplarına hizmet eder ve marj üzerinde farklı etki yaratır.
 
@@ -153,6 +172,10 @@ Varsayılan sıralama, kullanıcıların büyük çoğunluğunun gördüğü tek
 
 Değişken: Menünün kaydırmada sabit kalması · Fark: değiştir
 
+Etiket: id=sf-006 · mercek=Çaba · düzey=gezinme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does a sticky menu improve the experience?
+
 Menünün sabit kalması sayfa içi gezinme hızını artırabilir, ancak ekran alanı kaplayarak rahatsız da edebilir.
 
 **Test edilmesi gerekenler**
@@ -160,7 +183,6 @@ Menünün sabit kalması sayfa içi gezinme hızını artırabilir, ancak ekran 
 - Kaydırma: Yukarı çıkma zorunluluğunu ortadan kaldırıyor mu?
 - Mobil: Uzun sayfalarda gezinme performansını artırıyor mu?
 - Alan: Ekran alanını kaplaması rahatsız ediyor mu?
-- Sonraki test: Sabit menü kazanırsa, mobilde ekranın üstüne mi altına mı sabitlendiği ayrı bir testte menü kullanımını değiştiriyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Sticky menü satın almayı artırıyor mu?
@@ -182,34 +204,42 @@ Menünün sabit kalması sayfa içi gezinme hızını artırabilir, ancak ekran 
 
 Değişken: Ana menünün yapısı · Fark: değiştir
 
-Mega menü mü, sade yatay menü mü daha iyi gezinme sunuyor? Yapıdaki fark, içerik keşif davranışını ciddi biçimde değiştirebilir.
+Etiket: id=sf-007 · mercek=Netlik · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Mega menu or horizontal menu?
+
+Geniş kataloglu bir sitede ziyaretçi aradığı alt kategoriye ana menüden ulaşır. Mega menü, üzerine gelindiğinde ya da tıklandığında bütün alt kategorileri sütunlar hâlinde tek panelde açar: ziyaretçi “erkek ayakkabı → koşu” gibi derin bir kategoriye tek adımda iner; ama çok bağlantılı panel taranamaz hâle gelebilir ve fare panelden kayınca kapanması sinir bozar. Sade yatay menü yalnızca ana kategorileri gösterir ve ziyaretçiyi önce kategori sayfasına götürür: seçim kolaylaşır, ama aranan alt kategori bir sayfa daha uzaktadır. Hangisinin kazanacağı katalog derinliğine ve ziyaretçinin ne aradığını bilip bilmediğine bağlıdır. Mobilde iki yapı da çoğu zaman açılır bir menüye dönüşür; bu senaryo masaüstündeki menü yapısını test eder, mobil menü iki kolda aynı kalır. Kategori adları, sırası ve sayısı iki kolda aynıdır; değişen yalnızca alt kategorilerin menüde mi, kategori sayfasında mı sunulduğudur.
 
 **Test edilmesi gerekenler**
-- Hız: Hangi menü aranan içeriğe daha hızlı ulaştırıyor?
-- Çıkış: Menü türü hemen çıkma oranını değiştiriyor mu?
-- Süre: Menüde geçirilen süre artıyor mu, azalıyor mu?
-- Yönlendirme: Menü kritik içeriğe yönlendirmeyi etkiliyor mu?
-- Mobil: İki yapı arasındaki fark mobilde büyüyor mu?
+- Derinlik: Mega menü, ziyaretçinin alt kategori sayfasına ulaşmasını kısaltıp satın almaya giden gezinmeyi artırıyor mu?
+- Taranabilirlik: Mega menüyü açıp hiçbir bağlantıya tıklamadan kapatan ziyaretçilerin payı, yatay menüde kategori sayfasından geri dönenlerin payından yüksek mi?
+- Kayan panel: Fare panelden kayınca menünün istemeden kapanması, mega menü kolunda menüyü tekrar açma denemelerini artırıyor mu?
+- Arama kaçışı: Yatay menü kolunda aradığı alt kategoriyi bulamayan ziyaretçi arama kutusuna mı yöneliyor?
+- Segment: Ne aradığını bilen dönen ziyaretçi ile göz atan yeni ziyaretçi iki menü yapısına farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
-- Dönüşüm Oranı (CR): Menü yapısı satın almaya giden gezinmeyi değiştiriyor mu?
+- Dönüşüm Oranı (CR): Menü yapısı, masaüstünde teste atanan ziyaretçilerin satın alma oranını değiştiriyor mu?
 - Alt Kategoriye Doğrudan İniş Oranı: Menüden tek adımda alt kategoriye geçenlerin payı değişiyor mu?
 - Menüden Kategoriye Geçiş Oranı: Menüyü açanların kaçı bir kategoriye iniyor?
 - Seçimsiz Kapatılan Menü Oranı: Artmamalı; kullanıcı menüde kaybolmamalı.
 - Hemen Çıkma Oranı: Yükselmemeli; menü yapısı kullanıcıyı kaçırmamalı.
 
 **Yapılmaması gerekenler**
-- Yatay menü varyantında mega menüdeki alt kategorileri erişilemez bırakmayın; ikinci seviyeye bir yol kalmalı.
-- Mega menüde çok fazla kategori sunmayın; bilgi yükü yaratır.
-- Mobilde yatay menüde kaydırma sorununa izin vermeyin.
-- Mega menüde kolon sayısını taranamayacak kadar artırmayın.
 - Aynı testte menü yapısını değiştirirken kategori adlarını veya sırasını da değiştirmeyin.
+- Yatay menü kolunda mega menüdeki alt kategorileri erişilemez bırakmayın; ikinci seviyeye kategori sayfasından bir yol kalmalı.
+- Mega menü panelini taranamayacak kadar çok bağlantıyla doldurmayın; sütunlar katalogun gerçek yapısını izler.
+- Paneli yalnızca fareyle açılıp fare kayınca hemen kapanan biçimde kurmayın; klavyeyle ve dokunarak da açılıp kapanabilmeli.
+- Mobil menüyü bu testte değiştirmeyin; iki kolda aynı kalır.
 
 ---
 
 ## Menü sadeleştirmesi deneyimi etkiler mi?
 
 Değişken: Menüdeki alt başlık sayısı · Fark: kaldır
+
+Etiket: id=sf-008 · mercek=Netlik · düzey=gezinme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does simplifying the menu affect the experience?
 
 Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir. Daha az karmaşık menü odaklanmayı kolaylaştırabilir.
 
@@ -240,6 +270,10 @@ Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir.
 
 Değişken: İndirim oranı filtresi · Fark: ekle
 
+Etiket: id=sf-009 · mercek=Fiyat · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: How does a discount filter affect behavior?
+
 İndirim yüzdesine göre filtreleme sunmak ürün keşfini hızlandırabilir ve fiyat hassas kullanıcıyı hedefe daha çabuk ulaştırabilir.
 
 **Test edilmesi gerekenler**
@@ -259,7 +293,7 @@ Değişken: İndirim oranı filtresi · Fark: ekle
 **Yapılmaması gerekenler**
 - Çok fazla filtre ekleyip kullanıcıyı kararsız bırakmayın.
 - Tutarsız sonuç veren indirim aralığı tasarlamayın.
-- Uydurma referans fiyattan hesaplanan indirim oranını filtreye dahil etmeyin; filtre yalnızca gerçek indirimi göstermeli (kural 6).
+- Uydurma referans fiyattan hesaplanan indirim oranını filtreye dahil etmeyin; filtre yalnızca gerçek indirimi göstermeli.
 - Mobilde filtre alanını ekranı kaplayacak kadar büyütmeyin.
 - Aynı testte indirim filtresini eklerken varsayılan sıralamayı veya diğer filtrelerin sırasını da değiştirmeyin.
 
@@ -268,6 +302,10 @@ Değişken: İndirim oranı filtresi · Fark: ekle
 ## Filtreler kaydırma boyunca görünür kalmalı mı?
 
 Değişken: Filtre panelinin kaydırmada sabit kalması · Fark: değiştir
+
+Etiket: id=sf-010 · mercek=Çaba · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should filters stay visible while scrolling?
 
 Filtre panelinin sayfa kaydırılırken ekranda kalması, listenin ortasında fikir değiştiren kullanıcının yukarı dönmesini gerektirmez. Bedeli: panel sürekli yer kaplar, ürünlere kalan alan daralır ve mobilde ekranın önemli bir kısmını yiyebilir.
 
@@ -298,6 +336,10 @@ Filtre panelinin sayfa kaydırılırken ekranda kalması, listenin ortasında fi
 
 Değişken: Filtrelerin görünürlüğü · Fark: değiştir
 
+Etiket: id=sf-011 · mercek=Netlik · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Show filters openly or behind a button: which works better?
+
 Filtreleri doğrudan görünür kılmak varlıklarını hatırlatır ve kullanımı artırır. Düğme arkasına almak ise ürünlere daha çok yer bırakır ve sayfayı sadeleştirir; buna karşılık filtrenin varlığından habersiz kullanıcı hiç filtrelemeden gezinir ve doğru ürünü bulamaz.
 
 **Test edilmesi gerekenler**
@@ -327,6 +369,10 @@ Filtreleri doğrudan görünür kılmak varlıklarını hatırlatır ve kullanı
 
 Değişken: Aranan kelimenin sonuçlarda vurgulanması · Fark: ekle
 
+Etiket: id=sf-012 · mercek=Netlik · düzey=gezinme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does highlighting the search term in the results pay off?
+
 Aranan kelimenin sonuç başlıklarında işaretlenmesi eşleşmenin nerede olduğunu gösterir ve doğru sonuca ulaşmayı hızlandırır. Riski: vurgu görsel gürültü yaratır, çok sayıda eşleşme olduğunda başlık okunmaz hâle gelir ve alakasız bir eşleşme vurgulandığında arama kalitesizmiş gibi görünür.
 
 **Test edilmesi gerekenler**
@@ -355,6 +401,10 @@ Aranan kelimenin sonuç başlıklarında işaretlenmesi eşleşmenin nerede oldu
 ## Filtreleri seçenek listesi yerine cümle hâlinde sormak işe yarar mı?
 
 Değişken: Filtrelerin sorulma biçimi · Fark: değiştir
+
+Etiket: id=sf-013 · mercek=Uygunluk · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does asking filters as a sentence instead of option lists pay off?
 
 Filtreleri “kimin için, hangi bütçeyle” gibi bir soru akışına çevirmek, ne aradığını tam bilmeyen kullanıcıyı yönlendirir. Karşı tarafta: ne aradığını bilen kullanıcı için bu fazladan adımdır, akış onu yavaşlatır ve klasik filtreye göre daha az hassas sonuç verir.
 

@@ -141,8 +141,8 @@ class TestRealFiles(unittest.TestCase):
     def test_every_archive_block_is_read_alone(self):
         folder = os.path.join(ROOT, "knowledge", "scenarios")
         for name in sorted(os.listdir(folder)):
-            if not name.endswith(".md"):
-                continue
+            if not re.match(r"^[a-z0-9-]+\.md$", name):
+                continue  # stage files only; FORMAT.md documents the format and holds no block
             path = os.path.join(folder, name)
             with open(path, encoding="utf-8") as fh:
                 lines = fh.read().split("\n")

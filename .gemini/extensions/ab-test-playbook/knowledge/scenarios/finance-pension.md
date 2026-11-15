@@ -8,6 +8,10 @@ Yolculuk aşaması: düzenlemeye tabi finansal ürünlerde (sigorta, hayat, bire
 
 Değişken: Akordeon içindeki ürün açıklamasının biçimi · Fark: değiştir
 
+Etiket: id=fp-001 · mercek=Netlik · düzey=metin · sektör=finans · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does splitting a long product description in an accordion into labelled points raise requests?
+
 Bir sigorta ürününün akordeonu açıldığında tek blok hâlinde uzun bir paragraf çıkıyorsa kullanıcı ürünün kimin için olduğunu, neyi kapsadığını ve neyi kapsamadığını satır satır aramak zorunda kalır. Aynı cümleleri “Kimler için”, “Neleri kapsar”, “Neleri kapsamaz” gibi etiketli maddelere bölmek taramayı kolaylaştırır, çünkü karar için aranan bilgi etiketinden bulunur. Riski: maddeleştirirken bir istisna ya da koşul cümlesi kısalır veya düşerse kullanıcı ürünü olduğundan geniş sanar; bu da talepten sonra vazgeçme ve şikâyet olarak geri döner. İki kolda metnin içeriği aynıdır, yalnızca biçimi değişir. “Güvenceleri madde listesi hâlinde vermek ikna ediyor mu?” (`home-landing.md`) senaryosundan farkı: orada pazarlama sayfasındaki güven vaatleri listelenir, burada düzenlemeye tabi bir ürünün kapsam metni bölünür ve metnin anlamı uyum onayıyla sabit tutulur.
 
 **Test edilmesi gerekenler**
@@ -27,8 +31,8 @@ Bir sigorta ürününün akordeonu açıldığında tek blok hâlinde uzun bir p
 **Yapılmaması gerekenler**
 - Aynı testte açıklamanın biçimi ile cümlelerin içeriğini birlikte değiştirmeyin; iki kolda aynı bilgi durmalı.
 - Maddeleştirirken istisna, bekleme süresi veya koşul cümlelerini kısaltmayın ya da çıkarmayın; düzenlemeye tabi metin kelimesi kelimesine korunur.
-- Maddeli sürümü uyum biriminin yazılı onayı olmadan yayına almayın; kapsam metni hedef pazarın kuralına bağlı bir bilgilendirmedir (kural 11).
-- “Neleri kapsamaz” maddesini katlanmış, soluk veya en sona itilmiş biçimde göstermeyin (kural 6).
+- Maddeli sürümü uyum biriminin yazılı onayı olmadan yayına almayın; kapsam metni hedef pazarın kuralına bağlı bir bilgilendirmedir.
+- “Neleri kapsamaz” maddesini katlanmış, soluk veya en sona itilmiş biçimde göstermeyin.
 - Etiketleri ikon veya renkle süsleyip aynı testte görsel yoğunluğu da artırmayın.
 
 ---
@@ -36,6 +40,10 @@ Bir sigorta ürününün akordeonu açıldığında tek blok hâlinde uzun bir p
 ## Hizmet tanıtımında açıklama cümlelerini ilgili adımın altına taşımak katılımı artırır mı?
 
 Değişken: Tanıtım açıklamasının ekrandaki yeri · Fark: taşı
+
+Etiket: id=fp-002 · mercek=Netlik · düzey=görsel · sektör=finans · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does moving the explanatory sentences of a service introduction under the step they describe raise take-up?
 
 Fon dağılımını müşteri adına yöneten bir hizmetin tanıtım ekranında açıklama paragrafı üstte, üç adım (risk profilini belirle, öneriyi incele, onayla) altta durduğunda hangi cümlenin hangi adıma ait olduğunu kullanıcı kendi eşleştirir. Aynı cümleleri ait oldukları adımın altına taşımak, her adımda ne olacağını tam o adımın yanında söyler; belirsizlik azaldığı için başlama eşiği düşebilir. Riski: üstteki özet kalkınca hizmetin ne olduğu ilk bakışta anlaşılmayabilir ve adım listesi uzadığı için başlat butonu ekranın altına iner.
 
@@ -55,9 +63,9 @@ Fon dağılımını müşteri adına yöneten bir hizmetin tanıtım ekranında 
 
 **Yapılmaması gerekenler**
 - Aynı testte cümlelerin yeri ile cümlelerin metnini birlikte değiştirmeyin; taşınan cümle kelimesi kelimesine aynı kalır.
-- Hizmet ücretini, kesintiyi veya risk uyarısını taşırken küçültmeyin ya da bağlantı arkasına almayın; mevzuatın istediği bilgilendirme iki kolda aynı görünürlükte durur (kural 11).
+- Hizmet ücretini, kesintiyi veya risk uyarısını taşırken küçültmeyin ya da bağlantı arkasına almayın; mevzuatın istediği bilgilendirme iki kolda aynı görünürlükte durur.
 - Geçmiş fon getirisini veya beklenen kazancı adım açıklamasına eklemeyin; getiri vaadi yazılmaz, rakam uydurulmaz.
-- Onay adımını atlayan ya da risk profili sorularını azaltan bir akışı bu testin parçası yapmayın (kural 6).
+- Onay adımını atlayan ya da risk profili sorularını azaltan bir akışı bu testin parçası yapmayın.
 - Adımların sayısını veya sırasını bu testte oynatmayın; üç adım iki kolda da aynıdır.
 
 ---
@@ -65,6 +73,10 @@ Fon dağılımını müşteri adına yöneten bir hizmetin tanıtım ekranında 
 ## Kişisel öneri vaat eden slayta vaadi adlandıran bir buton eklemek işe yarar mı?
 
 Değişken: Öneri slaytındaki eylem butonu · Fark: ekle
+
+Etiket: id=fp-003 · mercek=Netlik · düzey=görsel · sektör=finans · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does adding a button that names the promise to a slide offering a personal recommendation pay off?
 
 Uygulamanın ana ekranındaki bir slayt “Size özel katkı payı önerimiz hazır” dediği hâlde üzerinde dokunulacak belirgin bir öğe yoksa müşteri vaadin nereden açılacağını bilemez. Slayta vaadi adlandıran bir buton (“Önerimi gör”) eklemek hem dokunulabilirliği işaretler hem dokununca ne çıkacağını söyler. Riski: buton merakla dokunmayı artırır, ama açılan ekran gerçekten kişisel değilse ya da beklenenden yüksek bir tutar öneriyorsa müşteri vazgeçer; dokunma artar, artırım artmaz. Bu yüzden birincil metrik dokunma değil, tamamlanan katkı payı artırımıdır.
 
@@ -84,9 +96,9 @@ Uygulamanın ana ekranındaki bir slayt “Size özel katkı payı önerimiz haz
 
 **Yapılmaması gerekenler**
 - Aynı testte butonu eklerken slaytın başlığını, görselini veya dizideki sırasını birlikte değiştirmeyin.
-- Buton “Önerimi gör” diyorsa arkasında herkese aynı tutarı sunan genel bir ekran açmayın; vaat edilen kişisel öneri gerçek sözleşme verisinden hesaplanır (kural 6).
+- Buton “Önerimi gör” diyorsa arkasında herkese aynı tutarı sunan genel bir ekran açmayın; vaat edilen kişisel öneri gerçek sözleşme verisinden hesaplanır.
 - Butona veya slayta “Son gün”, “Kaçırmayın” gibi aciliyet ifadesi ya da gerçek olmayan bir süre sınırı koymayın.
-- Devlet katkısını, getiriyi veya birikim tutarını slayta rakamla yazmayın; uyum onayından geçmemiş hiçbir oran ya da tutar gösterilmez (kural 11).
+- Devlet katkısını, getiriyi veya birikim tutarını slayta rakamla yazmayın; uyum onayından geçmemiş hiçbir oran ya da tutar gösterilmez.
 - Artırım onayındaki bilgilendirmeyi kısaltmayın; buton yalnızca öneri ekranını açar, onayın yerine geçmez.
 
 ---
@@ -94,6 +106,10 @@ Uygulamanın ana ekranındaki bir slayt “Size özel katkı payı önerimiz haz
 ## Yalnızca ürün adlarından oluşan listenin başına “Hangisi bana uygun?” yönlendirmesi eklemek talebi artırır mı?
 
 Değişken: Liste başındaki ürün seçme yönlendirmesi · Fark: ekle
+
+Etiket: id=fp-004 · mercek=Uygunluk · düzey=bilgi · sektör=finans · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does adding a “Which one suits me?” guide at the top of a list of bare product names raise requests?
 
 Sigorta ürünleri yalnızca adlarıyla sıralandığında (“Ferdi Kaza”, “Yıllık Hayat”, “Kritik Hastalıklar”) ürünleri tanımayan ziyaretçi hangisine bakacağını bilemez; her birini tek tek açıp karşılaştırmak zorunda kalır. Listenin başına ihtiyaçtan ürüne götüren kısa bir yönlendirme (“Hangisi bana uygun?” başlığı altında “Ailemi korumak istiyorum”, “Borcumu güvenceye almak istiyorum” gibi birkaç seçenek) eklemek seçim yükünü azaltır, çünkü ziyaretçi ürün adını değil kendi ihtiyacını tanır. Riski: yönlendirme kişiye özel tavsiye gibi algılanırsa yanlış ürüne talep gelir; ayrıca liste aşağı itilir ve ne aradığını bilen ziyaretçi yavaşlar.
 
@@ -113,16 +129,20 @@ Sigorta ürünleri yalnızca adlarıyla sıralandığında (“Ferdi Kaza”, �
 
 **Yapılmaması gerekenler**
 - Aynı testte yönlendirmeyi eklerken ürünlerin sırasını, adlarını veya kart tasarımını birlikte değiştirmeyin.
-- Yönlendirmeyi kişiye özel tavsiye gibi sunmayın (“Sizin için en doğru ürün”); genel bilgilendirme ile tavsiye arasındaki sınırı hedef pazarın kuralına göre uyum birimiyle doğrulayın (kural 11).
-- İhtiyaç seçeneklerinin hepsini aynı ürüne ya da komisyonu yüksek ürüne bağlamayın; eşleşme ürünün gerçek kapsamına dayanır (kural 6).
+- Yönlendirmeyi kişiye özel tavsiye gibi sunmayın (“Sizin için en doğru ürün”); genel bilgilendirme ile tavsiye arasındaki sınırı hedef pazarın kuralına göre uyum birimiyle doğrulayın.
+- İhtiyaç seçeneklerinin hepsini aynı ürüne ya da komisyonu yüksek ürüne bağlamayın; eşleşme ürünün gerçek kapsamına dayanır.
 - Yönlendirmeyi kapatılamayan bir katman olarak açmayın; ürün listesi onun altında her zaman erişilebilir kalır.
-- Yönlendirmede sağlık durumu veya gelir gibi hassas bilgileri sormayın; seçenekler ihtiyaç düzeyinde kalır (kural 14).
+- Yönlendirmede sağlık durumu veya gelir gibi hassas bilgileri sormayın; seçenekler ihtiyaç düzeyinde kalır.
 
 ---
 
 ## Sözleşme seçimi adımına ne yapılacağını söyleyen bir yönerge satırı eklemek ilerlemeyi artırır mı?
 
 Değişken: Sözleşme seçimi adımındaki yönerge satırı · Fark: ekle
+
+Etiket: id=fp-005 · mercek=Netlik · düzey=metin · sektör=finans · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does adding an instruction line to the contract selection step raise progress?
 
 Birden fazla sözleşmesi olan müşteri bir işlem akışına girdiğinde (katkı payı değişikliği, fon dağılımı, ödeme aracı güncelleme) ilk ekranda sözleşmelerin listesini ve pasif bir “Devam” butonunu bulur; ne yapması gerektiği yazmıyorsa butonun neden çalışmadığını anlamaz ve çıkar. Listenin üstüne tek satırlık bir yönerge (“İşlem yapmak istediğiniz sözleşmeyi seçin”) eklemek beklenen eylemi söyler. Riski: satır fark edilmezse hiçbir şey değişmez. “Daha hızlı olsun” diye sözleşmeyi önceden işaretlemek cazip görünür, ama işlemin kapsamını müşteri yerine seçmek olur; o yüzden bu senaryonun dışındadır ve aşağıda yasak olarak yazılıdır.
 
@@ -141,10 +161,10 @@ Birden fazla sözleşmesi olan müşteri bir işlem akışına girdiğinde (katk
 - Yanlış Sözleşme Şikâyeti Oranı: İstenmeyen sözleşmede işlem yapıldığı gerekçesiyle açılan kayıtlar çoğalmamalı.
 
 **Yapılmaması gerekenler**
-- Sözleşme kutusunu önceden işaretli getirmeyin; işlemin hangi sözleşmeyi kapsayacağını müşteri yerine seçmek reddedilen bir varyanttır (kural 6).
+- Sözleşme kutusunu önceden işaretli getirmeyin; işlemin hangi sözleşmeyi kapsayacağını müşteri yerine seçmek reddedilen bir varyanttır.
 - Aynı testte yönerge satırını eklerken sözleşme kartlarının içeriğini veya “Devam” butonunun metnini birlikte değiştirmeyin.
 - Yönergeyi “Tümünü seç” kısayoluna çevirmeyin; kapsamı genişleten bir varsayılan bu testin konusu olamaz.
-- Seçimden sonraki bilgilendirme ve işlem onayı ekranını atlamayın ya da daraltmayın; mevzuatın istediği onay adımı iki kolda aynen durur (kural 11).
+- Seçimden sonraki bilgilendirme ve işlem onayı ekranını atlamayın ya da daraltmayın; mevzuatın istediği onay adımı iki kolda aynen durur.
 - Yönerge satırına sözleşmenin birikimi, getirisi veya kesintisi hakkında yeni bir rakam ya da vaat yazmayın; satır yalnızca yapılacak eylemi söyler.
 
 ---
@@ -152,6 +172,10 @@ Birden fazla sözleşmesi olan müşteri bir işlem akışına girdiğinde (katk
 ## Hesaplama sonuç ekranına sonucu talebe bağlayan bir buton eklemek talep oluşturmayı artırır mı?
 
 Değişken: Hesaplama sonuç ekranındaki talep butonu · Fark: ekle
+
+Etiket: id=fp-006 · mercek=Netlik · düzey=görsel · sektör=finans · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a button on the calculator result screen that carries the result into a request raise request creation?
 
 Emeklilik birikimi ya da prim hesaplama aracı sonucu gösterip orada bitiyorsa ziyaretçi en ilgili olduğu anda çıkmaza girer: sonucu almıştır ama devam etmek için menüden başka bir sayfa bulması gerekir. Sonuç ekranına talep formunu açan bir buton (“Bu hesapla teklif iste”) eklemek ilgiyi eyleme bağlar. Riski: araç yalnızca merak eden ziyaretçiden düşük niyetli talep toplar ve danışman ekibinin yükü artar; ayrıca hesaplanan tutar bir taahhüt gibi okunursa teklif aşamasında hayal kırıklığı doğar.
 
@@ -171,8 +195,8 @@ Emeklilik birikimi ya da prim hesaplama aracı sonucu gösterip orada bitiyorsa 
 
 **Yapılmaması gerekenler**
 - Aynı testte butonu eklerken sonuç tablosunun içeriğini, varsayımlarını veya hesaplama formülünü birlikte değiştirmeyin.
-- Sonucu garanti edilmiş getiri ya da kesin prim gibi sunan bir buton metni yazmayın (“Bu birikimi garantile”); hesap bir tahmindir ve varsayım notu iki kolda yerinde kalır (kural 11).
-- Butonu, sonucu görmek için iletişim bilgisi isteyen bir kapıya çevirmeyin; sonuç iki kolda da talepsiz görünür (kural 6).
+- Sonucu garanti edilmiş getiri ya da kesin prim gibi sunan bir buton metni yazmayın (“Bu birikimi garantile”); hesap bir tahmindir ve varsayım notu iki kolda yerinde kalır.
+- Butonu, sonucu görmek için iletişim bilgisi isteyen bir kapıya çevirmeyin; sonuç iki kolda da talepsiz görünür.
 - Butona dokunmayı talep saymayın; iletişim izni ve aydınlatma metni formda aynen durur, buton onların yerine geçmez.
 - “Bu teklif yalnızca bugün geçerli” gibi süre baskısı kuran ifadeleri butonun yanına koymayın.
 
@@ -182,26 +206,30 @@ Emeklilik birikimi ya da prim hesaplama aracı sonucu gösterip orada bitiyorsa 
 
 Değişken: Kimlik numarası alanının yanındaki gerekçe satırı · Fark: ekle
 
-Sigorta ya da emeklilik ön teklif formunda kimlik numarası veya doğum tarihi alanı, henüz fiyat bile almamış ziyaretçiye ağır gelir: “neden şimdi istiyorlar” sorusu yanıtsız kalınca form orada bırakılır. Alanı kaldırmak çoğu zaman mümkün değildir, çünkü teklif bu bilgiyle hesaplanır; kural 14’teki ara yöntemlerden biri olan gerekçe vermek, alanın yanına bilginin ne için kullanılacağını yazar (“Primi yaşınıza göre hesaplayabilmemiz için gerekir”). Riski: gerekçe yayımlanan aydınlatma metniyle birebir örtüşmezse yanıltıcı olur; ayrıca gerekçe, ziyaretçinin aklına gelmemiş bir kaygıyı uyandırabilir. “Alanın yanına “neden soruyoruz” açıklaması eklemek, amacı belirsiz görünen bir alanı doldurtur mu?” (`saas-b2b.md`) senaryosundan farkı: orada alan hassas olmayan bir niteleme sorusudur ve ölçülen o alanın doldurulmasıdır; burada alan zorunlu ve hassastır, gerekçenin metni kişisel veri kurallarına bağlıdır ve ölçülen teklifin alınmasıdır.
+Etiket: id=fp-007 · mercek=Güven · düzey=güven · sektör=finans · pazar=TR · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does writing why the ID number is needed next to its field on a pre-quote form raise quotes?
+
+Sigorta ya da emeklilik ön teklif formunda kimlik numarası veya doğum tarihi alanı, henüz fiyat bile almamış ziyaretçiye ağır gelir: “neden şimdi istiyorlar” sorusu yanıtsız kalınca form orada bırakılır. Alanı kaldırmak çoğu zaman mümkün değildir, çünkü teklif bu bilgiyle hesaplanır; alanı kaldırmak yerine denenen ara yöntemlerden biri olan gerekçe vermek, alanın yanına bilginin ne için kullanılacağını yazar (“Primi yaşınıza göre hesaplayabilmemiz için gerekir”). Riski: gerekçe yayımlanan aydınlatma metniyle birebir örtüşmezse yanıltıcı olur; ayrıca gerekçe, ziyaretçinin aklına gelmemiş bir kaygıyı uyandırabilir. “Alanın yanına “neden soruyoruz” açıklaması eklemek, amacı belirsiz görünen bir alanı doldurtur mu?” (`saas-b2b.md`) senaryosundan farkı: orada alan hassas olmayan bir niteleme sorusudur ve ölçülen o alanın doldurulmasıdır; burada alan zorunlu ve hassastır, gerekçenin metni kişisel veri kurallarına bağlıdır ve ölçülen teklifin alınmasıdır.
 
 **Test edilmesi gerekenler**
 - Varlık: Gerekçe satırı eklenince ön teklif formunu gönderip teklif isteyenlerin payı artıyor mu?
 - Alan düzeyi: Kimlik numarası alanına gelip formu orada bırakanların payı azalıyor mu?
 - Ters etki: Gerekçe, alanı sorgulamadan dolduran ziyaretçide tereddüt uyandırıp doldurma süresini uzatıyor mu?
-- Sonraki test: Gerekçe kazanırsa, bilginin nasıl korunduğunu söyleyen bir güvence satırı ayrı bir testte teklif almayı artırıyor mu?
 - Segment: Reklamdan ilk kez gelen ziyaretçi ile mevcut müşteri gerekçeye farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
 - Talep Oluşturma Oranı (ön teklif formuna atanan ziyaretçi başına): Formu gönderip teklif isteyenlerin payı artıyor mu?
 - Alan Bazlı Terk Oranı: Kimlik numarası alanında formu bırakanların payı; tanı metriği.
 - Doğrulama Hatası Oranı: Geçersiz ya da doğrulanamayan numara girişleri artmamalı.
-- Teklif → Sözleşme Dönüşüm Oranı (90 gün): Gerekçeli formdan gelen tekliflerin sözleşmeye dönüşen payı düşmemeli.
+- Sözleşme Oranı (90 gün): Ön teklif formuna atanan ziyaretçilerden pencerede sözleşmeyi ya da poliçeyi tamamlayanların payı düşmemeli; gerekçe teklif isteyenleri artırıp sözleşmeye dönmeyen talep getiriyorsa burada görünür.
+- Teklif → Sözleşme Dönüşüm Oranı (90 gün): Tanı metriği; teklif alan ziyaretçi sayısı B’de değişebildiği için kazanan seçmez ve guardrail yerine geçmez.
 - Veri Şikâyeti Oranı: Kişisel verinin kullanımıyla ilgili başvuru ve şikâyetler çoğalmamalı.
 
 **Yapılmaması gerekenler**
 - Aynı testte gerekçe satırını eklerken alanın zorunluluğunu, sırasını veya etiketini birlikte değiştirmeyin.
-- Alanı tümden kaldırmayı ya da kimlik doğrulamasını gevşetmeyi bu senaryonun varyantı yapmayın; doğrulama bir koruma adımıdır (kural 6), alanın kaldırılıp kaldırılamayacağı ayrıca sorulur (kural 14).
-- Gerekçeyi yayımlanan aydınlatma metninde yer almayan bir amaçla yazmayın; cümle hukuk ve uyum onayından geçmeden yayına girmez (kural 11).
+- Alanı tümden kaldırmayı ya da kimlik doğrulamasını gevşetmeyi bu senaryonun varyantı yapmayın; doğrulama bir koruma adımıdır, alanın kaldırılıp kaldırılamayacağı ayrıca sorulur.
+- Gerekçeyi yayımlanan aydınlatma metninde yer almayan bir amaçla yazmayın; cümle hukuk ve uyum onayından geçmeden yayına girmez.
 - “Bilginiz kimseyle paylaşılmaz” gibi doğrulanmamış bir güvenceyi gerekçe satırına katmayın; güvence ayrı bir değişkendir ve gerçek veri akışına uymak zorundadır.
 - Gerekçe satırını açık rıza ya da ticari ileti izni kutusunun yanına koyup izni vermeye yönlendiren bir metne dönüştürmeyin.
 
@@ -210,6 +238,10 @@ Sigorta ya da emeklilik ön teklif formunda kimlik numarası veya doğum tarihi 
 ## Teklif akışındaki adım göstergesinde numaraların yanına adım adlarını yazmak sözleşmeye ulaşmayı artırır mı?
 
 Değişken: Adım göstergesindeki adım etiketleri · Fark: değiştir
+
+Etiket: id=fp-008 · mercek=Netlik · düzey=bilgi · sektör=finans · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does writing step names next to the numbers in a quote flow’s step indicator raise contract completion?
 
 Teklif akışında yalnızca numara gösteren bir gösterge (“2 / 4”) kullanıcıya kaçıncı adımda olduğunu söyler ama sırada ne olduğunu söylemez: fiyatı hangi adımda alacağını, ödemenin ne zaman isteneceğini bilmeyen kullanıcı kişisel bilgi vermeye isteksiz davranır. Numaraların yanına adımların adını yazmak (“1 Bilgiler, 2 Teminat, 3 Teklif, 4 Onay”) yolu önceden gösterir; fiyatın üçüncü adımda geleceğini bilen kullanıcı ilk iki adımı bitirmeye daha yatkın olabilir. Riski: adlar akışı olduğundan uzun gösterebilir ve dar ekranda sığmayıp kırpılır. “İlerleme çubuğu tamamlama oranını artırıyor mu?” (`cart-checkout.md`) senaryosundan farkı: orada göstergenin kendisi eklenir, burada gösterge iki kolda da vardır ve yalnızca adımların adlandırılması değişir.
 
@@ -221,7 +253,7 @@ Teklif akışında yalnızca numara gösteren bir gösterge (“2 / 4”) kullan
 - Cihaz: Dar ekranda dört adım adı tek satıra sığıyor mu, yoksa mobilde kırpılan adlar etkiyi siliyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Teklif → Sözleşme Dönüşüm Oranı (teklif akışına atanan ziyaretçi başına): Akışı sözleşmeyle bitirenlerin payı artıyor mu? Gösterge teklif ekranından önceki adımlarda da durduğu için payda atanan ziyaretçidir.
+- Sözleşme Oranı (30 gün): Teklif akışına atanan ziyaretçilerden pencerede sözleşmeyi ya da poliçeyi tamamlayanların payı artıyor mu? Gösterge teklif ekranından önceki adımlarda da durduğu için payda teklif alanlar değil, atanan ziyaretçidir.
 - Teklif Görüntüleme Oranı: Fiyatın gösterildiği adıma ulaşanların payı; tanı metriği.
 - Adım Bazlı Terk Oranı: Hangi adımda bırakıldığını gösteren tanı metriği.
 - Cayma Süresi İçinde İptal Oranı (yasal cayma süresi): Adlı göstergeyle biten sözleşmelerde cayma artmamalı.
@@ -229,7 +261,7 @@ Teklif akışında yalnızca numara gösteren bir gösterge (“2 / 4”) kullan
 
 **Yapılmaması gerekenler**
 - Aynı testte adım adlarını yazarken adımların sayısını, sırasını veya adımlardaki alanları birlikte değiştirmeyin.
-- Bilgilendirme formu, onay veya kimlik doğrulama adımını göstergede gizlemeyin ya da başka bir adın altına saklamayın; zorunlu adımlar adıyla görünür ve akışta aynen kalır (kural 6 ve 11).
+- Bilgilendirme formu, onay veya kimlik doğrulama adımını göstergede gizlemeyin ya da başka bir adın altına saklamayın; zorunlu adımlar adıyla görünür ve akışta aynen kalır.
 - Göstergede yazmayan bir adımı (ör. ödeme) akışın sonunda sürpriz olarak çıkarmayın; adlar gerçek akışla birebir örtüşür.
 - Adım adına “Ücretsiz teklif” ya da “Anında onay” gibi doğrulanmamış bir vaat yazmayın; ad yalnızca adımın işini söyler ve uyum onayından geçer.
 - Adım adlarını dar ekranda okunmayacak kadar küçültmeyin veya üç noktayla kırpılmış bırakmayın.
@@ -240,13 +272,16 @@ Teklif akışında yalnızca numara gösteren bir gösterge (“2 / 4”) kullan
 
 Değişken: Hesaplama aracındaki alanların başlangıç değeri · Fark: değiştir
 
+Etiket: id=fp-009 · mercek=Çaba · düzey=sürtünme · sektör=finans · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does opening the calculator prefilled with the customer’s existing contract data get the calculation finished?
+
 Giriş yapmış müşteri uygulamadaki birikim hesaplama aracını açtığında yaş, aylık katkı payı ve mevcut birikim alanları boş geliyorsa, şirketin zaten bildiği bilgiyi yeniden yazması istenir; çoğu müşteri katkı payı tutarını ezbere bilmez ve araç yarıda kalır. Alanları müşterinin kendi sözleşme verisiyle dolu açmak yazma yükünü kaldırır ve sonucu ilk dokunuşta kişisel kılar. Riski: veri eski ya da yanlış sözleşmeden gelirse sonuç yanlış olur ve müşteri bunu fark etmeyebilir; birden fazla sözleşmesi olan müşteride hangisinin kullanıldığı açık değilse güven zedelenir. Dolu gelen her alan düzenlenebilir kalır; değişen yalnızca başlangıç değeridir. Bu bir benzetim aracıdır: bir işlemin kapsamını önceden seçmekle aynı şey değildir ve hiçbir işlemi başlatmaz.
 
 **Test edilmesi gerekenler**
 - Başlangıç değeri: Alanlar sözleşme verisiyle dolu açıldığında hesaplamayı sonuca ulaştıran müşteri payı, boş açılana göre yüksek mi?
 - Düzenleme: Dolu gelen değerleri değiştirip farklı bir katkı payıyla yeniden hesaplayan müşteri payı ne kadar?
 - Doğruluk: Dolu gelen değerlerin güncel kayıtlarla uyuşmadığı müşteriler aracı yarıda mı bırakıyor?
-- Sonraki test: Dolu başlangıç kazanırsa, sonuç ekranına katkı payı artırma butonu eklemek ayrı bir testte artırımı yükseltiyor mu?
 - Platform: iOS ve Android uygulamasında verinin yüklenme süresi farklıyken dolu başlangıcın etkisi aynı mı?
 
 **Takip edilecek ana KPI’lar**
@@ -259,15 +294,19 @@ Giriş yapmış müşteri uygulamadaki birikim hesaplama aracını açtığında
 **Yapılmaması gerekenler**
 - Aynı testte alanları dolu açarken alanların sayısını, sırasını veya sonuç ekranının tasarımını birlikte değiştirmeyin.
 - Dolu gelen alanları kilitlemeyin; müşteri her değeri değiştirebilir ve değerin hangi sözleşmeden, hangi tarihte alındığı alanın altında yazar.
-- Getiri oranı, enflasyon veya devlet katkısı varsayımını müşteri verisi gibi sessizce doldurmayın; varsayımlar uyum onaylı metniyle ayrı gösterilir, yeni oran uydurulmaz (kural 11).
+- Getiri oranı, enflasyon veya devlet katkısı varsayımını müşteri verisi gibi sessizce doldurmayın; varsayımlar uyum onaylı metniyle ayrı gösterilir, yeni oran uydurulmaz.
 - Aracı, aydınlatma metninde bildirilmeyen bir amaçla işlenen veriyle doldurmayın (ör. başka şirketteki birikim, tahmini gelir).
-- Dolu açılan hesaplamayı müşteri adına başlatılmış bir artırım talebi gibi kaydetmeyin; hesaplama hiçbir işlemi kendiliğinden başlatmaz (kural 6).
+- Dolu açılan hesaplamayı müşteri adına başlatılmış bir artırım talebi gibi kaydetmeyin; hesaplama hiçbir işlemi kendiliğinden başlatmaz.
 
 ---
 
 ## “Sizi arayalım” formuna talepten sonra kimin, hangi kanaldan döneceğini yazmak talebi artırır mı?
 
 Değişken: Talep formundaki sonraki adım satırı · Fark: ekle
+
+Etiket: id=fp-010 · mercek=Netlik · düzey=bilgi · sektör=finans · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does stating on a “Call me back” form who will get back to you, and through which channel, raise requests?
 
 “Sizi arayalım” formu ad ve telefon ister ama gönderdikten sonra ne olacağını söylemez: kim arayacak, hangi kanaldan, ne için? Belirsizlik iki yerde kayıp yaratır: bilinmeyen bir satış aramasından çekinen ziyaretçi formu göndermez, gönderen ise tanımadığı numarayı açmaz. Butonun üstüne sürecin gerçekte nasıl işlediğini söyleyen tek satır (“Müşteri danışmanımız sizi telefonla arar ve sorularınızı yanıtlar”) eklemek beklentiyi kurar. Riski: satır şirketin gerçekten yürütmediği bir süreci anlatırsa vaat tutulmaz ve şikâyete dönüşür; arama fikri netleşince bazı ziyaretçiler de vazgeçebilir.
 
@@ -289,5 +328,5 @@ Değişken: Talep formundaki sonraki adım satırı · Fark: ekle
 - Ölçülmemiş bir geri dönüş süresi vaat etmeyin (“10 dakika içinde arıyoruz”); süre ancak çağrı kayıtlarıyla doğrulanmış ve her talepte tutulabiliyorsa yazılır.
 - Satırda şirketin gerçekte yürütmediği bir süreci anlatmayın; arayan dış arama ekibiyse ya da ilk temas SMS ise satır bunu söyler ve uyum onayından geçer.
 - Aynı testte sonraki adım satırını eklerken form alanlarını veya buton metnini birlikte değiştirmeyin.
-- Satırı iletişim izni ve aydınlatma metninin yerine koymayın, izin kutusunu önceden işaretlemeyin; izin metni onaylı hâliyle aynen kalır (kural 6 ve 11).
+- Satırı iletişim izni ve aydınlatma metninin yerine koymayın, izin kutusunu önceden işaretlemeyin; izin metni onaylı hâliyle aynen kalır.
 - “Danışmanlarımız şu an müsait” gibi gerçek zamanlı veriye dayanmayan bir doluluk ya da aciliyet sinyali eklemeyin.

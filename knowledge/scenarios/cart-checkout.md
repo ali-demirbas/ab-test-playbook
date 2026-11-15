@@ -8,14 +8,18 @@ Yolculuk aşaması: kullanıcı satın almaya karar verdi; sepet, kupon, adres/�
 
 Değişken: CTA buton rengi · Fark: değiştir
 
-Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmızı mı yeşil mi daha iyi” evrensel bir cevabı yoktur, sayfanın geri kalan renk paletiyle kontrastı önemlidir. Marka renginden sapan ama sayfada öne çıkan bir renk genelde kazanır; rengin kendisi değil, göze çarpma derecesi test edilir.
+Etiket: id=cc-001 · mercek=Netlik · düzey=görsel · sektör=e-ticaret · pazar=global · emek=düşük · durum=klasik · tarih=2026-11
+
+EN: Does the CTA button color affect conversion?
+
+Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmızı mı yeşil mi” sorusunun evrensel bir cevabı yoktur. Test edilen rengin kendisi değil, butonun sayfadaki öbür öğelerden ayrışma derecesidir: ürün sayfasında sepete ekle butonu galeri, fiyat ve indirim etiketleri arasında, sepet ve ödeme adımında ise ikincil butonlar arasında öne çıkmak zorundadır. Riski: yeni renk indirim etiketiyle aynı tona düşüp fiyat bilgisiyle karışabilir, ya da tıklama artışı yalnızca yenilik etkisinden gelip birkaç gün içinde sönebilir. Test tek sayfadaki tek butonun rengini değiştirir; aynı akıştaki öbür sayfaların butonları sabit kalır.
 
 **Test edilmesi gerekenler**
-- Kontrast: Sayfanın geri kalanına göre en çok öne çıkan renk hangisi?
-- Marka tutarlılığı: Marka renginden sapmak dönüşümü artırsa bile marka algısını bozuyor mu?
-- Sonraki test: Kazanan renk sabit tutulduğunda butonun üstte ya da altta durması, ayrı bir testte tıklamayı değiştiriyor mu?
-- Cihaz: Mobilde ve masaüstünde kazanan renk aynı mı?
-- Erişilebilirlik: Seçilen renk kontrast oranı (WCAG) eşiğini geçiyor mu?
+- Kontrast: Sayfanın geri kalanına göre en çok öne çıkan renk tıklamayı artırıyor mu?
+- Ayırt edilme: Yeni renk butonu fiyat ve indirim etiketlerinden ayırt edilir kılıyor mu, yoksa onlarla karıştırıyor mu?
+- Yenilik etkisi: Renk değişiminin getirdiği tıklama artışı ilk haftadan sonra sönüyor mu, kalıcı mı?
+- Cihaz: Butonun ekran genişliğini kapladığı mobilde renk değişimi, butonun küçük kaldığı masaüstüne göre tıklamayı daha az mı etkiliyor?
+- Erişilebilirlik: Seçilen renk, buton metniyle arasındaki kontrast oranında (WCAG) eşiği geçiyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Renk değişikliği tamamlanan siparişe yansıyor mu?
@@ -25,17 +29,21 @@ Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmız�
 - Marka Algısı (anket): Ölçülüyorsa düşmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 
 **Yapılmaması gerekenler**
-- Aynı testte renk ile buton metnini birlikte değiştirmeyin.
+- Aynı testte renk ile buton metnini veya boyutunu birlikte değiştirmeyin.
 - Erişilebilirlik kontrastını sağlamayan bir renk seçmeyin (görme engelli kullanıcı dışlanır).
 - Marka kılavuzuna aykırı rengi test onayı almadan canlıya almayın.
 - Tek bir sayfada kazanan rengi tüm siteye otomatik yaymayın; sayfa bağlamı değişir.
-- Rengi diğer CTA’lardan (ikincil butonlar) ayırt edilemez hale getirmeyin.
+- Kazanan rengi ikincil butonlara da uygulayıp birincil ile ikincil buton ayrımını silmeyin.
 
 ---
 
 ## Sepet ve ödeme adımlarında tekrarlayan CTA’ları azaltmak dönüşümü artırır mı?
 
 Değişken: Tekrarlayan CTA sayısı · Fark: kaldır
+
+Etiket: id=cc-002 · mercek=Netlik · düzey=görsel · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does cutting repeated CTAs in the cart and checkout steps raise conversion?
 
 Aynı adımda aynı işi yapan birden fazla CTA kullanıcı odağını bölerek karar süresini uzatabilir. Burada test edilen CTA sayısıdır: tekrarlayan butonları kaldırmanın dönüşüme etkisi ölçülür. “İkincil aksiyonu bağlantı mı, buton mu yapmalı?” senaryosundan (`ui-elements.md`) farkı: o senaryo farklı işlevdeki ikincil aksiyonun biçimini değiştirir, bu senaryo aynı işlevdeki CTA’ların sayısını azaltır.
 
@@ -66,12 +74,15 @@ Aynı adımda aynı işi yapan birden fazla CTA kullanıcı odağını bölerek 
 
 Değişken: Ücretsiz kargo ilerleme çubuğu · Fark: ekle
 
+Etiket: id=cc-003 · mercek=Fiyat · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a free-shipping progress bar raise cart value?
+
 Ücretsiz kargoya ne kadar kaldığını göstermek, sepeti büyütme motivasyonunu yükseltebilir. Bu etkinin gerçekte ne kadar olduğu ölçülmelidir.
 
 **Test edilmesi gerekenler**
 - Motivasyon: Çubuk “ücretsiz kargoya ulaşmak için ürün ekle” davranışını artırıyor mu?
 - Fark edilme: Kullanıcılar çubuğu görüp ücretsiz kargoya kalan tutarı doğru okuyor mu?
-- Sonraki test: Çubuğun etkisi kanıtlanırsa yeri (sepet / mini sepet / ürün sayfası) ayrı bir testte sepet tutarını değiştiriyor mu?
 - Eşiğe uzaklık: Eşiğe az kalan sepetlerde çubuğun etkisi, eşiğe uzak sepetlerdekinden daha mı büyük?
 - Cihaz: Mobil ve masaüstünde karar süresi farklı mı?
 
@@ -84,7 +95,7 @@ Değişken: Ücretsiz kargo ilerleme çubuğu · Fark: ekle
 
 **Yapılmaması gerekenler**
 - İlerleme çubuğunu CTA’nın önüne geçecek şekilde yerleştirmeyin.
-- Eşiğe kalan tutarı gerçek sepet hesabından farklı göstermeyin (kural 6).
+- Eşiğe kalan tutarı gerçek sepet hesabından farklı göstermeyin.
 - Mobilde çubuğu görünmeyecek kadar aşağı koymayın.
 - Aynı testte renk, eşik ve metni birlikte değiştirmeyin.
 - Eşiğe ulaşıldığında geri bildirim vermeyi atlamayın.
@@ -96,6 +107,10 @@ Değişken: Ücretsiz kargo ilerleme çubuğu · Fark: ekle
 ## Açık kupon kodu alanı sepet terkini artırır mı?
 
 Değişken: Kupon kodu alanının görünürlüğü · Fark: değiştir
+
+Etiket: id=cc-004 · mercek=Fiyat · düzey=görsel · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does an open coupon code field increase cart abandonment?
 
 Görünür bir kupon kutusu, kodu olmayan kullanıcıyı “indirim arayayım” diye siteden çıkarabilir. Kodu bağlantı arkasına almak bu kaçağı kapatabilir ama kampanya kullanımını düşürebilir.
 
@@ -126,10 +141,13 @@ Görünür bir kupon kutusu, kodu olmayan kullanıcıyı “indirim arayayım”
 
 Değişken: Misafir ödeme seçeneği · Fark: ekle
 
+Etiket: id=cc-005 · mercek=Çaba · düzey=sürtünme · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does a guest checkout option pay off?
+
 Zorunlu üyelik satın alma sürecini uzatır ve terk oranını yükseltebilir. Misafir ödemenin dönüşüme etkisi ölçülmelidir.
 
 **Test edilmesi gerekenler**
-- Sonraki test: Misafir seçeneği eklendikten sonra butonunun görsel ağırlığı ayrı bir testte artırılınca tercih oranı yükseliyor mu?
 - Kayıt dengesi: Misafir seçeneğinin getirdiği ek sipariş, kaybedilen yeni üye kaydını telafi ediyor mu?
 - Cihaz: Mobilde misafir ödeme seçeneği masaüstüne göre daha mı çok tercih ediliyor?
 - Kategori: Moda ve hızlı tüketimde misafir ödeme daha mı çok tercih ediliyor?
@@ -155,34 +173,42 @@ Zorunlu üyelik satın alma sürecini uzatır ve terk oranını yükseltebilir. 
 
 Değişken: Checkout adım yapısı · Fark: değiştir
 
-Tek sayfa akışı toplam tıklamayı azaltır ama ilk bakışta yoğun görünür. Çok adımlı akış daha sindirilebilirdir ama her adım bir kayıp noktasıdır. Sepet tutarına ve cihaza göre kazanan değişebilir.
+Etiket: id=cc-006 · mercek=Çaba · düzey=akış · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: One-page checkout or multi-step checkout?
+
+Ödeme akışında kullanıcı aynı bilgileri (iletişim, adres, kargo seçimi, ödeme) iki biçimde doldurabilir: tek uzun sayfada ya da her biri ayrı ekranda olan adımlarda. Tek sayfa toplam tutarı ve kalan işi baştan gösterir, adımlar arası geçişteki bekleme ve kaybı kaldırır; ama mobilde uzun bir form duvarı gibi görünür ve ekranın dışında kalan bir hata mesajı gözden kaçar. Çok adımlı akış her ekranda tek bir işi sorar ve ilk adımı bitireni ilerletir; ama her geçiş bir yükleme ve bir terk noktasıdır, kargo ücreti son adıma kalırsa sürpriz yaratır. Alanlar, sıraları ve ödeme yöntemleri iki kolda aynıdır; değişen yalnızca aynı alanların ekranlara bölünüp bölünmediğidir. Cüzdanla tek dokunuş ödeme bu iki yapının dışında kalan ayrı bir değişkendir; akışta varsa iki kolda aynı yerde durur. “Çok adımlı form mu, tek sayfa form mu daha çok talep getiriyor?” (`saas-b2b.md`) senaryosundan farkı: orada form bir talep toplar ve sonraki adımı satış ekibi yürütür, burada akış ödemeyle biter ve kargo ile toplam tutar kararı etkiler.
 
 **Test edilmesi gerekenler**
-- Toplam etki: Tek sayfa akışı tamamlama oranını artırıyor mu?
+- Toplam etki: Tek sayfa akışı, ödemeye başlayanların siparişi tamamlama payını artırıyor mu?
+- Hata görünürlüğü: Tek sayfada ekran dışında kalan hata mesajı gönderim denemelerini tekrarlatıyor mu, çok adımlı akışta hata aynı ekranda mı düzeltiliyor?
+- Kayıp noktası: Çok adımlı akışta terk hangi geçişte yoğunlaşıyor, tek sayfada kullanıcı formun neresinde duruyor?
+- Dönen kullanıcı: Bilgileri kayıtlı dönen kullanıcı tek sayfada, alanları ilk kez dolduran yeni kullanıcı çok adımlı akışta mı daha çok tamamlıyor?
 - Cihaz: Tek sayfanın uzun kaydırma gerektirdiği mobilde çok adımlı akış, geniş ekranlı masaüstünde ise tek sayfa akışı mı kazanıyor?
-- Sepet tutarı: Yüksek tutarda çok adımlı akış daha mı güven veriyor?
-- Sonraki test: Tek sayfa kazanırsa bölümleri katlanabilir yapmak ayrı bir testte yoğunluk algısını azaltıyor mu?
-- Segment: Bilgileri kayıtlı dönen kullanıcı tek sayfada, alanları ilk kez dolduran yeni kullanıcı çok adımlı akışta mı daha çok tamamlıyor?
 
 **Takip edilecek ana KPI’lar**
-- Sipariş Tamamlama Oranı: Ödemeye başlayanların bitirme oranı.
-- Adım Bazlı Terk Oranı: Hangi alanda kayıp var?
-- Görev Tamamlama Süresi (checkout): Toplam süre kısalıyor mu?
-- Doğrulama Hatası Oranı: Tek sayfada artmamalı.
-- Destek Talebi: Sipariş sorunları yükselmemeli.
+- Sipariş Tamamlama Oranı: Checkout’a ulaşan ziyaretçilerin (iki kolda aynı tetikleyici) siparişi tamamlama oranı artıyor mu?
+- Alan Bazlı Terk Oranı: Tanı metriği; formu bırakanlar son dokundukları alana göre nerede duruyor?
+- Görev Tamamlama Süresi (checkout): Checkout’a girişten siparişe kadar geçen süre kısalıyor mu?
+- Doğrulama Hatası Oranı: Tek sayfada hata alan gönderim denemeleri artmamalı.
+- Destek Talebi: Sipariş ve ödeme sorunlarıyla ilgili talepler yükselmemeli.
 
 **Yapılmaması gerekenler**
-- Aynı testte adım yapısı ile ödeme yöntemi setini birlikte değiştirmeyin.
-- Tek sayfada tüm alanları aynı anda açıp kullanıcıyı boğmayın.
-- Adım göstergesini kaldırıp kullanıcıyı yönsüz bırakmayın.
-- Klavye açılınca özet alanı CTA’yı kapatmamalı.
-- Kargo ücretini son adıma saklamayın.
+- Aynı testte adım yapısıyla birlikte alanların sayısını, sırasını ya da ödeme yöntemi setini değiştirmeyin.
+- Cüzdanla tek dokunuş ödemeyi yalnız bir kolda öne almayın; varsa iki kolda aynı yerde durur.
+- Çok adımlı kolda adım göstergesini kaldırıp kullanıcıyı kaç adım kaldığını bilmeden bırakmayın.
+- Kargo ücretini ve toplam tutarı son adıma saklamayın; iki kolda da ilk görüldükleri yer aynıdır.
+- Mobilde klavye açıldığında sipariş özetinin ya da hata mesajının ödeme butonunu kapatmasına izin vermeyin.
 
 ---
 
 ## Adres formundaki alan sayısını azaltmak tamamlamayı artırır mı?
 
 Değişken: Adres formundaki alan sayısı · Fark: kaldır
+
+Etiket: id=cc-007 · mercek=Çaba · düzey=form · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does cutting the number of address form fields raise completion?
 
 Her ek form alanı bir sürtünme noktasıdır. Posta koduyla otomatik il/ilçe doldurma veya adres önerisi kullanmak, mobilde yazma yükünü ciddi biçimde azaltabilir.
 
@@ -202,7 +228,7 @@ Her ek form alanı bir sürtünme noktasıdır. Posta koduyla otomatik il/ilçe 
 
 **Yapılmaması gerekenler**
 - Otomatik doldurmayı düzenlenemez yapmayın.
-- Kargo için gerçekten gereken alanı kaldırmayın; hassas alanlarda önce kural 14’teki ara yöntemleri değerlendirin.
+- Kargo için gerçekten gereken alanı kaldırmayın; hassas alanlarda önce ara yöntemleri (isteğe bağlı yapmak, gerekçe yazmak, sonraya ertelemek, daha az veri istemek) değerlendirin.
 - Aynı testte hem alan sayısını hem validasyon kurallarını değiştirmeyin.
 - Hata mesajlarını alan altından kaldırmayın.
 - Posta kodundan doldurulan il/ilçeyi kullanıcıya göstermeden siparişe yazmayın.
@@ -213,13 +239,16 @@ Her ek form alanı bir sürtünme noktasıdır. Posta koduyla otomatik il/ilçe 
 
 Değişken: Adet seçicinin görünürlüğü · Fark: değiştir
 
+Etiket: id=cc-008 · mercek=Netlik · düzey=görsel · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does the visibility of the quantity selector change behavior?
+
 Sepette adet seçimini daha net sunmak, kullanıcıların adedi artırma davranışını ve sepet değerini etkileyebilir.
 
 **Test edilmesi gerekenler**
 - Cihaz: Mobilde ve masaüstünde adet artırma davranışı aynı mı?
 - Görünürlük: Görünürlük artınca adet artırma davranışı değişiyor mu?
 - Buton: “+ / −” butonlarını belirginleştirmek ekleme hızını artırıyor mu?
-- Sonraki test: Belirgin adet seçici sabitken alanın satır ortasına alınması ayrı bir testte sepet tutarını yükseltiyor mu?
 - Hata: Net adet alanı yanlışlıkla ürün silmeyi azaltıyor mu?
 
 **Takip edilecek ana KPI’lar**
@@ -242,6 +271,10 @@ Sepette adet seçimini daha net sunmak, kullanıcıların adedi artırma davran�
 
 Değişken: Sepetteki tamamlayıcı ürün önerileri · Fark: ekle
 
+Etiket: id=cc-009 · mercek=Uygunluk · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Do product recommendations in the cart raise purchases?
+
 Sepet adımında tamamlayıcı ürün göstermek ortalama sepet tutarını yükseltebilir ama asıl akıştan uzaklaştırma riski taşır.
 
 **Test edilmesi gerekenler**
@@ -249,7 +282,6 @@ Sepet adımında tamamlayıcı ürün göstermek ortalama sepet tutarını yüks
 - Etkileşim: Kullanıcılar öneri alanına tıklayıp inceliyor mu?
 - Akıştan sapma: Öneri kartına tıklayan kullanıcılar ürün sayfasına gidip sepete geri dönmeden ayrılıyor mu?
 - Sayı: Öneri sayısı kaç olmalı? (2 / 4 / 6)
-- Sonraki test: Öneri alanı kazanırsa sipariş özetinin üstünde mi altında mı durduğu ayrı bir testte tamamlamayı değiştiriyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Öneriler dönüşümü düşürmeden toplam geliri artırıyor mu?
@@ -270,6 +302,10 @@ Sepet adımında tamamlayıcı ürün göstermek ortalama sepet tutarını yüks
 ## Kargo eşiğini yükseltmek sepet ortalamasını artırır mı?
 
 Değişken: Ücretsiz kargo eşik tutarı · Fark: değiştir
+
+Etiket: id=cc-010 · mercek=Fiyat · düzey=teklif · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does raising the free-shipping threshold raise average order value?
 
 Ücretsiz kargo sınırı sepeti büyütmek için güçlü bir teşviktir, ancak eşik fazla yükselirse kullanıcıyı kaçırır. Dengenin nerede olduğu ölçülmelidir.
 
@@ -304,6 +340,10 @@ Değişken: Ücretsiz kargo eşik tutarı · Fark: değiştir
 
 Değişken: Buton altı microcopy metni · Fark: değiştir
 
+Etiket: id=cc-011 · mercek=Güven · düzey=metin · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: How does microcopy affect user behavior?
+
 Küçük metin değişiklikleri bile karar hızını, güven algısını ve yönlendirilme davranışını etkileyebilir. Bu test, buton altı mesajların ve güven verici ifadelerin dönüşüme etkisini ölçer.
 
 **Test edilmesi gerekenler**
@@ -333,12 +373,15 @@ Küçük metin değişiklikleri bile karar hızını, güven algısını ve yön
 
 Değişken: Kayıtlı kartla hızlı ödeme seçeneği · Fark: ekle
 
+Etiket: id=cc-012 · mercek=Çaba · düzey=sürtünme · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does fast payment with a saved card raise conversion?
+
 Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci hızlandırır ve sürtünmeyi azaltır. Bu kolaylığın dönüşüme ne kadar yansıdığı ölçülmelidir.
 
 **Test edilmesi gerekenler**
 - Otomatik gösterim: Kayıtlı kartın otomatik gelmesi tamamlamayı artırıyor mu?
 - Benimsenme: Kayıtlı kartı olan kullanıcıların ne kadarı hızlı ödemeyi seçiyor, ne kadarı kartı yine elle giriyor?
-- Sonraki test: Hızlı ödeme kazanırsa seçeneğin ödeme adımındaki yeri ayrı bir testte fark edilme oranını değiştiriyor mu?
 - Cihaz: Mobilde hızlı ödemenin etkisi masaüstünden daha mı yüksek?
 - Sağlayıcı: Kayıtlı-kart cüzdan çözümlerinde etki değişiyor mu?
 
@@ -361,6 +404,10 @@ Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci h
 ## İlerleme çubuğu tamamlama oranını artırıyor mu?
 
 Değişken: Checkout ilerleme çubuğu · Fark: ekle
+
+Etiket: id=cc-013 · mercek=Netlik · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a progress bar raise completion?
 
 İlerleme çubuğu kullanıcıya konumunu ve kalan adımı gösterir, süreçten vazgeçmeyi azaltabilir. Özellikle ödeme ve adres adımlarında etkisi ölçülmelidir.
 
@@ -386,11 +433,16 @@ Değişken: Checkout ilerleme çubuğu · Fark: ekle
 - Aşırı animasyonlu veya yavaş yüklenen çubuk kullanmayın.
 
 > **Ölçüm notu:** Bu senaryoda ilk adımın tamamlanma oranı neredeyse her zaman yükselir; asıl soru yükselen adımın siparişe dönüp dönmediğidir. Adım metriği testin fotoğrafını çeker, sonucunu değil; birincil metrik huninin sonunda kalır.
+
 ---
 
 ## Otomatik indirim kodu davranışı nasıl etkiler?
 
 Değişken: İndirim kodunun otomatik uygulanması · Fark: değiştir
+
+Etiket: id=cc-014 · mercek=Çaba · düzey=sürtünme · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: How does applying a discount code automatically affect behavior?
 
 İndirim kodunun otomatik uygulanması ödeme sürecini kısaltarak dönüşümü artırabilir. Gerçek karşılığı ölçülmelidir.
 
@@ -412,7 +464,7 @@ Değişken: İndirim kodunun otomatik uygulanması · Fark: değiştir
 - Aynı testte kodu otomatik uygularken indirim oranını veya kampanya koşulunu da değiştirmeyin.
 - Aynı ekranda birden fazla indirim kodu alanı göstermeyin.
 - Kod uygulandı mesajını geciktirmeyin; güveni azaltır.
-- Otomatik uygulandı denen indirimi gerçek tutarından farklı göstermeyin veya ödemede sessizce düşürmeyin (kural 6).
+- Otomatik uygulandı denen indirimi gerçek tutarından farklı göstermeyin veya ödemede sessizce düşürmeyin.
 - Manuel kod girme yolunu tamamen kapatmayın.
 
 ---
@@ -421,10 +473,13 @@ Değişken: İndirim kodunun otomatik uygulanması · Fark: değiştir
 
 Değişken: Ödeme adımındaki güven rozeti şeridi · Fark: ekle
 
+Etiket: id=cc-015 · mercek=Güven · düzey=güven · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Do trust badges at the payment step raise completion?
+
 Kart bilgisi girilen ekran, terk oranının en yüksek olduğu andır. Güvenli ödeme, iade garantisi ve 3D Secure gibi görsel sinyaller tereddüdü azaltabilir; fazlası ise şüphe uyandırabilir.
 
 **Test edilmesi gerekenler**
-- Sonraki test: Rozet şeridi kazanırsa kart alanının üstünde mi altında mı durduğu ayrı bir testte ödeme tamamlamayı değiştiriyor mu?
 - Sayı: Kaç rozet optimum? (1 / 3 / 5)
 - Fark edilme: Kart bilgisini giren kullanıcılar rozet şeridini fark ediyor mu, oturum kayıtları bunu doğruluyor mu?
 - Tereddüt anı: Rozet şeridi, kart numarası alanında duraksayıp sayfadan çıkan kullanıcı oranını azaltıyor mu?
@@ -452,12 +507,15 @@ Kart bilgisi girilen ekran, terk oranının en yüksek olduğu andır. Güvenli 
 
 Değişken: Alanların zorunluluk etiketi · Fark: ekle
 
+Etiket: id=cc-016 · mercek=Netlik · düzey=form · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does clearly marking required and optional fields raise form completion?
+
 Formdaki hangi alanın zorunlu, hangisinin isteğe bağlı olduğu genelde belirsizdir; kullanıcı emin olmadığı alanı da doldurur ya da doldurmayıp hata mesajıyla karşılaşır. İkisini de açıkça işaretlemek bu belirsizliği kaldırabilir.
 
 **Test edilmesi gerekenler**
 - Etiket: “(isteğe bağlı)” etiketi eklemek tamamlama süresini/hata oranını düşürüyor mu?
 - Kapsam: Sadece isteğe bağlı alanları mı, yoksa zorunlu alanları da yıldızla mı işaretlemeli?
-- Sonraki test: Etiket eklemek kazanırsa etiketin alan adının yanında mı, alan içinde mi durduğu ayrı bir testte fark edilmeyi değiştiriyor mu?
 - Cihaz: Mobilde dar ekranda etiket yer kaplaması okunabilirliği bozuyor mu?
 - Tutarlılık: Formun tamamında aynı işaretleme kuralı uygulandığında etki büyüyor mu?
 
@@ -483,6 +541,10 @@ Formdaki hangi alanın zorunlu, hangisinin isteğe bağlı olduğu genelde belir
 
 Değişken: Ödeme yöntemi adımının sırası · Fark: taşı
 
+Etiket: id=cc-017 · mercek=Çaba · düzey=akış · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does asking for the payment method before the address pay off?
+
 Ödeme adımını öne almak, taahhüdü erken alır ve ödeme yöntemini seçmiş kullanıcının akıştan kopma ihtimalini azaltabilir. Karşı tarafta: kullanıcı toplam tutarı (kargo dahil) görmeden ödeme bilgisi vermeye zorlanır, bu güvensizlik yaratır ve bazı ödeme yöntemleri teslimat adresine bağlı olduğu için teknik olarak da sorun çıkarabilir.
 
 **Test edilmesi gerekenler**
@@ -500,9 +562,9 @@ Değişken: Ödeme yöntemi adımının sırası · Fark: taşı
 - Destek Talebi: “Toplam tutarı göremedim” türü talepler artmamalı.
 
 **Yapılmaması gerekenler**
-- Toplam tutarı ödeme bilgisi alındıktan sonra göstermeyin; gizlenen fiyat kabul edilemez (kural 6).
+- Toplam tutarı ödeme bilgisi alındıktan sonra göstermeyin; gizlenen fiyat kabul edilemez.
 - Aynı testte adım sırası ile adım sayısını birlikte değiştirmeyin.
-- Ödeme güvenlik doğrulamalarını sıralama testinin kapsamına almayın (kural 6).
+- Ödeme güvenlik doğrulamalarını sıralama testinin kapsamına almayın.
 - Adrese bağlı yöntemleri test öncesi teknik olarak doğrulamadan varyantı açmayın.
 - Adres girilince geçersiz kalan ödeme yöntemi seçimini sessizce sıfırlamayın; kullanıcıya nedenini gösterin.
 
@@ -511,6 +573,10 @@ Değişken: Ödeme yöntemi adımının sırası · Fark: taşı
 ## Ödeme akışında menü ve bağlantıları kaldırmak tamamlamayı artırır mı?
 
 Değişken: Checkout’taki gezinme bağlantıları · Fark: kaldır
+
+Etiket: id=cc-018 · mercek=Netlik · düzey=akış · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does removing the menu and links from the checkout flow raise completion?
 
 Checkout sırasında üst menüyü, kategori bağlantılarını ve alt bilgi bağlantılarını kaldırmak (tünel akışı) dikkat dağıtıcıları temizler ve kullanıcıyı tek yolda tutar. Riski: kullanıcı bilgiye ulaşamaz (iade koşulu, iletişim), kaybolmuş hisseder ve sitede kapana kısıldığı algısı güveni düşürür.
 
@@ -529,7 +595,7 @@ Checkout sırasında üst menüyü, kategori bağlantılarını ve alt bilgi ba�
 - Ziyaretçi Başına Gelir (RPV): Gelir düşmemeli.
 
 **Yapılmaması gerekenler**
-- Kullanıcının akıştan çıkmasını tamamen engelleyen bir tasarım kurmayın (kural 6).
+- Kullanıcının akıştan çıkmasını tamamen engelleyen bir tasarım kurmayın.
 - Yasal olarak bulunması gereken bağlantıları (mesafeli satış, iade, gizlilik) kaldırmayın.
 - Aynı testte bağlantı temizliği ile adım sayısını birlikte değiştirmeyin.
 - Güven rozetlerini ve iletişim bilgisini dikkat dağıtıcı sayıp birlikte kaldırmayın.
@@ -540,6 +606,10 @@ Checkout sırasında üst menüyü, kategori bağlantılarını ve alt bilgi ba�
 ## Seçimi onaylayan geri bildirim vermek hatayı azaltır mı?
 
 Değişken: Seçim onayı geri bildirimi · Fark: ekle
+
+Etiket: id=cc-019 · mercek=Netlik · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does feedback that confirms a selection reduce errors?
 
 Kullanıcı bir seçim yaptığında (beden, adet, teslimat günü) bunun alındığını açıkça göstermek belirsizliği kaldırır ve tekrar tıklamayı önler. Karşı tarafta: her seçime eklenen onay öğesi arayüzü kalabalıklaştırır, sayfa zıplamasına yol açabilir ve deneyimli kullanıcıyı yavaşlatır.
 
@@ -570,6 +640,10 @@ Kullanıcı bir seçim yaptığında (beden, adet, teslimat günü) bunun alınd
 
 Değişken: Tarafsız seçeneğin varsayılan seçimi · Fark: değiştir
 
+Etiket: id=cc-020 · mercek=Çaba · düzey=sürtünme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Are options that come pre-selected by default acceptable?
+
 Bir kutunun önceden işaretli gelmesi kullanıcıyı hızlandırabilir, ama bu tekniğin sınırı nettir: pazarlama izni, veri paylaşımı ve ek ücretli hizmetler önceden işaretlenemez; birçok pazarda bu yasaktır ve kullanıcının açık iradesi gerekir. Test edilebilir olan yalnızca tarafsız tercihlerdir (teslimat günü, ücretsiz ya da aynı fiyatlı kargo seçenekleri arasında kargo yöntemi, adet); fiyatı değiştiren bir kargo seçeneği tarafsız değildir.
 
 **Test edilmesi gerekenler**
@@ -587,17 +661,21 @@ Bir kutunun önceden işaretli gelmesi kullanıcıyı hızlandırabilir, ama bu 
 - Ziyaretçi Başına Gelir (RPV): Gelir düşmemeli.
 
 **Yapılmaması gerekenler**
-- Pazarlama izni, veri paylaşımı veya ek ücretli hizmeti önceden işaretli getirmeyin; bu bir test değişkeni değildir (kural 6).
+- Pazarlama izni, veri paylaşımı veya ek ücretli hizmeti önceden işaretli getirmeyin; bu bir test değişkeni değildir.
 - Kullanıcının ödeyeceği tutarı artıran bir seçeneği varsayılan yapmayın.
 - Varsayılanı fark edilmeyecek kadar silik göstermeyin.
 - Aynı testte varsayılan ile seçeneklerin sırasını birlikte değiştirmeyin.
-- Hedef pazarın izin kurallarını doğrulamadan varyant kurmayın (kural 11).
+- Hedef pazarın izin kurallarını doğrulamadan varyant kurmayın.
 
 ---
 
 ## Ödeme işlenirken adımları gösteren bir yükleme ekranı güveni artırıyor mu?
 
 Değişken: Ödeme yükleme ekranının biçimi · Fark: değiştir
+
+Etiket: id=cc-021 · mercek=Güven · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a loading screen that shows the steps while payment is processed build trust?
 
 Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve bekleme süresini belirsiz hissettirir. “Kart doğrulanıyor”, “banka onayı bekleniyor”, “sipariş oluşturuluyor” gibi gerçek adımları sırayla göstermek, işlemin özenle yapıldığını hissettirip aynı bekleme süresini daha kısa algılatabilir; görünür emek, güven inşa eder. Risk, adımların gerçek işlem sırasını yansıtmaması veya süreyi yapay olarak uzatmak için kullanılmasıdır.
 
@@ -616,7 +694,7 @@ Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve 
 - Ödeme Başarı Oranı: Genel ödeme tamamlama oranı düşmemeli.
 
 **Yapılmaması gerekenler**
-- Gerçek işlemi yapay olarak yavaşlatıp adımları uzatmayın; gösterilen süre gerçek işlem süresini aşarsa bu manipülasyondur (kural 6).
+- Gerçek işlemi yapay olarak yavaşlatıp adımları uzatmayın; gösterilen süre gerçek işlem süresini aşarsa bu manipülasyondur.
 - Gerçekleşmeyen bir adımı (ör. çalışmayan bir “dolandırıcılık taraması”) ekrana koymayın.
 - Aynı testte yükleme ekranı biçimi ile ödeme akışının adım sayısını birlikte değiştirmeyin.
 - Hata durumunda kullanıcıyı adımlı ekranda takılı bırakmayın; başarısızlık anında net bir hata mesajına geçin.
@@ -628,10 +706,13 @@ Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve 
 
 Değişken: Sepet sayfasındaki ödeme yöntemi ikonları · Fark: ekle
 
+Etiket: id=cc-022 · mercek=Güven · düzey=güven · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does adding payment method icons to the cart page build trust?
+
 Kullanıcı ödeme adımına gelmeden önce hangi kartların veya yöntemlerin kabul edildiğini bilmek ister; bu bilgi genelde yalnızca ödeme sayfasında ortaya çıkar. İkonları bir adım önce, sepet sayfasında göstermek, desteklenmeyen bir yöntemi kullanan ziyaretçinin ödeme adımında sürprizle karşılaşmasını önleyebilir; ama fazla ikon görsel gürültü yaratabilir.
 
 **Test edilmesi gerekenler**
-- Sonraki test: Sepetteki ikonlar kazanırsa aynı şeridi ürün sayfasına da eklemek ayrı bir testte ödeme adımına ulaşmayı daha çok artırıyor mu?
 - Sayı: Tüm yöntemler mi, yalnızca en çok kullanılan 3-4’ü mü daha iyi çalışıyor?
 - Terkin yer değiştirmesi: Desteklenmeyen yöntemi kullanan ziyaretçi artık sepette mi ayrılıyor, yani terk yalnızca öne mi kayıyor?
 - Sepet tutarı: Yüksek tutarlı sepetlerde kabul edilen kartları erken görmek ödeme adımına geçişi daha çok artırıyor mu?
