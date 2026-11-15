@@ -203,17 +203,20 @@ class TestRealFiles(unittest.TestCase):
             self.assertTrue(out.startswith("## " + title), title)
             self.assertEqual(len(re.findall(r"(?m)^## ", out)), 1, title)
 
-    def test_mockup_style_core_and_on_demand_sections(self):
+    def test_mockup_style_core_and_on_demand_files(self):
+        """3.4: the core is a file of its own, read whole; each on-demand part is a file named by its trigger."""
         path = os.path.join(ROOT, "knowledge", "mockup-style.md")
-        code, core, _ = run([path, "--until", "On demand"])
-        self.assertEqual(code, 0)
-        self.assertIn("## Screen spec", core)
-        self.assertNotIn("\n# On demand", core)
-        self.assertNotIn("## Components", core)
-        for title in ("Components", "Special cases", "Brand", "Card layout", "Draft and final card", "render_check"):
+        with open(path, encoding="utf-8") as fh:
+            core = fh.read()
+        for title in ("The card", "Frames", "Ring and label", "Realism level", "Screen spec",
+                      "Personal data is never copied", "Numbers the mockup needs but must not invent"):
             code, out, _ = run([path, title])
             self.assertEqual(code, 0, title)
-            self.assertEqual(len(re.findall(r"(?m)^##? ", out)), 1, title)
+            self.assertTrue(out.startswith("## " + title), title)
+        self.assertNotIn("\n# On demand", core)
+        for name in ("special-cases", "raw-markup", "fast-mode", "draft-and-final", "render-check"):
+            self.assertIn("`%s.md`" % name, core, name)  # the core's trigger table names it
+            self.assertTrue(os.path.isfile(os.path.join(ROOT, "knowledge", "mockup-style", name + ".md")), name)
 
     def test_every_archive_block_is_read_alone(self):
         folder = os.path.join(ROOT, "knowledge", "scenarios")
@@ -240,12 +243,18 @@ class TestRealFiles(unittest.TestCase):
             self.assertIsNone(re.search(r"(?<![A-Za-z])(awk|sed) +(-|')", text), path)
 
     def test_the_skill_zips_carry_the_helper(self):
+        import shutil
+        import tempfile
+        import zipfile
         import build_skill_zips
-        for skill in ("ab-test-design", "ab-test-suggest", "ab-test-card", "ab-test-audit"):
-            with open(os.path.join(ROOT, "skills", skill, "SKILL.md"), encoding="utf-8") as fh:
-                files = build_skill_zips.runtime_files([fh.read()])
-            self.assertIn("scripts/read_section.py", files, skill)
-
+        out = tempfile.mkdtemp()
+        try:
+            for skill in ("ab-test-design", "ab-test-suggest", "ab-test-card", "ab-test-audit"):
+                path, _ = build_skill_zips.build_zip(skill, out)
+                with zipfile.ZipFile(path) as zf:
+                    self.assertIn(skill + "/scripts/read_section.py", zf.namelist(), skill)
+        finally:
+            shutil.rmtree(out, ignore_errors=True)
 
 if __name__ == "__main__":
     unittest.main()

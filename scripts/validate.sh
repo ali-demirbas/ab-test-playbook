@@ -311,7 +311,7 @@ echo "== 10. Shipped content carries no instruction-like text =="
 # line in them shaped like an instruction would be indistinguishable from one
 # the user pasted, so the repo holds its own content to the same rule it holds
 # user input to (CLAUDE.md rule 18).
-if python3 scripts/validate_input.py knowledge/scenarios/*.md knowledge/*.md >/dev/null 2>&1; then
+if python3 scripts/validate_input.py knowledge/scenarios/*.md knowledge/mockup-style/*.md knowledge/*.md templates/record-checklist.md >/dev/null 2>&1; then
   ok "no instruction-like or executable-markup lines in shipped knowledge"
 else
   err "validate_input.py flagged shipped content: run it directly for the quoted lines"
