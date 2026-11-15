@@ -19,7 +19,7 @@
 
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/ali-demirbas/ab-test-playbook/blob/main/LICENSE)
-![Scenarios](https://img.shields.io/badge/scenarios-221-blue)
+![Scenarios](https://img.shields.io/badge/scenarios-217-blue)
 
 **Language:** [English](https://github.com/ali-demirbas/ab-test-playbook/blob/main/README.md) · [Türkçe](https://github.com/ali-demirbas/ab-test-playbook/blob/main/README.tr.md)
 
@@ -31,7 +31,7 @@ Turn a screenshot of your page into single-variable A/B test plans, each with on
 
 <p align="center"><sub>A real card, as the plugin draws it for every test: fictional store, neutral colors. <a href="https://ali-demirbas.github.io/ab-test-playbook/">Live demo</a> · <a href="https://github.com/ali-demirbas/ab-test-playbook/tree/main/docs/demo">more sample cards</a></sub></p>
 
-- **You give:** a screenshot, a URL or a short description of your page. Nothing to share yet? Name a page type ("my checkout") and it picks ideas from an archive of 221 curated scenarios.
+- **You give:** a screenshot, a URL or a short description of your page. Nothing to share yet? Name a page type ("my checkout") and it picks ideas from an archive of 217 curated scenarios.
 - **You get:** one to three test plans. Each has one change, the reason it should work, one primary KPI and one guardrail, and comes as an HTML card with A and B side by side and the change ringed.
 - **It does not:** calculate sample size, duration, significance or a winner, connect to your analytics or testing tool, or touch your live site. Results stay in your testing tool.
 
@@ -91,7 +91,7 @@ Every command, the full session walkthrough and the test memory file (`.abtest-h
 
 | Without a system | With A/B Test Builder |
 |---|---|
-| Test ideas come from memory or whatever feels right today | Ideas come ranked from a 221-scenario archive, or are designed for your page with a stated reason. "More eye-catching" is not accepted as a reason |
+| Test ideas come from memory or whatever feels right today | Ideas come ranked from a 217-scenario archive, or are designed for your page with a stated reason. "More eye-catching" is not accepted as a reason |
 | Variant B quietly changes two things, so the result can't be explained | One variable per test. A second reviewer looks at the drawn card for a hidden second difference |
 | Five metrics get watched, none of them decides | One primary KPI decides, one guardrail protects what must not get worse |
 | Hiding the coupon field lifts revenue because code holders now pay full price, and it reads as a win | A revenue goal on a change that touches a user benefit is refused without a guardrail on that benefit |
@@ -143,7 +143,7 @@ The [README](https://github.com/ali-demirbas/ab-test-playbook/blob/main/README.m
 
 A practical A/B testing and CRO (conversion rate optimization) playbook for e-commerce, mobile apps, SaaS and digital products, powered by Claude Code. Suggests experiment ideas by journey stage from a curated pattern archive, designs new ones for your page in a disciplined single-variable framework, audits test proposals for methodological, UX and ethics flaws (confounds, a proxy primary metric, missing guardrails, dark patterns), and renders every scenario straight to an HTML card that shows only the comparison, no extra ask needed.
 
-Built from an archive of A/B test scenarios and hypothesis-generation patterns used in real e-commerce, mobile app and SaaS growth work, plus regulated finance, insurance and private-pension flows: 221 scenarios, methodology and text content, not a shipped visual deck. Covers experiment ideas and design, test prioritization (a high / medium / low band computed from an evidence-led score), guardrail metrics, plan audits, and checkout/product-page/pricing optimization. Every archive scenario follows the same three-box discipline:
+Built from an archive of A/B test scenarios and hypothesis-generation patterns used in real e-commerce, mobile app and SaaS growth work, plus regulated finance, insurance and private-pension flows: 217 scenarios, methodology and text content, not a shipped visual deck. Covers experiment ideas and design, test prioritization (a high / medium / low band computed from an evidence-led score), guardrail metrics, plan audits, and checkout/product-page/pricing optimization. Every archive scenario follows the same three-box discipline:
 
 - **What must be tested** (*Test edilmesi gerekenler* in the archive): what questions the experiment must answer
 - **The main KPIs to track** (*Takip edilecek ana KPI’lar*): one primary metric + guardrails that must not degrade
@@ -158,7 +158,7 @@ A new proposal doesn't repeat those boxes. It is a short structured record of te
 
 | Without a system | With A/B Test Builder |
 |---|---|
-| Test ideas come from memory or whatever feels right today | Prioritized from a 221-scenario archive (high / medium / low, with a one-sentence reason), or generated with a stated mechanism; "more eye-catching" isn't an accepted reason |
+| Test ideas come from memory or whatever feels right today | Prioritized from a 217-scenario archive (high / medium / low, with a one-sentence reason), or generated with a stated mechanism; "more eye-catching" isn't an accepted reason |
 | A plan goes live with two changes in B, a click metric as the primary, or a guardrail that measures nothing | `/ab-test audit` flags confounds, mismatched denominators, a proxy standing in for the outcome, a guardrail that is the primary's complement, and missing compliance or accessibility gates before the test takes traffic |
 | Five metrics get watched, none of them decides anything | One named primary metric, one mandatory guardrail that measures an independent harm; p-hacking risk gets flagged, not shipped |
 | The model that wrote the scenario also grades its own homework | An adversarial critic checks the record before a card is drafted; a second reviewer checks the drawn card for a hidden second difference; the final card won't build without both reviews' stamps |
@@ -266,7 +266,7 @@ docs/            architecture.md · design-notes.md · the sample cards (demo/) 
 
 See [FAQ.md](https://github.com/ali-demirbas/ab-test-playbook/blob/main/FAQ.md) for answers to common A/B testing and CRO questions, drawn from this playbook's own methodology.
 
-Contributing a scenario: follow the three-box format of the existing files, then run the repo checks. The scenario validator inside them enforces, for archive files, five items per box, a `Değişken: … · Fark: …` line, a guardrail in the KPI list, a device/segment question, and typographic rules. (A proposal produced for your page is a short record instead; its three boxes, 3 to 6 items each, appear only in the detail view.) Details in [CONTRIBUTING.md](https://github.com/ali-demirbas/ab-test-playbook/blob/main/CONTRIBUTING.md).
+Contributing a scenario: follow `knowledge/scenarios/FORMAT.md` (one fully worked block), then run the repo checks. The scenario validator inside them enforces, for archive files, the head lines (`Değişken: … · Fark: …`, the `Etiket:` tag line, the `EN:` title), 3 to 6 items per box, a guardrail in the KPI list, a device/segment question, the English body's parallel boxes when there is one, and typographic rules. (A proposal produced for your page is a short record instead; its three boxes, 3 to 6 items each, appear only in the detail view.) Details in [CONTRIBUTING.md](https://github.com/ali-demirbas/ab-test-playbook/blob/main/CONTRIBUTING.md).
 
 ```bash
 bash scripts/validate.sh
@@ -572,7 +572,7 @@ has the full table and what the gates can't guarantee).
 | Priority (a tier and a one-sentence reason) | optional `priority` object in the same schema | The tier is a closed set (`high`, `medium`, `low`) and the rationale is words, because a numeric score suggested a precision its inputs never had (`methodology.md` → Prioritization) |
 | Untrusted input (pasted files, plans, history) | `scripts/validate_input.py` | Instruction-shaped lines and script payloads are reported with line numbers and quoted back, never followed |
 | Rationale behind the binding rules | [`design-notes.md`](https://github.com/ali-demirbas/ab-test-playbook/blob/main/docs/design-notes.md) | Kept out of `CLAUDE.md` so the always-loaded rules stay short |
-| Archive format | `scripts/validate_scenarios.py` | Guards the 221 shipped scenarios against silent format rot |
+| Archive format | `scripts/validate_scenarios.py` | Guards the 217 shipped scenarios against silent format rot |
 | KPI vocabulary | `knowledge/kpi-glossary.md` | 105 canonical KPI names, each with its definition and denominator; the archive uses them and the validator reads the table |
 | Cross-file consistency | `scripts/validate.sh` | Frontmatter, links, plugin-root paths, rule citations, the scenario and rule counts the docs quote, description length, bundle freshness: the seams no single validator sees |
 
@@ -755,7 +755,7 @@ Five more fields serve the quality gates (below): `exposure` (who counts as expo
 
 ## The three-box framework
 
-*Evidence: archive practice (this playbook's own format, not an external standard).* The archive writes every scenario in three blocks, each with exactly 5 items (`validate_scenarios.py` requires this). The same three blocks are a produced record's detail view: they exist only when the user asks for it, in `detail`, with 3 to 6 items per box (`kpis` has exactly one primary, listed first, and at least one guardrail):
+*Evidence: archive practice (this playbook's own format, not an external standard).* The archive writes every scenario in three blocks, each with 3 to 6 items (`validate_scenarios.py` requires this; `knowledge/scenarios/FORMAT.md` has the block format). The same three blocks are a produced record's detail view: they exist only when the user asks for it, in `detail`, with the same 3 to 6 items per box (`kpis` has exactly one primary, listed first, and at least one guardrail):
 
 1. **Test edilmesi gerekenler ("What to test")**: which questions the hypothesis has to answer. Each item is in `Label: question?` form (e.g. `Position: in the header, or inside the menu?`). At least one item asks a device/segment breakdown.
 2. **Takip edilecek ana KPI’lar ("Primary KPIs to track")**: the measurement set. Rules below. (The apostrophe in the box name is curly, U+2019; the validator doesn't recognize a straight-apostrophe version of the heading.)

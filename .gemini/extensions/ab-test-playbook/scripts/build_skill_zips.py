@@ -63,7 +63,7 @@ SHORT_DESCRIPTIONS = {
     ),
     "ab-test-suggest": (
         "Suggests up to three ranked A/B test ideas for a page type or journey "
-        "stage from a 221-scenario archive, when no page of the user's own is "
+        "stage from a 217-scenario archive, when no page of the user's own is "
         "shared. Each idea becomes an HTML card.",
         "9c7bc87ac05e4ee98a6f43bedb804546054aac49087257ed6c7bbe84418a5074",
     ),

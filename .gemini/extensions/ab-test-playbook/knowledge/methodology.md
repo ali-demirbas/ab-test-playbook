@@ -56,7 +56,7 @@ Five more fields serve the quality gates (below): `exposure` (who counts as expo
 
 ## The three-box framework
 
-*Evidence: archive practice (this playbook's own format, not an external standard).* The archive writes every scenario in three blocks, each with exactly 5 items (`validate_scenarios.py` requires this). The same three blocks are a produced record's detail view: they exist only when the user asks for it, in `detail`, with 3 to 6 items per box (`kpis` has exactly one primary, listed first, and at least one guardrail):
+*Evidence: archive practice (this playbook's own format, not an external standard).* The archive writes every scenario in three blocks, each with 3 to 6 items (`validate_scenarios.py` requires this; `knowledge/scenarios/FORMAT.md` has the block format). The same three blocks are a produced record's detail view: they exist only when the user asks for it, in `detail`, with the same 3 to 6 items per box (`kpis` has exactly one primary, listed first, and at least one guardrail):
 
 1. **Test edilmesi gerekenler ("What to test")**: which questions the hypothesis has to answer. Each item is in `Label: question?` form (e.g. `Position: in the header, or inside the menu?`). At least one item asks a device/segment breakdown.
 2. **Takip edilecek ana KPI’lar ("Primary KPIs to track")**: the measurement set. Rules below. (The apostrophe in the box name is curly, U+2019; the validator doesn't recognize a straight-apostrophe version of the heading.)

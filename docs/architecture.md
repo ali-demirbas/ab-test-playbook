@@ -117,7 +117,7 @@ has the full table and what the gates can't guarantee).
 | Priority (a tier and a one-sentence reason) | optional `priority` object in the same schema | The tier is a closed set (`high`, `medium`, `low`) and the rationale is words, because a numeric score suggested a precision its inputs never had (`methodology.md` → Prioritization) |
 | Untrusted input (pasted files, plans, history) | `scripts/validate_input.py` | Instruction-shaped lines and script payloads are reported with line numbers and quoted back, never followed |
 | Rationale behind the binding rules | [`design-notes.md`](design-notes.md) | Kept out of `CLAUDE.md` so the always-loaded rules stay short |
-| Archive format | `scripts/validate_scenarios.py` | Guards the 221 shipped scenarios against silent format rot |
+| Archive format | `scripts/validate_scenarios.py` | Guards the 217 shipped scenarios against silent format rot |
 | KPI vocabulary | `knowledge/kpi-glossary.md` | 105 canonical KPI names, each with its definition and denominator; the archive uses them and the validator reads the table |
 | Cross-file consistency | `scripts/validate.sh` | Frontmatter, links, plugin-root paths, rule citations, the scenario and rule counts the docs quote, description length, bundle freshness: the seams no single validator sees |
 

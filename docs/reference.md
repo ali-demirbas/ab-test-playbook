@@ -8,7 +8,7 @@ The [README](../README.md) is the short tour. This page keeps the full detail th
 
 A practical A/B testing and CRO (conversion rate optimization) playbook for e-commerce, mobile apps, SaaS and digital products, powered by Claude Code. Suggests experiment ideas by journey stage from a curated pattern archive, designs new ones for your page in a disciplined single-variable framework, audits test proposals for methodological, UX and ethics flaws (confounds, a proxy primary metric, missing guardrails, dark patterns), and renders every scenario straight to an HTML card that shows only the comparison, no extra ask needed.
 
-Built from an archive of A/B test scenarios and hypothesis-generation patterns used in real e-commerce, mobile app and SaaS growth work, plus regulated finance, insurance and private-pension flows: 221 scenarios, methodology and text content, not a shipped visual deck. Covers experiment ideas and design, test prioritization (a high / medium / low band computed from an evidence-led score), guardrail metrics, plan audits, and checkout/product-page/pricing optimization. Every archive scenario follows the same three-box discipline:
+Built from an archive of A/B test scenarios and hypothesis-generation patterns used in real e-commerce, mobile app and SaaS growth work, plus regulated finance, insurance and private-pension flows: 217 scenarios, methodology and text content, not a shipped visual deck. Covers experiment ideas and design, test prioritization (a high / medium / low band computed from an evidence-led score), guardrail metrics, plan audits, and checkout/product-page/pricing optimization. Every archive scenario follows the same three-box discipline:
 
 - **What must be tested** (*Test edilmesi gerekenler* in the archive): what questions the experiment must answer
 - **The main KPIs to track** (*Takip edilecek ana KPI’lar*): one primary metric + guardrails that must not degrade
@@ -23,7 +23,7 @@ A new proposal doesn't repeat those boxes. It is a short structured record of te
 
 | Without a system | With A/B Test Builder |
 |---|---|
-| Test ideas come from memory or whatever feels right today | Prioritized from a 221-scenario archive (high / medium / low, with a one-sentence reason), or generated with a stated mechanism; "more eye-catching" isn't an accepted reason |
+| Test ideas come from memory or whatever feels right today | Prioritized from a 217-scenario archive (high / medium / low, with a one-sentence reason), or generated with a stated mechanism; "more eye-catching" isn't an accepted reason |
 | A plan goes live with two changes in B, a click metric as the primary, or a guardrail that measures nothing | `/ab-test audit` flags confounds, mismatched denominators, a proxy standing in for the outcome, a guardrail that is the primary's complement, and missing compliance or accessibility gates before the test takes traffic |
 | Five metrics get watched, none of them decides anything | One named primary metric, one mandatory guardrail that measures an independent harm; p-hacking risk gets flagged, not shipped |
 | The model that wrote the scenario also grades its own homework | An adversarial critic checks the record before a card is drafted; a second reviewer checks the drawn card for a hidden second difference; the final card won't build without both reviews' stamps |
@@ -131,7 +131,7 @@ docs/            architecture.md · design-notes.md · the sample cards (demo/) 
 
 See [FAQ.md](../FAQ.md) for answers to common A/B testing and CRO questions, drawn from this playbook's own methodology.
 
-Contributing a scenario: follow the three-box format of the existing files, then run the repo checks. The scenario validator inside them enforces, for archive files, five items per box, a `Değişken: … · Fark: …` line, a guardrail in the KPI list, a device/segment question, and typographic rules. (A proposal produced for your page is a short record instead; its three boxes, 3 to 6 items each, appear only in the detail view.) Details in [CONTRIBUTING.md](../CONTRIBUTING.md).
+Contributing a scenario: follow `knowledge/scenarios/FORMAT.md` (one fully worked block), then run the repo checks. The scenario validator inside them enforces, for archive files, the head lines (`Değişken: … · Fark: …`, the `Etiket:` tag line, the `EN:` title), 3 to 6 items per box, a guardrail in the KPI list, a device/segment question, the English body's parallel boxes when there is one, and typographic rules. (A proposal produced for your page is a short record instead; its three boxes, 3 to 6 items each, appear only in the detail view.) Details in [CONTRIBUTING.md](../CONTRIBUTING.md).
 
 ```bash
 bash scripts/validate.sh

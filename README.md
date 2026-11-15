@@ -2,7 +2,7 @@
 
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
-![Scenarios](https://img.shields.io/badge/scenarios-221-blue)
+![Scenarios](https://img.shields.io/badge/scenarios-217-blue)
 
 **Language:** [English](README.md) · [Türkçe](README.tr.md)
 
@@ -14,7 +14,7 @@ Turn a screenshot of your page into single-variable A/B test plans, each with on
 
 <p align="center"><sub>A real card, as the plugin draws it for every test: fictional store, neutral colors. <a href="https://ali-demirbas.github.io/ab-test-playbook/">Live demo</a> · <a href="docs/demo/">more sample cards</a></sub></p>
 
-- **You give:** a screenshot, a URL or a short description of your page. Nothing to share yet? Name a page type ("my checkout") and it picks ideas from an archive of 221 curated scenarios.
+- **You give:** a screenshot, a URL or a short description of your page. Nothing to share yet? Name a page type ("my checkout") and it picks ideas from an archive of 217 curated scenarios.
 - **You get:** one to three test plans. Each has one change, the reason it should work, one primary KPI and one guardrail, and comes as an HTML card with A and B side by side and the change ringed.
 - **It does not:** calculate sample size, duration, significance or a winner, connect to your analytics or testing tool, or touch your live site. Results stay in your testing tool.
 
@@ -74,7 +74,7 @@ Every command, the full session walkthrough and the test memory file (`.abtest-h
 
 | Without a system | With A/B Test Builder |
 |---|---|
-| Test ideas come from memory or whatever feels right today | Ideas come ranked from a 221-scenario archive, or are designed for your page with a stated reason. "More eye-catching" is not accepted as a reason |
+| Test ideas come from memory or whatever feels right today | Ideas come ranked from a 217-scenario archive, or are designed for your page with a stated reason. "More eye-catching" is not accepted as a reason |
 | Variant B quietly changes two things, so the result can't be explained | One variable per test. A second reviewer looks at the drawn card for a hidden second difference |
 | Five metrics get watched, none of them decides | One primary KPI decides, one guardrail protects what must not get worse |
 | Hiding the coupon field lifts revenue because code holders now pay full price, and it reads as a win | A revenue goal on a change that touches a user benefit is refused without a guardrail on that benefit |

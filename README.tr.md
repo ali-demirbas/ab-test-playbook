@@ -2,7 +2,7 @@
 
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
-![Scenarios](https://img.shields.io/badge/scenarios-221-blue)
+![Scenarios](https://img.shields.io/badge/scenarios-217-blue)
 
 **Dil:** [English](README.md) · [Türkçe](README.tr.md)
 
@@ -14,7 +14,7 @@ Sayfanızın ekran görüntüsünü tek değişkenli A/B test planlarına çevir
 
 <p align="center"><sub>Gerçek bir kart, eklentinin her test için çizdiği haliyle: kurgusal mağaza, nötr renkler. <a href="https://ali-demirbas.github.io/ab-test-playbook/">Canlı demo</a> · <a href="docs/demo/">diğer örnek kartlar</a></sub></p>
 
-- **Siz verirsiniz:** sayfanızın ekran görüntüsünü, adresini ya da kısa bir tarifini. Paylaşacak sayfa yoksa sayfa türünü söyleyin ("ödeme sayfam"), 221 senaryoluk derlenmiş arşivden fikir seçer.
+- **Siz verirsiniz:** sayfanızın ekran görüntüsünü, adresini ya da kısa bir tarifini. Paylaşacak sayfa yoksa sayfa türünü söyleyin ("ödeme sayfam"), 217 senaryoluk derlenmiş arşivden fikir seçer.
 - **Siz alırsınız:** bir ile üç arası test planı. Her planda tek değişiklik, neden işe yarayacağı, bir birincil KPI ve bir guardrail vardır. Plan, A ile B'nin yan yana durduğu ve değişikliğin halkayla işaretlendiği bir HTML kart olarak gelir.
 - **Yapmadıkları:** örneklem, süre, anlamlılık ya da kazanan hesaplamaz, analitik ya da test aracınıza bağlanmaz, canlı sitenize dokunmaz. Sonuçlar test aracınızda kalır.
 
@@ -74,7 +74,7 @@ Bütün komutlar, uçtan uca bir oturum ve test hafızası dosyası (`.abtest-hi
 
 | Sistem olmadan | A/B Test Builder ile |
 |---|---|
-| Test fikirleri hafızadan ya da o gün akla gelenden çıkar | Fikirler 221 senaryoluk arşivden sıralı gelir ya da sayfanız için gerekçesi yazılarak tasarlanır. "Daha dikkat çekici olur" gerekçe sayılmaz |
+| Test fikirleri hafızadan ya da o gün akla gelenden çıkar | Fikirler 217 senaryoluk arşivden sıralı gelir ya da sayfanız için gerekçesi yazılarak tasarlanır. "Daha dikkat çekici olur" gerekçe sayılmaz |
 | Varyant B sessizce iki şeyi değiştirir, sonuç açıklanamaz | Test başına tek değişken. İkinci bir incelemeci çizilen kartta gizli ikinci farkı arar |
 | Beş metrik izlenir, hiçbiri kararı vermez | Kararı tek birincil KPI verir, bozulmaması gerekeni tek guardrail korur |
 | Kupon alanını gizlemek geliri artırır, çünkü kodu olan artık tam fiyat öder ve bu kazanç gibi okunur | Bir kullanıcı faydasına dokunan değişiklikte gelir hedefi, o faydayı koruyan guardrail olmadan reddedilir |

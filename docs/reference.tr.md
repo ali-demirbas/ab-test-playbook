@@ -8,7 +8,7 @@
 
 E-ticaret, mobil uygulama, SaaS ve dijital ürünler için pratik bir A/B test ve CRO (dönüşüm oranı optimizasyonu) rehberi; Claude Code üzerinde çalışır. Derlenmiş bir örüntü arşivinden, yolculuk aşamasına göre deney fikirleri önerir, sayfanız için disiplinli tek-değişkenli bir çerçevede yenilerini tasarlar, test önerilerini metodolojik, UX ve etik hatalara karşı denetler (confound, vekil birincil metrik, eksik guardrail, dark pattern) ve her senaryoyu doğrudan yalnızca karşılaştırmayı gösteren bir HTML karta çevirir. Ayrıca istemek gerekmez.
 
-Gerçek e-ticaret, mobil uygulama ve SaaS büyüme çalışmalarında, ayrıca düzenlemeye tabi finans, sigorta ve bireysel emeklilik akışlarında kullanılan bir A/B test senaryosu ve hipotez üretim deseni arşivinden inşa edildi: 221 senaryo, metodoloji ve metin içeriği, hazır bir görsel deste değil. Deney fikri ve tasarımı, test önceliklendirme (kanıta dayalı bir puandan hesaplanan Yüksek / Orta / Düşük öncelik), guardrail metrikleri, plan denetimi ve checkout/ürün sayfası/fiyatlandırma optimizasyonunu kapsar. Arşivdeki her senaryo aynı üç-kutu disiplinini izler:
+Gerçek e-ticaret, mobil uygulama ve SaaS büyüme çalışmalarında, ayrıca düzenlemeye tabi finans, sigorta ve bireysel emeklilik akışlarında kullanılan bir A/B test senaryosu ve hipotez üretim deseni arşivinden inşa edildi: 217 senaryo, metodoloji ve metin içeriği, hazır bir görsel deste değil. Deney fikri ve tasarımı, test önceliklendirme (kanıta dayalı bir puandan hesaplanan Yüksek / Orta / Düşük öncelik), guardrail metrikleri, plan denetimi ve checkout/ürün sayfası/fiyatlandırma optimizasyonunu kapsar. Arşivdeki her senaryo aynı üç-kutu disiplinini izler:
 
 - **Test edilmesi gerekenler**: deneyin hangi soruları yanıtlaması gerektiği
 - **Takip edilecek ana KPI’lar**: bir birincil metrik + bozulmaması gereken guardrail’ler
@@ -23,7 +23,7 @@ Yeni bir öneri bu kutuları tekrarlamaz. On parçalık kısa, yapılandırılm�
 
 | Rehber olmadan | A/B Test Builder ile |
 |---|---|
-| Test fikirleri hafızadan ya da o gün akla gelenden gelir | 221 senaryoluk arşivden önceliğe göre sıralanır (Yüksek / Orta / Düşük, tek cümlelik gerekçeyle) ya da belirtilmiş bir mekanizmayla üretilir; “daha dikkat çekici olur” kabul edilen bir gerekçe değildir |
+| Test fikirleri hafızadan ya da o gün akla gelenden gelir | 217 senaryoluk arşivden önceliğe göre sıralanır (Yüksek / Orta / Düşük, tek cümlelik gerekçeyle) ya da belirtilmiş bir mekanizmayla üretilir; “daha dikkat çekici olur” kabul edilen bir gerekçe değildir |
 | Plan, B’de iki değişiklikle, birincil metrik olarak bir tıklamayla ya da hiçbir şey ölçmeyen bir guardrail’le yayına girer | `/ab-test audit` confound’ları, uyuşmayan paydaları, asıl sonucun yerine geçen vekil metriği, birincilin tümleyeni olan guardrail’i ve eksik uyum ya da erişilebilirlik kapılarını test trafik almadan önce işaretler |
 | Beş metrik izlenir, hiçbiri kararı vermez | Adı konmuş tek bir birincil metrik ve bağımsız bir zararı ölçen zorunlu bir guardrail; p-hacking riski işaretlenir, yayınlanmaz |
 | Senaryoyu yazan model kendi ödevini kendi notlandırır | Kart taslağı çıkmadan önce kaydı bir adversarial denetçi kontrol eder; ikinci bir denetçi çizilen kartta gizli ikinci farkı arar; iki incelemenin damgası olmadan nihai kart üretilmez |
@@ -131,7 +131,7 @@ docs/            architecture.md · design-notes.md · örnek kartlar (demo/) ve
 
 Yaygın A/B test ve CRO sorularının bu rehberin kendi metodolojisinden yanıtları için [FAQ.md](../FAQ.md)’ye bakın (İngilizce).
 
-Bir senaryo katkısı: mevcut dosyaların üç-kutu formatını izleyin, sonra repo kontrollerini çalıştırın. İçlerindeki senaryo validator’ı arşiv dosyaları için kutu başına beş madde, bir `Değişken: … · Fark: …` satırı, KPI listesinde bir guardrail, bir cihaz/segment sorusu ve tipografi kurallarını zorunlu kılar. (Sayfanız için üretilen bir öneri ise kısa bir kayıttır; kutu başına 3 ile 6 maddelik üç kutusu yalnızca ayrıntılı görünümde yer alır.) Ayrıntılar [CONTRIBUTING.md](../CONTRIBUTING.md) dosyasında (İngilizce).
+Bir senaryo katkısı: `knowledge/scenarios/FORMAT.md` dosyasını izleyin (içinde baştan sona yazılmış bir blok var), sonra repo kontrollerini çalıştırın. İçlerindeki senaryo validator’ı arşiv dosyaları için baş satırları (`Değişken: … · Fark: …`, `Etiket:` satırı, `EN:` başlığı), kutu başına 3 ile 6 madde, KPI listesinde bir guardrail, bir cihaz/segment sorusu, İngilizce gövde varsa onun paralel kutularını ve tipografi kurallarını zorunlu kılar. (Sayfanız için üretilen bir öneri ise kısa bir kayıttır; kutu başına 3 ile 6 maddelik üç kutusu yalnızca ayrıntılı görünümde yer alır.) Ayrıntılar [CONTRIBUTING.md](../CONTRIBUTING.md) dosyasında (İngilizce).
 
 ```bash
 bash scripts/validate.sh
