@@ -95,7 +95,7 @@ class TestLanguage(unittest.TestCase):
     def test_english_frame(self):
         built = build(TEMPLATE, flat(lang="en"))
         self.assertIn('<html lang="en">', built)
-        # Pills stay "Variant A/B" in every language.
+        # An English card's pills are English; a Turkish card's are Turkish (test_card_v34).
         self.assertIn(">Variant A<", built)
         self.assertIn(">Variant B<", built)
 

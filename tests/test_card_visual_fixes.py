@@ -115,7 +115,11 @@ class TestOnePillRow(unittest.TestCase):
         self.assertEqual(bc.STAGE_H, 900 - top - 75 - gap - bottom)
         self.assertEqual(bc.COLUMN_W, (1600 - 2 * side - 48) // 2)
         pill_gap = int(re.search(r"gap:(\d+)px", rule(".variant")).group(1))
-        self.assertEqual(bc.FRAME_BUDGET, bc.STAGE_H - 30 - pill_gap)
+        pill = rule(".pill")
+        size = int(re.search(r"font-size:(\d+)px", pill).group(1))
+        pad = int(re.search(r"padding:(\d+)px", pill).group(1))
+        self.assertEqual(bc.PILL_H, size + 2 * pad + 2)  # line-height 1, a 1px border
+        self.assertEqual(bc.FRAME_BUDGET, bc.STAGE_H - bc.PILL_H - pill_gap)
 
 
 class TestAutoScale(unittest.TestCase):
@@ -430,7 +434,7 @@ class TestInChromium(unittest.TestCase):
         for name, res in self.result.items():
             for frame in res["frames"]:
                 tops.add(round(frame["y"]))
-        self.assertEqual(tops, {167})
+        self.assertEqual(tops, {171})  # 127 + the 34px pill + its 10px gap
 
     def test_the_estimate_is_close_to_the_render_and_never_clips(self):
         for name, res in self.result.items():

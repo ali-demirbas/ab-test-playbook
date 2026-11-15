@@ -63,8 +63,7 @@
     "url": "magaza.example/sepet",
     "mockup_basis": "representative",
     "variant_a": "<div class=\"r-h\">Sepetim</div>\n          <div class=\"r-item\" style=\"margin-bottom:20px\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Kadife Ceket</div>\n              <div class=\"r-meta\">Beden M · 1 adet</div>\n            </div>\n            <div class=\"r-price\">890 TL</div>\n          </div>\n          <div class=\"hl\" data-note=\"Kupon alanı açık\">\n            <div class=\"r-label\">Kupon kodunuz</div>\n            <div class=\"r-field empty\">Kodu buraya girin</div>\n          </div>\n          <div class=\"r-line\"><span>Ara toplam</span><span>890 TL</span></div>\n          <div class=\"r-line total\"><span>Toplam</span><span>890 TL</span></div>\n          <div class=\"r-cta\">Ödemeye geç</div>",
-    "variant_b": "<div class=\"r-h\">Sepetim</div>\n          <div class=\"r-item\" style=\"margin-bottom:20px\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Kadife Ceket</div>\n              <div class=\"r-meta\">Beden M · 1 adet</div>\n            </div>\n            <div class=\"r-price\">890 TL</div>\n          </div>\n          <div class=\"r-link hl\" data-note=\"Kupon bağlantıda\" style=\"align-self:flex-start;line-height:44px\">İndirim kodum var</div>\n          <div class=\"r-line\"><span>Ara toplam</span><span>890 TL</span></div>\n          <div class=\"r-line total\"><span>Toplam</span><span>890 TL</span></div>\n          <div class=\"r-cta\">Ödemeye geç</div>",
-    "phone_scale": 1.4
+    "variant_b": "<div class=\"r-h\">Sepetim</div>\n          <div class=\"r-item\" style=\"margin-bottom:20px\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Kadife Ceket</div>\n              <div class=\"r-meta\">Beden M · 1 adet</div>\n            </div>\n            <div class=\"r-price\">890 TL</div>\n          </div>\n          <div class=\"r-link hl\" data-note=\"Kupon bağlantıda\" style=\"align-self:flex-start;line-height:44px\">İndirim kodum var</div>\n          <div class=\"r-line\"><span>Ara toplam</span><span>890 TL</span></div>\n          <div class=\"r-line total\"><span>Toplam</span><span>890 TL</span></div>\n          <div class=\"r-cta\">Ödemeye geç</div>"
   },
   "review": {
     "scenario_critic": {
@@ -73,7 +72,7 @@
     },
     "mockup_reviewer": {
       "verdict": "PASS",
-      "fingerprint": "8c96868163859a895100d77a77eeae33595061e1d04855ae26a7a736db625fcb"
+      "fingerprint": "f448ea7fbb3bd6616f7b786db08c7e0206c70ed2277c8941d822bfcfa9edb831"
     }
   }
 }

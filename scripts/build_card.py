@@ -55,19 +55,30 @@ says so.
               first view or to a later screen (layout markers below; only the
               ring moves). Each arm's label says where the element is in that
               arm; the element's content is identical.
-  layout:     phone and phone-web only. A bare <div class="r-fold"></div> at
-              the top level of a screen splits it: what comes before is the
-              first view (in the phone), what comes after is drawn under the
-              phone as a continuation sheet (.below). Both arms or neither.
+  layout:     A bare <div class="r-fold"></div> at the top level of a
+              screen splits a phone's screen: what comes before is the first
+              view (in the phone), what comes after is drawn under the phone
+              as a continuation sheet (.below). On a desktop page (web) it is
+              the dashed "end of first screen" line, drawn where it stands.
+              Both arms or neither. Phones only from here on:
               <div class="r-sticky">one element</div> before the fold is a bar
               pinned to the bottom of the first view; a pinned element is
-              drawn this way, never inside the page flow. A bare
+              drawn this way, never inside the page flow. The arm without the
+              bar shows its continuation's start fading out in the bar's room
+              (.r-peek, frame not mockup). A bare
               <div class="r-stage-break"></div> splits a screen into two
               stages, drawn as two small phones with card.stage_captions.
               card.mobile_toolbar (phone-web) draws the browser's bottom
               toolbar, the same in both arms. .hl-soft marks a linked
               consequence of the variable (at most two per arm, next to a .hl).
-  lang:       tr (default) | en: <html lang> and the draft ribbon.
+  lang:       tr (default) | en: <html lang>, the pills ("Varyant A" /
+              "Variant A"; A adds "· Mevcut" / "· Current" when it is the
+              user's page, variants[A].is_current) and the draft ribbon.
+  theme:      card.theme light (default) | dark: the card's ground, title and
+              pills; the mockups keep the page's colours.
+  share:      --share (final build) also writes <card>.share.html and its PNG,
+              1200 × 630; --overview OUT.html card.html ... writes one page of a
+              turn's delivered cards.
   brand:      {"primary": "#c9392b", "on_primary": "#fff", "name": "Marka"} →
               CSS variables used by .r-cta, .r-header, .r-logo, .r-tabs …
               Without it the neutral palette stays. A colour is #hex, rgb()/
@@ -176,6 +187,7 @@ import json
 import os
 import re
 import sys
+import urllib.parse
 from html.parser import HTMLParser
 
 # validate_scenario_json ships next to this file and is imported lazily below.
@@ -207,6 +219,12 @@ PHONE_SCALE_ATTR = {1.2: "1.2", 1: "1", 1.4: "1.4"}
 # The card's own language: <html lang> and the draft ribbon. The title is
 # already in the user's language (rule 7); the pills say "Variant A/B" in both.
 CARD_LANGS = ("tr", "en")
+# card.theme: the card's own ground (the mockups stay the page's colours in both).
+CARD_THEMES = ("light", "dark")
+# The pills say which arm is which in the card's language; A adds "Mevcut" / "Current" when it is the user's own
+# current page (variants[A].is_current, rule 15). Identical style in both arms, only the text differs.
+PILL_TEXT = {"tr": ("Varyant A", "Varyant B"), "en": ("Variant A", "Variant B")}
+PILL_CURRENT = {"tr": "Mevcut", "en": "Current"}
 
 SCREEN_PLACEHOLDERS = {
     "{{VARIANT_A_SCREEN}}": "variant_a",
@@ -507,6 +525,9 @@ def normalize(scenario, msg_lang=None):
     note_pos = card.get("note_pos") or "above"
     if note_pos not in NOTE_POSITIONS:
         die("note_pos must be 'above' or 'below', got %r" % note_pos)
+    theme = card.get("theme", "light")
+    if theme not in CARD_THEMES:
+        die("card.theme must be 'light' or 'dark' (or left out), got %r" % (theme,))
 
     # Optional since the builder picks the scale itself (auto_scale); a value given here is used as it is.
     phone_scale = card.get("phone_scale")
@@ -548,9 +569,16 @@ def normalize(scenario, msg_lang=None):
     difference = card.get("difference")
     if difference in (None, ""):
         difference = scenario.get("difference")
+    current = any(isinstance(v, dict) and v.get("id") == "A" and v.get("is_current") is True
+                  for v in scenario.get("variants") or ())
+    pill_a, pill_b = PILL_TEXT[lang]
+    if current:
+        pill_a = "%s \u00b7 %s" % (pill_a, PILL_CURRENT[lang])
     return {
         "lang": lang,
         "device": device,
+        "theme": theme,
+        "pills": (pill_a, pill_b),
         "title": scenario.get("title", ""),
         "variant_a": card.get("variant_a", ""),
         "variant_b": card.get("variant_b", ""),
@@ -768,6 +796,9 @@ def layout_of(view):
     for key in ("variant_a", "variant_b"):
         f, b, st = layout_markers(view.get(key) or "")
         fold, breaks, sticky = max(fold, f), max(breaks, b), max(sticky, st)
+    # A desktop page's fold is drawn where it stands, as the dashed "end of first screen" line (template CSS);
+    # only a phone splits its screen into the first view and the sheet under it.
+    fold = fold and view.get("device") in LAYOUT_DEVICES
     return {"fold": bool(fold), "sticky": bool(sticky), "stages": breaks + 1,
             "toolbar": view.get("device") == "phone-web" and view.get("mobile_toolbar") is True}
 
@@ -806,6 +837,30 @@ def apply_layout(text, layout=None):
     return out
 
 
+# The first view of a screen with a pinned bar keeps the bar's height free at its bottom in both arms. In the arm
+# without the bar that space shows the page going on: the continuation's start, faded out (template: .r-peek, hidden
+# where the bar is). A copy without rings or labels, identical in both arms, outside the A/B diff (it is frame, not
+# mockup) and skipped by render_check.
+PEEK_HTML = '<div class="r-peek" aria-hidden="true">%s</div>'
+_RING_ATTR_RE = re.compile(r'\s+data-(?:note|pos)="[^"]*"')
+_CLASS_ATTR_RE = re.compile(r'\s+class="([^"]*)"')
+
+
+def unringed(markup):
+    """`markup` (allowlisted: every attribute double-quoted) with its rings taken off: the ring classes and the
+    label attributes removed, everything else as it is."""
+    def tag(m):
+        text = m.group(0)
+        if "hl" not in text:
+            return text
+
+        def cls(c):
+            words = [w for w in c.group(1).split() if w not in RING_CLASSES]
+            return ' class="%s"' % " ".join(words) if words else ""
+        return _RING_ATTR_RE.sub("", _CLASS_ATTR_RE.sub(cls, text))
+    return START_TAG_RE.sub(tag, markup)
+
+
 def layout_values(view, layout):
     """The placeholders apply_layout() leaves, and the two screens split at
     their markers: {placeholder: value}. The markup halves go in raw (the
@@ -815,6 +870,8 @@ def layout_values(view, layout):
         markup = view[key]
         if layout.get("fold"):
             first, rest = markup.split(FOLD_TAG, 1)
+            if layout.get("sticky"):
+                first += PEEK_HTML % unringed(rest)
             values["{{VARIANT_%s_SCREEN}}" % arm] = first
             values["{{VARIANT_%s_BELOW}}" % arm] = (
                 '<div class="below"><div class="below-cap">%s</div><div class="below-screen">%s</div></div>'
@@ -2101,9 +2158,10 @@ def layout_problems(trees, raws, lang="en", card_lang=None, layout=None):
     if breaks_a != breaks_b:
         errors.append(_lm("breaks", lang, a=breaks_a, b=breaks_b))
     if layout is not None:
-        errors += layout_field_problems(layout, max(breaks_a, breaks_b),
-                                        any(counts[v][c] for v in "AB" for c in (FOLD_CLASS, STICKY_CLASS)),
-                                        lang, card_lang)
+        # A fold is a phone's split or a desktop page's line; a pinned bar is a phone's only.
+        pinned = any(counts[v][STICKY_CLASS] for v in "AB")
+        folded = any(counts[v][FOLD_CLASS] for v in "AB") and layout.get("device") != "web"
+        errors += layout_field_problems(layout, max(breaks_a, breaks_b), pinned or folded, lang, card_lang)
     return errors, warnings
 
 
@@ -2991,7 +3049,8 @@ def brand_css(brand):
 CARD_W, CARD_H = 1600, 900
 COLUMN_W = 728          # (1600 - 2 × 48 - 48) / 2
 STAGE_H = 741           # 900 - 40 (padding) - 75 (title box) - 12 (gap) - 32 (padding)
-FRAME_BUDGET = 701      # the stage minus the pill (30px) and the gap under it (10px)
+PILL_H = 34             # 16px text + 2 × 8px padding + 2 × 1px border
+FRAME_BUDGET = 697      # the stage minus the pill and the gap under it (10px)
 PHONE_W = 420
 DEFAULT_PHONE_SCALE = 1.2
 # Under 1 only as far as the smallest component text (13px) stays at 12px: 13 × 0.93 = 12.09.
@@ -2999,6 +3058,12 @@ AUTO_SCALE_MIN, AUTO_SCALE_MAX = 0.93, 1.4
 FILL_TARGET = 0.93      # the estimated fill a browser frame's scale stays within (its text wraps: more margin)
 FILL_HIGH = 0.96        # the same for a phone; its default scale is kept up to this fill
 FILL_LOW = 0.66         # under this the default phone scale leaves the stage empty: grow (render_check fails at 0.62)
+# The sizes a phone is drawn at from 1 up: a few steps rather than any fitting value, so phones that leave the
+# default size still come in a handful of sizes across a deck (1, 1.1, 1.2, 1.3, 1.4). A screen too long for 1 is
+# drawn at the size that fits (down to AUTO_SCALE_MIN). A step may exceed the estimated fit by STEP_SLACK: the
+# estimate keeps FILL_HIGH's margin under the stage, and render_check measures the real render.
+PHONE_STEPS = (1.4, 1.3, 1.2, 1.1, 1.0)
+STEP_SLACK = 0.02
 LABEL_PX, LABEL_H, LABEL_PAD, LABEL_OFFSET, LABEL_ROOM, LABEL_CLEAR = 14, 22, 20, 4, 34, 6
 RING_GROW = 7           # outline-offset 4 + outline 3
 LAYOUT_TOKENS = {
@@ -3019,10 +3084,15 @@ _FONTS = {
     "r-field": ("fs", 400, None), "r-search": ("fs", 400, None), "r-chip": ("ctl", 400, None),
     "r-line": ("fs", 400, None), "r-plan-feat": ("sm", 400, None), "r-header": ("sm", 400, None),
     "r-tabs": ("ctl", 400, None), "r-steps": (13, 400, None), "r-badge": (13, 600, 1.2), "r-suggest": ("ctl", 400, None),
+    "r-logos-cap": ("sm", 400, None), "r-big": ("xl", 700, 1.2), "r-plan-note": ("sm", 400, None),
 }
 # column containers: class → (padding top/bottom, padding left/right, border, gap)
 _COLUMNS = {"r-card": (14, 14, 1, 10), "r-plan": (16, 16, 1, 8), "r-tile": (12, 12, 1, 6), "r-modal": (20, 20, 0, 12),
-            "hero": (18, 18, 0, 8), "r-plan-feat": (0, 0, 0, 4)}
+            "hero": (18, 18, 0, 8), "r-plan-feat": (0, 0, 0, 4), "r-logos": (0, 0, 0, 10)}
+_UNPAINTED_COLUMNS = ("r-plan-feat", "r-logos")
+WEB_CTA_MIN = 168       # a desktop button drawn at its own width is at least this wide (template: min-width)
+LOGO_GAP = (24.0, 10.0)  # .r-logos-row: between logos, between rows
+WEB_FOLD_H = 18.0       # the desktop fold line (.browser-screen>.r-fold), 2px margin above and below
 _FIT_RING = ("r-link", "r-label", "r-name", "r-meta", "r-price", "r-plan-name", "r-plan-price")
 _OUT_OF_FLOW = (STICKY_CLASS, "r-overlay")
 
@@ -3107,6 +3177,7 @@ class _Layout:
 
     def __init__(self, device, pos="above"):
         self.t = LAYOUT_TOKENS["web" if device == "web" else "phone"]
+        self.web = device == "web"
         self.pos = pos
 
     def font_of(self, node, font):
@@ -3163,6 +3234,7 @@ class _Layout:
         inner = w - 2 * pad[1] - 2 * border
         boxes, y, first = [], pad[0] + border, True
         run = []
+        centred = isinstance(node, Node) and dict(_style_decls(node.attrs.get("style") or "")).get("align-items") == "center"
 
         def flush():
             nonlocal y, first
@@ -3188,7 +3260,15 @@ class _Layout:
             if not first:
                 y += gap
             y += b.mt
-            boxes.append((pad[1] + border, y, b))
+            x = pad[1] + border
+            own = dict(_style_decls(k.attrs.get("style") or "")).get("align-self")
+            if centred and own is None:
+                # a centred flex column draws each child at its own width (a long text still wraps at the column's)
+                b.w = min(b.w, self.fit_width(k, font))
+                b.tw = min(b.tw, b.w)
+            if (centred and own is None) or own == "center":
+                x += max(0.0, (inner - b.w) / 2.0)
+            boxes.append((x, y, b))
             y += b.h + b.mb
             first = False
         flush()
@@ -3240,6 +3320,10 @@ class _Layout:
         style = dict(_style_decls(node.attrs.get("style") or ""))
         kids = node.kids
         elems = [k for k in kids if isinstance(k, Node)]
+        if FOLD_CLASS in cls and self.web:
+            box = _Box(node, w, WEB_FOLD_H, painted=True, text=True)
+            box.mt = box.mb = 2.0
+            return box
         if FOLD_CLASS in cls or BREAK_CLASS in cls:
             box = _Box(node, w, 0.0)
             box.out = True
@@ -3266,7 +3350,7 @@ class _Layout:
             if "featured" in cls:
                 border = 2
             box = self.column(node, kids, w, font, gap=gap, pad=(pv, ph_), border=border,
-                              painted=col not in ("r-plan-feat",))
+                              painted=col not in _UNPAINTED_COLUMNS)
         elif "r-field" in cls or "r-search" in cls:
             box = self.text_box(node, w, font, pad_w=26, min_h=t["tap"], painted=True)
             box.tw = w
@@ -3275,6 +3359,8 @@ class _Layout:
             box = self.text_box(node, w, font, pad_w=22 if tight else 38, min_h=t["tapsm"] if "sm" in cls else t["tap"],
                                 painted=True)
             box.tw = w
+            if self.own_width(node):
+                box.w = box.tw = min(w, self.fit_width(node, font))
         elif "r-progress" in cls:
             box = _Box(node, w, 8.0, painted=True)
         elif "r-divider" in cls:
@@ -3310,6 +3396,32 @@ class _Layout:
             box = self.row(node, elems, w, font, 12.0, widths=widths, align="center")
         elif "r-chips" in cls:
             box = self.wrap(node, kids, w, font, 8.0, 36.0)
+        elif "r-logos-row" in cls:
+            rows, x = 1, 0.0
+            for k in elems:
+                lw = min(w, text_width(_node_text(k), t["lg"], 700) * 1.1)
+                if x and x + LOGO_GAP[0] + lw > w:
+                    rows, x = rows + 1, 0.0
+                x = x + LOGO_GAP[0] + lw if x else lw
+            box = _Box(node, w, rows * t["lg"] * 1.3 + (rows - 1) * LOGO_GAP[1], text=True)
+        elif "r-amount" in cls:
+            box = _Box(node, w, t["xl"] * 1.2, text=True)
+            box.tw = min(w, sum(text_width(_node_text(k), t["xl"] if "r-big" in k.classes else t["sm"], 700) + 8
+                                for k in elems))
+        elif "r-cols" in cls:
+            n = 4 if "c4" in cls else 3 if "c3" in cls else 2
+            g = _css_px(style.get("gap"))
+            g = g if g is not None else (24.0 if self.web else 16.0)
+            wk = (w - g * (n - 1)) / n
+            boxes, y = [], 0.0
+            rows = [elems[i:i + n] for i in range(0, len(elems), n)]
+            for i, group in enumerate(rows):
+                laid = [self.lay(k, wk, font) for k in group]
+                rh = max(b.mt + b.h + b.mb for b in laid)
+                for j, b in enumerate(laid):
+                    boxes.append((j * (wk + g), y + b.mt, b))
+                y += rh + (g if i < len(rows) - 1 else 0.0)
+            box = _Box(node, w, y, boxes)
         elif "r-grid" in cls:
             n = 3 if "c3" in cls else 2
             rows = [elems[i:i + n] for i in range(0, len(elems), n)]
@@ -3370,13 +3482,35 @@ class _Layout:
                     mb = float(LABEL_ROOM)
                 else:
                     mt = float(LABEL_ROOM)
-            if len(elems) == 1 and len(kids) == 1 and any(c in elems[0].classes for c in _FIT_RING):
-                box.w = min(box.w, self.intrinsic(elems[0], font))
+            if len(elems) == 1 and len(kids) == 1 and (any(c in elems[0].classes for c in _FIT_RING)
+                                                        or self.own_width(elems[0], node)):
+                box.w = min(box.w, self.fit_width(elems[0], font))
             if style.get("align-self") in ("flex-start", "start", "flex-end", "end", "center") or \
                     style.get("width") == "fit-content":
                 box.w = min(box.w, max([self.intrinsic(k, font) for k in kids] or [box.w]))
         box.mt, box.mb = mt, mb
         return box
+
+    def fit_width(self, node, font):
+        """The width an element takes at its own size; a button at its own width keeps the template's minimum."""
+        own = self.intrinsic(node, font)
+        return max(own, WEB_CTA_MIN) if isinstance(node, Node) and "r-cta" in node.classes else own
+
+    def own_width(self, node, ring=None):
+        """A button drawn at its own width: aligned (align-self, on it or on its ring), or on a desktop page as a
+        direct child of the screen (template: .browser-screen>.r-cta). `ring` is the ring around it, when asked
+        for the ring."""
+        if "r-cta" not in node.classes:
+            return False
+        outer = ring if ring is not None else node.parent if isinstance(node.parent, Node) and node.parent.is_ring \
+            else node
+        if "align-self" in dict(_style_decls(node.attrs.get("style") or "")) or \
+                "align-self" in dict(_style_decls(outer.attrs.get("style") or "")):
+            return True
+        if isinstance(outer.parent, Node) and dict(_style_decls(outer.parent.attrs.get("style") or "")).get(
+                "align-items") == "center" and "column" in (outer.parent.attrs.get("style") or ""):
+            return True
+        return self.web and isinstance(outer.parent, Node) and outer.parent.parent is None
 
     @staticmethod
     def in_sticky(node):
@@ -3404,9 +3538,12 @@ class _Layout:
         return pad[0] + body.h + bottom, flat
 
 
-def _screen_parts(root):
+def _screen_parts(root, device=None):
     """The root's children as the screens the layout draws: ("first", kids),
-    then ("below", kids) after a fold, or one part per stage."""
+    then ("below", kids) after a fold, or one part per stage. A desktop page
+    is one screen: its fold is a line drawn in it."""
+    if device == "web":
+        return [("first", root.kids)]
     if any(FOLD_CLASS in k.classes for k in root.kids if isinstance(k, Node)):
         first, rest = _split_kids(root, FOLD_CLASS)[:2]
         return [("first", first), ("below", rest)]
@@ -3428,7 +3565,7 @@ def frame_estimate(root, device, layout, width=None, pos="above"):
         chrome += 67 if layout.get("toolbar") else 0
         chrome += 46 if layout.get("bottom_nav") else 0
     frame = below = 0.0
-    for kind, kids in _screen_parts(root):
+    for kind, kids in _screen_parts(root, device):
         if kind == "below":
             h, _ = lay.screen(kids, w, pad=SHEET_PAD)
             below = 13 * 1.3 + 6 + 2 + h
@@ -3471,8 +3608,10 @@ def auto_scale(trees, device, layout, pos=("above", "above")):
         return DEFAULT_PHONE_SCALE
     fit = int(100 * (FILL_HIGH * FRAME_BUDGET - fixed) / logical) / 100.0
     if fill > FILL_HIGH:
-        return max(AUTO_SCALE_MIN, min(DEFAULT_PHONE_SCALE, fit))
-    return min(AUTO_SCALE_MAX, max(DEFAULT_PHONE_SCALE, fit))
+        fit = min(DEFAULT_PHONE_SCALE, fit)
+    else:
+        fit = min(AUTO_SCALE_MAX, max(DEFAULT_PHONE_SCALE, fit))
+    return next((step for step in PHONE_STEPS if step <= fit + STEP_SLACK), max(AUTO_SCALE_MIN, fit))
 
 
 LABEL_MSG = {
@@ -3543,7 +3682,7 @@ def label_placement(root, device, layout, declared, name="B", width=None, lang="
     other = "below" if declared == "above" else "above"
     for pos in (declared, other):
         lay = _Layout(device, pos)
-        for kind, kids in _screen_parts(root):
+        for kind, kids in _screen_parts(root, device):
             pad = SHEET_PAD if kind == "below" else tokens["pad"]
             h, flat = lay.screen(kids, width, sticky=bool(layout.get("sticky")) and kind != "below", pad=pad)
             hit = next((item for item in flat if item[0].node is ring), None)
@@ -3676,6 +3815,9 @@ def build(template_text, scenario, warnings=None, lang=None, manifest=None):
         "{{TITLE}}": escape(view["title"]),
         "{{LANG}}": view["lang"],
         "{{DEVICE}}": view["device"],
+        "{{THEME}}": view["theme"],
+        "{{PILL_A}}": escape(view["pills"][0]),
+        "{{PILL_B}}": escape(view["pills"][1]),
         "{{NOTE_POS}}": view["note_pos"],
         "{{PHONE_SCALE}}": scale_text(decided["scale"] if phone else DEFAULT_PHONE_SCALE),
         "{{SCALE_MODE}}": decided["mode"],
@@ -4316,6 +4458,260 @@ def write_png(card_path, lang="en", timeout=120):
     return target, PNG_MSG["failed_check" if done.returncode == 1 else "written"][idx].format(path=target)
 
 
+# ------------------------------------------------------------ share image
+#
+# A compact variant of a delivered card for a chat thread or a post: 1200 × 630,
+# the usual link-preview size of chat apps and social posts. Landscape
+# keeps the card's side-by-side reading for both device types, which a square
+# would have to re-flow. It is the final card's own bytes with a share
+# stylesheet on top: the same mockups, rings and labels, the title larger, the
+# frames scaled down as a whole (phones beside a title column, desktop frames
+# under the title). Only a final build writes it, so it never shows an
+# unreviewed card.
+
+SHARE_W, SHARE_H = 1200, 630
+SHARE_PAD = (36, 40)          # top/bottom, left/right
+SHARE_GAP = 32                # between the title and the frames: beside them (phones) or above (desktop: 24)
+SHARE_GAP_TOP = 24
+SHARE_SAFETY = 1.04           # the frames' estimated height is padded by this much before they are scaled to fit
+SHARE_TITLE_MIN_W = 300       # the title column beside phones
+SHARE_TITLE_SIZES = (44, 40, 36, 32, 28)
+SHARE_TITLE_LH = 1.15
+SHARE_META = '<meta name="abtest-variant" content="share">\n'
+SHARE_SUFFIX = ".share.html"
+STAGE_W = 2 * COLUMN_W + 48
+SHARE_MSG = {
+    "written": ("share: {path} (1200 × 630)", "paylaşım: {path} (1200 × 630)"),
+}
+
+
+def share_path(card_path):
+    """abtest-card-x.html → abtest-card-x.share.html, next to the card."""
+    base = card_path[:-5] if card_path.lower().endswith(".html") else card_path
+    return base + SHARE_SUFFIX
+
+
+def _share_title(title, width, height, max_lines=None):
+    """The largest title size whose wrapped lines fit `width` × `height` (and `max_lines`)."""
+    for size in SHARE_TITLE_SIZES:
+        lines = _wrap_lines(title, width, size, 700)
+        if lines * size * SHARE_TITLE_LH <= height and (max_lines is None or lines <= max_lines):
+            return size, lines
+    size = SHARE_TITLE_SIZES[-1]
+    return size, _wrap_lines(title, width, size, 700)
+
+
+def share_stage_height(view, scale):
+    """The estimated height of the card's stage content (pills and frames, with a continuation sheet), never
+    more than the stage: what the share scales to fit. Stage phones keep the whole stage."""
+    layout = dict(layout_of(view), bottom_nav=has_bottom_nav(view))
+    trees = [parse_markup(view[key])[0] for key in ("variant_a", "variant_b")]
+    if layout.get("stages", 1) > 1 or any(t is None for t in trees):
+        return float(STAGE_H)
+    z = scale or (1.0 if view["device"] == "web" else DEFAULT_PHONE_SCALE)
+    width = COLUMN_W / z if view["device"] == "web" else None
+    tallest = 0.0
+    for tree in trees:
+        frame, below = frame_estimate(tree, view["device"], layout, width)
+        tallest = max(tallest, frame * z + (10 + below * z if below else 0.0))
+    return min(float(STAGE_H), PILL_H + 10 + tallest * SHARE_SAFETY)
+
+
+def share_css(view, scale):
+    """The share stylesheet for a card of `view` drawn at `scale` (the card's frame scale), and its layout."""
+    inner_w, inner_h = SHARE_W - 2 * SHARE_PAD[1], SHARE_H - 2 * SHARE_PAD[0]
+    phone = view["device"] in LAYOUT_DEVICES
+    staged = layout_of(view).get("stages", 1) > 1
+    stage_h = share_stage_height(view, scale)
+    lines = ["  /* ---- paylaşım görseli (build_card.py --share): 1200 × 630 ---- */",
+             "  html,body{width:%dpx;height:%dpx;overflow:hidden}" % (SHARE_W, SHARE_H),
+             "  .card[data-share]{width:%dpx;height:%dpx;padding:%dpx %dpx;gap:%dpx}"
+             % (SHARE_W, SHARE_H, SHARE_PAD[0], SHARE_PAD[1], SHARE_GAP),
+             "  .card[data-share] .title{min-height:0;font-weight:700;letter-spacing:-.015em;line-height:%s}"
+             % SHARE_TITLE_LH]
+    if phone:
+        # Phones are tall and narrow: the title takes a column on the left, the two frames the rest. The stage
+        # keeps the card's height (every reviewed frame fits it) and its frames' own widths.
+        frame_w = COLUMN_W if staged else PHONE_W * (scale or DEFAULT_PHONE_SCALE)
+        natural_w = 2 * frame_w + 48
+        k = min(float(inner_h) / stage_h, float(inner_w - SHARE_GAP - SHARE_TITLE_MIN_W) / natural_w)
+        title_w = int(inner_w - SHARE_GAP - natural_w * k)
+        size, _ = _share_title(view["title"], title_w, inner_h)
+        layout = "side"
+        lines += ["  .card[data-share=\"side\"]{flex-direction:row;align-items:center}",
+                  "  .card[data-share=\"side\"] .title{flex:0 0 %dpx;justify-content:center;font-size:%dpx}"
+                  % (title_w, size),
+                  "  .card[data-share=\"side\"] .stage{flex:0 0 auto;zoom:%.3f;grid-template-columns:repeat(2,max-content)}"
+                  % k]
+    else:
+        # A desktop page is wide: the title on top (two lines at most), the frames under it at the card's widths.
+        size, n = _share_title(view["title"], inner_w, 2 * SHARE_TITLE_SIZES[1] * SHARE_TITLE_LH, max_lines=2)
+        title_h = n * size * SHARE_TITLE_LH
+        k = min((inner_h - title_h - SHARE_GAP_TOP) / stage_h, float(inner_w) / STAGE_W)
+        layout = "top"
+        lines += ["  .card[data-share=\"top\"]{gap:%dpx}" % SHARE_GAP_TOP,
+                  "  .card[data-share=\"top\"] .title{font-size:%dpx}" % size,
+                  "  .card[data-share=\"top\"] .stage{flex:0 0 auto;align-self:center;zoom:%.3f;"
+                  "grid-template-columns:repeat(2,%dpx)}" % (k, COLUMN_W)]
+    return "\n".join(lines) + "\n", layout
+
+
+def share_html(built, view, scale):
+    """The share variant of the final card `built`: the same bytes plus the share stylesheet, the share layout
+    on the card element and <meta name="abtest-variant" content="share">."""
+    css, layout = share_css(view, scale)
+    head_end, style_end = built.find("</head>"), built.find("</style>")
+    card = CARD_OPEN_RE.search(built)
+    if head_end < 0 or style_end < 0 or card is None:
+        die("the card has no <style>, </head> or card element: no share image can be made from it")
+    text = built[:style_end] + css + built[style_end:]
+    head_end = text.find("</head>")
+    text = text[:head_end] + SHARE_META + text[head_end:]
+    return text.replace('<div class="card" ', '<div class="card" data-share="%s" ' % layout, 1)
+
+
+def write_share(card_path, built, view, scale, lang="en", png=True):
+    """Write the share variant next to the final card (and its PNG); returns the lines to print."""
+    path = share_path(card_path)
+    bad = existing_problems([path], lang)
+    if bad:
+        raise _Refused("output", bad, header=_t("--share was refused:", "--share reddedildi:", lang))
+    text = share_html(built, view, scale)
+    _write_all([(path, text)])
+    out = [SHARE_MSG["written"][1 if lang == "tr" else 0].format(path=path)]
+    if png:
+        out.append(write_png(path, lang)[1])
+    return out
+
+
+# ------------------------------------------------------------ overview page
+#
+# One page for a turn's cards: each card as a thumbnail with its title, both
+# linking to the card file. The thumbnails are the cards themselves (an iframe
+# with the card's HTML as srcdoc, scaled down), so the page opens offline and
+# needs no image. Only cards this tool built go in; a draft is refused, since
+# it is not a delivered card.
+
+OVERVIEW_MSG = {
+    "not_card": ("{path} is not a card this tool built (no provenance line)",
+                 "{path} bu aracın kurduğu bir kart değil (köken satırı yok)"),
+    "draft": ("{path} is a draft (not visually checked): the overview shows delivered cards; build the final card",
+              "{path} bir taslak (görsel kontrol yapılmadı): özet teslim edilen kartları gösterir; nihai kartı kurun"),
+    "missing": ("no such card: {path}", "böyle bir kart yok: {path}"),
+    "none": ("--overview needs at least one card", "--overview en az bir kart ister"),
+    "written": ("overview: {path} ({n} card(s))", "özet: {path} ({n} kart)"),
+}
+OVERVIEW_TEXT = {
+    "tr": {"title": "A/B test kartları", "conditional": "Koşullu · doğrulama gerekli", "open": "Kartı aç"},
+    "en": {"title": "A/B test cards", "conditional": "Conditional · needs verification", "open": "Open the card"},
+}
+OVERVIEW_SCALE = 0.45
+TITLE_TAG_RE = re.compile(r"<title>(.*?)</title>", re.DOTALL)
+HTML_LANG_RE = re.compile(r'<html lang="([a-z]+)"')
+OVERVIEW_CSS = """  :root{--text:#111827;--muted:#4b5563;--line:#d1d5db}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#f4f5f7}
+  body{font-family:-apple-system,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--text);
+       -webkit-font-smoothing:antialiased}
+  .ov{max-width:1600px;margin:0 auto;padding:40px 56px 56px}
+  .ov>h1{font-size:28px;font-weight:700;letter-spacing:-.01em;margin-bottom:28px}
+  .grid{display:grid;grid-template-columns:repeat(2,%(w)dpx);gap:40px 48px}
+  .item{display:flex;flex-direction:column;gap:12px}
+  .thumb{display:block;position:relative;width:%(w)dpx;height:%(h)dpx;overflow:hidden;border-radius:12px;
+         border:1px solid var(--line);background:#ffffff;box-shadow:0 1px 2px rgba(17,24,39,.06),0 16px 36px -18px rgba(17,24,39,.25)}
+  .thumb iframe{position:absolute;left:0;top:0;width:1600px;height:900px;border:0;transform:scale(%(k)s);
+                transform-origin:0 0;pointer-events:none}
+  .thumb:focus-visible{outline:3px solid #2563eb;outline-offset:3px}
+  .item h2{font-size:19px;line-height:1.35;font-weight:650}
+  .item h2 a{color:inherit;text-decoration:none}
+  .item h2 a:hover{text-decoration:underline}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;font-size:14px;color:var(--muted)}
+  .tag{padding:3px 10px;border-radius:999px;background:#b45309;color:#ffffff;font-size:13px;font-weight:700}
+  @media (max-width:1560px){.grid{grid-template-columns:%(w)dpx}}
+""" % {"w": int(1600 * OVERVIEW_SCALE), "h": int(900 * OVERVIEW_SCALE), "k": OVERVIEW_SCALE}
+
+
+def _href(target, base_dir):
+    """`target` relative to `base_dir`, as a URL path (each segment percent-encoded)."""
+    rel = os.path.relpath(os.path.abspath(target), os.path.abspath(base_dir or "."))
+    return "/".join(urllib.parse.quote(part) for part in rel.split(os.sep))
+
+
+def overview_html(cards, out_path, lang="en"):
+    """The overview page for `cards`, a list of (path, html) of delivered cards; refuses anything else."""
+    problems = []
+    entries = []
+    for path, text in cards:
+        if PROVENANCE_MARK not in text[:4096]:
+            problems.append(OVERVIEW_MSG["not_card"][1 if lang == "tr" else 0].format(path=path))
+            continue
+        if '<meta name="abtest-status" content="draft">' in text:
+            problems.append(OVERVIEW_MSG["draft"][1 if lang == "tr" else 0].format(path=path))
+            continue
+        m = TITLE_TAG_RE.search(text)
+        title = html.unescape(m.group(1)).strip() if m else os.path.basename(path)
+        lm = HTML_LANG_RE.search(text)
+        entries.append({"path": path, "html": text, "title": title, "lang": lm.group(1) if lm else "en",
+                        "conditional": CONDITIONAL_META.strip() in text})
+    if problems:
+        raise _Refused("output", problems, header=_t("--overview was refused:", "--overview reddedildi:", lang))
+    page_lang = entries[0]["lang"] if entries and all(e["lang"] == entries[0]["lang"] for e in entries) else "en"
+    words = OVERVIEW_TEXT.get(page_lang, OVERVIEW_TEXT["en"])
+    base_dir = os.path.dirname(os.path.abspath(out_path))
+    items = []
+    for i, e in enumerate(entries, 1):
+        href = escape(_href(e["path"], base_dir))
+        tag = '<span class="tag">%s</span>' % escape(words["conditional"]) if e["conditional"] else ""
+        items.append(
+            '<article class="item">\n'
+            '  <a class="thumb" href="%(href)s" aria-label="%(open)s: %(title)s"><iframe srcdoc="%(doc)s" title="%(title)s" '
+            'tabindex="-1" sandbox="" loading="lazy"></iframe></a>\n'
+            '  <h2><a href="%(href)s">%(n)d. %(title)s</a></h2>\n'
+            '  <p class="meta"><span>%(file)s</span>%(tag)s</p>\n'
+            '</article>' % {"href": href, "open": escape(words["open"]), "title": escape(e["title"]),
+                            "doc": escape(e["html"]), "n": i, "file": escape(os.path.basename(e["path"])), "tag": tag})
+    heading = "%s (%d)" % (words["title"], len(entries))
+    return (PROVENANCE + '<!DOCTYPE html>\n<html lang="%s">\n<head>\n<meta charset="UTF-8">\n'
+            '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+            '<meta name="generator" content="ab-test-playbook: https://github.com/ali-demirbas/ab-test-playbook">\n'
+            '<meta name="abtest-overview" content="%d">\n<title>%s</title>\n<style>\n%s</style>\n</head>\n<body>\n'
+            '<main class="ov">\n<h1>%s</h1>\n<div class="grid">\n%s\n</div>\n</main>\n</body>\n</html>\n'
+            % (page_lang, len(entries), escape(heading), OVERVIEW_CSS, escape(heading), "\n".join(items)))
+
+
+def overview_main(argv):
+    """build_card.py --overview OUT.html card1.html card2.html ...: one page with a turn's delivered cards."""
+    ap = argparse.ArgumentParser(description="Build one overview page from a turn's delivered cards.")
+    ap.add_argument("--overview", required=True, metavar="OUT", help="path of the overview .html page to write")
+    ap.add_argument("cards", nargs="*", help="the delivered card files (abtest-card-*.html), in order")
+    ap.add_argument("--lang", choices=("en", "tr"), default="en", help="language of this tool's messages")
+    args = ap.parse_args(argv)
+    lang = args.lang
+    try:
+        if not args.cards:
+            raise _Refused("output", [OVERVIEW_MSG["none"][1 if lang == "tr" else 0]])
+        bad = out_problems(args.overview, None, None, lang)
+        missing = [OVERVIEW_MSG["missing"][1 if lang == "tr" else 0].format(path=p) for p in args.cards
+                   if not os.path.isfile(p)]
+        if bad or missing:
+            raise _Refused("output", bad + missing, header=_t("--overview was refused:", "--overview reddedildi:", lang))
+        cards = []
+        for path in args.cards:
+            with open(path, encoding="utf-8") as fh:
+                cards.append((path, fh.read()))
+        text = overview_html(cards, args.overview, lang)
+        bad = existing_problems([args.overview], lang)
+        if bad:
+            raise _Refused("output", bad, header=_t("--overview was refused:", "--overview reddedildi:", lang))
+        _write_all([(args.overview, text)])
+    except _Refused as refusal:
+        sys.stderr.write("build_card: %s\n  - %s\n" % (refusal.header or _t("refused:", "reddedildi:", lang),
+                                                        "\n  - ".join(refusal.problems)))
+        return 1
+    print(OVERVIEW_MSG["written"][1 if lang == "tr" else 0].format(path=args.overview, n=len(cards)))
+    return 0
+
+
 def _run(args, lang):
     mode = "stamp" if args.stamp else "check" if args.check else "draft" if args.draft else "final"
     for path in (args.template, args.scenario):
@@ -4405,6 +4801,10 @@ def _run(args, lang):
                  "incelemeler: scenario-critic PASS, mockup-reviewer PASS (iki damga da eşleşiyor)", lang))
         if getattr(args, "png", False):
             print(write_png(args.out, lang)[1])
+        if getattr(args, "share", False):
+            for line in write_share(args.out, built, view, card_layout(view)["scale"], lang,
+                                    png=getattr(args, "png", False)):
+                print(line)
     for note in warnings:
         warn(note)
     return 0
@@ -4414,6 +4814,8 @@ def main(argv, png=False):
     """`png`: a final build also writes the card's PNG (write_png). On for the command line; a caller
     that imports this module asks for it."""
     global _MSG_LANG
+    if "--overview" in argv:
+        return overview_main(argv)
     ap = argparse.ArgumentParser(description="Build a scenario card from the template.")
     ap.add_argument("--template", required=True, help="path to templates/scenario-card.html")
     ap.add_argument("--scenario", required=True, help="JSON file describing the scenario")
@@ -4429,7 +4831,12 @@ def main(argv, png=False):
                     help="language of this tool's messages (default: en)")
     ap.add_argument("--no-png", action="store_true",
                     help="final build: don't write card-<name>.png next to the card")
+    ap.add_argument("--share", action="store_true",
+                    help="final build: also write the compact share variant <card>.share.html (1200 × 630, the "
+                         "link-preview size) and its PNG next to the card")
     args = ap.parse_args(argv)
+    if args.share and (args.draft or args.stamp or args.check):
+        ap.error("--share belongs to the final build: drop --draft, --stamp or --check")
     args.png = png and not args.no_png and not os.environ.get("ABTEST_NO_PNG")
     modes = [m for m in (args.stamp, args.check) if m] + (["draft"] if args.draft else [])
     if len(modes) > 1:

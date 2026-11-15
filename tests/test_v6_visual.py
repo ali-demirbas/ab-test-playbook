@@ -295,7 +295,7 @@ class TestStages(unittest.TestCase):
         self.assertEqual(body.count('<div class="stage-cap">Teklif</div>'), 2)
         self.assertNotIn("r-stage-break", body)
         # Stage 2 of B holds the moved field.
-        b = body.split("Variant B", 1)[1]
+        b = body.split("Varyant B", 1)[1]
         self.assertLess(b.index("Teklifiniz hazır"), b.index("Telefon teklifte"))
 
     def test_caption_is_escaped(self):

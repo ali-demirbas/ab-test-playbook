@@ -92,8 +92,9 @@ class TestOnlyTheComparison(unittest.TestCase):
             self.assertNotIn(fragment, body, fragment)
         # What is there: the title, two pills, two frames.
         self.assertEqual(body.count('<h1 class="title">'), 1)
-        self.assertEqual(body.count('class="pill pill-a">Variant A</span>'), 1)
-        self.assertEqual(body.count('class="pill pill-b">Variant B</span>'), 1)
+        # The example is a Turkish card: the pills speak Turkish (3.4).
+        self.assertEqual(body.count('class="pill pill-a">Varyant A</span>'), 1)
+        self.assertEqual(body.count('class="pill pill-b">Varyant B</span>'), 1)
         self.assertEqual(body.count('<div class="phone">'), 2)
 
     def test_the_template_carries_none_of_it_either(self):
@@ -213,7 +214,7 @@ class TestLayoutRules(unittest.TestCase):
         self.assertIn("background:#ffffff;border:1px solid #d1d5db;color:#111827", css_rule(".pill-a,.pill-b"))
         self.assertNotRegex(STYLE, r"(?m)^\s*\.pill-[ab]\{")  # no separate style for one arm
         pill = css_rule(".pill")
-        for decl in ("font-size:14px", "font-weight:600", "border-radius:999px"):
+        for decl in ("font-size:16px", "font-weight:700", "border-radius:999px"):
             self.assertIn(decl, pill)
 
     def test_frames_are_as_tall_as_their_content(self):

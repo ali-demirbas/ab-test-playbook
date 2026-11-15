@@ -95,6 +95,12 @@
 //   ring content     Every element and text inside a ring lies inside the ring's box (1px), and
 //                    the ring holds something visible: a text that passed the check above or a
 //                    painted box.
+//   peek             The faded start of the continuation the builder draws under the first view
+//                    of the arm without the pinned bar (.r-peek, aria-hidden): frame, not mockup;
+//                    it is not measured.
+//   share image      A share variant (build_card.py --share: <meta name="abtest-variant"
+//                    content="share">, 1200 × 630) is shot at its own size and checked only for
+//                    its size, overflow and clipped frames; the card it is made from was checked.
 //
 // The exit status is the list above.
 import { createRequire } from "node:module";
@@ -120,6 +126,8 @@ export function loadPlaywright() {
 }
 
 export const USAGE = "usage: render_check.mjs [--shot] [--half] [--json] [--strict] card.html [more.html ...]";
+// The share variant's size (build_card.py --share): the usual link-preview size of chat apps and social posts.
+export const SHARE = { w: 1200, h: 630 };
 export const FLAGS = ["--shot", "--half", "--json", "--strict"];
 export const STATUS = { 0: "VERIFIED", 1: "VISUAL_CHECK_FAILED", 3: "VISUAL_CHECK_UNAVAILABLE" };
 
@@ -585,6 +593,41 @@ export function judge(m, opts = {}) {
   return inherited.length ? { errors, warnings, inherited } : { errors, warnings };
 }
 
+// A share image: its size, nothing past it, no frame cut off (it shows what the reviewed card shows).
+export function judgeShare(m) {
+  const errors = [];
+  if (Math.round(m.card.w) !== SHARE.w || Math.round(m.card.h) !== SHARE.h) {
+    errors.push(`share image is ${Math.round(m.card.w)}×${Math.round(m.card.h)}px; it must be exactly ${SHARE.w}×${SHARE.h}px`);
+  }
+  if (m.page.w > SHARE.w || m.page.h > SHARE.h || m.card.scrollW > m.card.clientW + 1 || m.card.scrollH > m.card.clientH + 1) {
+    errors.push(`share image content overflows the ${SHARE.w}×${SHARE.h}px image (${Math.max(m.page.w, m.card.scrollW)}×${Math.max(m.page.h, m.card.scrollH)}px)`);
+  }
+  for (const s of m.screens || []) {
+    if (s.scrollH > s.clientH + 1) errors.push(`share image: a screen is cut off (${Math.round(s.scrollH - s.clientH)}px of its content); rebuild the share from the final card`);
+  }
+  if (m.stage && (m.stage.b > SHARE.h + 1 || m.stage.r > SHARE.w + 1)) {
+    errors.push(`share image: the frames end outside the image (${Math.round(m.stage.r)}×${Math.round(m.stage.b)}px)`);
+  }
+  return { errors, warnings: [] };
+}
+
+// Runs inside the page: the share image's measurements.
+function collectShare() {
+  const box = (el) => {
+    const b = el.getBoundingClientRect();
+    return { x: b.left, y: b.top, w: b.width, h: b.height, r: b.right, b: b.bottom };
+  };
+  const card = document.querySelector(".card");
+  const stage = document.querySelector(".stage");
+  return {
+    card: card ? { ...box(card), scrollW: card.scrollWidth, scrollH: card.scrollHeight, clientW: card.clientWidth, clientH: card.clientHeight }
+      : { w: 0, h: 0, scrollW: 0, scrollH: 0, clientW: 0, clientH: 0 },
+    page: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight },
+    stage: stage ? box(stage) : null,
+    screens: [...document.querySelectorAll(".screen, .browser-screen, .below-screen")].map((s) => ({ scrollH: s.scrollHeight, clientH: s.clientHeight })),
+  };
+}
+
 // Whether a card fails the run: any error, or with --strict any warning.
 export function failed(result, strict) {
   return result.errors.length > 0 || (strict && result.warnings.length > 0);
@@ -697,7 +740,7 @@ function collect() {
     v.screen.scrollW = screen.scrollWidth;
     const innerRight = screen.getBoundingClientRect().right;
     screen.querySelectorAll("*").forEach((el) => {
-      if (el.closest(".r-overlay")) return;
+      if (el.closest(".r-overlay, .r-peek")) return;
       const b = el.getBoundingClientRect();
       if (!b.width) return;
       let right = b.right;
@@ -710,6 +753,7 @@ function collect() {
     // Clipped at the top: no scroll size measures what sticks out upwards, so every element's top is read.
     const innerTop = screen.getBoundingClientRect().top + screen.clientTop;
     screen.querySelectorAll("*").forEach((el) => {
+      if (el.closest(".r-peek")) return;
       const b = el.getBoundingClientRect();
       if (!b.width || !b.height) return;
       const up = innerTop - b.top;
@@ -739,13 +783,16 @@ function collect() {
           layers.unshift([c]);
           if (c[3] >= 1) break;
         }
-        if (n === frame) break;
+        // Past the frame only when it paints nothing opaque itself (the continuation's caption sits on the card,
+        // which is dark with card.theme "dark").
+        if (n === frame && layers.some((l) => l.every((x) => x[3] >= 1))) break;
       }
       return layers;
     };
     const stickyOf = (el) => stickyEls.findIndex((st) => st === el || st.contains(el));
 
     frame.querySelectorAll("*").forEach((el) => {
+      if (el.closest(".r-peek")) return;
       const cs = getComputedStyle(el);
       if (cs.display === "none" || cs.visibility === "hidden") return;
       const b = el.getBoundingClientRect();
@@ -849,7 +896,7 @@ function collect() {
       return null;
     };
     screen.querySelectorAll("*").forEach((el) => {
-      if (el.closest(".r-fold, .r-stage-break")) return;
+      if (el.closest(".r-fold, .r-stage-break, .r-peek")) return;
       for (const tn of el.childNodes) {
         if (tn.nodeType !== 3 || !/\S/.test(tn.textContent)) continue;
         const rects = textRects(tn);
@@ -1031,8 +1078,36 @@ async function main(argv) {
     // One card at a time: a card that can't be rendered is unverified, and the others keep their result.
     try {
       const abs = path.resolve(file);
+      await page.setViewportSize({ width: LIMITS.cardW, height: LIMITS.cardH });
       await page.goto(pathToFileURL(abs).href);
       await page.evaluate(() => document.fonts && document.fonts.ready);
+      const share = await page.evaluate(() => !!document.querySelector('meta[name="abtest-variant"][content="share"]'));
+      if (share) {
+        // A share image: shot at its own size; the card it is made from carried the full check.
+        await page.setViewportSize({ width: SHARE.w, height: SHARE.h });
+        const sm = await page.evaluate(collectShare);
+        const res = judgeShare(sm);
+        if (failed(res, opts.strict)) anyFailed = true;
+        const base = path.basename(abs, ".html").replace(/^abtest-card-/, "");
+        let png = null;
+        if (opts.shot) {
+          png = path.join(path.dirname(abs), `card-${base}.png`);
+          await page.screenshot({ path: png });
+        }
+        if (halfPage) {
+          await halfPage.setViewportSize({ width: SHARE.w, height: SHARE.h });
+          await halfPage.goto(pathToFileURL(abs).href);
+          await halfPage.evaluate(() => document.fonts && document.fonts.ready);
+          await halfPage.screenshot({ path: path.join(path.dirname(abs), `card-${base}-600.png`) });
+          await halfPage.setViewportSize({ width: LIMITS.cardW, height: LIMITS.cardH });
+        }
+        if (opts.json) console.log(JSON.stringify({ file, share: true, card: [sm.card.w, sm.card.h], errors: res.errors, warnings: [], png }));
+        else {
+          console.log(`${path.basename(file)}  share image ${Math.round(sm.card.w)}x${Math.round(sm.card.h)}${png ? "  → " + path.basename(png) : ""}`);
+          for (const e of res.errors) console.log(`  ERROR ${e}`);
+        }
+        continue;
+      }
       const m = await page.evaluate(collect);
       const { errors, warnings, inherited = [] } = judge(m, { strict: opts.strict });
       inheritedCount += inherited.length;

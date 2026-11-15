@@ -166,7 +166,9 @@ class TestChecklist(unittest.TestCase):
             return out
         self.assertEqual(problems({"fold": True}), [])
         self.assertTrue(problems({"fold": "below"}))
-        self.assertTrue(problems({"h": "Başlık", "align": "center"}))
+        # 3.4: h, sub, cta and link take align too; a badge still doesn't.
+        self.assertEqual(problems({"h": "Başlık", "align": "center"}), [])
+        self.assertTrue(problems({"badge": "Yeni", "align": "center"}))
         self.assertEqual(problems({"text": "Metin", "align": "center"}), [])
         self.assertTrue(problems({"plan": {"name": "Pro", "price": 499}}))
 

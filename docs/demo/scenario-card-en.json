@@ -63,8 +63,7 @@
     "url": "store.example/cart",
     "mockup_basis": "representative",
     "variant_a": "<div class=\"r-h\">My cart</div>\n          <div class=\"r-item\" style=\"margin-bottom:20px\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Velvet Jacket</div>\n              <div class=\"r-meta\">Size M · Qty 1</div>\n            </div>\n            <div class=\"r-price\">$89.00</div>\n          </div>\n          <div class=\"hl\" data-note=\"Coupon field open\">\n            <div class=\"r-label\">Your coupon code</div>\n            <div class=\"r-field empty\">Enter your code here</div>\n          </div>\n          <div class=\"r-line\"><span>Subtotal</span><span>$89.00</span></div>\n          <div class=\"r-line total\"><span>Total</span><span>$89.00</span></div>\n          <div class=\"r-cta\">Go to checkout</div>",
-    "variant_b": "<div class=\"r-h\">My cart</div>\n          <div class=\"r-item\" style=\"margin-bottom:20px\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Velvet Jacket</div>\n              <div class=\"r-meta\">Size M · Qty 1</div>\n            </div>\n            <div class=\"r-price\">$89.00</div>\n          </div>\n          <div class=\"r-link hl\" data-note=\"Coupon behind link\" style=\"align-self:flex-start;line-height:44px\">I have a discount code</div>\n          <div class=\"r-line\"><span>Subtotal</span><span>$89.00</span></div>\n          <div class=\"r-line total\"><span>Total</span><span>$89.00</span></div>\n          <div class=\"r-cta\">Go to checkout</div>",
-    "phone_scale": 1.4
+    "variant_b": "<div class=\"r-h\">My cart</div>\n          <div class=\"r-item\" style=\"margin-bottom:20px\">\n            <div class=\"ph img r-thumb\"></div>\n            <div class=\"r-item-body\">\n              <div class=\"r-name\">Velvet Jacket</div>\n              <div class=\"r-meta\">Size M · Qty 1</div>\n            </div>\n            <div class=\"r-price\">$89.00</div>\n          </div>\n          <div class=\"r-link hl\" data-note=\"Coupon behind link\" style=\"align-self:flex-start;line-height:44px\">I have a discount code</div>\n          <div class=\"r-line\"><span>Subtotal</span><span>$89.00</span></div>\n          <div class=\"r-line total\"><span>Total</span><span>$89.00</span></div>\n          <div class=\"r-cta\">Go to checkout</div>"
   },
   "review": {
     "scenario_critic": {
@@ -73,7 +72,7 @@
     },
     "mockup_reviewer": {
       "verdict": "PASS",
-      "fingerprint": "c8f50918cedd7122837c656cc0e78167a82ad0a3e05bde0c0194b36410db53e1"
+      "fingerprint": "74dfac346ef631cdf11bb74eeedc0c9a29ccde14f8ac3ff8674f52fdda1c1431"
     }
   }
 }

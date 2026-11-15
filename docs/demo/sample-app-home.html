@@ -23,18 +23,21 @@
 
   /* ---- kart: 1600 × 900, başlık + iki sütun ----
      Başlık kutusu hep iki satır yüksekliğindedir (tek satırlık başlıkta da): sahne, haplar ve çerçeveler
-     her kartta aynı y'de başlar (haplar y=127, çerçeve y=167), kartlar desteye dizilince zıplamaz. */
-  .card{position:relative;width:1600px;height:900px;overflow:hidden;padding:40px 48px 32px;background:#f4f5f7;
-        display:flex;flex-direction:column;gap:12px}
-  .title{flex:0 0 auto;min-height:75px;font-size:30px;line-height:1.25;font-weight:650;letter-spacing:-.01em;color:#111827}
+     her kartta aynı y'de başlar (haplar y=127, çerçeve y=171), kartlar desteye dizilince zıplamaz. */
+  .card{position:relative;width:1600px;height:900px;overflow:hidden;padding:40px 48px 32px;
+        background:#f4f5f7 linear-gradient(180deg,#f7f8fa 0%,#eef0f3 100%);display:flex;flex-direction:column;gap:12px}
+  /* Tek satırlık başlık kutunun altına oturur: haplarla arasında boşluk kalmaz, fazla yer kartın üstündedir. */
+  .title{flex:0 0 auto;min-height:75px;display:flex;flex-direction:column;justify-content:flex-end;font-size:30px;
+         line-height:1.25;font-weight:650;letter-spacing:-.01em;text-wrap:balance;color:#111827}
   /* Sahne başlığın altındaki alanın tamamı; iki sütun tek satırdır, satır içerik kadar uzun (en fazla
      sahne) ve sahnenin ÜSTÜNE hizalanır: çerçeve ne kadar kısa olursa olsun A ile B hapların hemen
      altında, aynı y'de başlar; kısa ekranda boşluk altta kalır. */
   .stage{flex:1 1 0;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
          grid-template-rows:minmax(0,max-content);align-content:start;column-gap:48px}
   .variant{min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;gap:10px}
-  .pill{flex:0 0 auto;font-size:14px;font-weight:600;line-height:1;padding:7px 16px;border-radius:999px;white-space:nowrap}
-  /* İki hap aynı biçimdedir, yalnızca metin farklı: hiçbir kolda kazanan rengi yok. */
+  .pill{flex:0 0 auto;font-size:16px;font-weight:700;line-height:1;padding:8px 18px;border-radius:999px;white-space:nowrap}
+  /* İki hap aynı biçimdedir, yalnızca metin farklı: hiçbir kolda kazanan rengi yok. Metni build_card.py yazar:
+     kartın dilinde ("Varyant A" / "Variant A"), A kullanıcının mevcut sayfasıysa "· Mevcut" / "· Current" ekiyle. */
   .pill-a,.pill-b{background:#ffffff;border:1px solid #d1d5db;color:#111827}
 
   /* ---- telefon çerçevesi (device: phone, phone-web): ekran 420px, yükseklik = içerik ----
@@ -45,11 +48,13 @@
   .phone{zoom:1.2;--fs:15px;--fs-sm:13px;--fs-ctl:14px;--fs-h:19px;--fs-lg:17px;--fs-xl:26px;--tap:44px;--tap-sm:44px;
          flex:0 1 auto;min-height:0;width:420px;max-width:100%;display:flex;flex-direction:column;overflow:hidden;
          background:#ffffff;border:1px solid #d1d5db;border-radius:36px;
-         box-shadow:0 1px 2px rgba(17,24,39,.05),0 12px 32px rgba(17,24,39,.08)}
+         box-shadow:0 1px 2px rgba(17,24,39,.06),0 20px 44px -18px rgba(17,24,39,.24)}
   /* card.phone_scale (1, 1.2, 1.4) yazılmışsa otomatik seçimin yerine o kullanılır; gerekmez.
      Devam yaprağı (.below) telefonla aynı ölçekle çizilir. */
-  .statusbar{flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;padding:16px 30px 10px;
+  .statusbar{position:relative;flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;padding:16px 30px 10px;
              font-size:14px;font-weight:600;line-height:1;color:#111827}
+  .statusbar::after{content:"";position:absolute;left:50%;top:12px;width:72px;height:20px;margin-left:-36px;border-radius:10px;
+                    background:#1f2937}
   .sb-icons{display:flex;align-items:center;gap:6px}
   .sig{display:inline-block;width:17px;height:11px;background:#111827;clip-path:polygon(0 100%,100% 0,100% 100%)}
   .batt{display:inline-block;position:relative;width:25px;height:12px;border:1.5px solid #111827;border-radius:4px;padding:1.5px}
@@ -90,7 +95,7 @@
   .browser{--fs:16px;--fs-sm:14px;--fs-ctl:15px;--fs-h:22px;--fs-lg:18px;--fs-xl:28px;--tap:44px;--tap-sm:36px;
            flex:0 1 auto;min-height:0;width:100%;display:flex;flex-direction:column;overflow:hidden;
            background:#ffffff;border:1px solid #d1d5db;border-radius:14px;
-           box-shadow:0 1px 2px rgba(17,24,39,.05),0 12px 32px rgba(17,24,39,.08)}
+           box-shadow:0 1px 2px rgba(17,24,39,.06),0 20px 44px -18px rgba(17,24,39,.24)}
   .browser-bar{flex:0 0 auto;height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#f3f4f6;
                border-bottom:1px solid #e5e7eb}
   .browser-dot{width:11px;height:11px;border-radius:50%;background:#d1d5db}
@@ -99,6 +104,20 @@
                white-space:nowrap;overflow:hidden}
   .browser-screen{flex:0 1 auto;min-height:0;overflow:hidden;position:relative;display:flex;flex-direction:column;gap:16px;
                   padding:20px 24px 24px;font-size:var(--fs);line-height:1.45;color:#111827}
+  /* Masaüstü sayfada doğrudan ekrana konan buton metni kadar geniştir (tam genişlik buton gerçek sayfada yok);
+     plan, kart, satır ve form içindeki buton kabını doldurur. align: center ortalar. */
+  .browser-screen>.r-cta,.browser-screen>.hl:has(>.r-cta:only-child){align-self:flex-start}
+  .browser-screen>.r-cta,.browser-screen>.hl>.r-cta:only-child,.r-cta[style*="align-self"],
+  .hl[style*="align-self"]>.r-cta:only-child,[style*="flex-direction:column;align-items:center"]>.r-cta,
+  [style*="flex-direction:column;align-items:center"]>.hl>.r-cta:only-child{min-width:168px}
+  /* Başlık çubuğunda son öğe menüyse sağa yaslanır (logo solda, menü sağda). */
+  .browser .r-nav:last-child{justify-content:flex-end}
+  /* İlk ekran çizgisi (device: web): kesikli yatay çizgi ve sağında "İlk ekranın sonu"; sayfa çerçevede sürer. */
+  .browser-screen>.r-fold{display:flex;align-items:center;gap:10px;height:18px;margin:2px -24px;padding:0 14px 0 0;
+                          font-size:13px;font-weight:600;line-height:1;color:#4b5563;white-space:nowrap}
+  .browser-screen>.r-fold::before{content:"";flex:1;border-top:2px dashed #9ca3af}
+  html[lang="tr"] .browser-screen>.r-fold::after{content:"İlk ekranın sonu"}
+  html[lang="en"] .browser-screen>.r-fold::after{content:"End of first screen"}
 
   /* ---- değişen öğe işareti ----
      Halka outline ile çizilir: yer kaplamaz. Parıltı ve dolgu yok. Etiket 14px, halkanın dışında.
@@ -139,6 +158,13 @@
      ve render_check bunu hata sayar: phone_scale 1 ya da daha kısa içerik. */
   .r-fold,.r-stage-break{display:none}
   .screen.has-sticky{padding-bottom:calc(var(--tap) + 60px)}
+  /* Barsız kolda (A) barın yeri boş kalmaz: devam yaprağının başı ilk ekranın altında soluklaşarak görünür
+     (kaydırma hissi). build_card.py devamın halkasız bir kopyasını .r-peek olarak koyar; barlı kolda gizlidir. */
+  .r-peek{display:none}
+  .screen.has-sticky>.r-peek{display:flex;flex-direction:column;gap:16px;position:absolute;left:20px;right:20px;bottom:0;
+      height:calc(var(--tap) + 44px);overflow:hidden;pointer-events:none;
+      -webkit-mask-image:linear-gradient(#000 0%,transparent 85%);mask-image:linear-gradient(#000 0%,transparent 85%)}
+  .screen.has-sticky:has(>.r-sticky)>.r-peek{display:none}
   .r-sticky{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:10px 20px;background:var(--surface);
             border-top:1px solid var(--line);box-shadow:0 -2px 8px rgba(17,24,39,.06)}
   .card .screen .r-sticky .hl[data-note]{margin:0!important}
@@ -171,7 +197,14 @@
      web'de 14px; başlık 18-19px, yardım/meta 13px, hiçbir metin 12px'in altında değil; telefonda buton
      ve alan en az 44px. .ph blokları yalnızca FOTOĞRAF yerine kullanılır. */
   .ph{background:#e5e7eb;border-radius:10px}
-  .ph.img{height:150px}
+  /* Fotoğraf yeri: hafif gradyan ve ortasında dağ-güneş simgesi (iskelet ekran gibi düz gri kutu değil). */
+  .ph.img{position:relative;height:150px;background:#e7e9ed linear-gradient(160deg,#eff1f4 0%,#e1e4e9 100%)}
+  .ph.img::before{content:"";position:absolute;left:50%;top:50%;width:40px;height:26px;margin:-9px 0 0 -20px;
+                  background:#9ca3af;clip-path:polygon(0 100%,30% 36%,48% 68%,66% 46%,100% 100%)}
+  .ph.img::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-23px 0 0 5px;
+                 border-radius:50%;background:#9ca3af}
+  .ph.img.r-thumb::before{width:22px;height:14px;margin:-4px 0 0 -11px}
+  .ph.img.r-thumb::after{width:6px;height:6px;margin:-12px 0 0 3px}
   .ph.hero{background:linear-gradient(135deg,#1f2937,#374151);color:#ffffff;border-radius:12px;padding:18px;
            display:flex;flex-direction:column;gap:8px}
   .ph.hero .r-h,.ph.hero .r-name,.ph.hero .r-price,.ph.hero .r-now{color:#ffffff}
@@ -182,7 +215,8 @@
   .r-row>*{flex:1;min-width:0}
   .r-card{border:1px solid #e5e7eb;border-radius:12px;padding:14px;background:#ffffff;display:flex;flex-direction:column;gap:10px}
   .r-item{display:flex;gap:12px;align-items:center}
-  .r-thumb,.ph.img.r-thumb{width:52px;height:52px;border-radius:8px;background:#e5e7eb;flex:0 0 auto}
+  .r-thumb,.ph.img.r-thumb{width:52px;height:52px;border-radius:8px;background:#e7e9ed linear-gradient(160deg,#eff1f4 0%,#e1e4e9 100%);
+           flex:0 0 auto}
   .r-item-body{flex:1;min-width:0}
   .r-name{font-size:var(--fs);font-weight:600;color:#111827}
   .r-meta{font-size:var(--fs-sm);color:#6b7280;margin-top:2px}
@@ -270,17 +304,50 @@
   .r-badge.brand{background:var(--brand);color:var(--on-brand)}
   .r-stars{font-size:var(--fs-sm);color:var(--warning);letter-spacing:1px}
   .r-divider{height:1px;background:#e5e7eb}
-  .phone,.below{zoom:1.12}
+  /* Logo şeridi: gri kelime logoları, isteğe bağlı üst satır ("450'den fazla ekip kullanıyor") */
+  .r-logos{display:flex;flex-direction:column;gap:10px}
+  .r-logos-cap{font-size:var(--fs-sm);color:#6b7280}
+  .r-logos-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 24px}
+  .r-logos-row>span{font-size:var(--fs-lg);font-weight:700;line-height:1.3;color:#4b5563;letter-spacing:-.01em;white-space:nowrap}
+  .r-logos-row>span:nth-child(3n+2){font-style:italic;font-weight:600}
+  .r-logos-row>span:nth-child(3n){font-size:var(--fs-sm);font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  /* Büyük fiyat: üstü çizili eski fiyat, fiyat, dönem ya da not */
+  .r-amount{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}
+  .r-big{font-size:var(--fs-xl);font-weight:700;line-height:1.2;color:#111827;white-space:nowrap}
+  .r-amount .r-old,.r-plan-price .r-old{margin-right:0}
+  .r-plan-price .r-old{margin-right:8px;font-weight:400}
+  .r-plan-note{font-size:var(--fs-sm);color:#6b7280}
+  /* Yıldız puanı: yıldızlar, puan ve değerlendirme sayısı */
+  .r-rating{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+  .r-rating>*{white-space:nowrap}
+  .r-rating .r-stars{font-size:var(--fs);line-height:1}
+  .r-rating .r-meta{margin-top:0}
+  /* Sütunlar: 2-4 eşit sütun, üstten hizalı (özellik satırı, görselli kartlar) */
+  .r-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+  .r-cols.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .r-cols.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .browser .r-cols{gap:24px}
+
+  /* ---- koyu tema (card.theme: "dark") ----
+     Yalnızca kartın zemini, başlığı, hapları ve çerçeve gölgesi koyulaşır; mockuplar açık kalır (sayfanın kendisi). */
+  .card[data-theme="dark"]{background:#0f172a linear-gradient(180deg,#111b31 0%,#0b1220 100%)}
+  .card[data-theme="dark"] .title{color:#f1f5f9}
+  .card[data-theme="dark"] .pill-a,.card[data-theme="dark"] .pill-b{background:#1e293b;border-color:#475569;color:#f1f5f9}
+  .card[data-theme="dark"] .phone,.card[data-theme="dark"] .browser{border-color:#334155;
+      box-shadow:0 0 0 1px rgba(255,255,255,.04),0 20px 44px -16px rgba(0,0,0,.7)}
+  .card[data-theme="dark"] .below-cap,.card[data-theme="dark"] .stage-cap{color:#cbd5e1}
+  .card[data-theme="dark"] .stage-arrow{color:#94a3b8}
+  .phone,.below{zoom:1.1}
 </style>
 </head>
 <body>
-<div class="card" data-device="phone" data-note-pos="above" data-phone-scale="1.12" data-scale="auto">
+<div class="card" data-device="phone" data-theme="light" data-note-pos="above" data-phone-scale="1.1" data-scale="auto">
   <h1 class="title">Öneri slaytına vaadi adlandıran bir buton eklemek katkı payı artırımını yükseltir mi?</h1>
   <div class="stage">
     <div class="variant" data-label="above end">
-      <span class="pill pill-a">Variant A</span>
+      <span class="pill pill-a">Varyant A</span>
       <div class="phone">
-        <div class="statusbar"><span>12:41</span><span class="sb-icons"><span class="sig"></span><span class="batt"></span></span></div>
+        <div class="statusbar"><span>9:41</span><span class="sb-icons"><span class="sig"></span><span class="batt"></span></span></div>
         <div class="screen">
           <div><div class="r-sub">İyi günler</div><div class="r-h">Hoş geldiniz</div></div>
 <div class="ph hero">
@@ -299,9 +366,9 @@
       </div>
     </div>
     <div class="variant" data-label="above end">
-      <span class="pill pill-b">Variant B</span>
+      <span class="pill pill-b">Varyant B</span>
       <div class="phone">
-        <div class="statusbar"><span>12:41</span><span class="sb-icons"><span class="sig"></span><span class="batt"></span></span></div>
+        <div class="statusbar"><span>9:41</span><span class="sb-icons"><span class="sig"></span><span class="batt"></span></span></div>
         <div class="screen">
           <div><div class="r-sub">İyi günler</div><div class="r-h">Hoş geldiniz</div></div>
 <div class="ph hero">
