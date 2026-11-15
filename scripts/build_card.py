@@ -1413,10 +1413,15 @@ CARD_MSG = {
                      "değişebilir, değişen metin, boyut ya da biçim ikinci bir değişkendir"),
     "outside": ("A and B differ outside any ring ({where}: {na} node(s) in A, {nb} in B), e.g. {what}; a second "
                 "variable is refused, and a linked consequence of the variable belongs inside the ring (one ring "
-                "around the group, its label naming the consequence)",
+                "around the group, its label naming the consequence). Drawn from one card.screen with one "
+                "card.change, the arms can't differ elsewhere: {{\"op\": \"edit\", \"target\": \"<id>\", "
+                "\"set\": {{\"cta\": \"<B's text>\"}}, \"label\": \"<two to four words>\"}}; a consequence "
+                "goes in card.soft",
                 "A ile B halkanın dışında da farklı ({where}: A'da {na}, B'de {nb} düğüm), ör. {what}; ikinci bir "
                 "değişken reddedilir, değişkenin bağlı bir sonucu halkanın içine alınır (grubun etrafında tek halka, "
-                "etiketi sonucu adlandırır)"),
+                "etiketi sonucu adlandırır). Tek card.screen ve tek card.change ile çizilen kollar başka yerde "
+                "farklılaşamaz: {{\"op\": \"edit\", \"target\": \"<kimlik>\", \"set\": {{\"cta\": "
+                "\"<B'nin metni>\"}}, \"label\": \"<iki ila dört kelime>\"}}; bir sonuç card.soft'a yazılır"),
     "colour_b": ("inline colour only in Variant B, inside the ring: {vals}; a colour that exists only in B is a "
                  "second variable unless colour is what the test changes (the manifest lists it for the reviewer)",
                  "yalnızca B varyantında, halkanın içinde geçen satır içi renk: {vals}; yalnızca B'de olan renk, "
@@ -2025,8 +2030,11 @@ LAYOUT_MSG = {
                        "{v}: .r-sticky tam olarak bir öğe taşır (sabit öğe; değişken oysa halkalı), çıplak metin "
                        "taşımaz"),
     "sticky_fold": ("{v}: .r-sticky is the bar at the bottom of the first view: the screen needs a .r-fold and the "
-                    "bar comes before it",
-                    "{v}: .r-sticky ilk ekranın altındaki bardır: ekranda bir .r-fold olmalı ve bar ondan önce gelir"),
+                    "bar comes before it; in card.screen: [{{\"h\": \"..\"}}, {{\"sticky\": {{\"cta\": "
+                    "\"Checkout\", \"id\": \"cta\"}}}}, {{\"fold\": true}}, {{\"text\": \"..\"}}]",
+                    "{v}: .r-sticky ilk ekranın altındaki bardır: ekranda bir .r-fold olmalı ve bar ondan önce gelir; "
+                    "card.screen içinde: [{{\"h\": \"..\"}}, {{\"sticky\": {{\"cta\": \"Ödemeye geç\", "
+                    "\"id\": \"cta\"}}}}, {{\"fold\": true}}, {{\"text\": \"..\"}}]"),
     "pinned": ("difference 'move': {where} says the element is pinned (“{word}”) but Variant B has no .r-sticky: a "
                "pinned element is drawn as a bar at the bottom of the first view (.r-sticky with .r-fold), not inside "
                "the page flow",
