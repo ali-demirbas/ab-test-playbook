@@ -179,28 +179,28 @@ Etiket: id=cc-006 · mercek=Çaba · düzey=akış · sektör=e-ticaret · pazar
 
 EN: One-page checkout or multi-step checkout?
 
-Tek sayfa akışı toplam tıklamayı azaltır ama ilk bakışta yoğun görünür. Çok adımlı akış daha sindirilebilirdir ama her adım bir kayıp noktasıdır. Sepet tutarına ve cihaza göre kazanan değişebilir.
+Ödeme akışında kullanıcı aynı bilgileri (iletişim, adres, kargo seçimi, ödeme) iki biçimde doldurabilir: tek uzun sayfada ya da her biri ayrı ekranda olan adımlarda. Tek sayfa toplam tutarı ve kalan işi baştan gösterir, adımlar arası geçişteki bekleme ve kaybı kaldırır; ama mobilde uzun bir form duvarı gibi görünür ve ekranın dışında kalan bir hata mesajı gözden kaçar. Çok adımlı akış her ekranda tek bir işi sorar ve ilk adımı bitireni ilerletir; ama her geçiş bir yükleme ve bir terk noktasıdır, kargo ücreti son adıma kalırsa sürpriz yaratır. Alanlar, sıraları ve ödeme yöntemleri iki kolda aynıdır; değişen yalnızca aynı alanların ekranlara bölünüp bölünmediğidir. Cüzdanla tek dokunuş ödeme bu iki yapının dışında kalan ayrı bir değişkendir; akışta varsa iki kolda aynı yerde durur. “Çok adımlı form mu, tek sayfa form mu daha çok talep getiriyor?” (`saas-b2b.md`) senaryosundan farkı: orada form bir talep toplar ve sonraki adımı satış ekibi yürütür, burada akış ödemeyle biter ve kargo ile toplam tutar kararı etkiler.
 
 **Test edilmesi gerekenler**
-- Toplam etki: Tek sayfa akışı tamamlama oranını artırıyor mu?
+- Toplam etki: Tek sayfa akışı, ödemeye başlayanların siparişi tamamlama payını artırıyor mu?
+- Hata görünürlüğü: Tek sayfada ekran dışında kalan hata mesajı gönderim denemelerini tekrarlatıyor mu, çok adımlı akışta hata aynı ekranda mı düzeltiliyor?
+- Kayıp noktası: Çok adımlı akışta terk hangi geçişte yoğunlaşıyor, tek sayfada kullanıcı formun neresinde duruyor?
+- Dönen kullanıcı: Bilgileri kayıtlı dönen kullanıcı tek sayfada, alanları ilk kez dolduran yeni kullanıcı çok adımlı akışta mı daha çok tamamlıyor?
 - Cihaz: Tek sayfanın uzun kaydırma gerektirdiği mobilde çok adımlı akış, geniş ekranlı masaüstünde ise tek sayfa akışı mı kazanıyor?
-- Sepet tutarı: Yüksek tutarda çok adımlı akış daha mı güven veriyor?
-- Sonraki test: Tek sayfa kazanırsa bölümleri katlanabilir yapmak ayrı bir testte yoğunluk algısını azaltıyor mu?
-- Segment: Bilgileri kayıtlı dönen kullanıcı tek sayfada, alanları ilk kez dolduran yeni kullanıcı çok adımlı akışta mı daha çok tamamlıyor?
 
 **Takip edilecek ana KPI’lar**
-- Sipariş Tamamlama Oranı: Ödemeye başlayanların bitirme oranı.
-- Adım Bazlı Terk Oranı: Hangi alanda kayıp var?
-- Görev Tamamlama Süresi (checkout): Toplam süre kısalıyor mu?
-- Doğrulama Hatası Oranı: Tek sayfada artmamalı.
-- Destek Talebi: Sipariş sorunları yükselmemeli.
+- Sipariş Tamamlama Oranı: Checkout’a ulaşan ziyaretçilerin (iki kolda aynı tetikleyici) siparişi tamamlama oranı artıyor mu?
+- Alan Bazlı Terk Oranı: Tanı metriği; formu bırakanlar son dokundukları alana göre nerede duruyor?
+- Görev Tamamlama Süresi (checkout): Checkout’a girişten siparişe kadar geçen süre kısalıyor mu?
+- Doğrulama Hatası Oranı: Tek sayfada hata alan gönderim denemeleri artmamalı.
+- Destek Talebi: Sipariş ve ödeme sorunlarıyla ilgili talepler yükselmemeli.
 
 **Yapılmaması gerekenler**
-- Aynı testte adım yapısı ile ödeme yöntemi setini birlikte değiştirmeyin.
-- Tek sayfada tüm alanları aynı anda açıp kullanıcıyı boğmayın.
-- Adım göstergesini kaldırıp kullanıcıyı yönsüz bırakmayın.
-- Klavye açılınca özet alanı CTA’yı kapatmamalı.
-- Kargo ücretini son adıma saklamayın.
+- Aynı testte adım yapısıyla birlikte alanların sayısını, sırasını ya da ödeme yöntemi setini değiştirmeyin.
+- Cüzdanla tek dokunuş ödemeyi yalnız bir kolda öne almayın; varsa iki kolda aynı yerde durur.
+- Çok adımlı kolda adım göstergesini kaldırıp kullanıcıyı kaç adım kaldığını bilmeden bırakmayın.
+- Kargo ücretini ve toplam tutarı son adıma saklamayın; iki kolda da ilk görüldükleri yer aynıdır.
+- Mobilde klavye açıldığında sipariş özetinin ya da hata mesajının ödeme butonunu kapatmasına izin vermeyin.
 
 ---
 

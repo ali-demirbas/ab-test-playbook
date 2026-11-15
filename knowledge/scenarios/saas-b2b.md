@@ -144,28 +144,28 @@ Etiket: id=sb-005 · mercek=Zamanlama · düzey=akış · sektör=saas · pazar=
 
 EN: When should the paywall or usage-limit prompt appear?
 
-Yükseltme çağrısını erken göstermek kullanıcıyı değeri görmeden karşılar. Limite gerçekten değince göstermek daha ikna edici olabilir ama iş akışını böler.
+Ücretsiz plandaki kullanıcıya yükseltme ekranını erken göstermek (ilk oturumda ya da kullanım limitinin yarısında) ücretli planı, kullanıcı ürünün değerini görmeden satmaya çalışır: ekran kapatılır, bir kısım kullanıcı ürünü bırakır. Limite gerçekten değdiği anda göstermek yükseltmeyi o anki ihtiyaca bağlar; ama kullanıcının işini yarıda keser ve limiti hiç dolmayan kullanıcı ekranı hiç görmez. Ekranın içeriği, planlar ve fiyat iki kolda aynıdır; değişen yalnızca ekranın hangi kullanım anında açıldığıdır. Ekranın biçimi, deneme teklifi ya da fiyat ayrı değişkenlerdir.
 
 **Test edilmesi gerekenler**
-- Zamanlama: Modal hemen mi, limite değince mi daha çok yükseltme getiriyor?
-- Kesinti: Erken gösterim aktivasyonu düşürüyor mu?
-- Sonraki test: Kazanan zamanlama sabitken modala kullanım göstergesi (10/10 kredi) eklemek ayrı bir testte yükseltme kararını hızlandırıyor mu?
-- Eşik: Erken varyantta modal kullanım limitinin hangi noktasında açılmalı? (ilk oturum / limitin yarısı / limitin %80’i)
-- Kullanıcı tipi: Deneme ve ücretli kullanıcıda etki aynı mı?
+- Zamanlama: Limitin yarısında açılan ekran mı, limite değince açılan ekran mı ilan edilen pencerede daha çok yükseltme getiriyor?
+- Değer anı: Erken gösterimde ekranı kapatan kullanıcı, temel aksiyonu (ilk proje, ilk rapor) tamamlamadan ürünü bırakıyor mu?
+- Erişim: Limite hiç ulaşmayan kullanıcıların payı, geç kolun yükseltme teklifine ulaşabildiği kitleyi ne kadar daraltıyor?
+- Sonraki test: Kazanan an sabitken ekrana kalan kullanım hakkını gösteren bir gösterge (10/10 kredi) eklemek ayrı bir testte yükseltme kararını hızlandırıyor mu?
+- Kullanıcı tipi: Bireysel kullanıcı ile ekip hesabında, mobil uygulamada ve web’de kazanan an aynı mı?
 
 **Takip edilecek ana KPI’lar**
-- Yükseltme Oranı: Teste atanan ücretsiz kullanıcıların ilan edilen pencerede (ör. 30 gün) ücretli plana geçme oranı artıyor mu? Payda, modalın gösterildiği kullanıcılar değil, iki koldaki tüm kullanıcılardır.
-- Aktivasyon Oranı: Erken modal temel kullanımı düşürmemeli.
-- Modal Kapatma Oranı: Kaç kullanıcı hiç etkileşime girmeden kapatıyor?
-- 7. Gün Elde Tutma: Erken gösterim kalıcılığı bozmamalı.
+- Yükseltme Oranı: Teste atanan ücretsiz kullanıcıların ilan edilen pencerede (ör. 30 gün) ücretli plana geçme oranı artıyor mu? Payda, ekranın gösterildiği kullanıcılar değil, iki koldaki tüm kullanıcılardır.
+- Aktivasyon Oranı: Erken ekran temel kullanımı düşürmemeli.
+- 7. Gün Elde Tutma: Erken gösterim ürüne dönüşü bozmamalı.
+- Yükseltme Ekranı Kapatma Oranı: Tanı metriği; ekranı etkileşimsiz kapatan kullanıcıların atanan kullanıcıya oranı.
 - Destek Talebi: “Neden kısıtlandım” soruları artmamalı.
 
 **Yapılmaması gerekenler**
-- Kullanıcı hiçbir değer görmeden ödeme formunu göstermeyin.
-- Modalı kapatma butonu olmadan zorunlu kılmayın.
-- Aynı testte hem zamanlamayı hem fiyatı değiştirmeyin.
-- Kalan kullanım hakkını yanlış göstermeyin.
-- Modalı arka arkaya birden fazla kez açmayın.
+- Erken kolda bile ekranı doğrudan ödeme formu olarak açmayın; ekran önce planları ve limiti anlatır.
+- Ekranı kapatma düğmesi olmadan zorunlu kılmayın; limite değmeyen kullanıcı ürünü kullanmaya devam edebilmeli.
+- Aynı testte gösterim anını değiştirirken ekrandaki fiyatı, planları ya da deneme teklifini birlikte değiştirmeyin.
+- Kalan kullanım hakkını olduğundan az ya da yanlış göstermeyin.
+- Ekranı aynı oturumda arka arkaya birden fazla kez açmayın.
 
 ---
 
@@ -245,27 +245,27 @@ Etiket: id=sb-008 · mercek=Zamanlama · düzey=teklif · sektör=saas · pazar=
 
 EN: Should the trial last 7, 14 or 30 days?
 
-Kısa deneme aciliyet yaratır ama kullanıcı değeri görmeden biter. Uzun deneme değeri gösterir ama karar anını erteler. Optimum sürenin ölçülmesi gerekir.
+Deneme süresi, kullanıcının ürünün değerini ödeme kararından önce görüp göremeyeceğini belirler. Kısa deneme karar anını öne çeker ve kurulumu hızlandırır; ama ürünü kurmak ve ilk sonucu almak birkaç gün sürüyorsa deneme, kullanıcı değere ulaşmadan biter. Uzun deneme değere ulaşmaya zaman tanır; ama aciliyeti dağıtır, kullanıcı ürünü unutur ve karar ertelenir. Doğru süre ürünün ilk değere ulaşma süresine bağlıdır: önce kendi verinizde ilk değere kaçıncı günde ulaşıldığına bakın. Deneme süresi kayıt sayfasında yazıyorsa deneme başlatan kişi sayısı da kollar arasında değişir; bu yüzden karşılaştırma deneme başlatanlar üzerinden değil, teste atanan ziyaretçi üzerinden yapılır. Kart isteyen ve istemeyen deneme ayrı bir değişkendir, iki kolda aynı kalır.
 
 **Test edilmesi gerekenler**
-- Süre: 7, 14 ve 30 günde ücretliye geçiş nasıl değişiyor?
-- Aktivasyon: Kullanıcı ilk değere kaçıncı günde ulaşıyor?
-- Aciliyet: Kısa deneme kurulum hızını artırıyor mu?
+- Süre: 7, 14 ve 30 günlük denemede atanan ziyaretçi başına ücretli plana geçiş nasıl değişiyor?
+- İlk değer: Kısa denemede kullanıcı ilk değere (ilk rapor, ilk entegrasyon) süre bitmeden ulaşabiliyor mu?
+- Başlatma: Kayıt sayfasında yazan sürenin uzaması deneme başlatan ziyaretçi payını artırıyor mu, yoksa yalnız ödeme kararını mı erteliyor?
 - Sonraki test: Kazanan süre sabitken deneme sonunda sunulan uzatma teklifi ayrı bir testte ücretliye geçmeyen kullanıcıyı geri kazanıyor mu?
-- Segment: Küçük ekip ile kurumsal farklı süre mi istiyor?
+- Segment: İlk değere ulaşma süreleri farklıysa küçük ekip ile kurumsal hesap farklı süre mi istiyor?
 
 **Takip edilecek ana KPI’lar**
-- Ücretliye Geçiş Oranı: Denemeden aboneliğe dönüş artıyor mu?
-- Aktivasyon Oranı: Deneme içinde temel aksiyonu tamamlayan oranı.
-- İlk Değere Ulaşma Süresi: Kısalıyor mu?
-- Deneme Terk Oranı: Hiç giriş yapmayan kullanıcı artmamalı.
-- Üçüncü Ay Devam Oranı: Kısa deneme kalıcılığı düşürmemeli.
+- Ücretliye Geçiş Oranı (45 gün): Teste atanan ziyaretçilerden pencerede ücretli plana geçenlerin payı artıyor mu? Pencere en uzun denemeyi kapsar ve iki kolda atamadan başlar; payda deneme başlatanlar değildir.
+- Aktivasyon Oranı: Deneme içinde temel aksiyonu yapan kullanıcıların atanan ziyaretçiye oranı; kısa denemenin değere ulaşmayı kesip kesmediğini gösterir.
+- Deneme Başına Ücretliye Geçiş Oranı: Tanı metriği; deneme başlatma kollar arasında değiştiği için kazanan seçmez.
+- Ücretli Abonelik Devam Oranı (90 gün): Kısa denemeyle aceleyle abone olanların ilk dönemde bırakması artmamalı.
+- Deneme Terk Oranı: Denemeyi başlatıp bir daha giriş yapmayan kullanıcıların payı artmamalı.
 
 **Yapılmaması gerekenler**
-- Kısa deneme varyantında, kullanıcı ilk değere ulaşamadan süre bitince verisine erişimini kesmeyin.
-- Süre sonunda uyarı vermeden hesabı kapatmayın.
+- Kısa deneme kolunda, süre bitince kullanıcının verisine erişimini uyarmadan kesmeyin; veri en azından okunur kalır.
+- Süre sonunda uyarı vermeden ücretli plana geçirmeyin ya da hesabı kapatmayın; bitiş tarihi her kolda önceden bildirilir.
 - Aynı testte hem süreyi hem kart zorunluluğunu değiştirmeyin.
-- Deneme kapsamını planlar arasında farklılaştırmayın.
+- Deneme kapsamını kollar arasında farklılaştırmayın; yalnızca gün sayısı değişir.
 - Deneme süresini kayıt sayfasında bir, ürün içinde başka bir gün sayısıyla yazmayın; her kolda tüm ekranlar aynı süreyi söylemeli.
 
 ---

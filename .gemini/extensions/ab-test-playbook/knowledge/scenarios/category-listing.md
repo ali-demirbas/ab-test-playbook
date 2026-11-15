@@ -344,28 +344,28 @@ Etiket: id=cl-011 · mercek=Zamanlama · düzey=görsel · sektör=genel · paza
 
 EN: When should a pop-up appear?
 
-Çok erken çıkan pop-up kullanıcıyı kaçırır, çok geç çıkan fark edilmez. Doğru zamanlamanın ölçülmesi gerekir. “Çıkış niyetine bağlı pop-up kaçan mobil kullanıcıyı kurtarır mı?” senaryosundan farkı: burada gösterim anı süreye veya kaydırmaya bağlıdır ve gezinmeye devam eden herkese çıkar; çıkış niyeti tetikleyicisi kapsam dışıdır.
+Teklif ya da e-bülten pop-up’ı sayfa açılır açılmaz çıktığında ziyaretçi henüz neye baktığını anlamadan bir kararla karşılaşır: çoğu kapatır, bir kısmı sayfayı terk eder ve teklif ilgisi oluşmamış birine gösterilmiş olur. Aynı pop-up ziyaretçi bir ilgi sinyali verdikten sonra (sayfanın bir kısmını kaydırdığında ya da ikinci sayfaya geçtiğinde) çıkarsa teklif o ilgiye bağlanır; ama geç kalınırsa ziyaretçilerin çoğu pop-up’ı hiç görmeden ayrılır. Pop-up’ın içeriği, biçimi ve teklifi iki kolda aynıdır, değişen yalnızca tetikleyicidir. Mobilde ekranın tamamını kaplayan pop-up içeriğe erişimi keser ve arama motorlarının rahatsız edici geçiş ekranı saydığı bir kalıptır; bu senaryo mobilde ekranın bir kısmını kaplayan biçimle kurulur. “Çıkış niyetine bağlı pop-up kaçan mobil kullanıcıyı kurtarır mı?” senaryosundan farkı: burada pop-up gezinmeye devam eden herkese çıkar ve değişken gösterim anıdır; çıkış niyeti tetikleyicisi kapsam dışıdır.
 
 **Test edilmesi gerekenler**
-- Zamanlama: Hangi anda gösterildiğinde en yüksek performans alınıyor?
-- Görülme: Geç gösterim anında pop-up’ı hiç görmeden sayfadan ayrılan kullanıcı oranı ne kadar?
-- Tetikleyici: Süreye bağlı gösterim mi, kaydırma derinliğine bağlı gösterim mi daha çok yanıt alıyor?
-- Sonraki test: Kazanan gösterim anı sabitken pop-up teklifi (indirim / ücretsiz kargo / üyelik) ayrı bir testte yanıt oranını değiştiriyor mu?
-- Segment: Yeni mi, dönen kullanıcı mı daha iyi tepki veriyor?
+- Zamanlama: Açılışta, sayfanın yarısı kaydırıldığında ya da ikinci sayfa görüntülemesinde çıkan pop-up’tan hangisi teklifi kabul eden ziyaretçi payını artırıyor?
+- Görülme: Geç tetikleyicide pop-up’ı hiç görmeden ayrılan ziyaretçilerin payı, kazanılan kabul oranını siliyor mu?
+- Kesinti: Erken pop-up’ı kapatan ziyaretçi, pop-up’ı geç gören ziyaretçiye göre sayfada daha az mı ilerliyor?
+- Teklifin kullanımı: Geç tetikleyiciyle e-posta bırakan ziyaretçinin verilen kodu kullanma oranı, açılışta bırakanınkinden yüksek mi?
+- Segment: İlk kez gelen ile dönen ziyaretçide, mobilde ve masaüstünde kazanan gösterim anı aynı mı?
 
 **Takip edilecek ana KPI’lar**
-- Dönüşüm Oranı (CR): Pop-up satın almayı artırıyor mu?
-- Pop-up Yanıt Oranı: Teklifi kabul eden oranı ne?
-- CTA Tıklama Oranı: Pop-up üzerindeki buton tıklanıyor mu?
-- Çıkış Oranı: Erken pop-up kullanıcıyı kaçırmamalı.
-- Oturum Süresi: Akış bölünüyor mu?
+- Dönüşüm Oranı (CR): Gösterim anı, atanan ziyaretçilerin satın alma oranını artırıyor mu?
+- Teklifi Kabul Eden Ziyaretçi Oranı: Tanı metriği; atanan ziyaretçiler içinde pop-up teklifini kabul edenlerin payı, pop-up’ı görenler değil.
+- Pop-up Gösterim Payı: Tanı metriği; atanan ziyaretçilerin kaçına pop-up gösterildiği; geç tetikleyicinin erişim kaybını gösterir.
+- Hemen Çıkma Oranı: Erken pop-up ziyaretçiyi ilk sayfada kaçırmamalı.
+- Sayfa Başına Görüntüleme: Pop-up kapatıldıktan sonra oturumdaki gezinme düşmemeli.
 
 **Yapılmaması gerekenler**
-- Sayfa yüklenir yüklenmez pop-up göstermeyin.
-- Mobilde tam ekran pop-up kullanmayın.
-- Kapatma ikonunu gizlemeyin veya küçültmeyin.
-- Aynı pop-up’ı her sayfada tekrar göstermeyin.
 - Aynı testte gösterim anını değiştirirken pop-up’taki teklifi veya metni de değiştirmeyin.
+- Kapatma düğmesini gecikmeli belirecek ya da küçük bir dokunma hedefi olacak biçimde kurmayın; kapatma her kolda ilk anda erişilebilir.
+- Mobilde ekranın tamamını kaplayan biçimi kullanmayın; iki kolda da içeriğin bir kısmı görünür kalır.
+- Kapatılan pop-up’ı aynı oturumda yeniden göstermeyin; gösterim sıklığı iki kolda aynı kuralla sınırlanır.
+- Gerçekte süreli olmayan bir teklifi pop-up’ta “son fırsat” diye sunmayın.
 
 ---
 

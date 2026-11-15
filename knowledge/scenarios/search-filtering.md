@@ -210,28 +210,28 @@ Etiket: id=sf-007 · mercek=Netlik · düzey=gezinme · sektör=e-ticaret · paz
 
 EN: Mega menu or horizontal menu?
 
-Mega menü mü, sade yatay menü mü daha iyi gezinme sunuyor? Yapıdaki fark, içerik keşif davranışını ciddi biçimde değiştirebilir.
+Geniş kataloglu bir sitede ziyaretçi aradığı alt kategoriye ana menüden ulaşır. Mega menü, üzerine gelindiğinde ya da tıklandığında bütün alt kategorileri sütunlar hâlinde tek panelde açar: ziyaretçi “erkek ayakkabı → koşu” gibi derin bir kategoriye tek adımda iner; ama çok bağlantılı panel taranamaz hâle gelebilir ve fare panelden kayınca kapanması sinir bozar. Sade yatay menü yalnızca ana kategorileri gösterir ve ziyaretçiyi önce kategori sayfasına götürür: seçim kolaylaşır, ama aranan alt kategori bir sayfa daha uzaktadır. Hangisinin kazanacağı katalog derinliğine ve ziyaretçinin ne aradığını bilip bilmediğine bağlıdır. Mobilde iki yapı da çoğu zaman açılır bir menüye dönüşür; bu senaryo masaüstündeki menü yapısını test eder, mobil menü iki kolda aynı kalır. Kategori adları, sırası ve sayısı iki kolda aynıdır; değişen yalnızca alt kategorilerin menüde mi, kategori sayfasında mı sunulduğudur.
 
 **Test edilmesi gerekenler**
-- Hız: Hangi menü aranan içeriğe daha hızlı ulaştırıyor?
-- Çıkış: Menü türü hemen çıkma oranını değiştiriyor mu?
-- Süre: Menüde geçirilen süre artıyor mu, azalıyor mu?
-- Yönlendirme: Menü kritik içeriğe yönlendirmeyi etkiliyor mu?
-- Mobil: İki yapı arasındaki fark mobilde büyüyor mu?
+- Derinlik: Mega menü, ziyaretçinin alt kategori sayfasına ulaşmasını kısaltıp satın almaya giden gezinmeyi artırıyor mu?
+- Taranabilirlik: Mega menüyü açıp hiçbir bağlantıya tıklamadan kapatan ziyaretçilerin payı, yatay menüde kategori sayfasından geri dönenlerin payından yüksek mi?
+- Kayan panel: Fare panelden kayınca menünün istemeden kapanması, mega menü kolunda menüyü tekrar açma denemelerini artırıyor mu?
+- Arama kaçışı: Yatay menü kolunda aradığı alt kategoriyi bulamayan ziyaretçi arama kutusuna mı yöneliyor?
+- Segment: Ne aradığını bilen dönen ziyaretçi ile göz atan yeni ziyaretçi iki menü yapısına farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
-- Dönüşüm Oranı (CR): Menü yapısı satın almaya giden gezinmeyi değiştiriyor mu?
+- Dönüşüm Oranı (CR): Menü yapısı, masaüstünde teste atanan ziyaretçilerin satın alma oranını değiştiriyor mu?
 - Alt Kategoriye Doğrudan İniş Oranı: Menüden tek adımda alt kategoriye geçenlerin payı değişiyor mu?
 - Menüden Kategoriye Geçiş Oranı: Menüyü açanların kaçı bir kategoriye iniyor?
 - Seçimsiz Kapatılan Menü Oranı: Artmamalı; kullanıcı menüde kaybolmamalı.
 - Hemen Çıkma Oranı: Yükselmemeli; menü yapısı kullanıcıyı kaçırmamalı.
 
 **Yapılmaması gerekenler**
-- Yatay menü varyantında mega menüdeki alt kategorileri erişilemez bırakmayın; ikinci seviyeye bir yol kalmalı.
-- Mega menüde çok fazla kategori sunmayın; bilgi yükü yaratır.
-- Mobilde yatay menüde kaydırma sorununa izin vermeyin.
-- Mega menüde kolon sayısını taranamayacak kadar artırmayın.
 - Aynı testte menü yapısını değiştirirken kategori adlarını veya sırasını da değiştirmeyin.
+- Yatay menü kolunda mega menüdeki alt kategorileri erişilemez bırakmayın; ikinci seviyeye kategori sayfasından bir yol kalmalı.
+- Mega menü panelini taranamayacak kadar çok bağlantıyla doldurmayın; sütunlar katalogun gerçek yapısını izler.
+- Paneli yalnızca fareyle açılıp fare kayınca hemen kapanan biçimde kurmayın; klavyeyle ve dokunarak da açılıp kapanabilmeli.
+- Mobil menüyü bu testte değiştirmeyin; iki kolda aynı kalır.
 
 ---
 
