@@ -100,7 +100,7 @@ class TestMigrationHints(unittest.TestCase):
         sc = plain()
         del sc["priority"]["inputs"]["effort"]
         e = [x for x in vsj.validate(sc, SCHEMA, "en") if "'effort'" in x]
-        self.assertTrue(e and "low (copy, style, order)" in e[0], e)
+        self.assertTrue(e and "low (copy, style, order, a default)" in e[0], e)
 
     def test_exposure_messages_carry_an_example(self):
         sc = plain()

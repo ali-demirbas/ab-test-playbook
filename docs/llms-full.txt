@@ -936,20 +936,21 @@ These four filters don't replace prioritization, they run before it: the lens an
 
 ## Prioritization
 
-*Evidence: archive practice; a light evidence-first scoring.* Each scenario's tier (high / medium / low; the tag line prints "Öncelik: Orta" / "Priority: Medium") is the band of a score of four inputs recorded in `priority.inputs`, never chosen:
+*Evidence: archive practice; a light evidence-first scoring.* Each scenario's tier (high / medium / low) is the band of a score of five inputs recorded in `priority.inputs`, never chosen; the tag line prints both, "Öncelik: Yüksek (7/9)" / "Priority: High (7/9)":
 
 | Input | Points |
 |---|---|
 | `evidence` | `user_data`, the user's own analytics or test history: 3; `behaviour_data`, the user's own recordings, heatmaps, user tests or surveys: 2; `archive_or_research`, an archive pattern or a sourced industry observation: 1; `intuition`: 0 |
-| `main_path` | the element is on the main conversion path or above the fold: 1 |
+| `impact` | what the change moves (the impact ranking in the idea-generation lens): `structural`, the offer itself, a step of the flow, missing information at the decision point or the decision structure: 2; `persuasive`, hierarchy and visual weight, copy answering an objection, a trust signal at the friction point: 1; `cosmetic`, colour, corner radius, font, generic CTA wording, spacing: 0 |
+| `main_path` | where in the funnel and how many users: the element is on the main conversion path most of the flow's users pass, or above the fold: 1 |
 | `noticeable` | a user notices B within a few seconds of reaching the element: 1 |
-| `effort` | `low`, copy, style or order: 2; `medium`, front-end work: 1; `high`, backend work, a native app release (a new element or navigation target included) or an operational change: 0 |
+| `effort` | `low`, copy, style, order or a default: 2; `medium`, front-end work or any change that ships in a native app release: 1; `high`, backend work or an operational change: 0. A native release alone is never `high`; the version limit is a setup note |
 
-The sum (0 to 7) gives the tier: **6 to 7 high, 3 to 5 medium, 0 to 2 low**. Evidence weighs most: an archive pattern alone tops out at medium, intuition can never be high, only the user's own data or behaviour evidence reaches high. `evidence` follows `evidence.level` (`user_data` → `user_data` or `behaviour_data`; `archive` and `sector` → `archive_or_research`; `intuition` → `intuition`); a record with an open critical assumption is medium at most (Conditional proposals). The validator recomputes the score and refuses a tier off its band; scenario-critic checks each input against the page and the evidence (a footer element called main path, a "low" effort that needs a release). `priority.rationale` is one sentence naming in words what the inputs rest on; the score itself is given in chat only when the user asks how a scenario was ranked, and a user's own list ("rank my ideas") gets the same inputs and tier per idea, never ICE or another score.
+The sum (0 to 9) gives the tier: **7 to 9 high, 4 to 6 medium, 0 to 3 low**. Evidence weighs most: an archive pattern or sourced research reaches high only with a strong main-path change at its best (1+2+1+1+2 = 7), intuition tops out at 6 and is never high, the user's own data or behaviour evidence reaches high more easily. `evidence` follows `evidence.level` (`user_data` → `user_data` or `behaviour_data`; `archive` and `sector` → `archive_or_research`; `intuition` → `intuition`); a record with an open critical assumption is medium at most (Conditional proposals), and its tag says so ("Öncelik: Orta (7/9, koşullu)"). The validator recomputes the score and refuses a tier off its band (`validate_scenario_json.py --chat` prints the tag line); scenario-critic checks each input against the page and the evidence (a footer element called main path, a colour change called structural, a "low" effort that needs backend work). `priority.rationale` is one sentence naming in words what the inputs rest on, never the number; a user's own list ("rank my ideas") gets the same inputs, tier and score per idea, never ICE or another score.
 
 - **Strong candidate (rule 9)** = passes the mechanism gate **and** has priority medium or high. A turn produces at most three by default, never two resting on the same mechanism. Order: the user's explicit asks first, in the order asked, then the playbook's own candidates by score, those acting on the stated problem first.
 - **Never pad to three:** one strong proposal is a complete turn, and a weak candidate isn't added to reach a count.
-- **Ties:** the higher-impact funnel point goes first (the impact ranking in the idea-generation lens), then the lower effort, then the one with lower guardrail risk.
+- **Ties:** the higher `impact` goes first, then the lower effort, then the one with lower guardrail risk.
 - **Confidence is never claimed without its basis:** the rationale names what it rests on ("a similar test on the same page won last quarter, per the history file").
 
 ## Local-maximum risk

@@ -53,7 +53,7 @@ def base():
         "source_note": "Arşivde bu sayfanın kupon bağlantısına uyan bir senaryo yok.",
         "evidence": {"level": "sector", "note": "Sepet sayfalarında sık görülen bir kaçak; bu sayfada ölçülmedi."},
         "priority": {"tier": "medium", "rationale": "Ödeme öncesi kaçağı hedefliyor, kanıt sektör gözlemi, iş küçük.",
-                     "inputs": {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"}},
+                     "inputs": {"evidence": "archive_or_research", "impact": "persuasive", "main_path": True, "noticeable": True, "effort": "low"}},
     }
 
 
@@ -422,7 +422,7 @@ class TestRegulation(unittest.TestCase):
 
     def test_every_contract_word_is_read(self):
         words = ("insurance", "pension", "credit", "loan", "consent", "KVKK", "sigorta", "emeklilik", "BES", "kredi",
-                 "poliçe", "rıza", "onay")
+                 "poliçe", "rıza", "pazarlama onayı", "abonelik iptali", "kişisel veri", "privacy")
         for word in words:
             sc = base()
             sc["mechanism"] = "Adımda %s metni kısalınca kullanıcı devam eder." % word

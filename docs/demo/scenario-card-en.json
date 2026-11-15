@@ -48,6 +48,7 @@
     "rationale": "It targets leaving the cart at the last step before payment but could lower code use, the evidence is an archive pattern rather than this page's data, and moving the coupon box behind a link is a small interface job.",
     "inputs": {
       "evidence": "archive_or_research",
+      "impact": "persuasive",
       "main_path": true,
       "noticeable": true,
       "effort": "low"
@@ -69,7 +70,7 @@
   "review": {
     "scenario_critic": {
       "verdict": "PASS",
-      "fingerprint": "7eb380fcd5d29cabc1516fbab13ce84bab1a17e9b549a2e2a60ee1ccb33861a8"
+      "fingerprint": "2369a5af7847bbeee04ab96c0a9be35a5338417582ef6c712dc540886ff5b58c"
     },
     "mockup_reviewer": {
       "verdict": "PASS",

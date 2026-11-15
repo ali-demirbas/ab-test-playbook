@@ -32,9 +32,11 @@ ERRORS (exit 1):
     remove); an archive or adapted record is never labelled 'intuition'
   * priority (rule 9): the tier is the band of the score of priority.inputs
     (evidence user_data 3 / behaviour_data 2 / archive_or_research 1 /
-    intuition 0, + main_path 1, + noticeable 1, + effort low 2 / medium 1 /
-    high 0; 6-7 high, 3-5 medium, 0-2 low, medium at most with a critical
-    assumption), and the evidence input matches evidence.level
+    intuition 0, + impact structural 2 / persuasive 1 / cosmetic 0, +
+    main_path 1, + noticeable 1, + effort low 2 / medium 1 / high 0, out of
+    9; 7-9 high, 4-6 medium, 0-3 low, medium at most with a critical
+    assumption; intuition tops out at 6), and the evidence input matches
+    evidence.level
   * exposure: a tested element in an accordion, modal, tab or below the
     first view (problem, variable or a variant says so) carries `exposure`,
     and it says the trigger is logged at the same point in both arms
@@ -45,8 +47,8 @@ ERRORS (exit 1):
     "garanti eder" / "guaranteed"
   * claims (rules 8, 10), in every free-text field of the record (title,
     problem, mechanism, variable, variants, priority rationale, evidence
-    note, source_note, warnings, invariants, numeric_change, assumptions;
-    not detail, not card): no result ("test edildi", "kazandı", "proven",
+    note, source_note, warnings, invariants, numeric_change, assumptions,
+    must_be_true; not detail, not card): no result ("test edildi", "kazandı", "proven",
     "won" …) unless the evidence is the user's own data; no number tied to
     an outcome or chance word ("Dönüşüm %12 artar", "beklenen artış yüzde
     12", "win probability 70%", "doubles signups"), no other test's result
@@ -95,7 +97,9 @@ ERRORS (exit 1):
     an interactive or functional element (coupon, payment, search, form …)
     needs `invariants`; a regulated-looking record (stage, title, problem,
     mechanism or variants mention insurance, pension, credit, loan, consent,
-    KVKK, sigorta, emeklilik, BES, kredi, poliçe, rıza, onay) needs a
+    KVKK, sigorta, emeklilik, BES, kredi, poliçe, rıza, onay in its consent
+    sense ("pazarlama onayı", not "onay ekranı"), a subscription cancellation
+    or data-purpose copy: a privacy note, "kişisel veri", "unsubscribe") needs a
     'regulation' warning; urgency or scarcity wording in B or the mechanism
     needs a 'regulation' warning that names the real data source ("stok",
     "envanter", "gerçek", "inventory", "verified", "real")
@@ -113,6 +117,8 @@ ERRORS (exit 1):
     and so does an outcome left to its owner ("B önde çıkarsa: karar sahibinde")
   * a lagging primary or metric guardrail (returns, cancellations, churn,
     repeat purchase, refunds) carries its window in the name (rule 3)
+  * a placeholder new_record.py left (any string still carrying ⟦…⟧,
+    the card included): the skeleton's hints are replaced, never shipped
   * the file itself: a key written twice in one object, an integer longer
     than MAX_INT_DIGITS (both pass json.load silently or with a traceback)
   * variants are "A" then "B", and the current page is A (rule 15)
@@ -129,6 +135,8 @@ WARNINGS (printed, exit code unaffected; --strict turns them into errors):
   * problem, mechanism or an invariant longer than one sentence; problem,
     mechanism, a variant description, an invariant, the priority rationale or
     a warning text longer than 240 characters
+  * priority effort 'high' whose rationale names only an app release (a
+    native release alone is medium; high is backend or operational work)
   * the title names an abandonment or completion outcome ("terk", "çıkış",
     "abandon") and the primary is a revenue metric, or the title names revenue
     ("gelir", "revenue") and the primary is a completion rate (a heuristic on
@@ -160,8 +168,21 @@ belong to agents/scenario-critic.
 
 FINGERPRINT: `--fingerprint <file>` validates the record and, when it has no
 errors, prints only record_fingerprint(): the sha256 of the record without its
-`review` and `card`, serialised with sorted keys. scenario-critic stamps that
-value into review.scenario_critic; build_card.py compares it before it builds.
+`review` and `card`, serialised with sorted keys. The critic's stamp itself is
+printed by `build_card.py --critic-stamp <record>`, which hashes the record
+without `review`, `card` and the small-fix fields build_card.py lists (a fix
+there keeps the stamp valid); build_card.py compares that stamp before it
+builds. Use --fingerprint to check that a record validates and to see its
+whole-record hash, --critic-stamp for review.scenario_critic.
+
+CHAT: `--chat <files>` prints, in the turn's order, what the chat takes from
+the records word for word: per scenario the title, the tag line with the score
+("Öncelik: Yüksek (7/9) · Kaynak: … · Kanıt: …"), the Neden line (the mechanism,
+when it fits 140 characters; otherwise stderr says to write it shorter), the
+must_be_true lines; after the list the Koşullu line (critical assumptions only),
+the pre-start line (compliance sign-off for a regulation warning, the
+accessibility check for an accessibility warning) and the stakeholder brief for
+scenario 1 from templates/stakeholder-brief.md with evidence.note as its why-now.
 
 Usage:
   validate_scenario_json.py <file.json> [more.json ...]
@@ -169,6 +190,7 @@ Usage:
   validate_scenario_json.py --lang en <file.json>        # messages in English (default: the record's lang)
   validate_scenario_json.py --schema templates/scenario.schema.json <file.json>
   validate_scenario_json.py --fingerprint <file.json>    # validate, then print only the fingerprint
+  validate_scenario_json.py --chat <a.json> [b.json ...]  # validate, then print the chat lines the records fix
 
 Exit: 0 = all valid, 1 = violations found, 2 = usage error.
 """
@@ -232,6 +254,7 @@ TYPES = {
 MAX_TITLE = 90
 MAX_TEXT = 240
 MAX_ASSUMPTION = 200  # assumptions[].text; load_schema() refuses maxLength, so it is checked here
+MAX_BELIEF = 160  # must_be_true.belief, the chat's "Doğru olmalı" line
 # The warning type a regulated-looking record must carry (rule 11).
 REGULATION = "regulation"
 
@@ -332,8 +355,34 @@ MSG = {
                          "{path}: {word!r} reads like a result or impact claim the code can't decide (a number near "
                          "an outcome word, or a vague magnitude); reviewer must judge: it stays only if it is an "
                          "observed figure or a hypothesis without a number (rules 8, 10)"),
+    "evidence_fact": ("{path}: {word!r} bir sonucu olgu gibi yazıyor; arşiv örüntüsü, sektör gözlemi ya da sezgi bir "
+                      "sonucu kanıtlamaz (sektör araştırması ancak kaynağıyla alıntılanır: “<kaynak> raporuna göre "
+                      "…”). Hipotez olarak yazın, ör. “Arşivde derlenmiş bir fikir: B’nin dönüşümü artırabileceği "
+                      "düşünülüyor, test sonucu değil.” (kural 8, 10)",
+                      "{path}: {word!r} states a result as fact; an archive pattern, an industry observation or "
+                      "intuition proves no result (a study is quoted only with its source: \"<source> reports …\"). "
+                      "Write it as a hypothesis, e.g. \"A curated archive idea: B may lift conversion; not a test "
+                      "result.\" (rules 8, 10)"),
+    "kpi_abbreviation": ("{path}: {name!r} sözlüğün {abbr} kısaltmasını taşıyor ama sözlükteki bir ad değil; kısaltma "
+                         "o adın tanımını ve paydasını çağırır. Sözlük adını yazın ({canon}) ya da kısaltmayı çıkarıp "
+                         "metriğe kendi adını verin (knowledge/kpi-glossary.md, kural 2)",
+                         "{path}: {name!r} carries the glossary abbreviation {abbr} but isn't a glossary name; the "
+                         "abbreviation calls up that name's definition and denominator. Write the glossary name "
+                         "({canon}) or drop the abbreviation and give the metric its own name "
+                         "(knowledge/kpi-glossary.md, rule 2)"),
+    "kpi_name_lang": ("{path}: {name!r} sözlükteki {other} adı; kayıt {lang} yazılır, {want!r} yazın (kural 7)",
+                      "{path}: {name!r} is the glossary's {other} name; the record is written in {lang}, write "
+                      "{want!r} (rule 7)"),
     "assumption_long": ("{path}: {n} karakter; bir varsayım en fazla {max} karakterlik tek cümledir",
                         "{path}: {n} characters; an assumption is one sentence of at most {max}"),
+    "belief_long": ("must_be_true.belief: {n} karakter; testin kazanması için doğru olması gereken tek inanç en fazla "
+                    "{max} karakterlik tek cümledir",
+                    "must_be_true.belief: {n} characters; the one belief the test needs is one sentence of at most "
+                    "{max}"),
+    "placeholder": ("{path}: yer tutucu değiştirilmemiş: {val!r}; ⟦…⟧ içindeki tarifi bu sayfanın gerçek değeriyle "
+                    "değiştirin (new_record.py iskeleti)",
+                    "{path}: placeholder not replaced: {val!r}; replace the ⟦…⟧ hint with this page's real value "
+                    "(new_record.py skeleton)"),
     "assumption_question": ("{path}: kritik bir varsayım onu çözecek tek kısa soruyu taşır (turun tek sorusu en kritik "
                             "olanıdır, kural 19)",
                             "{path}: a critical assumption carries the one short question that settles it (the "
@@ -342,10 +391,12 @@ MSG = {
                         "kritik bir olguya dayanan öneri en fazla 'medium' olur (kural 9, 10)",
                         "priority.tier: 'high' with a critical assumption ({text!r}); a proposal resting on an "
                         "unverified critical fact is medium at most (rules 9, 10)"),
-    "priority_band": ("priority.tier: {tier!r} girdilerin puanıyla uyuşmuyor: {calc} = {score}/7, bu da {band!r} "
-                      "demek (6-7 high, 3-5 medium, 0-2 low; kritik varsayımla en fazla medium; kural 9)",
-                      "priority.tier: {tier!r} doesn't match the inputs' score: {calc} = {score}/7, which is {band!r} "
-                      "(6-7 high, 3-5 medium, 0-2 low; medium at most with a critical assumption; rule 9)"),
+    "priority_band": ("priority.tier: {tier!r} girdilerin puanıyla uyuşmuyor: {calc} = {score}/9, bu da {band!r} "
+                      "demek (7-9 high, 4-6 medium, 0-3 low; kritik varsayımla en fazla medium; kural 9); "
+                      "\"tier\": \"{band}\" yazın ya da yanlış girdiyi düzeltin",
+                      "priority.tier: {tier!r} doesn't match the inputs' score: {calc} = {score}/9, which is {band!r} "
+                      "(7-9 high, 4-6 medium, 0-3 low; medium at most with a critical assumption; rule 9); write "
+                      "\"tier\": \"{band}\" or correct the input that is wrong"),
     "priority_evidence": ("priority.inputs.evidence: {inp!r}, evidence.level {level!r} ile uyuşmuyor; {want} yazın "
                           "(kural 9, 10)",
                           "priority.inputs.evidence: {inp!r} doesn't match evidence.level {level!r}; write {want} "
@@ -366,10 +417,11 @@ MSG = {
     "objection_lang": ("objection: {val!r} kaydın dilinde değil ({lang}); {want!r} yazın (kural 7)",
                        "objection: {val!r} isn't in the record's language ({lang}); write {want!r} (rule 7)"),
     "statistics": ("{path}: {word!r} istatistik dili; bu playbook örneklem, süre, anlamlılık, güç, kazanan ya da "
-                   "sayısal öncelik puanı hesaplamaz ve yazmaz, kayıt istatistik iddiası taşımaz (kural 5)",
+                   "ICE gibi bir puan hesaplamaz ve yazmaz (öncelik puanını doğrulayıcı girdilerden hesaplar), kayıt "
+                   "istatistik iddiası taşımaz (kural 5)",
                    "{path}: {word!r} is statistics language; this playbook doesn't compute or write sample size, "
-                   "duration, significance, power, a winner or a numeric priority score, and a record carries no "
-                   "statistical claim (rule 5)"),
+                   "duration, significance, power, a winner or a score such as ICE (the validator computes the "
+                   "priority score from the inputs), and a record carries no statistical claim (rule 5)"),
     "never_claim": ("{path}: {word!r} hiçbir kanıtla yazılmaz; bir testin sonucu garanti edilemez (kural 10)",
                     "{path}: {word!r} is never written, whatever the evidence; no test result can be guaranteed "
                     "(rule 10)"),
@@ -400,12 +452,15 @@ MSG = {
     "kpi_mismatch": ("{path}: {name!r} adı koşullu bir kitleyi ölçüyor ({word!r}: teklif ya da sipariş başına, "
                      "X yapanlar arasında) ama payda {den!r} atanan kitle; ad ve payda farklı şeyleri ölçüyor. "
                      "Atanan ziyaretçi başına metriğin adını yazın ya da koşullu paydayı yazıp metriği detayda "
-                     "etiketli bir tanısal olarak tutun; birincil olmaz (kural 2)",
+                     "etiketli bir tanısal olarak tutun; birincil olmaz. Düzeltilmiş örnek: “Teklif → Sözleşme” "
+                     "yerine {{\"name\": \"Sözleşme Oranı (30 gün)\", \"denominator\": \"Teste atanan ziyaretçi\"}} "
+                     "(kural 2)",
                      "{path}: the name {name!r} measures a conditional population ({word!r}: per quote or order, "
                      "among users who did X) but the denominator {den!r} is the assigned population; name and "
                      "denominator measure different things. Name the per-assigned-visitor metric, or write the "
                      "conditional denominator and keep the metric a labelled diagnostic in the detail view; it is "
-                     "never the primary (rule 2)"),
+                     "never the primary. Corrected example: instead of \"Quote → Contract\", {{\"name\": \"Contract "
+                     "Rate (30 days)\", \"denominator\": \"Visitors assigned to the test\"}} (rule 2)"),
     "kpi_mismatch_reverse": ("{path}: {name!r} adı atanan ziyaretçi başına diyor ama payda {den!r} bir {fam} "
                              "kitlesi; ad ve payda farklı şeyleri ölçüyor (kural 2)",
                              "{path}: the name {name!r} says per assigned visitor but the denominator {den!r} belongs "
@@ -413,12 +468,18 @@ MSG = {
     "kpi_glossary_family": ("{path}: {name!r} sözlükte {canon!r}: {definition}; paydası “{payda}”, yani bir {gfam} "
                             "kitlesi. Kayıttaki payda {den!r} bir {rfam} kitlesi, bu yüzden kayıt bu adla başka bir "
                             "şeyi ölçüyor.{hint} Bir KPI adının tek anlamı vardır: paydası bu olan sözlük adını "
-                            "kullanın ya da metriğe yeni bir ad verin (knowledge/kpi-glossary.md, kural 2)",
+                            "kullanın ya da metriğe yeni bir ad verin. Düzeltilmiş örnek: {example} "
+                            "(knowledge/kpi-glossary.md, kural 2)",
                             "{path}: {name!r} is the glossary's {canon!r}: {definition}; counted over “{payda}” (the "
                             "{gfam} family). The denominator {den!r} belongs to the {rfam} family, so the record "
                             "measures something else under this name.{hint} One KPI name has one meaning: use the glossary name "
-                            "whose denominator this is, or give the metric a new name (knowledge/kpi-glossary.md, "
-                            "rule 2)"),
+                            "whose denominator this is, or give the metric a new name. Corrected example: {example} "
+                            "(knowledge/kpi-glossary.md, rule 2)"),
+    "kpi_assigned_hint": (" Paydadaki “atanan” sözü onu atanan kitlesine çeviriyor; atama her metrikte zaten vardır, "
+                          "payda yalnız neyin sayıldığını söyler, o sözü çıkarın.",
+                          " The word \"assigned\" in the denominator turns it into the assigned population; every "
+                          "metric is read in assigned traffic already, the denominator only says what is counted, so "
+                          "drop that word."),
     "kpi_trigger_hint": (" Atama o tetikte yapılıyorsa paydada söyleyin: “Teste atanan ziyaretçi (atama … "
                          "ulaşınca)”.",
                          " If assignment happens at that trigger, say so in the denominator: \"Visitors assigned "
@@ -440,13 +501,15 @@ MSG = {
                           "benefit ({word!r}); the guardrail must watch that benefit (e.g. \"Coupon-Order Visitor Rate\" must "
                           "not drop), or the lost benefit reads as a revenue win (rule 3)"),
     "a11y_missing": ("warnings: değişiklik etkileşimli bir öğeye dokunuyor ({word!r}); geçti/kaldı ölçütlerini taşıyan "
-                     "'accessibility' türünde bir uyarı ekleyin: {criteria} (kural 3)",
+                     "'accessibility' türünde bir uyarı ekleyin: {criteria} (kural 3). Örnek: "
+                     "{{\"type\": \"accessibility\", \"text\": \"{example}\"}}",
                      "warnings: the change touches an interactive element ({word!r}); add a warning of type "
-                     "'accessibility' that states its pass/fail criteria: {criteria} (rule 3)"),
+                     "'accessibility' that states its pass/fail criteria: {criteria} (rule 3). Example: "
+                     "{{\"type\": \"accessibility\", \"text\": \"{example}\"}}"),
     "a11y_criteria": ("warnings: erişilebilirlik uyarısında şu ölçüt(ler) yok: {criteria} ({word!r} için); her biri "
-                      "geçti/kaldı ölçütü olarak yazılır (kural 3)",
+                      "geçti/kaldı ölçütü olarak yazılır, ör. “{example}” (kural 3)",
                       "warnings: the accessibility warning does not state: {criteria} (for {word!r}); write each as a "
-                      "pass/fail criterion (rule 3)"),
+                      "pass/fail criterion, e.g. \"{example}\" (rule 3)"),
     "numeric_unsourced": ("numeric_change: {val!r} rakamın nereden geldiğini söylemiyor; sayfada görünüyorsa "
                           "“sayfadaki …”, kullanıcı verdiyse “kullanıcının verdiği …” ya da nasıl hesaplandığını "
                           "(“1.500 − 1.230 = 270”) yazın; doğrulanmadıysa rakamı sorusuyla bir kritik varsayım olarak "
@@ -455,15 +518,14 @@ MSG = {
                           "it (\"from the page\"), that the user gave it, or how it was derived (\"1,500 − 1,230 = "
                           "270\"); if it isn't verified, mark the figure as a critical assumption with its question "
                           "(rule 10; mockup-style → Numbers the mockup needs but must not invent)"),
-    "a11y_threshold": ("warnings: erişilebilirlik uyarısındaki {what} {val!r} eşiğin altında; en az {need} "
-                       "(kural 3)",
+    "a11y_threshold": ("warnings: erişilebilirlik uyarısındaki {what} {val!r} eşiğin altında; en az {need}, "
+                       "{val!r} yerine “{fix}” yazın (kural 3)",
                        "warnings: the accessibility warning states {what} {val!r}, below the threshold: at least "
-                       "{need} (rule 3)"),
+                       "{need}; write \"{fix}\" instead of {val!r} (rule 3)"),
     "invariants": ("invariants: değişiklik işlevsel bir öğeye dokunuyor ({word!r}); iki kolda aynı çalışması gereken "
-                   "işlevleri (1-5 cümle) yazın, ör. “Geçerli bir kod iki kolda da aynı adımla uygulanır.” (kural 4)",
+                   "işlevleri (1-5 cümle) yazın, ör. \"invariants\": [“{example}”] (kural 4)",
                    "invariants: the change touches a functional element ({word!r}); list the functions that must work "
-                   "identically in both arms (1-5 sentences), e.g. \"A valid code applies in the same step in both "
-                   "arms.\" (rule 4)"),
+                   "identically in both arms (1-5 sentences), e.g. \"invariants\": [\"{example}\"] (rule 4)"),
     "regulated": ("warnings: kayıt düzenlemeye tabi bir akışta görünüyor ({word}); 'regulation' türünde bir uyarı "
                   "ekleyin (kural 11), ör. “B’nin metni için uyum onayı alınmadan teste trafik açılmaz.”",
                   "warnings: the record looks like a regulated flow ({word}); add a warning of type 'regulation' "
@@ -537,6 +599,12 @@ MSG = {
                         "{path}: guardrail has no question text (what must not drop or rise)"),
     "straight_quotes": ("{path}: düz tırnak var; Türkçe metinde kıvrık tırnak kullanın (kural 7)",
                         "{path}: straight quotes; use curly quotes in scenario text (rule 7)"),
+    "effort_release": ("priority.inputs.effort: 'high' ama gerekçe yalnızca bir uygulama sürümünü anlatıyor ({word!r}); "
+                       "yerel uygulama sürümü tek başına \"effort\": \"medium\" sayılır, 'high' arka uç ya da operasyon "
+                       "işidir (kural 9; methodology → Prioritization)",
+                       "priority.inputs.effort: 'high' but the rationale names only an app release ({word!r}); a native "
+                       "app release alone is \"effort\": \"medium\", 'high' is backend or operational work (rule 9; "
+                       "methodology → Prioritization)"),
     "basis_current": ("card.mockup_basis: 'shared_page' ise variants[0].is_current: true beklenir (kural 15)",
                       "card.mockup_basis: 'shared_page' expects variants[0].is_current: true (rule 15)"),
     "card_device": ("card.device: '{card}', senaryonun device değeri '{scn}' ile farklı",
@@ -557,27 +625,38 @@ MSG = {
 # language: a 3.1 record has no priority.inputs, and "missing required field"
 # alone doesn't say what goes there (methodology.md → Prioritization).
 INPUTS_HINT = (
-    "; 3.2.0'da eklendi, dört girdi yazın: evidence (user_data / behaviour_data / archive_or_research / "
-    "intuition), main_path (true/false), noticeable (true/false), effort (low / medium / high); tier bunların "
-    "puanının bandıdır (6-7 high, 3-5 medium, 0-2 low). Örnek: \"inputs\": {{\"evidence\": \"archive_or_research\", "
+    "; 3.2.0'da eklendi (impact 3.4.0'da), beş girdi yazın: evidence (user_data / behaviour_data / "
+    "archive_or_research / intuition), impact (structural / persuasive / cosmetic), main_path (true/false), "
+    "noticeable (true/false), effort (low / medium / high); tier bunların 9 üzerinden puanının bandıdır (7-9 high, "
+    "4-6 medium, 0-3 low). Örnek: \"inputs\": {{\"evidence\": \"archive_or_research\", \"impact\": \"persuasive\", "
     "\"main_path\": true, \"noticeable\": true, \"effort\": \"low\"}} (methodology.md → Prioritization)",
-    "; added in 3.2.0, write the four inputs: evidence (user_data / behaviour_data / archive_or_research / "
-    "intuition), main_path (true/false), noticeable (true/false), effort (low / medium / high); the tier is the "
-    "band of their score (6-7 high, 3-5 medium, 0-2 low). Example: \"inputs\": {{\"evidence\": "
-    "\"archive_or_research\", \"main_path\": true, \"noticeable\": true, \"effort\": \"low\"}} "
+    "; added in 3.2.0 (impact in 3.4.0), write the five inputs: evidence (user_data / behaviour_data / "
+    "archive_or_research / intuition), impact (structural / persuasive / cosmetic), main_path (true/false), "
+    "noticeable (true/false), effort (low / medium / high); the tier is the band of their score out of 9 (7-9 high, "
+    "4-6 medium, 0-3 low). Example: \"inputs\": {{\"evidence\": \"archive_or_research\", \"impact\": "
+    "\"persuasive\", \"main_path\": true, \"noticeable\": true, \"effort\": \"low\"}} "
     "(methodology.md → Prioritization)")
 INPUT_HINTS = {
     "evidence": ("; şunlardan biri: user_data / behaviour_data / archive_or_research / intuition "
                  "(evidence.level'e uygun)",
                  "; one of user_data / behaviour_data / archive_or_research / intuition (matching evidence.level)"),
-    "main_path": ("; true ya da false: öğe ana dönüşüm yolunda ya da ilk ekranda mı",
-                  "; true or false: is the element on the main conversion path or above the fold"),
+    "impact": ("; 3.4.0'da eklendi, şunlardan biri: structural (teklifin kendisi, akıştan bir adım, karar anındaki "
+               "eksik bilgi, karar yapısı) / persuasive (hiyerarşi ve görsel ağırlık, itiraza cevap veren metin, "
+               "sürtünme noktasında güven işareti) / cosmetic (renk, köşe, yazı tipi, genel buton metni, boşluk)",
+               "; added in 3.4.0, one of structural (the offer itself, a step of the flow, missing information at "
+               "the decision point, decision structure) / persuasive (hierarchy and visual weight, copy answering an "
+               "objection, a trust signal at the friction point) / cosmetic (colour, corner radius, font, generic "
+               "CTA wording, spacing)"),
+    "main_path": ("; true ya da false: öğe akışın kullanıcılarının çoğunun geçtiği ana dönüşüm yolunda ya da ilk "
+                  "ekranda mı",
+                  "; true or false: is the element on the main conversion path most of the flow's users pass, or "
+                  "above the fold"),
     "noticeable": ("; true ya da false: kullanıcı B'yi öğeye geldikten birkaç saniye içinde fark eder mi",
                    "; true or false: does a user notice B within a few seconds of reaching the element"),
-    "effort": ("; şunlardan biri: low (metin, stil, sıra) / medium (ön yüz işi) / high (arka uç, uygulama sürümü, "
-               "operasyon)",
-               "; one of low (copy, style, order) / medium (front-end work) / high (backend, an app release, an "
-               "operational change)"),
+    "effort": ("; şunlardan biri: low (metin, stil, sıra, varsayılan) / medium (ön yüz işi ya da yerel uygulama "
+               "sürümü isteyen her değişiklik) / high (arka uç ya da operasyon)",
+               "; one of low (copy, style, order, a default) / medium (front-end work, or any change that ships in "
+               "a native app release) / high (backend or an operational change)"),
 }
 REQUIRED_HINTS = {("priority", "inputs"): INPUTS_HINT}
 REQUIRED_HINTS.update({("priority.inputs", key): hint for key, hint in INPUT_HINTS.items()})
@@ -802,9 +881,16 @@ CHECK_NAME_RE = re.compile(r"kontrol|denetim|geçti\s*/\s*kaldı|\bcheck\b|pass\
 COMPLETE_RE = re.compile(r"tamamlama|dönüşüm|kayıt|geçiş|ilerleme|ulaşma|completion|conversion|proceed|progression",
                          re.IGNORECASE)
 ABANDON_RE = re.compile(r"terk\s+oran|abandon", re.IGNORECASE)
+# "onay" alone is also a confirmation ("onay ekranı", "Siparişi onayla", "sipariş onayı"): only its consent
+# sense counts ("pazarlama onayı", "ticari ileti onayı", "KVKK onayı", "onay metni"). Subscription
+# cancellation and data-purpose copy (a privacy note, "No spam, unsubscribe anytime") are legally bound too.
 REGULATED_RE = re.compile(
-    r"sigorta|emeklilik|kredi(?!\s+kart)|poliçe|\brıza|\bonay|insurance|pension|\bcredit\b(?!\s+card)|\bloan"
-    r"|consent|KVKK", re.IGNORECASE)
+    r"sigorta|emeklilik|kredi(?!\s+kart)|poliçe|\brıza|insurance|pension|\bcredit\b(?!\s+card)|\bloan"
+    r"|consent|KVKK"
+    r"|(?<!\w)(?:pazarlama|ileti\w*|iletişim|veri\w*|açık|çerez\w*|izin)\s+onay\w*|(?<!\w)onay\s+metn\w*"
+    r"|(?<!\w)abonel(?:ik|iğ)\w*\s+iptal\w*|\bcancel\w*\s+(?:(?:a|the|your|their)\s+)?subscriptions?\b"
+    r"|\bsubscription\s+cancel\w*|(?<!\w)aydınlatma\s+metn\w*|(?<!\w)kişisel\s+veri\w*|(?<!\w)gizlilik\w*"
+    r"|\bprivacy\b|\bpersonal\s+data\b|\bunsubscrib\w*|(?<!\w)abonelikten\s+çık\w*", re.IGNORECASE)
 REGULATED_CASED_RE = re.compile(r"\bBES\b")
 # Mockup text holds every button and line of the screen, so a generic "onay" ("Siparişi onayla") would make any
 # checkout look regulated: the mockup is read only for the strong signals below. A heuristic like the rest.
@@ -856,6 +942,32 @@ FUNCTIONAL_TR = ("kupon", "indirim", "ödeme", "sepet", "filtre", "arama", "giri
 FUNCTIONAL_EN = ("coupon", "discount", "payment", "cart", "checkout", "filter", "search", "login", "signup",
                  "sign-up")
 FUNCTIONAL_RE = keywords(FUNCTIONAL_TR, FUNCTIONAL_EN)
+# The invariant a refusal suggests, by what the change touches (TR, EN): the first family whose keywords
+# the hit word starts with, else the generic one for any operated element.
+INVARIANT_EXAMPLES = (
+    (("kupon", "indirim", "coupon", "discount", "voucher", "promo"),
+     ("Geçerli bir kod iki kolda da aynı adımla uygulanır.", "A valid code applies in the same step in both arms.")),
+    (("arama", "filtre", "search", "filter"),
+     ("Aynı arama iki kolda da aynı sonuçları döndürür.", "The same query returns the same results in both arms.")),
+    (("ödeme", "sepet", "payment", "cart", "checkout"),
+     ("Sepet tutarı iki kolda da aynı hesapla çıkar.", "The cart total is computed the same way in both arms.")),
+    (("form", "alan", "giriş", "kayıt", "onay kutusu", "field", "input", "checkbox", "login", "sign"),
+     ("Alanın doğrulaması ve hata mesajları iki kolda da aynıdır.",
+      "The field's validation and error messages are the same in both arms.")),
+    (("modal", "pop-up", "popup", "açılır pencere", "alt sayfa", "diyalog", "iletişim kutusu", "overlay", "sheet",
+      "bottom sheet", "dialog"),
+     ("Pencere iki kolda da aynı içerikle açılır ve aynı yollarla kapanır.",
+      "The window opens with the same content and closes the same ways in both arms.")),
+)
+INVARIANT_GENERIC = ("Öğeye dokunmak iki kolda da aynı hedefi açar.", "Tapping the element opens the same destination in "
+                                                                     "both arms.")
+
+
+def invariant_example(word, lang="tr"):
+    """A checkable invariant for the element `word` names, in `lang`."""
+    low = (word or "").casefold()
+    pair = next((ex for stems, ex in INVARIANT_EXAMPLES if low.startswith(stems)), INVARIANT_GENERIC)
+    return pair[1 if lang == "en" else 0]
 # Elements that take more accessibility criteria than a link or a button.
 MODAL_RE = keywords(("modal", "pop-up", "popup", "açılır pencere", "alt sayfa", "diyalog", "iletişim kutusu"),
                     ("overlay", "bottom sheet", "sheet", "dialog"))
@@ -968,6 +1080,53 @@ A11Y_MODAL = (
 A11Y_AUTO_ADVANCE = (
     ("durdurulabilmesi", "a way to pause it", re.compile(r"durdur|duraklat|pause", re.IGNORECASE)),
 )
+# Each criterion written the way the checks above read it, (TR, EN): the corrected value a refusal
+# prints, and the warning new_record.py writes. tests/test_v34_validator.py proves every one passes.
+A11Y_PHRASES = {
+    A11Y_BASE[0][2]: ("dokunma alanı en az 44×44 pt / 48×48 dp", "touch target at least 44×44 pt / 48×48 dp"),
+    A11Y_BASE[1][2]: ("metin kontrastı en az 4.5:1", "text contrast at least 4.5:1"),
+    A11Y_BASE[2][2]: ("klavyeyle erişim", "keyboard access"),
+    A11Y_BASE[3][2]: ("ekran okuyucuda adıyla okunma", "a name screen readers announce"),
+    A11Y_MODAL[0][2]: ("açılınca odağı alma", "taking focus when it opens"),
+    A11Y_MODAL[1][2]: ("görünür bir kapat düğmesi", "a visible close control"),
+    A11Y_MODAL[2][2]: ("Esc ile kapanma", "closing with Esc"),
+    A11Y_AUTO_ADVANCE[0][2]: ("otomatik geçişin durdurulabilmesi", "a way to pause auto-advance"),
+}
+
+
+def a11y_criteria(text):
+    """[(criterion, the word that asks for it)] the change described by `text` needs (rule 3)."""
+    word = first_hit(INTERACTIVE_RE, text, NOT_INTERACTIVE)
+    needed = [(c, word) for c in A11Y_BASE] if word else []
+    modal = MODAL_RE.search(text)
+    if modal:
+        needed += [(c, modal.group(0)) for c in A11Y_MODAL]
+    carousel = CAROUSEL_RE.search(text)
+    if carousel and AUTO_ADVANCE_RE.search(text):
+        needed += [(c, carousel.group(0)) for c in A11Y_AUTO_ADVANCE]
+    return needed
+
+
+def a11y_phrase(criteria, lang="tr"):
+    """The criteria as one pass/fail clause: "dokunma alanı …, … ve Esc ile kapanma"."""
+    parts = [A11Y_PHRASES[c[2]][1 if lang == "en" else 0] for c in criteria]
+    if len(parts) < 2:
+        return "".join(parts)
+    return "%s %s %s" % (", ".join(parts[:-1]), "and" if lang == "en" else "ve", parts[-1])
+
+
+def a11y_example(criteria, lang="tr"):
+    """A whole accessibility warning text stating `criteria`, as the checks read it."""
+    if lang == "en":
+        return "Must pass: %s." % a11y_phrase(criteria, lang)
+    return "Geçmeli: %s." % a11y_phrase(criteria, lang)
+
+
+def target_fix(figure):
+    """The touch-target size to write instead of a lower one: 48×48 dp, else 44×44 in the stated unit."""
+    m = SIZE_RE.search(figure or "")
+    unit = m.group(3).lower() if m else "pt"
+    return "48×48 dp" if unit == "dp" else "44×44 %s" % ("pt" if unit.startswith("pi") else unit)
 
 # Rule 3: a revenue primary on a change to a user benefit can read the lost
 # benefit as a win (hide a coupon field and code holders pay full price), so
@@ -1050,7 +1209,14 @@ STATISTICS_DEFERRED_AFTER_RE = re.compile(
 OVERCLAIM_RE = re.compile(
     r"(?<!\w)(?:kanıtlanmış(?:tır)?|kanıtlandı|test\s+edilmiş(?:tir)?|test\s+edildi(?:ği)?|kazanmış(?:tır)?"
     r"|kazandı(?:ğı)?|işe\s+yaradığı\s+biliniyor|proven|tested(?!\s+(?:with|using|by|before|against|for)\b)"
-    r"|known\s+to\s+work|won)(?![\w'’])",
+    r"|known\s+to\s+work|won"
+    # a habitual win stated as fact ("yaygın kazanan bir uygulama", "commonly wins", "a known winner")
+    r"|(?:yaygın|genellikle|çoğunlukla|sıklıkla|çoğu\s+zaman|hep|sık\s+sık)\s+(?:olarak\s+)?kazan\w*"
+    r"|kazanan\s+(?:bir\s+)?(?:uygulama|örüntü|kalıp|fikir|yaklaşım|pratik)\w*"
+    r"|(?:commonly|usually|often|typically|consistently|reliably|always|generally)\s+(?:wins?|winning|won"
+    r"|lifts?|raises?|increases?|improves?|boosts?|outperforms?)"
+    r"|(?:a\s+)?(?:known|sure|safe|proven|reliable)\s+(?:winner|win|bet)|winning\s+(?:pattern|practice|idea|approach))"
+    r"(?![\w'’])",
     re.IGNORECASE)
 
 # ---- result and impact claims (rules 8 and 10; contract: methodology.md → Claims and evidence)
@@ -1328,6 +1494,50 @@ def _family_label(fams, lang):
     return " + ".join(FAMILY_LABEL[f][idx] for f in sorted(fams))
 
 
+# The glossary's Payda column is Turkish; an English record writes it in English. The common ones, word for
+# word (new_record.py writes these too); any other is shown as the glossary's text to translate.
+PAYDA_EN = {
+    "Teste atanan ziyaretçi": "Visitors assigned to the test",
+    "Teste atanan kullanıcı": "Users assigned to the test",
+    "Teste atanan müşteri": "Customers assigned to the test",
+    "Teste atanan yeni kullanıcı": "New users assigned to the test",
+    "Ürün sayfasına atanan ziyaretçi": "Visitors assigned on the product page",
+    "Form sayfasına atanan ziyaretçi": "Visitors assigned on the form page",
+    "Liste sayfasına atanan ziyaretçi": "Visitors assigned on the listing page",
+    "Hesaplayıcı sayfasına atanan ziyaretçi": "Visitors assigned on the calculator page",
+    "Checkout’a ulaşan ziyaretçi (iki kolda aynı tetikleyici)": "Visitors who reached checkout (same trigger in both "
+                                                                 "arms)",
+    "Ödeme adımına ulaşan ziyaretçi (iki kolda aynı tetikleyici)": "Visitors who reached the payment step (same "
+                                                                    "trigger in both arms)",
+    "Ödeme adımına ulaşan ziyaretçi": "Visitors who reached the payment step",
+    "Sepete ulaşan ziyaretçi": "Visitors who reached the cart",
+    "Kayıt akışını başlatan (iki kolda aynı tetikleyici)": "Users who started the sign-up flow (same trigger in both "
+                                                            "arms)",
+    "Giriş ekranına ulaşan ziyaretçi (iki kolda aynı tetikleyici)": "Visitors who reached the login screen (same "
+                                                                     "trigger in both arms)",
+    "Akışın ilk adımına ulaşan ziyaretçi (iki kolda aynı tetikleyici)": "Visitors who reached the flow's first step "
+                                                                         "(same trigger in both arms)",
+    "Sayfayla başlayan oturum": "Sessions starting on the page",
+    "Oturum": "Sessions",
+    "Sayfa görüntüleme": "Page views",
+    "Sipariş": "Orders",
+    "Plan satın alımı": "Plan purchases",
+    "Testte başlayan abonelik": "Subscriptions started during the test",
+}
+
+
+def payda_text(payda, lang="tr"):
+    """The glossary denominator in the record's language, or None when English has no fixed wording for it."""
+    return payda if lang != "en" else PAYDA_EN.get(payda)
+
+
+def glossary_example(canon, row, lang="tr"):
+    """{"name": …, "denominator": …} as the glossary row writes it, in the record's language."""
+    name = (row.get("english") or [canon])[0] if lang == "en" else canon
+    den = payda_text(row["payda"], lang) or "<“%s”, in English>" % row["payda"]
+    return json.dumps({"name": name, "denominator": den}, ensure_ascii=False)
+
+
 def kpi_meaning_entries(scenario):
     """(path, name, denominator) of the KPI lines whose name and denominator are both written."""
     out = []
@@ -1361,9 +1571,13 @@ def check_kpi_meaning(scenario, errors, lang="tr"):
             if not families_compatible(glossary_fams, rec):
                 definition = re.split(r"[;.]\s", row["definition"], maxsplit=1)[0].rstrip(".")
                 hint = msg(lang, "kpi_trigger_hint") if glossary_fams == {"trigger"} and rec == {"assigned"} else ""
+                written = {family for family, regex in FAMILY_RES if regex.search(den)}
+                if "assigned" in written and (written - {"assigned"}) & glossary_fams:
+                    hint += msg(lang, "kpi_assigned_hint")
                 errors.append(msg(lang, "kpi_glossary_family", path=path, name=name, canon=canon, hint=hint,
                                   definition=definition, payda=row["payda"],
-                                  gfam=_family_label(glossary_fams, lang), den=den, rfam=_family_label(rec, lang)))
+                                  gfam=_family_label(glossary_fams, lang), den=den, rfam=_family_label(rec, lang),
+                                  example=glossary_example(canon, row, lang)))
                 continue
         else:
             hit = CONDITIONAL_NAME_RE.search(name)
@@ -1710,6 +1924,7 @@ def claim_fields(scenario):
     for i, item in enumerate(_list(scenario.get("assumptions"))):
         if isinstance(item, dict):
             pairs += [("assumptions[%d].%s" % (i, key), item.get(key)) for key in ("text", "question")]
+    pairs += _belief_fields(scenario)
     return _strings(pairs)
 
 
@@ -1868,6 +2083,129 @@ def claim_exempt(scenario, kind, clause):
 
 CLAIM_MESSAGE = {"archive": "archive_claim", "similar": "similar_claim"}
 
+# An evidence note that states a result as fact ("dönüşümü iyileştiriyor", "lifts conversion") on evidence that
+# can't carry one. A Turkish outcome verb in an indicative or factive form (artırıyor, artırır, artırdı, artırdığı,
+# artıran), an English one in the present or past not after a modal, with a metric noun in the clause and no
+# hypothesis word. Read in evidence.note and source_note only: the mechanism says how B works, by design.
+TR_FACT_SUFFIX_RE = re.compile(r"^(?:[ıiuü]?yor|[aeıiuü]?r(?![ae]k|[ıiuü]n)(?!\s+m[ıiuü])|[dt][ıiuü](?:ğ|k|r|m|n|\W|$)"
+                               r"|m[ıiuü]ş|y?[ae]n(?!\w))", re.IGNORECASE)
+HYPOTHESIS_RE = re.compile(
+    r"(?<!\w)(?:hipotez\w*|düşünül\w*|varsay\w*|beklen\w*|öngörül\w*|olabil\w*|hypothes\w*|expect\w*|assum\w*"
+    r"|may|might|could|whether)(?!\w)", re.IGNORECASE)
+FACT_FIELDS = ("evidence.note", "source_note")
+
+
+def fact_claim(clause):
+    """The first outcome verb `clause` states as fact about a metric, or None."""
+    if not METRIC_NOUN_RE.search(clause) or HYPOTHESIS_RE.search(clause):
+        return None
+    for m in TR_OUTCOME_RE.finditer(clause):
+        stem, suffix = m.group(1).casefold(), m.group(2).casefold()
+        if stem == "art" and suffix.startswith("tır"):
+            stem, suffix = "artır", suffix[3:]
+        allowed = TR_ALLOWED_SUFFIX.get(stem)
+        if allowed is not None and not suffix.startswith(allowed):
+            continue
+        rest = suffix + clause[m.end():m.end() + 4]
+        if not TR_NEGATIVE_RE.match(suffix) and not suffix.startswith(("abil", "ebil")) \
+                and TR_FACT_SUFFIX_RE.match(rest) and not negated(clause, m.start(), m.end()):
+            return m.group(0)
+    for m in EN_OUTCOME_RE.finditer(clause):
+        word = m.group(1).casefold()
+        if (word in EN_PRESENT or word in EN_PAST) and not MODAL_BEFORE_RE.search(clause[:m.start()]) \
+                and not negated(clause, m.start(), m.end()):
+            return m.group(0)
+    return None
+
+
+def check_fact_claims(scenario, errors, lang="tr"):
+    """Rules 8 and 10: on archive, sector or intuition evidence, the note doesn't state a result as fact; a sector
+    study may, quoted with its source in the clause."""
+    level = _obj(scenario.get("evidence")).get("level")
+    if level not in ("archive", "sector", "intuition"):
+        return
+    for path, text in claim_fields(scenario):
+        if path not in FACT_FIELDS or claim_in(OVERCLAIM_RE, text) or text_claims(text)[0]:
+            continue  # check_claims reports that field already
+        for clause in CLAUSE_SPLIT_RE.split(text):
+            word = fact_claim(clause)
+            attributed = ATTRIBUTION_RE.search(clause) or ATTRIBUTION_PROPER_RE.search(clause)
+            if word and not (level == "sector" and attributed):
+                errors.append(msg(lang, "evidence_fact", path=path, word=word))
+                break
+
+
+# A glossary abbreviation in parentheses ("(CR)", "(RPV)") belongs to its glossary names.
+ABBREVIATION_RE = re.compile(r"\(([A-Z]{2,5})\)")
+_ABBREVIATIONS = []
+
+
+def glossary_abbreviations(lang="tr"):
+    """{abbreviation: [the canonical glossary names in `lang` that carry it]}."""
+    if not _ABBREVIATIONS:
+        found = {"tr": {}, "en": {}}
+        for canon, row in glossary_rows().items():
+            for key, labels in (("tr", [canon] + row["synonyms"]), ("en", row.get("english", []))):
+                for label in labels:
+                    for abbr in ABBREVIATION_RE.findall(label):
+                        names = found[key].setdefault(abbr, [])
+                        name = canon if key == "tr" else label
+                        if name not in names:
+                            names.append(name)
+        _ABBREVIATIONS.append(found)
+    return _ABBREVIATIONS[0]["en" if lang == "en" else "tr"]
+
+
+def kpi_name_language(name, lang):
+    """(the other language's label, the record language's name) when `name` is a glossary name written in the
+    other language, else None."""
+    canon = glossary_canonical(name)
+    row = glossary_rows().get(canon) if canon else None
+    if not row:
+        return None
+    key = fold_tr(_strip_window(name))
+    english = [fold_tr(_strip_window(e)) for e in row.get("english", [])]
+    turkish = [fold_tr(_strip_window(t)) for t in [canon] + row["synonyms"]]
+    if lang == "tr" and key in english and key not in turkish:
+        return "English", canon
+    if lang == "en" and key in turkish and key not in english and row.get("english"):
+        return "Turkish", row["english"][0]
+    return None
+
+
+def check_kpi_names(scenario, errors, lang="tr"):
+    """Rule 2: a glossary abbreviation is used only by the glossary names that carry it."""
+    abbreviations = glossary_abbreviations(scenario.get("lang") or "tr")
+    entries = [("primary_kpi", _obj(scenario.get("primary_kpi")).get("name"))]
+    guardrail = _obj(scenario.get("guardrail"))
+    if guardrail.get("kind") == "metric":
+        entries.append(("guardrail", guardrail.get("name")))
+    for path, name in entries:
+        if not isinstance(name, str) or glossary_canonical(name):
+            continue
+        for abbr in ABBREVIATION_RE.findall(name):
+            if abbr in abbreviations:
+                errors.append(msg(lang, "kpi_abbreviation", path=path, name=name, abbr="(%s)" % abbr,
+                                  canon=" / ".join(repr(n) for n in abbreviations[abbr])))
+                break
+
+
+def kpi_language_warnings(scenario, lang="tr"):
+    """A glossary KPI name written in the other language (rule 7): the record's own language name instead."""
+    out = []
+    record_lang = scenario.get("lang") or "tr"
+    names = [("primary_kpi.name", _obj(scenario.get("primary_kpi")).get("name")),
+             ("guardrail.name", _obj(scenario.get("guardrail")).get("name"))]
+    for path, name in names:
+        if isinstance(name, str):
+            hit = kpi_name_language(name, record_lang)
+            if hit:
+                other = hit[0] if lang == "en" else {"English": "İngilizce", "Turkish": "Türkçe"}[hit[0]]
+                in_lang = {"tr": ("Türkçe", "Turkish"), "en": ("İngilizce", "English")}[record_lang]
+                out.append(msg(lang, "kpi_name_lang", path=path, name=name, other=other, want=hit[1],
+                               lang=in_lang[1 if lang == "en" else 0]))
+    return out
+
 
 def check_claims(scenario, errors, lang="tr"):
     """Rules 8 and 10 in every free-text field: no result ("tested", "won"),
@@ -1918,14 +2256,18 @@ def check_evidence(scenario, errors, lang="tr"):
 
 # ---- priority score (rule 9; contract: methodology.md → Prioritization)
 #
-# A light evidence-led score: evidence weighs most, then where the element sits,
-# whether B is noticeable and the effort. The tier is derived from it, never
-# chosen; the critic checks each input against the page and the evidence.
+# A light evidence-led score: evidence weighs most, then what the change moves
+# (the idea lens' impact tiers), where the element sits, whether B is noticeable
+# and the effort. The tier is derived from it, never chosen; the critic checks
+# each input against the page and the evidence. A strong main-path change on an
+# archive pattern reaches high (1+2+1+1+2 = 7); intuition tops out at 6.
 SCORE_EVIDENCE = {"user_data": 3, "behaviour_data": 2, "archive_or_research": 1, "intuition": 0}
+SCORE_IMPACT = {"structural": 2, "persuasive": 1, "cosmetic": 0}
 SCORE_EFFORT = {"low": 2, "medium": 1, "high": 0}
-SCORE_MAX = 7
+SCORE_MAX = 9
 # (lowest score, tier), highest first.
-SCORE_BANDS = ((6, "high"), (3, "medium"), (0, "low"))
+SCORE_BANDS = ((7, "high"), (4, "medium"), (0, "low"))
+TIER_LABEL = {"high": ("Yüksek", "High"), "medium": ("Orta", "Medium"), "low": ("Düşük", "Low")}
 # evidence.level → the score inputs it allows.
 EVIDENCE_INPUTS = {"user_data": ("user_data", "behaviour_data"), "archive": ("archive_or_research",),
                    "sector": ("archive_or_research",), "intuition": ("intuition",)}
@@ -1936,12 +2278,12 @@ def priority_score(inputs):
     missing or not one of the schema's values (the schema reports that)."""
     if not isinstance(inputs, dict):
         return None
-    ev, eff = inputs.get("evidence"), inputs.get("effort")
+    ev, impact, eff = inputs.get("evidence"), inputs.get("impact"), inputs.get("effort")
     main, notice = inputs.get("main_path"), inputs.get("noticeable")
-    if ev not in SCORE_EVIDENCE or eff not in SCORE_EFFORT or not isinstance(main, bool) \
-            or not isinstance(notice, bool):
+    if ev not in SCORE_EVIDENCE or impact not in SCORE_IMPACT or eff not in SCORE_EFFORT \
+            or not isinstance(main, bool) or not isinstance(notice, bool):
         return None
-    parts = (SCORE_EVIDENCE[ev], int(main), int(notice), SCORE_EFFORT[eff])
+    parts = (SCORE_EVIDENCE[ev], SCORE_IMPACT[impact], int(main), int(notice), SCORE_EFFORT[eff])
     return sum(parts), "+".join(str(n) for n in parts)
 
 
@@ -1949,6 +2291,45 @@ def score_tier(score, capped=False):
     """The tier a score falls in; a critical assumption caps it at medium."""
     tier = next(name for low, name in SCORE_BANDS if score >= low)
     return "medium" if capped and tier == "high" else tier
+
+
+def critical_open(scenario):
+    """An open critical assumption: the tier is medium at most (Conditional proposals)."""
+    return any(isinstance(a, dict) and a.get("type") == "critical" for a in _list(scenario.get("assumptions")))
+
+
+def priority_tag(scenario, lang="tr"):
+    """The tag line's priority, tier and score: "Öncelik: Yüksek (7/9)", "Priority: Medium (7/9, conditional)"
+    when a critical assumption holds a high score at medium; None when the inputs don't score."""
+    scored = priority_score(_obj(scenario.get("priority")).get("inputs"))
+    if scored is None:
+        return None
+    capped = critical_open(scenario)
+    tier = score_tier(scored[0], capped)
+    idx = 1 if lang == "en" else 0
+    held = capped and score_tier(scored[0]) == "high"
+    note = (", conditional" if lang == "en" else ", koşullu") if held else ""
+    return "%s: %s (%d/%d%s)" % ("Priority" if lang == "en" else "Öncelik", TIER_LABEL[tier][idx], scored[0],
+                                 SCORE_MAX, note)
+
+
+# A native release is effort medium on its own; high is backend or operational work (a heuristic on the rationale).
+RELEASE_RE = keywords(("sürüm", "mağaza onay", "uygulama güncelleme"), ("release", "app store", "store review"))
+BACKEND_RE = keywords(("arka uç", "sunucu", "operasyon", "entegrasyon", "veri taban", "altyapı", "servis"),
+                      ("backend", "back-end", "server", "API", "operational", "integration", "database",
+                       "infrastructure", "service"))
+
+
+def release_warnings(scenario, lang="tr"):
+    """effort 'high' whose rationale names an app release and no backend or operational work."""
+    priority = _obj(scenario.get("priority"))
+    rationale = priority.get("rationale")
+    if _obj(priority.get("inputs")).get("effort") != "high" or not isinstance(rationale, str):
+        return []
+    hit = RELEASE_RE.search(rationale)
+    if hit and not BACKEND_RE.search(rationale):
+        return [msg(lang, "effort_release", word=hit.group(0))]
+    return []
 
 
 def check_priority(scenario, errors, lang="tr"):
@@ -1965,7 +2346,7 @@ def check_priority(scenario, errors, lang="tr"):
     tier = priority.get("tier")
     if scored is None or tier not in ("high", "medium", "low"):
         return
-    capped = any(isinstance(a, dict) and a.get("type") == "critical" for a in _list(scenario.get("assumptions")))
+    capped = critical_open(scenario)
     band = score_tier(scored[0], capped)
     if tier != band and not (capped and tier == "high"):  # high with a critical item: assumption_high says it
         errors.append(msg(lang, "priority_band", tier=tier, calc=scored[1], score=scored[0], band=band))
@@ -2072,6 +2453,13 @@ def check_assumptions(scenario, errors, lang="tr"):
         errors.append(msg(lang, "assumption_high", text=critical))
 
 
+def check_belief(scenario, errors, lang="tr"):
+    """The "Doğru olmalı" belief stays one short sentence (the shape is the schema's)."""
+    belief = _obj(scenario.get("must_be_true")).get("belief")
+    if isinstance(belief, str) and len(belief.strip()) > MAX_BELIEF:
+        errors.append(msg(lang, "belief_long", n=len(belief.strip()), max=MAX_BELIEF))
+
+
 def check_numeric_change(scenario, errors, lang="tr"):
     """Rule 10: numeric_change says where its figure comes from, or a critical assumption holds the figure open."""
     text = scenario.get("numeric_change")
@@ -2103,6 +2491,7 @@ def check_statistics(scenario, errors, lang="tr"):
     pairs += [("invariants[%d]" % i, t) for i, t in enumerate(_list(scenario.get("invariants")))]
     pairs += [("assumptions[%d].%s" % (i, k), a.get(k)) for i, a in enumerate(_list(scenario.get("assumptions")))
               if isinstance(a, dict) for k in ("text", "question")]
+    pairs += _belief_fields(scenario)
     for path, text in _strings(pairs):
         hit = statistics_hit(text)
         if hit:
@@ -2159,29 +2548,31 @@ def warning_text(scenario, kind):
 
 def check_accessibility(scenario, text, word, errors, lang="tr"):
     """Rule 3: an interactive change carries an accessibility warning that
-    states the criteria its element needs."""
-    needed = list(A11Y_BASE)
-    if MODAL_RE.search(text):
-        needed += A11Y_MODAL
-    if CAROUSEL_RE.search(text) and AUTO_ADVANCE_RE.search(text):
-        needed += A11Y_AUTO_ADVANCE
+    states the criteria its element needs. A missing criterion is named with
+    the word that asks for it ("Esc ile kapanma" for the sheet, not the chip)
+    and the clause to write."""
+    needed = a11y_criteria(text) or [(c, word) for c in A11Y_BASE]
     label = 1 if lang == "en" else 0
     stated = warning_text(scenario, "accessibility")
     if not stated:
-        errors.append(msg(lang, "a11y_missing", word=word, criteria=", ".join(c[label] for c in needed)))
+        errors.append(msg(lang, "a11y_missing", word=word, criteria=", ".join(c[label] for c, _ in needed),
+                          example=a11y_example([c for c, _ in needed], lang)))
         return
     missing, lower = [], []
-    for c in needed:
+    for c, by in needed:
         figure = c[2].below(stated) if isinstance(c[2], FigureCriterion) else None
         if figure:
             lower.append((c[2], figure))
         elif not c[2].search(stated):
-            missing.append(c[label])
-    if missing:
-        errors.append(msg(lang, "a11y_criteria", word=word, criteria=", ".join(missing)))
+            missing.append((c, by))
+    for by in sorted(set(b for _, b in missing), key=[b for _, b in missing].index):
+        group = [c for c, b in missing if b == by]
+        errors.append(msg(lang, "a11y_criteria", word=by, criteria=", ".join(c[label] for c in group),
+                          example=a11y_phrase(group, lang)))
     for criterion, figure in lower:
         what, need = A11Y_THRESHOLD_LABELS[criterion][label]
-        errors.append(msg(lang, "a11y_threshold", what=what, val=figure, need=need))
+        fix = target_fix(figure) if criterion is A11Y_BASE[0][2] else "4.5:1"
+        errors.append(msg(lang, "a11y_threshold", what=what, val=figure, need=need, fix=fix))
 
 
 def check_benefit_guardrail(scenario, text, errors, lang="tr"):
@@ -2219,7 +2610,7 @@ def check_change(scenario, errors, lang="tr"):
         check_accessibility(scenario, text, interactive, errors, lang)
     functional = interactive or first_hit(FUNCTIONAL_RE, text)
     if functional and "invariants" not in scenario:
-        errors.append(msg(lang, "invariants", word=functional))
+        errors.append(msg(lang, "invariants", word=functional, example=invariant_example(functional, lang)))
     check_benefit_guardrail(scenario, text, errors, lang)
     word = regulated_word(scenario)
     if word and not has_regulation_warning(scenario):
@@ -2323,9 +2714,44 @@ def check_card(scenario, errors, lang="tr"):
                                             card.get("bottom_nav_active"), lang))
 
 
+# new_record.py marks every value its author still has to write as ⟦hint⟧; a record that still carries one is a
+# skeleton, never a record (the brackets appear in no real copy).
+PLACEHOLDER_RE = re.compile(r"⟦[^⟦⟧]*⟧|[⟦⟧]")
+
+
+def _all_strings(node, path=""):
+    if isinstance(node, str):
+        yield path, node
+    elif isinstance(node, dict):
+        for key, value in node.items():
+            for item in _all_strings(value, "%s.%s" % (path, key) if path else str(key)):
+                yield item
+    elif isinstance(node, list):
+        for i, value in enumerate(node):
+            for item in _all_strings(value, "%s[%d]" % (path, i)):
+                yield item
+
+
+def placeholder_paths(scenario):
+    """(path, the first placeholder) of every string that still carries a ⟦hint⟧."""
+    out = []
+    for path, text in _all_strings(scenario):
+        m = PLACEHOLDER_RE.search(text)
+        if m:
+            out.append((path, m.group(0)))
+    return out
+
+
+def check_placeholders(scenario, errors, lang="tr"):
+    for path, hint in placeholder_paths(scenario):
+        errors.append(msg(lang, "placeholder", path=path, val=hint))
+
+
 def validate(scenario, schema, lang="tr"):
     """Errors only. lint() returns the warnings."""
     errors = []
+    if isinstance(scenario, dict):
+        check_placeholders(scenario, errors, lang)
     walk(scenario, schema, "", errors, schema, lang)
     if isinstance(scenario, dict):
         check_kpis(scenario, errors, lang)
@@ -2338,6 +2764,9 @@ def validate(scenario, schema, lang="tr"):
         check_statistics(scenario, errors, lang)
         check_objection(scenario, errors, lang)
         check_assumptions(scenario, errors, lang)
+        check_fact_claims(scenario, errors, lang)
+        check_belief(scenario, errors, lang)
+        check_kpi_names(scenario, errors, lang)
         check_numeric_change(scenario, errors, lang)
         check_change(scenario, errors, lang)
         check_card(scenario, errors, lang)
@@ -2385,6 +2814,7 @@ def _bounded_fields(scenario):
     pairs.append(("priority.rationale", _obj(scenario.get("priority")).get("rationale")))
     pairs += [("warnings[%d].text" % i, w.get("text"))
               for i, w in enumerate(_list(scenario.get("warnings"))) if isinstance(w, dict)]
+    pairs.append(("must_be_true.probe", _obj(scenario.get("must_be_true")).get("probe")))
     return _strings(pairs)
 
 
@@ -2408,8 +2838,14 @@ def _text_fields(scenario):
         pairs += [("detail.%s[%d]" % (box, i), _item_text(item)) for i, item in enumerate(_list(detail.get(box)))]
     pairs += [("detail.kpis[%d]" % i, " ".join(str(k.get(f) or "") for f in ("name", "question", "denominator")))
               for i, k in enumerate(_list(detail.get("kpis"))) if isinstance(k, dict)]
-    pairs += _assumption_fields(scenario)
+    pairs += _assumption_fields(scenario) + _belief_fields(scenario)
     return _strings(pairs)
+
+
+def _belief_fields(scenario):
+    """must_be_true's belief and probe, when the record carries them."""
+    belief = _obj(scenario.get("must_be_true"))
+    return [("must_be_true.%s" % k, belief.get(k)) for k in ("belief", "probe")]
 
 
 def _assumption_fields(scenario):
@@ -2481,7 +2917,8 @@ def lint(scenario, schema=None, lang="tr", include_card=True):
             out.append(msg(lang, "title_long", n=len(title.strip()), max=MAX_TITLE))
         out.extend(title_kpi_warnings(title, _obj(scenario.get("primary_kpi")).get("name"), lang))
     for path, text in _strings([("problem", scenario.get("problem")), ("mechanism", scenario.get("mechanism"))]
-                               + _invariant_fields(scenario) + _assumption_fields(scenario)):
+                               + _invariant_fields(scenario) + _assumption_fields(scenario)
+                               + _belief_fields(scenario)):
         if text.strip() and sentence_count(text) > 1:
             out.append(msg(lang, "one_sentence", path=path, n=sentence_count(text)))
     for path, text in _bounded_fields(scenario):
@@ -2489,6 +2926,8 @@ def lint(scenario, schema=None, lang="tr", include_card=True):
             out.append(msg(lang, "too_long", path=path, n=len(text.strip()), max=MAX_TEXT))
 
     out.extend(claim_warnings(scenario, lang))
+    out.extend(release_warnings(scenario, lang))
+    out.extend(kpi_language_warnings(scenario, lang))
     level = _obj(scenario.get("evidence")).get("level")
     if level in WEAK_EVIDENCE:
         for path, text in _strings([("problem", scenario.get("problem")), ("mechanism", scenario.get("mechanism")),
@@ -2598,6 +3037,122 @@ def print_fingerprint(path, schema, lang=None, strict=False):
     return 0
 
 
+# ---- the planned chat, printed from the records (--chat)
+#
+# The lines of a turn's chat that are a function of the record: the scenario
+# block (title, tag line with the score, Neden), the conditional and pre-start
+# lines after the list, and the stakeholder brief for scenario 1 with the
+# template's fixed wording. Copied as printed, they can't drift from the record.
+BRIEF_TEMPLATE = os.path.join(os.path.dirname(DEFAULT_SCHEMA), "stakeholder-brief.md")
+MAX_WHY = 140
+SOURCE_LABEL = {"archive": ("arşivden", "from archive"), "adapted": ("arşivden uyarlandı", "adapted from archive"),
+                "generated": ("bu sayfa için üretildi", "generated for this page")}
+EVIDENCE_LABEL = {"user_data": ("kendi verin", "your own data"), "archive": ("arşiv örüntüsü", "archive pattern"),
+                  "sector": ("sektör gözlemi", "industry observation"), "intuition": ("sezgi", "intuition")}
+GATES = ((REGULATION, ("B’nin metnine uyum onayı", "compliance sign-off on B's exact copy")),
+         ("accessibility", ("erişilebilirlik kontrolü", "accessibility check")))
+CHAT_WORDS = {
+    "tag": ("{prio} · Kaynak: {src} · Kanıt: {ev}", "{prio} · Source: {src} · Evidence: {ev}"),
+    "why": ("Neden: {text}", "Why: {text}"),
+    "belief": ("Doğru olmalı: {text}", "Must be true: {text}"),
+    "probe": ("Önce yokla: {text}", "Probe first: {text}"),
+    "conditional": ("Koşullu ({n}): {items}.", "Conditional ({n}): {items}."),
+    "gates": ("Başlamadan önce: {items}.", "Pre-start gates: {items}."),
+    "gates_none": ("Başlamadan önce: yok.", "Pre-start gates: none."),
+    "for": ("{n} için {what}", "for {n}: {what}"),
+    "and": (" ve ", " and "),
+    "why_long": ("{file}: mechanism {n} karakter; Neden satırı en çok {max} karakter, onu kısaltarak kendiniz yazın",
+                 "{file}: mechanism is {n} characters; the Why line is at most {max}, write it shorter yourself"),
+}
+
+
+def _cw(key, lang, **kw):
+    pair = CHAT_WORDS[key]
+    return (pair[1] if lang == "en" else pair[0]).format(**kw)
+
+
+def _bare(text):
+    return text.strip().rstrip(".").strip()
+
+
+def brief_lines(note, n, lang="tr", path=BRIEF_TEMPLATE):
+    """The stakeholder brief for scenario `n`, the template's block in `lang` with `note` as why now."""
+    try:
+        with open(path, encoding="utf-8") as fh:
+            blocks = re.findall(r"```\n(.*?)```", fh.read(), re.S)
+    except OSError:
+        return []
+    block = next((b for b in blocks if ("Why now" in b) == (lang == "en")), None)
+    if block is None:
+        return []
+    block = block.replace("<n>", str(n)).replace("<what the evidence rests on>", _bare(note or ""))
+    return block.rstrip("\n").split("\n")
+
+
+def chat_lines(records, lang="tr"):
+    """(lines to print, notes for stderr) for the turn's records, in order."""
+    lines, notes = [], []
+    conditional, gates = [], []
+    many = len(records) > 1
+    for i, (path, sc) in enumerate(records, 1):
+        idx = 1 if lang == "en" else 0
+        lines.append("**%d. %s**" % (i, sc.get("title", "").strip()))
+        lines.append(_cw("tag", lang, prio=priority_tag(sc, lang),
+                         src=SOURCE_LABEL.get(sc.get("source"), ("?", "?"))[idx],
+                         ev=EVIDENCE_LABEL.get(_obj(sc.get("evidence")).get("level"), ("?", "?"))[idx]))
+        why = (sc.get("mechanism") or "").strip()
+        if len(why) <= MAX_WHY:
+            lines.append(_cw("why", lang, text=why))
+        else:
+            notes.append(_cw("why_long", lang, file=path, n=len(why), max=MAX_WHY))
+        belief = _obj(sc.get("must_be_true"))
+        if belief:
+            lines.append(_cw("belief", lang, text=belief.get("belief", "").strip()))
+            lines.append(_cw("probe", lang, text=belief.get("probe", "").strip()))
+        lines.append("")
+        for a in _list(sc.get("assumptions")):
+            if isinstance(a, dict) and a.get("type") == "critical":
+                conditional.append(("%d: " % i if many else "") + _bare(a.get("text", "")))
+        kinds = {w.get("type") for w in _list(sc.get("warnings")) if isinstance(w, dict)}
+        mine = [g[1][idx] for g in GATES if g[0] in kinds]
+        if mine:
+            what = _cw("and", lang).join(mine)
+            gates.append(_cw("for", lang, n=i, what=what) if many else what)
+    if conditional:
+        lines.append(_cw("conditional", lang, n=len(conditional), items="; ".join(conditional)))
+    lines.append(_cw("gates", lang, items="; ".join(gates)) if gates else _cw("gates_none", lang))
+    lines.append("")
+    lines += brief_lines(_obj(records[0][1].get("evidence")).get("note"), 1, lang)
+    return lines, notes
+
+
+def print_chat(paths, schema, lang=None):
+    """--chat: validate every record, then print the chat lines that come from them (stdout) and what to write by
+    hand (stderr). Nothing is printed on stdout while any record has an error."""
+    records, failed = [], False
+    for path in paths:
+        doc, invalid = read_json(path, lang or file_lang(path))
+        if invalid:
+            sys.stderr.write(invalid + "\n")
+            failed = True
+            continue
+        rlang = lang or record_lang(doc)
+        errors = validate(doc, schema, rlang)
+        if errors:
+            sys.stderr.write(msg(rlang, "file_errors", file=path, n=len(errors)) + "\n")
+            sys.stderr.writelines("  - %s\n" % err for err in errors)
+            failed = True
+            continue
+        records.append((path, doc))
+    if failed:
+        return 1
+    out_lang = lang or record_lang(records[0][1])
+    lines, notes = chat_lines(records, out_lang)
+    print("\n".join(lines))
+    sys.stderr.writelines("  ~ %s\n" % n for n in notes)
+    return 0
+
+
 def main(argv):
     ap = argparse.ArgumentParser(description="Validate scenario records against the schema.")
     ap.add_argument("files", nargs="*", help="scenario JSON file(s)")
@@ -2607,6 +3162,9 @@ def main(argv):
                     help="message language (default: each record's own lang, else tr)")
     ap.add_argument("--fingerprint", metavar="FILE",
                     help="validate FILE, then print only its record fingerprint (refused when it has errors)")
+    ap.add_argument("--chat", action="store_true",
+                    help="validate the files, then print the chat lines they determine (tag line with the score, "
+                         "Neden, Koşullu, Başlamadan önce, the stakeholder brief for scenario 1)")
     args = ap.parse_args(argv)
     lang = args.lang or "tr"  # usage and schema messages; each record's own messages follow record_lang()
     if args.fingerprint and args.files:
@@ -2629,6 +3187,8 @@ def main(argv):
             return 2
     if args.fingerprint:
         return print_fingerprint(args.fingerprint, schema, args.lang, args.strict)
+    if args.chat:
+        return print_chat(args.files, schema, args.lang)
 
     total_errors = total_warnings = 0
     langs = set()

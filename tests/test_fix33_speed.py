@@ -137,7 +137,7 @@ class TestChecklist(unittest.TestCase):
             self.assertIn("`%s` %d" % (name, points), CHECKLIST)
         for name, points in vsj.SCORE_EFFORT.items():
             self.assertIn("`%s` %d" % (name, points), CHECKLIST)
-        self.assertEqual(vsj.SCORE_BANDS, ((6, "high"), (3, "medium"), (0, "low")))
+        self.assertEqual(vsj.SCORE_BANDS, ((7, "high"), (4, "medium"), (0, "low")))
         self.assertEqual(vsj.EVIDENCE_INPUTS, {"user_data": ("user_data", "behaviour_data"),
                                                "archive": ("archive_or_research",),
                                                "sector": ("archive_or_research",), "intuition": ("intuition",)})
