@@ -366,7 +366,7 @@ A reference price (anchor) conveys the size of the discount, but when used const
 - Don’t change both the anchor and the badge design in the same test.
 - Don’t show every product as permanently discounted; the anchor effect dies.
 - Don’t round the discount percentage up.
-- Don’t keep the sale price in the anchor variant different from the control; the price paid must be the same in both variants, and the only difference must be the struck-through price.
+- Don’t keep the sale price in the anchor variant different from the control; the price paid must be the same in both arms, and the only difference must be the struck-through price.
 
 > **Market note:** Price display is legally bound in some markets; in the European Union, for example, the reference price must be the lowest price of a defined period before the discount. Verify the target market’s price-display rules before setting up the test; the question “which anchor sells more” is limited to the anchors you are allowed to show.
 
@@ -953,7 +953,7 @@ EN-Variable: Decimal format of the price
 
 ### EN
 
-The difference between 299.99 TL and 300 TL is a single kuruş, but the eye reads the leftmost digit first: a charm price can be read as belonging to the lower hundred and signal cheapness, while a round number leaves a plain, upmarket impression. Which effect dominates depends on the category and the price level. How the decimals are written (same size or small superscript) is a separate variable: test the decimals themselves first, and the writing style only if they win; decimals written small may go unnoticed by some users and lead to the total being misread.
+The difference between 299.99 TL and 300 TL is just 0.01 TL, but the eye reads the leftmost digit first: a charm price can be read as belonging to the lower hundred and signal cheapness, while a round number leaves a plain, upmarket impression. Which effect dominates depends on the category and the price level. How the decimals are written (same size or small superscript) is a separate variable: test the decimals themselves first, and the writing style only if they win; decimals written small may go unnoticed by some users and lead to the total being misread.
 
 **What to test**
 - Device: Is the perception of decimals different in the narrow price area on mobile than on desktop?

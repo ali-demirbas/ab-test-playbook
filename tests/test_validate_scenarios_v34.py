@@ -188,6 +188,19 @@ class TestEnglishBody(unittest.TestCase):
         errors = self.body_errors(lambda t: t.replace("**What not to do**", "**Avoid**"))
         self.assertTrue(any("What not to do" in e for e in errors), errors)
 
+    def test_turkish_leftover_in_english_body(self):
+        errors = self.body_errors(lambda t: t.replace("Do loyal customers and new users react the same way?",
+                                                      "Sadık müşteri ile yeni kullanıcı aynı tepkiyi mi veriyor?"))
+        self.assertTrue(any("Türkçe harf" in e and "İngilizce gövde" in e for e in errors), errors)
+
+    def test_em_dash_is_refused(self):
+        for old, new in (("strong incentive to grow the cart, but", "strong incentive to grow the cart \u2014 but"),
+                         ("güçlü bir teşviktir, ancak", "güçlü bir teşviktir \u2014 ancak")):
+            with self.subTest(text=new):
+                title, body = first(format_example().replace(old, new))
+                errors = vs.check_scenario("t.md", title, body)
+                self.assertTrue(any("uzun tire" in e for e in errors), errors)
+
     def test_turkish_boxes_are_not_read_from_the_english_body(self):
         title, body = first(format_example())
         self.assertEqual(len(vs.box_items(body, vs.TEST_BOX)), 5)

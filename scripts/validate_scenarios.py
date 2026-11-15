@@ -46,12 +46,14 @@ Denetlenen kurallar (CLAUDE.md ve knowledge/methodology.md'den):
  18. Her blokta `### EN` sonrası İngilizce gövde (zorunlu): giriş paragrafı,
      Türkçe kutularla aynı sayıda maddeli What to test / KPIs to track / What not
      to do kutuları, sözlüğün English name sütunundan birincil KPI, “must not”
-     guardrail, çevrilmiş notlar, İngilizce başlıkla çözülen atıflar.
+     guardrail, çevrilmiş notlar, İngilizce başlıkla çözülen atıflar; İngilizce
+     gövdede Türkçeye özgü harf (ğ ş ı İ) yok.
  19. Senaryo metninde iç kural numarası (“kural 6”, “rule 11”) yok; kuralın kendisi
      yazılır.
  20. Birincil KPI’ın sözlükteki paydası kollar arasında değişemez; sözlük satırı
      guardrail için atanan paydalı bir karşılık adlandırıyorsa (Teklif → Sözleşme →
      Sözleşme Oranı (30 gün)) guardrail o karşılıkla yazılır.
+ 21. Blokta uzun tire (—) yok; yerine virgül, noktalı virgül ya da ayrı cümle.
  FORMAT.md gibi büyük harfli dosyalar senaryo içermez ve denetlenmez;
  `--next-id <dosya>` sıradaki boş kimliği basar.
 
@@ -106,6 +108,7 @@ NEXT_TEST_LABEL = "- Sonraki test:"
 GENERIC_NEXT_TEST = re.compile(r"\b(?:yeri|konumu|yerleşimi)\b", re.IGNORECASE)
 # Senaryo metninde iç kural numarası (kural 6, rule 11) kullanıcıya dönük metne
 # sızar; kuralın kendisi yazılır.
+EM_DASH = "\u2014"
 RULE_NUMBER = re.compile(r"\b(?:kural(?:ı|a|da|ın)?|rule)\s+\d+", re.IGNORECASE)
 # Guardrail = "bozulmaması gereken" bir metrik. Yalnızca "…melidir" eki yetmez:
 # "Müşteri memnun kalmalıdır" bir hedeftir, guardrail değil. Olumsuzlama şart.
@@ -538,6 +541,10 @@ def en_body_problems(tr_part, en_body, en_variable, glossary=None):
     out = []
     if en_variable is None:
         out.append("İngilizce gövde var ama başlık bloğunda ‘EN-Variable: …’ satırı yok")
+    leftovers = [line.strip() for line in en_body.split("\n") if TURKISH_ONLY.search(line)]
+    if leftovers:
+        out.append(f"İngilizce gövdede Türkçe harf var, çevrilmemiş metin olabilir ({len(leftovers)} satır) → "
+                   f"{leftovers[0][:60]}")
     paras = [p for p in en_body.split("\n\n") if p.strip()]
     if not paras or paras[0].lstrip().startswith(("**", "- ", ">")):
         out.append("İngilizce gövde bir giriş paragrafıyla başlamıyor (Türkçe girişin çevirisi)")
@@ -680,6 +687,10 @@ def check_scenario(filename, title, body, glossary=None):
             # ("Kaç rozet optimum? (1 / 3 / 5)"), o yüzden soru işareti sonda olmak zorunda değil.
             if not re.match(r"^- [^:\n]{2,}:\s*\S[^?]*\?", item):
                 errors.append(f"{where}: test maddesi 'Etiket: soru?' biçiminde değil → {item[:45]}")
+
+    dashes = sum(1 for line in body.split("\n") if EM_DASH in line)
+    if dashes:
+        errors.append(f"{where}: {dashes} satırda uzun tire (—) var; virgül, noktalı virgül ya da ayrı cümle yazın")
 
     hits = sorted({m.group(0) for m in RULE_NUMBER.finditer(body)})
     if hits:
