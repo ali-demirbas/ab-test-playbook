@@ -30,6 +30,8 @@ All notable changes to this project are documented here. Format loosely follows 
 
 ### Speed
 - The skills and the critic read one methodology section, one mockup-style section or one archive block with `scripts/read_section.py` instead of `awk` one-liners, so the only command a user has to allow is `python3`.
+- `ab-test-card` opens its record rules with a ten-item list of the refusals a first validation most often returns, each as a rule with a correct example (KPI and denominator family, the accessibility warning, `exposure`, `invariants`, `adapted_from`, the priority score, change ops, node shapes).
+- `adapted_from` matches an archive title whether its quotes and apostrophes are curly or straight, and `exposure` accepts "both variants", "iki varyantta" and "her kolda" beside "both arms" and "iki kolda".
 
 ## 3.2.2 - 2026-11-14
 

@@ -22,7 +22,8 @@ ERRORS (exit 1):
     with a 64-hex fingerprint, the detail boxes' three to six items
   * source (rule 8): 'generated' carries a source_note; 'archive' and
     'adapted' name their archive scenario in adapted_from, and that title
-    exists in knowledge/scenarios/*.md (whitespace-normalised, read relative to
+    exists in knowledge/scenarios/*.md (whitespace-normalised, curly and
+    straight quotes and apostrophes read as the same, read relative to
     this script; without the archive folder the source cannot be verified and
     that is an error too); 'archive' keeps the archive block's Değişken as its
     variable (case and whitespace aside; Turkish records only, an English
@@ -37,6 +38,7 @@ ERRORS (exit 1):
   * exposure: a tested element in an accordion, modal, tab or below the
     first view (problem, variable or a variant says so) carries `exposure`,
     and it says the trigger is logged at the same point in both arms
+    (arms, variants or groups; "iki kolda", "her iki varyantta", "A ve B")
   * evidence (rule 10): user_data and sector say what they rest on in
     evidence.note; intuition is never priority high; title, problem,
     mechanism, the priority rationale and the evidence note never write
@@ -1626,6 +1628,18 @@ def fold_tr(text):
     return " ".join(text.replace("İ", "i").replace("I", "ı").split()).casefold()
 
 
+QUOTE_FOLD = {ord(c): "'" for c in "\u2018\u2019\u201a\u201b\u2032\u02bc`\u00b4"}
+QUOTE_FOLD.update({ord(c): '"' for c in "\u201c\u201d\u201e\u201f\u2033\u00ab\u00bb"})
+
+
+def quote_fold(title):
+    """A title with typographic quotes and apostrophes written straight, a
+    leading "## " dropped and whitespace collapsed: what an author retyping
+    an archive title changes without meaning to."""
+    text = " ".join(str(title).translate(QUOTE_FOLD).split())
+    return re.sub(r"^#+\s*", "", text)
+
+
 def check_archive(scenario, errors, lang="tr"):
     """Rule 8, checked against the archive itself: adapted_from is a real
     title; 'archive' keeps its Değişken and both keep its Fark.
@@ -1641,6 +1655,12 @@ def check_archive(scenario, errors, lang="tr"):
         errors.append(msg(lang, "archive_missing", src=source, dir=ARCHIVE_DIR))
         return
     key = " ".join(title.split())
+    if key not in archive:
+        # Typography is not a different title: curly and straight quotes and
+        # apostrophes are the same, and a pasted "## " is dropped.
+        same = [t for t in archive if quote_fold(t) == quote_fold(key)]
+        if len(same) == 1:
+            key = same[0]
     if key not in archive:
         close = difflib.get_close_matches(key, list(archive), n=1)
         hint = msg(lang, "closest_title", title=close[0]) if close else ""
@@ -1977,7 +1997,9 @@ DROPDOWN_INSIDE_BEFORE_RE = re.compile(r"(?:in|inside|within|under|behind|into|f
                                        re.IGNORECASE)
 DROPDOWN_INSIDE_AFTER_RE = re.compile(r"(?:['’]s)?(?:\s+\S+){0,2}?\s+(?:menus?|lists?|panels?|options|items|holds|"
                                       r"contains|hides|shows|reveals|opens)\b", re.IGNORECASE)
-BOTH_ARMS_RE = re.compile(r"iki\s+kol|her\s+iki\s+kol|both\s+arms|each\s+arm|A\s+ve\s+B|A\s+and\s+B", re.IGNORECASE)
+BOTH_ARMS_RE = re.compile(r"iki\s+kol|her\s+iki\s+kol|her\s+kol|(?:her\s+)?iki\s+(?:varyant|grup)"
+                          r"|both\s+(?:arms|variants|groups)|each\s+(?:arm|variant|group)"
+                          r"|A\s+ve\s+B|A\s+and\s+B", re.IGNORECASE)
 
 
 def conditional_hit(text):
