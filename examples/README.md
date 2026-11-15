@@ -68,8 +68,8 @@ carries the JSON from step 1b into `review.scenario_critic`, and
 mockup-reviewer, after its PASS on the draft and its manifest, runs step 3
 and the JSON it prints goes into `review.mockup_reviewer`. The critic reviews
 once: a wording fix in one of the small-fix fields (title, problem, mechanism,
-a denominator's phrasing, a note, a warning, an invariant, the must-be-true
-lines) keeps its stamp; any other edit to the record changes it, so the final
+a denominator's phrasing, a note, a warning or an invariant added or reworded,
+never removed, the must-be-true lines) keeps its stamp; any other edit to the record changes it, so the final
 build refuses until the record is reviewed again. Edit only the mockup and the
 critic's stamp still holds, but the mockup reviewer's no longer matches the
 card. A refused build names the gate that failed and leaves an existing `--out`

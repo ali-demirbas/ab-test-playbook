@@ -135,9 +135,11 @@ name="abtest-status" content="conditional">; the build summary (draft and
 stamped build) says "conditional card (not implementation-ready)". It is never
 a final card. A record without one builds exactly as before.
 
-Review gates. A draft (--draft) needs the scenario-critic stamp: the
-fingerprint --critic-stamp prints, which covers what the review decided and
-not the small-fix fields (critic_fingerprint(); the whole-record
+Review gates. A draft (--draft) needs the scenario-critic stamp: the JSON
+--critic-stamp prints, whose fingerprint covers what the review decided and
+not the small-fix fields, and whose safeguards (the warnings, accessibility
+criteria, invariants and exposure the critic saw) a small fix may add to or
+reword but never remove (critic_problems(); the whole-record
 validate_scenario_json.record_fingerprint is accepted too, as an exact match);
 it writes the final card's HTML plus a draft ribbon overlaid on the card and
 a draft meta tag, writes <out>.manifest.json and prints what the reviewer
@@ -4005,9 +4007,11 @@ def preflight(scenario, lang="en"):
 # ------------------------------------------------- fingerprints and review gates
 #
 # Two stamps in the record's `review`, each written only on a PASS:
-#   review.scenario_critic.fingerprint = critic_fingerprint(record), printed
-#       by --critic-stamp: the record without `review`, `card` and the
-#       small-fix fields (see critic_core); the whole-record
+#   review.scenario_critic = critic_stamp(record), printed by --critic-stamp:
+#       a fingerprint over the record without `review`, `card` and the
+#       small-fix fields (see critic_core) and over the safeguards the stamp
+#       records, which a small fix may add to but never remove (see
+#       critic_safeguards); the whole-record
 #       validate_scenario_json.record_fingerprint also matches, exactly
 #   review.mockup_reviewer.fingerprint = mockup_stamp(): a sha256 over the
 #       exact bytes the final build writes (html_fingerprint of final_html()),
@@ -4190,8 +4194,8 @@ def record_fingerprint_of(record):
 # covered, so a change there sends the record back to scenario-critic:
 #   small-fix fields: title, problem, mechanism (wording); primary_kpi and
 #     guardrail denominator (phrasing); evidence.note, priority.rationale,
-#     source_note; objection; exposure; warnings and invariants (adding a
-#     required one, completing its text); an assumption's text and question;
+#     source_note; objection; exposure; warnings and invariants (adding one,
+#     rewording or completing its text); an assumption's text and question;
 #     must_be_true (the chat's Doğru olmalı and Önce yokla lines, which the
 #     review reads with the rest of the planned chat, never stamped).
 #   covered: id, lang, stage, device, market, variable, difference, variants,
@@ -4199,21 +4203,33 @@ def record_fingerprint_of(record):
 #     criterion, source, adapted_from, evidence.level, priority tier and
 #     inputs, numeric_change, detail, and the number, order and type of the
 #     assumptions (a critical one added or removed changes the card's kind).
-# The small-fix fields are not unchecked: every build runs the validator on the
-# whole record (preflight), so a required warning, invariant, exposure or
-# denominator family a fix removes is refused there. That the fix is the one
-# the critic wrote is the producer's duty (process), like every stamp here.
-CRITIC_STAMP_SCHEME = "ab-test-playbook/scenario-critic/v2"
+# Add-only safeguards. Warnings, invariants and exposure are small-fix fields
+# so that a fix can add or reword them, never so that one can be dropped: the
+# stamp also records what the critic saw (critic_safeguards: every warning's
+# type, the accessibility criteria its warning states as pass/fail, the number
+# of invariants, whether exposure is stated), its fingerprint covers that
+# record, and the gate refuses a record that has fewer (removed_safeguards):
+# a warning type gone, a criterion no longer stated or under its threshold
+# ("4.5:1" reworded to "3:1"), an invariant fewer, exposure gone. The validator
+# refuses only what a rule requires; this refuses what the critic asked for.
+# Rewording and additions keep the stamp. That the fix is the one the critic
+# wrote is the producer's duty (process), like every stamp here.
+CRITIC_STAMP_SCHEME = "ab-test-playbook/scenario-critic/v3"
 CRITIC_UNSTAMPED = ("review", "card")  # as validate_scenario_json.FINGERPRINT_EXCLUDED
 CRITIC_SMALL_FIX = ("title", "problem", "mechanism", "source_note", "objection", "exposure", "warnings",
                     "invariants", "must_be_true")
 CRITIC_SMALL_FIX_IN = {"primary_kpi": ("denominator",), "guardrail": ("denominator",), "evidence": ("note",),
                        "priority": ("rationale",)}
 CRITIC_SMALL_FIX_ITEMS = {"assumptions": ("text", "question")}
+# Stable names for validate_scenario_json's accessibility criteria, in the order
+# A11Y_BASE + A11Y_MODAL + A11Y_AUTO_ADVANCE lists them (the schema's
+# criticStamp.safeguards.accessibility enum; a test pins each to its label).
+A11Y_SAFEGUARD_KEYS = ("touch_target", "text_contrast", "keyboard", "screen_reader", "focus_on_open",
+                       "close_control", "esc_closes", "pause")
 
 
 def critic_core(record):
-    """The part of a record the scenario-critic stamp covers (see above)."""
+    """The part of a record the scenario-critic fingerprint covers besides its safeguards (see above)."""
     core = {}
     for key, value in record.items():
         if key in CRITIC_UNSTAMPED or key in CRITIC_SMALL_FIX:
@@ -4227,17 +4243,80 @@ def critic_core(record):
     return core
 
 
-def critic_fingerprint(record):
-    """The review.scenario_critic fingerprint: sha256 over the scheme and critic_core() as sorted compact JSON.
-    The scheme line keeps it apart from the whole-record fingerprint."""
-    body = json.dumps(critic_core(record), sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+def a11y_safeguard_criteria():
+    """[(key, (TR label, EN label, matcher))]: validate_scenario_json's accessibility criteria under stable keys."""
+    import validate_scenario_json as vsj  # here, not at module level: the validator imports this module
+    criteria = tuple(vsj.A11Y_BASE) + tuple(vsj.A11Y_MODAL) + tuple(vsj.A11Y_AUTO_ADVANCE)
+    if len(criteria) != len(A11Y_SAFEGUARD_KEYS):
+        die("validate_scenario_json.py lists %d accessibility criteria, A11Y_SAFEGUARD_KEYS names %d: give each "
+            "new criterion its key (and the schema's criticStamp enum)" % (len(criteria), len(A11Y_SAFEGUARD_KEYS)))
+    return list(zip(A11Y_SAFEGUARD_KEYS, criteria))
+
+
+def critic_safeguards(record):
+    """What a small fix may add to or reword but never remove, as the critic stamp records it: the sorted type of
+    every warning (a type twice is listed twice), the accessibility criteria the accessibility warnings state as
+    pass/fail (a figure counts only at its threshold), the number of invariants and whether exposure is stated.
+    Tolerant of a malformed record (the validator reports its shape)."""
+    warnings = [w for w in (record.get("warnings") or []) if isinstance(w, dict)] \
+        if isinstance(record.get("warnings"), list) else []
+    a11y = " ".join(w["text"] for w in warnings
+                    if w.get("type") == "accessibility" and isinstance(w.get("text"), str))
+    invariants = record.get("invariants") if isinstance(record.get("invariants"), list) else []
+    exposure = record.get("exposure")
+    return {
+        "warnings": sorted(w["type"] for w in warnings if isinstance(w.get("type"), str)),
+        "accessibility": [key for key, c in a11y_safeguard_criteria() if a11y and c[2].search(a11y)],
+        "invariants": sum(1 for i in invariants if isinstance(i, str) and i.strip()),
+        "exposure": isinstance(exposure, str) and bool(exposure.strip()),
+    }
+
+
+def _safeguards_shape_ok(safeguards):
+    """True when a stamp's safeguards have the shape critic_safeguards() returns."""
+    return (isinstance(safeguards, dict) and set(safeguards) == {"warnings", "accessibility", "invariants", "exposure"}
+            and isinstance(safeguards["warnings"], list) and all(isinstance(t, str) for t in safeguards["warnings"])
+            and isinstance(safeguards["accessibility"], list)
+            and all(k in A11Y_SAFEGUARD_KEYS for k in safeguards["accessibility"])
+            and isinstance(safeguards["invariants"], int) and not isinstance(safeguards["invariants"], bool)
+            and isinstance(safeguards["exposure"], bool))
+
+
+def critic_fingerprint(record, safeguards=None):
+    """The review.scenario_critic fingerprint: sha256 over the scheme, critic_core() and the safeguards (by
+    default the record's own, as --critic-stamp records them) as sorted compact JSON. The scheme line keeps it
+    apart from the whole-record fingerprint."""
+    body = json.dumps({"core": critic_core(record),
+                       "safeguards": critic_safeguards(record) if safeguards is None else safeguards},
+                      sort_keys=True, ensure_ascii=False, separators=(",", ":"))
     return hashlib.sha256(("%s\n%s" % (CRITIC_STAMP_SCHEME, body)).encode("utf-8")).hexdigest()
 
 
-def critic_fingerprints(record):
-    """Every fingerprint a scenario-critic stamp may carry for this record: its critic_fingerprint, and the
-    whole-record fingerprint (validate_scenario_json.py --fingerprint), an exact match that no small fix keeps."""
-    return (critic_fingerprint(record), record_fingerprint_of(record))
+def critic_stamp(record):
+    """The review.scenario_critic stamp --critic-stamp prints: verdict, fingerprint and the safeguards it covers."""
+    return {"verdict": "PASS", "fingerprint": critic_fingerprint(record), "safeguards": critic_safeguards(record)}
+
+
+def removed_safeguards(reviewed, now, lang="en"):
+    """What `now` (critic_safeguards of the record) lacks of `reviewed` (the stamp's safeguards), one phrase each."""
+    tr = lang == "tr"
+    out = []
+    for kind in sorted(set(reviewed["warnings"])):
+        old, new = reviewed["warnings"].count(kind), now["warnings"].count(kind)
+        if new < old:
+            out.append(("%r türünde uyarı (incelenen %d, şimdi %d)" if tr else "%r warnings (%d reviewed, %d now)")
+                       % (kind, old, new))
+    labels = {key: c[0 if tr else 1] for key, c in a11y_safeguard_criteria()}
+    lost = [labels[key] for key in reviewed["accessibility"] if key not in now["accessibility"]]
+    if lost:
+        out.append(("erişilebilirlik uyarısında artık yazmayan ölçüt: %s" if tr else
+                    "accessibility criteria no longer stated at their threshold: %s") % ", ".join(lost))
+    if now["invariants"] < reviewed["invariants"]:
+        out.append(("değişmezler (incelenen %d, şimdi %d)" if tr else "invariants (%d reviewed, %d now)")
+                   % (reviewed["invariants"], now["invariants"]))
+    if reviewed["exposure"] and not now["exposure"]:
+        out.append("maruz kalma (exposure) tanımı" if tr else "the exposure statement")
+    return out
 
 
 STAMP_MSG = {
@@ -4263,6 +4342,22 @@ STAMP_MSG = {
                      "incelemesinden sonra küçük düzeltme alanlarının (başlık, problem, mekanizma, paydalar, notlar, "
                      "gerekçe, itiraz, maruz kalma, uyarılar, değişmezler, varsayım metni, must_be_true) dışında "
                      "değişmiş, yeniden scenario-critic'e gider"),
+    "critic_whole": ("review.scenario_critic.fingerprint ({val}…) doesn't match the record: the record changed after "
+                     "scenario-critic reviewed it, and this stamp has no safeguards, so it approves only the exact "
+                     "record it was printed for (a small fix keeps only the whole JSON line `build_card.py "
+                     "--critic-stamp <record>` prints, safeguards included); the record goes back to scenario-critic",
+                     "review.scenario_critic.fingerprint ({val}…) kayıtla eşleşmiyor: kayıt scenario-critic "
+                     "incelemesinden sonra değişmiş ve bu damgada safeguards yok, yani yalnızca basıldığı kaydın "
+                     "birebir aynısını onaylar (küçük düzeltmeyi yalnızca `build_card.py --critic-stamp <kayıt>` "
+                     "çıktısındaki JSON satırının safeguards dahil tamamı taşır); kayıt yeniden scenario-critic'e "
+                     "gider"),
+    "removed_safeguard": ("A small fix removed or weakened what scenario-critic reviewed: {what}. A small fix may add "
+                          "or reword a warning, an accessibility criterion, an invariant or the exposure, never remove "
+                          "one: restore it, or send the record back to scenario-critic (review.scenario_critic)",
+                          "Küçük bir düzeltme scenario-critic'in incelediği bir güvenceyi kaldırmış ya da "
+                          "zayıflatmış: {what}. Küçük düzeltme uyarı, erişilebilirlik ölçütü, değişmez ya da maruz "
+                          "kalma ekleyebilir veya yeniden yazabilir, hiçbirini kaldıramaz: geri koyun ya da kaydı "
+                          "yeniden scenario-critic'e gönderin (review.scenario_critic)"),
     "critic_refused": ("no critic stamp: {n} validator error(s); fix the record first",
                        "eleştirmen damgası yok: {n} doğrulayıcı hatası; önce kaydı düzeltin"),
     "quick_stamp": ("--stamp {path} is a quick draft (fast mode): it is never stamped; after scenario-critic's PASS "
@@ -4283,19 +4378,53 @@ def _sm(msg_id, lang, **kw):
     return (tr if lang == "tr" else en).format(**kw)
 
 
-def stamp_problems(scenario, key, expected, lang="en"):
-    """Why review.<key> doesn't approve `expected` (a fingerprint, or a tuple of accepted ones), or []."""
+def _stamp_of_record(scenario, key, lang):
+    """(review.<key>, why it isn't a well-formed PASS stamp): the stamp is None when there is a problem."""
     review = scenario.get("review")
     stamp = review.get(key) if isinstance(review, dict) else None
     if not isinstance(stamp, dict):
-        return [_sm("missing_critic" if key == "scenario_critic" else "missing_mockup", lang)]
+        return None, [_sm("missing_critic" if key == "scenario_critic" else "missing_mockup", lang)]
     if stamp.get("verdict") != "PASS":
-        return [_sm("verdict", lang, key=key, val=stamp.get("verdict"), name=REVIEWERS[key])]
+        return None, [_sm("verdict", lang, key=key, val=stamp.get("verdict"), name=REVIEWERS[key])]
     fp = stamp.get("fingerprint")
     if not isinstance(fp, str) or not FINGERPRINT_RE.fullmatch(fp):
-        return [_sm("format", lang, key=key, val=fp)]
+        return None, [_sm("format", lang, key=key, val=fp)]
+    return stamp, []
+
+
+def stamp_problems(scenario, key, expected, lang="en"):
+    """Why review.<key> doesn't approve `expected` (a fingerprint, or a tuple of accepted ones), or [].
+    The scenario-critic gate itself is critic_problems(), which also reads the stamp's safeguards."""
+    stamp, problems = _stamp_of_record(scenario, key, lang)
+    if problems:
+        return problems
+    fp = stamp["fingerprint"]
     if fp not in (expected if isinstance(expected, tuple) else (expected,)):
         return [_sm("stale_critic" if key == "scenario_critic" else "stale_mockup", lang, val=fp[:12])]
+    return []
+
+
+def critic_problems(scenario, lang="en"):
+    """Why review.scenario_critic doesn't approve this record, or [].
+
+    The whole-record fingerprint (validate_scenario_json.py --fingerprint) approves the exact record it was
+    printed for. Otherwise the stamp's fingerprint must be critic_fingerprint(record, stamp's safeguards): the
+    covered fields unchanged and the safeguards the ones --critic-stamp recorded; then the record must still
+    have every one of those safeguards (removed_safeguards), whatever it added or reworded since."""
+    stamp, problems = _stamp_of_record(scenario, "scenario_critic", lang)
+    if problems:
+        return problems
+    fp = stamp["fingerprint"]
+    if fp == record_fingerprint_of(scenario):
+        return []
+    reviewed = stamp.get("safeguards")
+    if reviewed is None:
+        return [_sm("critic_whole", lang, val=fp[:12])]
+    if not _safeguards_shape_ok(reviewed) or fp != critic_fingerprint(scenario, reviewed):
+        return [_sm("stale_critic", lang, val=fp[:12])]
+    removed = removed_safeguards(reviewed, critic_safeguards(scenario), lang)
+    if removed:
+        return [_sm("removed_safeguard", lang, what="; ".join(removed))]
     return []
 
 
@@ -4315,7 +4444,7 @@ def critic_stamp_main(path, lang="en"):
         raise _Refused("validator", errors, header=_sm("critic_refused", lang, n=len(errors)))
     for note in vsj.lint(record, schema, lang):
         warn(note)
-    print(json.dumps({"verdict": "PASS", "fingerprint": critic_fingerprint(record)}))
+    print(json.dumps(critic_stamp(record)))
     return 0
 
 
@@ -4861,8 +4990,7 @@ def _run(args, lang):
 
     record_fp = _gate("validator", record_fingerprint_of, scenario)
     # Fast mode builds without any review (CLAUDE.md rules 9 and 17): its preview can't be stamped or finalized.
-    problems = [] if mode == "quick" else stamp_problems(scenario, "scenario_critic", critic_fingerprints(scenario),
-                                                         lang)
+    problems = [] if mode == "quick" else critic_problems(scenario, lang)
     stamp = stamp_of(final_fp, view.get("mockup_basis"), manifest)
     if mode in ("final", "check"):
         problems += stamp_problems(scenario, "mockup_reviewer", stamp, lang)

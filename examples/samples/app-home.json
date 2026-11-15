@@ -83,7 +83,23 @@
   "review": {
     "scenario_critic": {
       "verdict": "PASS",
-      "fingerprint": "8613b04d4af174fa6dd94e3cc1f749e2c0113664dacb31616d394d7e1e813a1c"
+      "fingerprint": "7b1c7aeef183948457f3bd6061fe1324ce47355291c2028305edfd88fdd6ec86",
+      "safeguards": {
+        "warnings": [
+          "accessibility",
+          "regulation"
+        ],
+        "accessibility": [
+          "touch_target",
+          "text_contrast",
+          "keyboard",
+          "screen_reader",
+          "focus_on_open",
+          "pause"
+        ],
+        "invariants": 4,
+        "exposure": false
+      }
     },
     "mockup_reviewer": {
       "verdict": "PASS",
