@@ -124,8 +124,10 @@ name="abtest-status" content="conditional">; the build summary (draft and
 stamped build) says "conditional card (not implementation-ready)". It is never
 a final card. A record without one builds exactly as before.
 
-Review gates. A draft (--draft) needs the scenario-critic stamp whose
-fingerprint equals the record's (validate_scenario_json.record_fingerprint);
+Review gates. A draft (--draft) needs the scenario-critic stamp: the
+fingerprint --critic-stamp prints, which covers what the review decided and
+not the small-fix fields (critic_fingerprint(); the whole-record
+validate_scenario_json.record_fingerprint is accepted too, as an exact match);
 it writes the final card's HTML plus a draft ribbon overlaid on the card and
 a draft meta tag, writes <out>.manifest.json and prints what the reviewer
 does next. It prints no fingerprint. mockup-reviewer, on PASS, runs --stamp on
@@ -136,7 +138,9 @@ build (the default) needs both stamps, writes the card, reads it back and
 prints its sha256; --check CARD later confirms a delivered file is still that
 card. Everything is built in memory and written only when every gate passed.
 The stamps prove what was approved, not that a review happened (see the
-comment above stamp_of()).
+comment above stamp_of()). Fast mode (--quick) builds an unreviewed preview
+without any stamp: a "Hızlı taslak · incelenmedi" / "Quick draft · not
+reviewed" ribbon, no manifest, never stamped and never final.
 
 --out names an .html file: never the template or the record, never inside
 the repository's source directories, and never over an existing file this
@@ -149,6 +153,8 @@ Usage:
   build_card.py --template templates/scenario-card.html \\
                 --scenario scenario.json \\
                 --out abtest-card-kupon-alani.html [--lang tr]
+  build_card.py --critic-stamp scenario.json
+  build_card.py --template ... --scenario ... --quick --out abtest-card-kupon-alani.draft.html
   build_card.py --template ... --scenario ... --stamp abtest-card-kupon-alani.draft.html
   build_card.py --template ... --scenario ... --check abtest-card-kupon-alani.html
 
@@ -159,6 +165,11 @@ Usage:
          its path; without them it says so in one line and the build still
          succeeds. --no-png (or ABTEST_NO_PNG=1) skips the image.
 --stamp  mockup-reviewer only, after a PASS: print the stamp for that draft.
+--critic-stamp RECORD
+         scenario-critic only, on PASS: validate RECORD and print its
+         review.scenario_critic stamp (needs no --template or card).
+--quick  fast mode: the draft without any review stamp, labelled as a quick
+         draft; no manifest; the reviewed pipeline later replaces it.
 --check  confirm a delivered card is the reviewed final, byte for byte.
 --lang   language of the builder's own messages (en, the default, or tr).
 
@@ -3844,8 +3855,10 @@ def preflight(scenario, lang="en"):
 # ------------------------------------------------- fingerprints and review gates
 #
 # Two stamps in the record's `review`, each written only on a PASS:
-#   review.scenario_critic.fingerprint = record_fingerprint(record)
-#       (validate_scenario_json.py; the record without `review` and `card`)
+#   review.scenario_critic.fingerprint = critic_fingerprint(record), printed
+#       by --critic-stamp: the record without `review`, `card` and the
+#       small-fix fields (see critic_core); the whole-record
+#       validate_scenario_json.record_fingerprint also matches, exactly
 #   review.mockup_reviewer.fingerprint = mockup_stamp(): a sha256 over the
 #       exact bytes the final build writes (html_fingerprint of final_html()),
 #       card.mockup_basis and the manifest the reviewer ticked off. It is
@@ -3853,8 +3866,10 @@ def preflight(scenario, lang="en"):
 #       reviewed (and which refuses when that file or its manifest is not what
 #       the record builds now). --draft prints no fingerprint and writes none
 #       into the draft or its manifest.
-# A draft needs the first, a final build both. Any edit after a review changes
-# the fingerprint it approved, by design: the edit goes back to that reviewer.
+# A draft needs the first, a final build both. An edit to what a stamp covers
+# changes the fingerprint it approved, by design: the edit goes back to that
+# reviewer. A quick draft (--quick, fast mode) needs neither and is never a
+# step toward a final card: the reviewed pipeline rebuilds it from the record.
 #
 # What this is and is not. A stamp proves which bytes were approved; it does
 # not prove that a review happened. This is a local tool: whoever can run
@@ -3866,6 +3881,7 @@ def preflight(scenario, lang="en"):
 REVIEWERS = {"scenario_critic": "scenario-critic", "mockup_reviewer": "mockup-reviewer"}
 FINGERPRINT_RE = re.compile(r"^[0-9a-f]{64}$")
 DRAFT_BANNER = {"tr": "Önizleme · görsel kontrol yapılmadı", "en": "Preview · not visually checked"}
+QUICK_BANNER = {"tr": "Hızlı taslak · incelenmedi", "en": "Quick draft · not reviewed"}
 # The draft marker is a pill in the card's 40px top padding at its right
 # corner: absolutely positioned, so it overlays the card without moving
 # anything in it (the draft lays out exactly like the final card it stands
@@ -3978,23 +3994,29 @@ def mockup_stamp(template_text, scenario, lang=None):
     return stamp_of(html_fingerprint(built), normalize(scenario).get("mockup_basis"), manifest)
 
 
-def draft_html(final_text, card_lang="tr"):
+QUICK_META = '<meta name="abtest-status" content="quick-draft">\n'
+
+
+def draft_html(final_text, card_lang="tr", quick=False):
     """The final card plus the draft ribbon and the draft meta tag.
 
     The ribbon is its own line right after the card's opening tag; the meta
     tag closes <head>. Nothing else of the final card changes. On a
     conditional card the draft's meta goes in just before the conditional
     meta, so the first abtest-status a reader finds says "draft". The draft
-    carries no fingerprint (see the review gates above).
+    carries no fingerprint (see the review gates above). `quick`: the fast-mode
+    preview, the same ribbon element saying "quick draft · not reviewed" and
+    content="quick-draft", so it can never pass for a reviewed draft.
     """
     head_end = final_text.find("</head>")
     card = CARD_OPEN_RE.search(final_text)
     if head_end < 0 or card is None or card.start() < head_end:
         die("template has no <head>…</head> and <div class=\"card\">: the draft ribbon and meta tag have "
             "nowhere to go")
-    metas = '<meta name="abtest-status" content="draft">\n'
+    banner = QUICK_BANNER if quick else DRAFT_BANNER
+    metas = QUICK_META if quick else '<meta name="abtest-status" content="draft">\n'
     ribbon = '  <div id="abtest-draft" role="status" style="%s">%s</div>\n' % (
-        escape(DRAFT_RIBBON_STYLE), escape(DRAFT_BANNER.get(card_lang, DRAFT_BANNER["en"])))
+        escape(DRAFT_RIBBON_STYLE), escape(banner.get(card_lang, banner["en"])))
     at = final_text.find(CONDITIONAL_META, 0, head_end)
     at = head_end if at < 0 else at
     text = final_text[:at] + metas + final_text[at:]
@@ -4011,13 +4033,66 @@ def record_fingerprint_of(record):
     return fn(record)
 
 
+# The scenario-critic stamp covers what the review decided, not every word of
+# the record (CLAUDE.md rule 17: one critic round; the main session applies the
+# [fixable] findings and the stamp stays valid). "Small" is this list and
+# nothing else; every other field, a field this list doesn't know included, is
+# covered, so a change there sends the record back to scenario-critic:
+#   small-fix fields: title, problem, mechanism (wording); primary_kpi and
+#     guardrail denominator (phrasing); evidence.note, priority.rationale,
+#     source_note; objection; exposure; warnings and invariants (adding a
+#     required one, completing its text); an assumption's text and question.
+#   covered: id, lang, stage, device, market, variable, difference, variants,
+#     primary_kpi name and direction, guardrail name, kind, direction and
+#     criterion, source, adapted_from, evidence.level, priority tier and
+#     inputs, numeric_change, detail, and the number, order and type of the
+#     assumptions (a critical one added or removed changes the card's kind).
+# The small-fix fields are not unchecked: every build runs the validator on the
+# whole record (preflight), so a required warning, invariant, exposure or
+# denominator family a fix removes is refused there. That the fix is the one
+# the critic wrote is the producer's duty (process), like every stamp here.
+CRITIC_STAMP_SCHEME = "ab-test-playbook/scenario-critic/v2"
+CRITIC_UNSTAMPED = ("review", "card")  # as validate_scenario_json.FINGERPRINT_EXCLUDED
+CRITIC_SMALL_FIX = ("title", "problem", "mechanism", "source_note", "objection", "exposure", "warnings",
+                    "invariants")
+CRITIC_SMALL_FIX_IN = {"primary_kpi": ("denominator",), "guardrail": ("denominator",), "evidence": ("note",),
+                       "priority": ("rationale",)}
+CRITIC_SMALL_FIX_ITEMS = {"assumptions": ("text", "question")}
+
+
+def critic_core(record):
+    """The part of a record the scenario-critic stamp covers (see above)."""
+    core = {}
+    for key, value in record.items():
+        if key in CRITIC_UNSTAMPED or key in CRITIC_SMALL_FIX:
+            continue
+        if key in CRITIC_SMALL_FIX_IN and isinstance(value, dict):
+            value = {k: v for k, v in value.items() if k not in CRITIC_SMALL_FIX_IN[key]}
+        elif key in CRITIC_SMALL_FIX_ITEMS and isinstance(value, list):
+            value = [{k: v for k, v in item.items() if k not in CRITIC_SMALL_FIX_ITEMS[key]}
+                     if isinstance(item, dict) else item for item in value]
+        core[key] = value
+    return core
+
+
+def critic_fingerprint(record):
+    """The review.scenario_critic fingerprint: sha256 over the scheme and critic_core() as sorted compact JSON.
+    The scheme line keeps it apart from the whole-record fingerprint."""
+    body = json.dumps(critic_core(record), sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    return hashlib.sha256(("%s\n%s" % (CRITIC_STAMP_SCHEME, body)).encode("utf-8")).hexdigest()
+
+
+def critic_fingerprints(record):
+    """Every fingerprint a scenario-critic stamp may carry for this record: its critic_fingerprint, and the
+    whole-record fingerprint (validate_scenario_json.py --fingerprint), an exact match that no small fix keeps."""
+    return (critic_fingerprint(record), record_fingerprint_of(record))
+
+
 STAMP_MSG = {
     "missing_critic": ("missing review stamp: review.scenario_critic. Run scenario-critic on the record; on PASS "
-                       "stamp {{\"verdict\": \"PASS\", \"fingerprint\": <what validate_scenario_json.py "
-                       "--fingerprint prints>}}",
+                       "write the JSON line `build_card.py --critic-stamp <record>` prints",
                        "inceleme damgası eksik: review.scenario_critic. Kaydı scenario-critic'e inceletin; PASS "
-                       "gelirse {{\"verdict\": \"PASS\", \"fingerprint\": <validate_scenario_json.py --fingerprint "
-                       "çıktısı>}} damgasını ekleyin"),
+                       "gelirse `build_card.py --critic-stamp <kayıt>` çıktısındaki JSON satırını yazın"),
     "missing_mockup": ("missing review stamp: review.mockup_reviewer. Build the draft (--draft) and have "
                        "mockup-reviewer review the draft and its manifest; on PASS the reviewer runs --stamp on that "
                        "draft and its output is the stamp",
@@ -4029,9 +4104,19 @@ STAMP_MSG = {
     "format": ("review.{key}.fingerprint must be a sha256 hex string (64 lowercase characters), got {val!r}",
                "review.{key}.fingerprint bir sha256 onaltılık dizesi olmalı (64 küçük harf karakter), gelen {val!r}"),
     "stale_critic": ("review.scenario_critic.fingerprint ({val}…) doesn't match the record: the record changed after "
-                     "scenario-critic reviewed it, so it goes back to scenario-critic",
+                     "scenario-critic reviewed it, outside the small-fix fields (title, problem, mechanism, the "
+                     "denominators, notes, rationale, objection, exposure, warnings, invariants, assumption wording), "
+                     "so it goes back to scenario-critic",
                      "review.scenario_critic.fingerprint ({val}…) kayıtla eşleşmiyor: kayıt scenario-critic "
-                     "incelemesinden sonra değişmiş, yeniden scenario-critic'e gider"),
+                     "incelemesinden sonra küçük düzeltme alanlarının (başlık, problem, mekanizma, paydalar, notlar, "
+                     "gerekçe, itiraz, maruz kalma, uyarılar, değişmezler, varsayım metni) dışında değişmiş, yeniden "
+                     "scenario-critic'e gider"),
+    "critic_refused": ("no critic stamp: {n} validator error(s); fix the record first",
+                       "eleştirmen damgası yok: {n} doğrulayıcı hatası; önce kaydı düzeltin"),
+    "quick_stamp": ("--stamp {path} is a quick draft (fast mode): it is never stamped; after scenario-critic's PASS "
+                    "build the reviewed draft with --draft and have that one reviewed",
+                    "--stamp {path} hızlı taslak (hızlı kip): hiç damgalanmaz; scenario-critic PASS verince "
+                    "incelenecek taslağı --draft ile kurun ve onu inceletin"),
     "stale_mockup": ("review.mockup_reviewer.fingerprint ({val}…) doesn't match the card this build would write: the "
                      "record's card, its text or the template changed after mockup-reviewer reviewed the draft; build "
                      "a new draft and have it reviewed",
@@ -4047,7 +4132,7 @@ def _sm(msg_id, lang, **kw):
 
 
 def stamp_problems(scenario, key, expected, lang="en"):
-    """Why review.<key> doesn't approve `expected` (a fingerprint), or []."""
+    """Why review.<key> doesn't approve `expected` (a fingerprint, or a tuple of accepted ones), or []."""
     review = scenario.get("review")
     stamp = review.get(key) if isinstance(review, dict) else None
     if not isinstance(stamp, dict):
@@ -4057,9 +4142,29 @@ def stamp_problems(scenario, key, expected, lang="en"):
     fp = stamp.get("fingerprint")
     if not isinstance(fp, str) or not FINGERPRINT_RE.fullmatch(fp):
         return [_sm("format", lang, key=key, val=fp)]
-    if fp != expected:
+    if fp not in (expected if isinstance(expected, tuple) else (expected,)):
         return [_sm("stale_critic" if key == "scenario_critic" else "stale_mockup", lang, val=fp[:12])]
     return []
+
+
+def critic_stamp_main(path, lang="en"):
+    """--critic-stamp: validate the record, then print its review.scenario_critic stamp as one JSON line.
+    Errors refuse (nothing on stdout, so a record that doesn't validate is never stamped); warnings go to
+    stderr for the critic to judge. No template and no `card` needed: the critic reviews before the draft."""
+    import validate_scenario_json as vsj  # here, not at module level: the validator imports this module
+    if not os.path.isfile(path):
+        die("no such file: %s" % path)
+    record = load_record(path, lang)
+    if not isinstance(record, dict):
+        die("scenario is not a JSON object: %s" % path)
+    schema = vsj.load_schema()
+    errors = vsj.validate(record, schema, lang)
+    if errors:
+        raise _Refused("validator", errors, header=_sm("critic_refused", lang, n=len(errors)))
+    for note in vsj.lint(record, schema, lang):
+        warn(note)
+    print(json.dumps({"verdict": "PASS", "fingerprint": critic_fingerprint(record)}))
+    return 0
 
 
 def manifest_document(scenario, view, manifest, record_fp, draft_path):
@@ -4247,6 +4352,10 @@ RUN_MSG = {
                     "stale): rebuild the draft with --draft and review that one",
                     "--stamp {path}: {what_tr} bu kaydın şu an kurduğuyla aynı değil (değişmiş ya da taslak eski): "
                     "taslağı --draft ile yeniden kurun ve onu inceleyin"),
+    "quick_next": ("not reviewed (fast mode): on finish, scenario-critic reviews the record, then the reviewed "
+                   "draft (--draft) replaces this file",
+                   "incelenmedi (hızlı kip): tamamla denince scenario-critic kaydı inceler, sonra incelenen taslak "
+                   "(--draft) bu dosyanın yerini alır"),
     "no_draft": ("--stamp {path}: no such draft; build it with --draft first",
                  "--stamp {path}: böyle bir taslak yok; önce --draft ile kurun"),
     "delivered": ("{path} does not match the reviewed card (sha256 {got}…, the record builds {want}…): the delivered "
@@ -4317,11 +4426,14 @@ def write_png(card_path, lang="en", timeout=120):
 
 
 def _run(args, lang):
-    mode = "stamp" if args.stamp else "check" if args.check else "draft" if args.draft else "final"
+    if args.critic_stamp:
+        return critic_stamp_main(args.critic_stamp, lang)
+    mode = ("stamp" if args.stamp else "check" if args.check else "quick" if args.quick
+            else "draft" if args.draft else "final")
     for path in (args.template, args.scenario):
         if not os.path.isfile(path):
             die("no such file: %s" % path)
-    if mode in ("draft", "final"):
+    if mode in ("draft", "final", "quick"):
         bad = out_problems(args.out, args.template, args.scenario, lang)
         if bad:
             raise _Refused("output", bad, header=_t("--out was refused:", "--out reddedildi:", lang))
@@ -4342,7 +4454,9 @@ def _run(args, lang):
     final_fp = html_fingerprint(built)
 
     record_fp = _gate("validator", record_fingerprint_of, scenario)
-    problems = stamp_problems(scenario, "scenario_critic", record_fp, lang)
+    # Fast mode builds without any review (CLAUDE.md rules 9 and 17): its preview can't be stamped or finalized.
+    problems = [] if mode == "quick" else stamp_problems(scenario, "scenario_critic", critic_fingerprints(scenario),
+                                                         lang)
     stamp = stamp_of(final_fp, view.get("mockup_basis"), manifest)
     if mode in ("final", "check"):
         problems += stamp_problems(scenario, "mockup_reviewer", stamp, lang)
@@ -4350,6 +4464,7 @@ def _run(args, lang):
         headers = {"draft": ("the draft build was refused:", "taslak kurulumu reddedildi:"),
                    "final": ("the final build was refused:", "nihai kurulum reddedildi:"),
                    "stamp": ("the stamp was refused:", "damga reddedildi:"),
+                   "quick": ("the quick draft was refused:", "hızlı taslak reddedildi:"),
                    "check": ("the delivered card can't be checked:", "teslim edilen kart denetlenemiyor:")}
         raise _Refused("review", problems, header=_t(*headers[mode], lang=lang))
 
@@ -4360,6 +4475,9 @@ def _run(args, lang):
         # looked at is what gets approved.
         if not os.path.isfile(args.stamp):
             raise _Refused("review", [_rm("no_draft", lang, path=args.stamp)])
+        if QUICK_META.encode("utf-8") in _read_bytes(args.stamp):
+            raise _Refused("review", [_sm("quick_stamp", lang, path=args.stamp)],
+                           header=_t("the stamp was refused:", "damga reddedildi:", lang))
         doc = manifest_document(scenario, view, manifest, record_fp, args.stamp)
         want = {args.stamp: draft, args.stamp + MANIFEST_SUFFIX: json.dumps(doc, ensure_ascii=False, indent=2) + "\n"}
         for path, text in want.items():
@@ -4374,7 +4492,9 @@ def _run(args, lang):
             raise _Refused("review", [_rm("delivered", lang, path=args.check, got=got[:12], want=final_fp[:12])])
         print(_rm("delivered_ok", lang, path=args.check))
         return 0
-    if mode == "draft":
+    if mode == "quick":
+        files = [(args.out, draft_html(built, view["lang"], quick=True))]
+    elif mode == "draft":
         manifest_path = args.out + MANIFEST_SUFFIX
         files = [(args.out, draft), (manifest_path, json.dumps(
             manifest_document(scenario, view, manifest, record_fp, args.out), ensure_ascii=False, indent=2) + "\n")]
@@ -4388,7 +4508,10 @@ def _run(args, lang):
     for path, text in files:
         if _read_bytes(path) != text.encode("utf-8"):
             die("%s was written but reads back different bytes; it is not the reviewed card" % path)
-    if mode == "draft":
+    if mode == "quick":
+        print("quick draft: %s (%s%s)" % (args.out, summary, ", %d warning(s)" % len(warnings) if warnings else ""))
+        print(_rm("quick_next", lang))
+    elif mode == "draft":
         print("draft: %s (%s%s)" % (args.out, summary, ", %d warning(s)" % len(warnings) if warnings else ""))
         print("manifest: %s (%d change(s) inside %d ring(s))" % (files[1][0], len(manifest.get("changes", [])),
                                                                 len(manifest.get("rings", []))))
@@ -4415,14 +4538,19 @@ def main(argv, png=False):
     that imports this module asks for it."""
     global _MSG_LANG
     ap = argparse.ArgumentParser(description="Build a scenario card from the template.")
-    ap.add_argument("--template", required=True, help="path to templates/scenario-card.html")
-    ap.add_argument("--scenario", required=True, help="JSON file describing the scenario")
+    ap.add_argument("--template", help="path to templates/scenario-card.html (required but for --critic-stamp)")
+    ap.add_argument("--scenario", help="JSON file describing the scenario (required but for --critic-stamp)")
     ap.add_argument("--out", help="path of the .html card to write (draft or final build)")
     ap.add_argument("--draft", action="store_true",
                     help="build the review draft (ribbon, meta tag, <out>.manifest.json) instead of the final card")
     ap.add_argument("--stamp", metavar="DRAFT",
                     help="mockup-reviewer only, after a PASS: print the review.mockup_reviewer stamp for this draft "
                          "(refused unless the draft and its manifest are what the record builds now); writes nothing")
+    ap.add_argument("--critic-stamp", metavar="RECORD",
+                    help="scenario-critic only, on PASS: validate RECORD and print its review.scenario_critic "
+                         "stamp; needs no --template, --scenario or card; writes nothing")
+    ap.add_argument("--quick", action="store_true",
+                    help="fast mode: build an unreviewed quick draft (no stamp needed, no manifest); never final")
     ap.add_argument("--check", metavar="CARD",
                     help="check that a delivered card file is byte for byte the reviewed final card; writes nothing")
     ap.add_argument("--lang", choices=("en", "tr"), default="en",
@@ -4431,12 +4559,18 @@ def main(argv, png=False):
                     help="final build: don't write card-<name>.png next to the card")
     args = ap.parse_args(argv)
     args.png = png and not args.no_png and not os.environ.get("ABTEST_NO_PNG")
-    modes = [m for m in (args.stamp, args.check) if m] + (["draft"] if args.draft else [])
+    if args.critic_stamp:
+        if args.template or args.scenario or args.out or args.draft or args.quick or args.stamp or args.check:
+            ap.error("--critic-stamp takes only the record (and --lang): drop the other options")
+    elif not (args.template and args.scenario):
+        ap.error("the following arguments are required: --template, --scenario")
+    modes = [m for m in (args.stamp, args.check) if m] + (["draft"] if args.draft else []) + \
+        (["quick"] if args.quick else [])
     if len(modes) > 1:
-        ap.error("--draft, --stamp and --check don't combine")
+        ap.error("--draft, --quick, --stamp and --check don't combine")
     if (args.stamp or args.check) and args.out:
         ap.error("--stamp and --check write nothing: drop --out")
-    if not (args.stamp or args.check) and not args.out:
+    if not (args.stamp or args.check or args.critic_stamp) and not args.out:
         ap.error("--out is required for a draft or a final build")
     _MSG_LANG = args.lang
     lang = args.lang
