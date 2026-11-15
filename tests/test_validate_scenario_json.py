@@ -242,7 +242,7 @@ class TestStructure(unittest.TestCase):
         self.assertEqual(sorted(SCHEMA["properties"]), sorted([
             "id", "title", "problem", "mechanism", "variable", "variants", "difference", "primary_kpi", "guardrail",
             "source", "adapted_from", "source_note", "evidence", "priority", "warnings", "invariants",
-            "numeric_change", "exposure", "assumptions", "review", "lang", "stage", "device", "market", "objection", "detail",
+            "numeric_change", "exposure", "assumptions", "must_be_true", "review", "lang", "stage", "device", "market", "objection", "detail",
             "card"]))
         self.assertIs(SCHEMA["additionalProperties"], False)
 

@@ -47,8 +47,8 @@ ERRORS (exit 1):
     "garanti eder" / "guaranteed"
   * claims (rules 8, 10), in every free-text field of the record (title,
     problem, mechanism, variable, variants, priority rationale, evidence
-    note, source_note, warnings, invariants, numeric_change, assumptions;
-    not detail, not card): no result ("test edildi", "kazandı", "proven",
+    note, source_note, warnings, invariants, numeric_change, assumptions,
+    must_be_true; not detail, not card): no result ("test edildi", "kazandı", "proven",
     "won" …) unless the evidence is the user's own data; no number tied to
     an outcome or chance word ("Dönüşüm %12 artar", "beklenen artış yüzde
     12", "win probability 70%", "doubles signups"), no other test's result
@@ -166,8 +166,21 @@ belong to agents/scenario-critic.
 
 FINGERPRINT: `--fingerprint <file>` validates the record and, when it has no
 errors, prints only record_fingerprint(): the sha256 of the record without its
-`review` and `card`, serialised with sorted keys. scenario-critic stamps that
-value into review.scenario_critic; build_card.py compares it before it builds.
+`review` and `card`, serialised with sorted keys. The critic's stamp itself is
+printed by `build_card.py --critic-stamp <record>`, which hashes the record
+without `review`, `card` and the small-fix fields build_card.py lists (a fix
+there keeps the stamp valid); build_card.py compares that stamp before it
+builds. Use --fingerprint to check that a record validates and to see its
+whole-record hash, --critic-stamp for review.scenario_critic.
+
+CHAT: `--chat <files>` prints, in the turn's order, what the chat takes from
+the records word for word: per scenario the title, the tag line with the score
+("Öncelik: Yüksek (7/9) · Kaynak: … · Kanıt: …"), the Neden line (the mechanism,
+when it fits 140 characters; otherwise stderr says to write it shorter), the
+must_be_true lines; after the list the Koşullu line (critical assumptions only),
+the pre-start line (compliance sign-off for a regulation warning, the
+accessibility check for an accessibility warning) and the stakeholder brief for
+scenario 1 from templates/stakeholder-brief.md with evidence.note as its why-now.
 
 Usage:
   validate_scenario_json.py <file.json> [more.json ...]
@@ -175,6 +188,7 @@ Usage:
   validate_scenario_json.py --lang en <file.json>        # messages in English (default: the record's lang)
   validate_scenario_json.py --schema templates/scenario.schema.json <file.json>
   validate_scenario_json.py --fingerprint <file.json>    # validate, then print only the fingerprint
+  validate_scenario_json.py --chat <a.json> [b.json ...]  # validate, then print the chat lines the records fix
 
 Exit: 0 = all valid, 1 = violations found, 2 = usage error.
 """
@@ -238,6 +252,7 @@ TYPES = {
 MAX_TITLE = 90
 MAX_TEXT = 240
 MAX_ASSUMPTION = 200  # assumptions[].text; load_schema() refuses maxLength, so it is checked here
+MAX_BELIEF = 160  # must_be_true.belief, the chat's "Doğru olmalı" line
 # The warning type a regulated-looking record must carry (rule 11).
 REGULATION = "regulation"
 
@@ -338,8 +353,30 @@ MSG = {
                          "{path}: {word!r} reads like a result or impact claim the code can't decide (a number near "
                          "an outcome word, or a vague magnitude); reviewer must judge: it stays only if it is an "
                          "observed figure or a hypothesis without a number (rules 8, 10)"),
+    "evidence_fact": ("{path}: {word!r} bir sonucu olgu gibi yazıyor; arşiv örüntüsü, sektör gözlemi ya da sezgi bir "
+                      "sonucu kanıtlamaz (sektör araştırması ancak kaynağıyla alıntılanır: “<kaynak> raporuna göre "
+                      "…”). Hipotez olarak yazın, ör. “Arşivde derlenmiş bir fikir: B’nin dönüşümü artırabileceği "
+                      "düşünülüyor, test sonucu değil.” (kural 8, 10)",
+                      "{path}: {word!r} states a result as fact; an archive pattern, an industry observation or "
+                      "intuition proves no result (a study is quoted only with its source: \"<source> reports …\"). "
+                      "Write it as a hypothesis, e.g. \"A curated archive idea: B may lift conversion; not a test "
+                      "result.\" (rules 8, 10)"),
+    "kpi_abbreviation": ("{path}: {name!r} sözlüğün {abbr} kısaltmasını taşıyor ama sözlükteki bir ad değil; kısaltma "
+                         "o adın tanımını ve paydasını çağırır. Sözlük adını yazın ({canon}) ya da kısaltmayı çıkarıp "
+                         "metriğe kendi adını verin (knowledge/kpi-glossary.md, kural 2)",
+                         "{path}: {name!r} carries the glossary abbreviation {abbr} but isn't a glossary name; the "
+                         "abbreviation calls up that name's definition and denominator. Write the glossary name "
+                         "({canon}) or drop the abbreviation and give the metric its own name "
+                         "(knowledge/kpi-glossary.md, rule 2)"),
+    "kpi_name_lang": ("{path}: {name!r} sözlükteki {other} adı; kayıt {lang} yazılır, {want!r} yazın (kural 7)",
+                      "{path}: {name!r} is the glossary's {other} name; the record is written in {lang}, write "
+                      "{want!r} (rule 7)"),
     "assumption_long": ("{path}: {n} karakter; bir varsayım en fazla {max} karakterlik tek cümledir",
                         "{path}: {n} characters; an assumption is one sentence of at most {max}"),
+    "belief_long": ("must_be_true.belief: {n} karakter; testin kazanması için doğru olması gereken tek inanç en fazla "
+                    "{max} karakterlik tek cümledir",
+                    "must_be_true.belief: {n} characters; the one belief the test needs is one sentence of at most "
+                    "{max}"),
     "assumption_question": ("{path}: kritik bir varsayım onu çözecek tek kısa soruyu taşır (turun tek sorusu en kritik "
                             "olanıdır, kural 19)",
                             "{path}: a critical assumption carries the one short question that settles it (the "
@@ -1166,7 +1203,14 @@ STATISTICS_DEFERRED_AFTER_RE = re.compile(
 OVERCLAIM_RE = re.compile(
     r"(?<!\w)(?:kanıtlanmış(?:tır)?|kanıtlandı|test\s+edilmiş(?:tir)?|test\s+edildi(?:ği)?|kazanmış(?:tır)?"
     r"|kazandı(?:ğı)?|işe\s+yaradığı\s+biliniyor|proven|tested(?!\s+(?:with|using|by|before|against|for)\b)"
-    r"|known\s+to\s+work|won)(?![\w'’])",
+    r"|known\s+to\s+work|won"
+    # a habitual win stated as fact ("yaygın kazanan bir uygulama", "commonly wins", "a known winner")
+    r"|(?:yaygın|genellikle|çoğunlukla|sıklıkla|çoğu\s+zaman|hep|sık\s+sık)\s+(?:olarak\s+)?kazan\w*"
+    r"|kazanan\s+(?:bir\s+)?(?:uygulama|örüntü|kalıp|fikir|yaklaşım|pratik)\w*"
+    r"|(?:commonly|usually|often|typically|consistently|reliably|always|generally)\s+(?:wins?|winning|won"
+    r"|lifts?|raises?|increases?|improves?|boosts?|outperforms?)"
+    r"|(?:a\s+)?(?:known|sure|safe|proven|reliable)\s+(?:winner|win|bet)|winning\s+(?:pattern|practice|idea|approach))"
+    r"(?![\w'’])",
     re.IGNORECASE)
 
 # ---- result and impact claims (rules 8 and 10; contract: methodology.md → Claims and evidence)
@@ -1874,6 +1918,7 @@ def claim_fields(scenario):
     for i, item in enumerate(_list(scenario.get("assumptions"))):
         if isinstance(item, dict):
             pairs += [("assumptions[%d].%s" % (i, key), item.get(key)) for key in ("text", "question")]
+    pairs += _belief_fields(scenario)
     return _strings(pairs)
 
 
@@ -2031,6 +2076,129 @@ def claim_exempt(scenario, kind, clause):
 
 
 CLAIM_MESSAGE = {"archive": "archive_claim", "similar": "similar_claim"}
+
+# An evidence note that states a result as fact ("dönüşümü iyileştiriyor", "lifts conversion") on evidence that
+# can't carry one. A Turkish outcome verb in an indicative or factive form (artırıyor, artırır, artırdı, artırdığı,
+# artıran), an English one in the present or past not after a modal, with a metric noun in the clause and no
+# hypothesis word. Read in evidence.note and source_note only: the mechanism says how B works, by design.
+TR_FACT_SUFFIX_RE = re.compile(r"^(?:[ıiuü]?yor|[aeıiuü]?r(?![ae]k|[ıiuü]n)(?!\s+m[ıiuü])|[dt][ıiuü](?:ğ|k|r|m|n|\W|$)"
+                               r"|m[ıiuü]ş|y?[ae]n(?!\w))", re.IGNORECASE)
+HYPOTHESIS_RE = re.compile(
+    r"(?<!\w)(?:hipotez\w*|düşünül\w*|varsay\w*|beklen\w*|öngörül\w*|olabil\w*|hypothes\w*|expect\w*|assum\w*"
+    r"|may|might|could|whether)(?!\w)", re.IGNORECASE)
+FACT_FIELDS = ("evidence.note", "source_note")
+
+
+def fact_claim(clause):
+    """The first outcome verb `clause` states as fact about a metric, or None."""
+    if not METRIC_NOUN_RE.search(clause) or HYPOTHESIS_RE.search(clause):
+        return None
+    for m in TR_OUTCOME_RE.finditer(clause):
+        stem, suffix = m.group(1).casefold(), m.group(2).casefold()
+        if stem == "art" and suffix.startswith("tır"):
+            stem, suffix = "artır", suffix[3:]
+        allowed = TR_ALLOWED_SUFFIX.get(stem)
+        if allowed is not None and not suffix.startswith(allowed):
+            continue
+        rest = suffix + clause[m.end():m.end() + 4]
+        if not TR_NEGATIVE_RE.match(suffix) and not suffix.startswith(("abil", "ebil")) \
+                and TR_FACT_SUFFIX_RE.match(rest) and not negated(clause, m.start(), m.end()):
+            return m.group(0)
+    for m in EN_OUTCOME_RE.finditer(clause):
+        word = m.group(1).casefold()
+        if (word in EN_PRESENT or word in EN_PAST) and not MODAL_BEFORE_RE.search(clause[:m.start()]) \
+                and not negated(clause, m.start(), m.end()):
+            return m.group(0)
+    return None
+
+
+def check_fact_claims(scenario, errors, lang="tr"):
+    """Rules 8 and 10: on archive, sector or intuition evidence, the note doesn't state a result as fact; a sector
+    study may, quoted with its source in the clause."""
+    level = _obj(scenario.get("evidence")).get("level")
+    if level not in ("archive", "sector", "intuition"):
+        return
+    for path, text in claim_fields(scenario):
+        if path not in FACT_FIELDS or claim_in(OVERCLAIM_RE, text) or text_claims(text)[0]:
+            continue  # check_claims reports that field already
+        for clause in CLAUSE_SPLIT_RE.split(text):
+            word = fact_claim(clause)
+            attributed = ATTRIBUTION_RE.search(clause) or ATTRIBUTION_PROPER_RE.search(clause)
+            if word and not (level == "sector" and attributed):
+                errors.append(msg(lang, "evidence_fact", path=path, word=word))
+                break
+
+
+# A glossary abbreviation in parentheses ("(CR)", "(RPV)") belongs to its glossary names.
+ABBREVIATION_RE = re.compile(r"\(([A-Z]{2,5})\)")
+_ABBREVIATIONS = []
+
+
+def glossary_abbreviations(lang="tr"):
+    """{abbreviation: [the canonical glossary names in `lang` that carry it]}."""
+    if not _ABBREVIATIONS:
+        found = {"tr": {}, "en": {}}
+        for canon, row in glossary_rows().items():
+            for key, labels in (("tr", [canon] + row["synonyms"]), ("en", row.get("english", []))):
+                for label in labels:
+                    for abbr in ABBREVIATION_RE.findall(label):
+                        names = found[key].setdefault(abbr, [])
+                        name = canon if key == "tr" else label
+                        if name not in names:
+                            names.append(name)
+        _ABBREVIATIONS.append(found)
+    return _ABBREVIATIONS[0]["en" if lang == "en" else "tr"]
+
+
+def kpi_name_language(name, lang):
+    """(the other language's label, the record language's name) when `name` is a glossary name written in the
+    other language, else None."""
+    canon = glossary_canonical(name)
+    row = glossary_rows().get(canon) if canon else None
+    if not row:
+        return None
+    key = fold_tr(_strip_window(name))
+    english = [fold_tr(_strip_window(e)) for e in row.get("english", [])]
+    turkish = [fold_tr(_strip_window(t)) for t in [canon] + row["synonyms"]]
+    if lang == "tr" and key in english and key not in turkish:
+        return "English", canon
+    if lang == "en" and key in turkish and key not in english and row.get("english"):
+        return "Turkish", row["english"][0]
+    return None
+
+
+def check_kpi_names(scenario, errors, lang="tr"):
+    """Rule 2: a glossary abbreviation is used only by the glossary names that carry it."""
+    abbreviations = glossary_abbreviations(scenario.get("lang") or "tr")
+    entries = [("primary_kpi", _obj(scenario.get("primary_kpi")).get("name"))]
+    guardrail = _obj(scenario.get("guardrail"))
+    if guardrail.get("kind") == "metric":
+        entries.append(("guardrail", guardrail.get("name")))
+    for path, name in entries:
+        if not isinstance(name, str) or glossary_canonical(name):
+            continue
+        for abbr in ABBREVIATION_RE.findall(name):
+            if abbr in abbreviations:
+                errors.append(msg(lang, "kpi_abbreviation", path=path, name=name, abbr="(%s)" % abbr,
+                                  canon=" / ".join(repr(n) for n in abbreviations[abbr])))
+                break
+
+
+def kpi_language_warnings(scenario, lang="tr"):
+    """A glossary KPI name written in the other language (rule 7): the record's own language name instead."""
+    out = []
+    record_lang = scenario.get("lang") or "tr"
+    names = [("primary_kpi.name", _obj(scenario.get("primary_kpi")).get("name")),
+             ("guardrail.name", _obj(scenario.get("guardrail")).get("name"))]
+    for path, name in names:
+        if isinstance(name, str):
+            hit = kpi_name_language(name, record_lang)
+            if hit:
+                other = hit[0] if lang == "en" else {"English": "İngilizce", "Turkish": "Türkçe"}[hit[0]]
+                in_lang = {"tr": ("Türkçe", "Turkish"), "en": ("İngilizce", "English")}[record_lang]
+                out.append(msg(lang, "kpi_name_lang", path=path, name=name, other=other, want=hit[1],
+                               lang=in_lang[1 if lang == "en" else 0]))
+    return out
 
 
 def check_claims(scenario, errors, lang="tr"):
@@ -2279,6 +2447,13 @@ def check_assumptions(scenario, errors, lang="tr"):
         errors.append(msg(lang, "assumption_high", text=critical))
 
 
+def check_belief(scenario, errors, lang="tr"):
+    """The "Doğru olmalı" belief stays one short sentence (the shape is the schema's)."""
+    belief = _obj(scenario.get("must_be_true")).get("belief")
+    if isinstance(belief, str) and len(belief.strip()) > MAX_BELIEF:
+        errors.append(msg(lang, "belief_long", n=len(belief.strip()), max=MAX_BELIEF))
+
+
 def check_numeric_change(scenario, errors, lang="tr"):
     """Rule 10: numeric_change says where its figure comes from, or a critical assumption holds the figure open."""
     text = scenario.get("numeric_change")
@@ -2310,6 +2485,7 @@ def check_statistics(scenario, errors, lang="tr"):
     pairs += [("invariants[%d]" % i, t) for i, t in enumerate(_list(scenario.get("invariants")))]
     pairs += [("assumptions[%d].%s" % (i, k), a.get(k)) for i, a in enumerate(_list(scenario.get("assumptions")))
               if isinstance(a, dict) for k in ("text", "question")]
+    pairs += _belief_fields(scenario)
     for path, text in _strings(pairs):
         hit = statistics_hit(text)
         if hit:
@@ -2547,6 +2723,9 @@ def validate(scenario, schema, lang="tr"):
         check_statistics(scenario, errors, lang)
         check_objection(scenario, errors, lang)
         check_assumptions(scenario, errors, lang)
+        check_fact_claims(scenario, errors, lang)
+        check_belief(scenario, errors, lang)
+        check_kpi_names(scenario, errors, lang)
         check_numeric_change(scenario, errors, lang)
         check_change(scenario, errors, lang)
         check_card(scenario, errors, lang)
@@ -2594,6 +2773,7 @@ def _bounded_fields(scenario):
     pairs.append(("priority.rationale", _obj(scenario.get("priority")).get("rationale")))
     pairs += [("warnings[%d].text" % i, w.get("text"))
               for i, w in enumerate(_list(scenario.get("warnings"))) if isinstance(w, dict)]
+    pairs.append(("must_be_true.probe", _obj(scenario.get("must_be_true")).get("probe")))
     return _strings(pairs)
 
 
@@ -2617,8 +2797,14 @@ def _text_fields(scenario):
         pairs += [("detail.%s[%d]" % (box, i), _item_text(item)) for i, item in enumerate(_list(detail.get(box)))]
     pairs += [("detail.kpis[%d]" % i, " ".join(str(k.get(f) or "") for f in ("name", "question", "denominator")))
               for i, k in enumerate(_list(detail.get("kpis"))) if isinstance(k, dict)]
-    pairs += _assumption_fields(scenario)
+    pairs += _assumption_fields(scenario) + _belief_fields(scenario)
     return _strings(pairs)
+
+
+def _belief_fields(scenario):
+    """must_be_true's belief and probe, when the record carries them."""
+    belief = _obj(scenario.get("must_be_true"))
+    return [("must_be_true.%s" % k, belief.get(k)) for k in ("belief", "probe")]
 
 
 def _assumption_fields(scenario):
@@ -2690,7 +2876,8 @@ def lint(scenario, schema=None, lang="tr", include_card=True):
             out.append(msg(lang, "title_long", n=len(title.strip()), max=MAX_TITLE))
         out.extend(title_kpi_warnings(title, _obj(scenario.get("primary_kpi")).get("name"), lang))
     for path, text in _strings([("problem", scenario.get("problem")), ("mechanism", scenario.get("mechanism"))]
-                               + _invariant_fields(scenario) + _assumption_fields(scenario)):
+                               + _invariant_fields(scenario) + _assumption_fields(scenario)
+                               + _belief_fields(scenario)):
         if text.strip() and sentence_count(text) > 1:
             out.append(msg(lang, "one_sentence", path=path, n=sentence_count(text)))
     for path, text in _bounded_fields(scenario):
@@ -2699,6 +2886,7 @@ def lint(scenario, schema=None, lang="tr", include_card=True):
 
     out.extend(claim_warnings(scenario, lang))
     out.extend(release_warnings(scenario, lang))
+    out.extend(kpi_language_warnings(scenario, lang))
     level = _obj(scenario.get("evidence")).get("level")
     if level in WEAK_EVIDENCE:
         for path, text in _strings([("problem", scenario.get("problem")), ("mechanism", scenario.get("mechanism")),
@@ -2808,6 +2996,122 @@ def print_fingerprint(path, schema, lang=None, strict=False):
     return 0
 
 
+# ---- the planned chat, printed from the records (--chat)
+#
+# The lines of a turn's chat that are a function of the record: the scenario
+# block (title, tag line with the score, Neden), the conditional and pre-start
+# lines after the list, and the stakeholder brief for scenario 1 with the
+# template's fixed wording. Copied as printed, they can't drift from the record.
+BRIEF_TEMPLATE = os.path.join(os.path.dirname(DEFAULT_SCHEMA), "stakeholder-brief.md")
+MAX_WHY = 140
+SOURCE_LABEL = {"archive": ("arşivden", "from archive"), "adapted": ("arşivden uyarlandı", "adapted from archive"),
+                "generated": ("bu sayfa için üretildi", "generated for this page")}
+EVIDENCE_LABEL = {"user_data": ("kendi verin", "your own data"), "archive": ("arşiv örüntüsü", "archive pattern"),
+                  "sector": ("sektör gözlemi", "industry observation"), "intuition": ("sezgi", "intuition")}
+GATES = ((REGULATION, ("B’nin metnine uyum onayı", "compliance sign-off on B's exact copy")),
+         ("accessibility", ("erişilebilirlik kontrolü", "accessibility check")))
+CHAT_WORDS = {
+    "tag": ("{prio} · Kaynak: {src} · Kanıt: {ev}", "{prio} · Source: {src} · Evidence: {ev}"),
+    "why": ("Neden: {text}", "Why: {text}"),
+    "belief": ("Doğru olmalı: {text}", "Must be true: {text}"),
+    "probe": ("Önce yokla: {text}", "Probe first: {text}"),
+    "conditional": ("Koşullu ({n}): {items}.", "Conditional ({n}): {items}."),
+    "gates": ("Başlamadan önce: {items}.", "Pre-start gates: {items}."),
+    "gates_none": ("Başlamadan önce: yok.", "Pre-start gates: none."),
+    "for": ("{n} için {what}", "for {n}: {what}"),
+    "and": (" ve ", " and "),
+    "why_long": ("{file}: mechanism {n} karakter; Neden satırı en çok {max} karakter, onu kısaltarak kendiniz yazın",
+                 "{file}: mechanism is {n} characters; the Why line is at most {max}, write it shorter yourself"),
+}
+
+
+def _cw(key, lang, **kw):
+    pair = CHAT_WORDS[key]
+    return (pair[1] if lang == "en" else pair[0]).format(**kw)
+
+
+def _bare(text):
+    return text.strip().rstrip(".").strip()
+
+
+def brief_lines(note, n, lang="tr", path=BRIEF_TEMPLATE):
+    """The stakeholder brief for scenario `n`, the template's block in `lang` with `note` as why now."""
+    try:
+        with open(path, encoding="utf-8") as fh:
+            blocks = re.findall(r"```\n(.*?)```", fh.read(), re.S)
+    except OSError:
+        return []
+    block = next((b for b in blocks if ("Why now" in b) == (lang == "en")), None)
+    if block is None:
+        return []
+    block = block.replace("<n>", str(n)).replace("<what the evidence rests on>", _bare(note or ""))
+    return block.rstrip("\n").split("\n")
+
+
+def chat_lines(records, lang="tr"):
+    """(lines to print, notes for stderr) for the turn's records, in order."""
+    lines, notes = [], []
+    conditional, gates = [], []
+    many = len(records) > 1
+    for i, (path, sc) in enumerate(records, 1):
+        idx = 1 if lang == "en" else 0
+        lines.append("**%d. %s**" % (i, sc.get("title", "").strip()))
+        lines.append(_cw("tag", lang, prio=priority_tag(sc, lang),
+                         src=SOURCE_LABEL.get(sc.get("source"), ("?", "?"))[idx],
+                         ev=EVIDENCE_LABEL.get(_obj(sc.get("evidence")).get("level"), ("?", "?"))[idx]))
+        why = (sc.get("mechanism") or "").strip()
+        if len(why) <= MAX_WHY:
+            lines.append(_cw("why", lang, text=why))
+        else:
+            notes.append(_cw("why_long", lang, file=path, n=len(why), max=MAX_WHY))
+        belief = _obj(sc.get("must_be_true"))
+        if belief:
+            lines.append(_cw("belief", lang, text=belief.get("belief", "").strip()))
+            lines.append(_cw("probe", lang, text=belief.get("probe", "").strip()))
+        lines.append("")
+        for a in _list(sc.get("assumptions")):
+            if isinstance(a, dict) and a.get("type") == "critical":
+                conditional.append(("%d: " % i if many else "") + _bare(a.get("text", "")))
+        kinds = {w.get("type") for w in _list(sc.get("warnings")) if isinstance(w, dict)}
+        mine = [g[1][idx] for g in GATES if g[0] in kinds]
+        if mine:
+            what = _cw("and", lang).join(mine)
+            gates.append(_cw("for", lang, n=i, what=what) if many else what)
+    if conditional:
+        lines.append(_cw("conditional", lang, n=len(conditional), items="; ".join(conditional)))
+    lines.append(_cw("gates", lang, items="; ".join(gates)) if gates else _cw("gates_none", lang))
+    lines.append("")
+    lines += brief_lines(_obj(records[0][1].get("evidence")).get("note"), 1, lang)
+    return lines, notes
+
+
+def print_chat(paths, schema, lang=None):
+    """--chat: validate every record, then print the chat lines that come from them (stdout) and what to write by
+    hand (stderr). Nothing is printed on stdout while any record has an error."""
+    records, failed = [], False
+    for path in paths:
+        doc, invalid = read_json(path, lang or file_lang(path))
+        if invalid:
+            sys.stderr.write(invalid + "\n")
+            failed = True
+            continue
+        rlang = lang or record_lang(doc)
+        errors = validate(doc, schema, rlang)
+        if errors:
+            sys.stderr.write(msg(rlang, "file_errors", file=path, n=len(errors)) + "\n")
+            sys.stderr.writelines("  - %s\n" % err for err in errors)
+            failed = True
+            continue
+        records.append((path, doc))
+    if failed:
+        return 1
+    out_lang = lang or record_lang(records[0][1])
+    lines, notes = chat_lines(records, out_lang)
+    print("\n".join(lines))
+    sys.stderr.writelines("  ~ %s\n" % n for n in notes)
+    return 0
+
+
 def main(argv):
     ap = argparse.ArgumentParser(description="Validate scenario records against the schema.")
     ap.add_argument("files", nargs="*", help="scenario JSON file(s)")
@@ -2817,6 +3121,9 @@ def main(argv):
                     help="message language (default: each record's own lang, else tr)")
     ap.add_argument("--fingerprint", metavar="FILE",
                     help="validate FILE, then print only its record fingerprint (refused when it has errors)")
+    ap.add_argument("--chat", action="store_true",
+                    help="validate the files, then print the chat lines they determine (tag line with the score, "
+                         "Neden, Koşullu, Başlamadan önce, the stakeholder brief for scenario 1)")
     args = ap.parse_args(argv)
     lang = args.lang or "tr"  # usage and schema messages; each record's own messages follow record_lang()
     if args.fingerprint and args.files:
@@ -2839,6 +3146,8 @@ def main(argv):
             return 2
     if args.fingerprint:
         return print_fingerprint(args.fingerprint, schema, args.lang, args.strict)
+    if args.chat:
+        return print_chat(args.files, schema, args.lang)
 
     total_errors = total_warnings = 0
     langs = set()
