@@ -109,7 +109,11 @@ class TestCriticIdeaQuality(unittest.TestCase):
         section = self.critic.split("## Set-level checks")[1].split("## Verdict")[0]
         self.assertIn("**Idea diversity.**", section)
         self.assertIn("one objection lens", section)
-        self.assertIn("impact ranking", section)
+        # Owner decision (3.4): diversity is across objection lenses only; no
+        # "higher impact tier" requirement (the big-swing idea is postponed).
+        diversity = section.split("**Idea diversity.**", 1)[1].split("\n- ", 1)[0]
+        self.assertNotIn("impact ranking", diversity)
+        self.assertNotIn("higher tier", diversity)
         self.assertIn("Explicit asks are exempt", section)
 
     def test_paste_test_asks_for_an_observed_element(self):

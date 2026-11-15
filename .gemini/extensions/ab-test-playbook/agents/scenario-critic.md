@@ -67,7 +67,7 @@ Code refuses a number tied to an outcome or chance word and experiment-result ph
 
 - More than three records without the user asking for more → FIX: keep the top three by priority.
 - Two records resting on the same behavioural mechanism → FIX on both: merge, or keep the stronger.
-- **Idea diversity.** Two or more of the playbook's own records all on one objection lens, or all at one tier of the impact ranking (`The idea-generation lens`; e.g. three added copy lines), while the page context shows a candidate on another lens or a higher tier → FIX on the weakest: name the candidate to replace it with. Explicit asks are exempt; nothing is padded to look varied (rule 9).
+- **Idea diversity.** Two or more of the playbook's own records all on one objection lens (`The idea-generation lens`), while the page context shows a candidate on another lens → FIX on the weakest: name the candidate to replace it with. Explicit asks are exempt; nothing is padded to look varied (rule 9).
 - Order (rule 9): explicit asks first, in the order asked, then the playbook's own candidates by priority, those acting on the stated problem first; otherwise → FIX: reorder.
 - Two records on the same screen, flow or decision without the order line (item 16), or with the siblings repeated in the setup notes → FIX on both (`Concurrent tests`).
 - A tested variable from the history repeated in the set without its reason → FIX (item 15).

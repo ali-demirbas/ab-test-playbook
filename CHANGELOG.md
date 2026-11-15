@@ -56,6 +56,8 @@ All notable changes to this project are documented here. Format loosely follows 
 - A record saved under 3.2 lacks `priority.inputs.impact` and fails validation. Start it again from `new_record.py`, or add `impact` as the validator's message says and recheck the tier against the new bands.
 - Critic stamps written under 3.2 are void, since the stamp now records what the critic reviewed. Each record needs one new critic pass before its card is rebuilt.
 
+- `build_card.py` messages moved to `scripts/card_messages.py`, keeping every shipped file under the directory's 256 KB limit.
+
 ## 3.3.0 - 2026-11-15 (not released separately; shipped in 3.4.0)
 
 ### First impression

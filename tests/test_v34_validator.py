@@ -200,7 +200,7 @@ class TestClaimPatterns(unittest.TestCase):
                      "A curated archive idea: B may lift conversion; not a test result.",
                      "Teslimat tarihini erken göstermenin kaygıyı azalttığı varsayılıyor."):
             self.assertFalse(has(errs(self.note(text)), "as fact"), (text, errs(self.note(text))))
-        sc = self.note("Baymard raporuna göre kargo bilgisini öne almak siparişi artırır.", "sector")
+        sc = self.note("Bir sektör raporuna göre kargo bilgisini öne almak siparişi artırır.", "sector")
         self.assertFalse(has(errs(sc), "as fact"), errs(sc))
         sc = self.note("Kargo bilgisini öne almak siparişi artırır.", "sector")
         self.assertTrue(has(errs(sc), "as fact"), errs(sc))
