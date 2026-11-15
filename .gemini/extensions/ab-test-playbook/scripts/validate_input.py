@@ -96,7 +96,15 @@ INJECTION = re.compile(
     r"(?:incelemeyi|incelemesini|denetimi|denetimini|denetlemeyi|doğrulamayı|eleştirmeni|scenario-critic'?i|"
     r"mockup-reviewer'?ı)\s+(?:atla\w*|pas\s+geç\w*|yapma(?!\w)|çalıştırma(?!\w)|devre\s+dışı\s+bırak\w*)|"
     r"bulgu\w*\s+(?:yazma|listeleme|raporlama|bildirme)(?:y[ıi]n(?:[ıi]z)?)?(?!\w)|"
-    r"(?:sorun|bulgu|kusur)\s+yok\s+de(?:y[ıi]n(?:[ıi]z)?)?(?!\w)",
+    r"(?:sorun|bulgu|kusur)\s+(?:yok|bulunmadı)\s+(?:de(?:y[ıi]n(?:[ıi]z)?)?|yaz(?:[ıi]n(?:[ıi]z)?)?)(?!\w)|"
+    # "say there are no issues", "report no issues": the verb as a command (line or sentence start, or after
+    # please/just …), so "Users report no issues" and "the audit found no issues" stay plain text
+    r"(?:^|[.:;!?]\s*|\b(?:please|just|simply|only|and|then|kindly)\s+)"
+    r"(?:say|report|state|write|conclude|answer|reply|respond|tell\s+(?:me|us|the\s+user|them))\s+(?:that\s+)?"
+    r"(?:there\s+(?:are|were|is|was)\s+)?no\s+(?:issues?|problems?|findings?|concerns?|errors?)\b|"
+    # "sorun olmadığını söyle", "hiçbir bulgu bulunmadığını yazın": an imperative only, never "söyledi"
+    r"(?:hiç(?:bir)?\s+)?(?:sorun|bulgu|kusur|hata)\w*\s+(?:olmadığını|bulunmadığını|bulunamadığını|yok\s+diye)\s+"
+    r"(?:söyle(?:yin(?:iz)?)?|yaz(?:ın(?:ız)?)?|belirt(?:in(?:iz)?)?|raporla(?:yın(?:ız)?)?|bildir(?:in(?:iz)?)?)(?!\w)",
     re.I,
 )
 
