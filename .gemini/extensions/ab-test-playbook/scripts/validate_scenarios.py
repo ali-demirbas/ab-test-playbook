@@ -41,17 +41,19 @@ Denetlenen kurallar (CLAUDE.md ve knowledge/methodology.md'den):
  16. Değişken satırının altında `Etiket: id=… · mercek=… · düzey=… · sektör=… ·
      pazar=… · emek=… · durum=… · tarih=YYYY-AA` satırı: anahtarlar bu sırada,
      değerler izinli listeden; id arşivde benzersiz (knowledge/scenarios/FORMAT.md).
- 17. Etiket satırının altında `EN: <English title>?` satırı; İngilizce başlık
-     arşivde benzersiz, Türkçeye özgü harf taşımaz. İsteğe bağlı `EN-Variable:`.
- 18. Varsa `### EN` sonrası İngilizce gövde: EN-Variable satırı, giriş paragrafı,
+ 17. Etiket satırının altında `EN: <English title>?` ve `EN-Variable: …` satırları;
+     İngilizce başlık arşivde benzersiz, ikisi de Türkçeye özgü harf taşımaz.
+ 18. Her blokta `### EN` sonrası İngilizce gövde (zorunlu): giriş paragrafı,
      Türkçe kutularla aynı sayıda maddeli What to test / KPIs to track / What not
      to do kutuları, sözlüğün English name sütunundan birincil KPI, “must not”
-     guardrail, çevrilmiş notlar, İngilizce başlıkla çözülen atıflar.
+     guardrail, çevrilmiş notlar, İngilizce başlıkla çözülen atıflar; İngilizce
+     gövdede Türkçeye özgü harf (ğ ş ı İ) yok.
  19. Senaryo metninde iç kural numarası (“kural 6”, “rule 11”) yok; kuralın kendisi
      yazılır.
  20. Birincil KPI’ın sözlükteki paydası kollar arasında değişemez; sözlük satırı
      guardrail için atanan paydalı bir karşılık adlandırıyorsa (Teklif → Sözleşme →
      Sözleşme Oranı (30 gün)) guardrail o karşılıkla yazılır.
+ 21. Blokta uzun tire (—) yok; yerine virgül, noktalı virgül ya da ayrı cümle.
  FORMAT.md gibi büyük harfli dosyalar senaryo içermez ve denetlenmez;
  `--next-id <dosya>` sıradaki boş kimliği basar.
 
@@ -72,8 +74,9 @@ Uyarılar (çıkış kodunu etkilemez; sonda “Uyarı sayısı: N” satırı b
     da), biri diğerine “… senaryosundan farkı” atfı vermiyorsa.
   - “Sonraki test:” maddesi kazananın yerini soruyor (“yeri”, “konumu”): her öğeye
     yapıştırılabilen bir kalıp, senaryonun kazanan varyantı üstüne kurulmuyor.
-  - knowledge/kpi-glossary.md varsa: sözlükte kanonik adı olmayan birincil KPI
-    sayısı da basılır (kural 15'in hataları; --verbose ile liste).
+  - knowledge/kpi-glossary.md varsa: birincil KPI’ların kaçının sözlükte kanonik
+    adla yazıldığı da basılır (“217/217”); kanonik olmayanlar kural 15'in
+    hatalarıdır, --verbose ile liste.
 
 SINIR: Bu araç bir BİÇİM denetçisidir, anlam denetçisi değildir. Etiketi anlamlı
 görünen ama içeriği boş maddeler, birbirinin sonuna tek kelime eklenmiş
@@ -105,6 +108,7 @@ NEXT_TEST_LABEL = "- Sonraki test:"
 GENERIC_NEXT_TEST = re.compile(r"\b(?:yeri|konumu|yerleşimi)\b", re.IGNORECASE)
 # Senaryo metninde iç kural numarası (kural 6, rule 11) kullanıcıya dönük metne
 # sızar; kuralın kendisi yazılır.
+EM_DASH = "\u2014"
 RULE_NUMBER = re.compile(r"\b(?:kural(?:ı|a|da|ın)?|rule)\s+\d+", re.IGNORECASE)
 # Guardrail = "bozulmaması gereken" bir metrik. Yalnızca "…melidir" eki yetmez:
 # "Müşteri memnun kalmalıdır" bir hedeftir, guardrail değil. Olumsuzlama şart.
@@ -365,8 +369,8 @@ def parse_variable_line(body):
 #   Değişken: … · Fark: …
 #   Etiket: id=cc-001 · mercek=… · düzey=… · sektör=… · pazar=… · emek=… · durum=… · tarih=YYYY-MM
 #   EN: <English title>
-#   EN-Variable: <English variable>        (isteğe bağlı; tam çeviriyle gelir)
-# Tam çeviri bloğun sonunda “### EN” satırından sonra gelir (FORMAT.md).
+#   EN-Variable: <English variable>
+# İngilizce gövde (zorunlu) bloğun sonunda “### EN” satırından sonra gelir (FORMAT.md).
 
 TAG_PREFIX = "Etiket:"
 EN_TITLE_PREFIX = "EN:"
@@ -521,7 +525,13 @@ def check_metadata(filename, title, body, glossary=None):
         m = FRESHNESS_NOTE.match(line)
         if m and not DATE_RE.match(m.group("date")):
             errors.append(f"{where}: güncellik notunun tarihi ‘{m.group('date')}’ geçersiz (YYYY-AA)")
-    if en_body is not None:
+    if en_body is None:
+        errors.append(f"{where}: İngilizce gövde yok; her blok, Türkçe gövdeden sonra yalnız ‘### EN’ yazan bir "
+                      f"satır ve onun altında giriş paragrafı, What to test / KPIs to track / What not to do "
+                      f"kutuları ve notlarla Türkçenin paralel çevirisini taşır"
+                      + ("" if en_variable is not None else "; başlık bloğuna ‘EN-Variable: …’ satırı da eklenir")
+                      + " (FORMAT.md → English)")
+    else:
         errors.extend(f"{where}: {e}" for e in en_body_problems(tr_part, en_body, en_variable, glossary))
     return tags, en_title, errors
 
@@ -531,6 +541,10 @@ def en_body_problems(tr_part, en_body, en_variable, glossary=None):
     out = []
     if en_variable is None:
         out.append("İngilizce gövde var ama başlık bloğunda ‘EN-Variable: …’ satırı yok")
+    leftovers = [line.strip() for line in en_body.split("\n") if TURKISH_ONLY.search(line)]
+    if leftovers:
+        out.append(f"İngilizce gövdede Türkçe harf var, çevrilmemiş metin olabilir ({len(leftovers)} satır) → "
+                   f"{leftovers[0][:60]}")
     paras = [p for p in en_body.split("\n\n") if p.strip()]
     if not paras or paras[0].lstrip().startswith(("**", "- ", ">")):
         out.append("İngilizce gövde bir giriş paragrafıyla başlamıyor (Türkçe girişin çevirisi)")
@@ -673,6 +687,10 @@ def check_scenario(filename, title, body, glossary=None):
             # ("Kaç rozet optimum? (1 / 3 / 5)"), o yüzden soru işareti sonda olmak zorunda değil.
             if not re.match(r"^- [^:\n]{2,}:\s*\S[^?]*\?", item):
                 errors.append(f"{where}: test maddesi 'Etiket: soru?' biçiminde değil → {item[:45]}")
+
+    dashes = sum(1 for line in body.split("\n") if EM_DASH in line)
+    if dashes:
+        errors.append(f"{where}: {dashes} satırda uzun tire (—) var; virgül, noktalı virgül ya da ayrı cümle yazın")
 
     hits = sorted({m.group(0) for m in RULE_NUMBER.finditer(body)})
     if hits:
@@ -1136,17 +1154,23 @@ def main(argv=None):
         print()
 
     if glossary is not None:
-        missing = []
+        # Kural 15'in özeti: hatalar sorun listesinde ayrıca yazılır; bu satır yalnızca sayar.
+        missing, primaries = [], 0
         for name, title, body in scenarios:
             kpis = box_items(body, KPI_BOX)
             if not kpis:
                 continue
+            primaries += 1
             status = glossary_status(kpi_label(kpis[0]), glossary)
             if status != "canonical":
                 hint = f" → kanonik ad: {status.split(':', 1)[1]}" if status.startswith("synonym:") else ""
                 missing.append(f"{name} → {title[:40]}: {kpi_label(kpis[0])}{hint}")
-        print(f"KPI sözlüğü: {len(glossary)} kanonik ad; {len(missing)}/{total} birincil KPI sözlükte kanonik ad olarak yok "
-              f"(hata{'' if args.verbose or not missing else '; liste için --verbose'}).")
+        line = (f"KPI sözlüğü: {len(glossary)} kanonik ad; {primaries - len(missing)}/{primaries} birincil KPI "
+                f"sözlükte kanonik adla yazılmış")
+        if missing:
+            line += (f"; {len(missing)} tanesi sözlükte yok ya da eş anlamlı (hata"
+                     f"{'' if args.verbose else '; liste için --verbose'})")
+        print(line + ".")
         if args.verbose:
             for m in missing:
                 print(f"  - {m}")
