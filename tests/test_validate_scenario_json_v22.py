@@ -422,7 +422,7 @@ class TestRegulation(unittest.TestCase):
 
     def test_every_contract_word_is_read(self):
         words = ("insurance", "pension", "credit", "loan", "consent", "KVKK", "sigorta", "emeklilik", "BES", "kredi",
-                 "poliçe", "rıza", "onay")
+                 "poliçe", "rıza", "pazarlama onayı", "abonelik iptali", "kişisel veri", "privacy")
         for word in words:
             sc = base()
             sc["mechanism"] = "Adımda %s metni kısalınca kullanıcı devam eder." % word

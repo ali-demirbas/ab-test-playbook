@@ -95,7 +95,9 @@ ERRORS (exit 1):
     an interactive or functional element (coupon, payment, search, form …)
     needs `invariants`; a regulated-looking record (stage, title, problem,
     mechanism or variants mention insurance, pension, credit, loan, consent,
-    KVKK, sigorta, emeklilik, BES, kredi, poliçe, rıza, onay) needs a
+    KVKK, sigorta, emeklilik, BES, kredi, poliçe, rıza, onay in its consent
+    sense ("pazarlama onayı", not "onay ekranı"), a subscription cancellation
+    or data-purpose copy: a privacy note, "kişisel veri", "unsubscribe") needs a
     'regulation' warning; urgency or scarcity wording in B or the mechanism
     needs a 'regulation' warning that names the real data source ("stok",
     "envanter", "gerçek", "inventory", "verified", "real")
@@ -802,9 +804,16 @@ CHECK_NAME_RE = re.compile(r"kontrol|denetim|geçti\s*/\s*kaldı|\bcheck\b|pass\
 COMPLETE_RE = re.compile(r"tamamlama|dönüşüm|kayıt|geçiş|ilerleme|ulaşma|completion|conversion|proceed|progression",
                          re.IGNORECASE)
 ABANDON_RE = re.compile(r"terk\s+oran|abandon", re.IGNORECASE)
+# "onay" alone is also a confirmation ("onay ekranı", "Siparişi onayla", "sipariş onayı"): only its consent
+# sense counts ("pazarlama onayı", "ticari ileti onayı", "KVKK onayı", "onay metni"). Subscription
+# cancellation and data-purpose copy (a privacy note, "No spam, unsubscribe anytime") are legally bound too.
 REGULATED_RE = re.compile(
-    r"sigorta|emeklilik|kredi(?!\s+kart)|poliçe|\brıza|\bonay|insurance|pension|\bcredit\b(?!\s+card)|\bloan"
-    r"|consent|KVKK", re.IGNORECASE)
+    r"sigorta|emeklilik|kredi(?!\s+kart)|poliçe|\brıza|insurance|pension|\bcredit\b(?!\s+card)|\bloan"
+    r"|consent|KVKK"
+    r"|(?<!\w)(?:pazarlama|ileti\w*|iletişim|veri\w*|açık|çerez\w*|izin)\s+onay\w*|(?<!\w)onay\s+metn\w*"
+    r"|(?<!\w)abonel(?:ik|iğ)\w*\s+iptal\w*|\bcancel\w*\s+(?:(?:a|the|your|their)\s+)?subscriptions?\b"
+    r"|\bsubscription\s+cancel\w*|(?<!\w)aydınlatma\s+metn\w*|(?<!\w)kişisel\s+veri\w*|(?<!\w)gizlilik\w*"
+    r"|\bprivacy\b|\bpersonal\s+data\b|\bunsubscrib\w*|(?<!\w)abonelikten\s+çık\w*", re.IGNORECASE)
 REGULATED_CASED_RE = re.compile(r"\bBES\b")
 # Mockup text holds every button and line of the screen, so a generic "onay" ("Siparişi onayla") would make any
 # checkout look regulated: the mockup is read only for the strong signals below. A heuristic like the rest.
