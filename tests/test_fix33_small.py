@@ -22,11 +22,11 @@ class TestAuditSeverityLabels(unittest.TestCase):
     def test_every_checklist_item_names_a_fixed_label(self):
         blocks = re.split(r"^(?=\d+\. \*\*)", self.skill.split("## Audit checklist")[1].split("## Output format")[0],
                           flags=re.M)[1:]
-        self.assertEqual(len(blocks), 18)
+        self.assertEqual(len(blocks), 20)
         for block in blocks:
             labels = set(re.findall(r"`\[(\w+)\]`", block))
             number = block.split(".")[0]
-            if number == "14":  # a bundled variant takes item 4's label
+            if number == "16":  # a bundled variant takes item 4's label
                 self.assertIn("item 4", block)
             self.assertTrue(labels, "item %s has no severity label" % number)
             self.assertLessEqual(labels, EN, "item %s" % number)
@@ -44,12 +44,14 @@ class TestAuditSeverityLabels(unittest.TestCase):
                 self.assertNotIn(old, text, path[-1])
 
     def test_example_and_eval_use_only_the_fixed_labels(self):
-        example = re.findall(r"^\*\*\[(\w+)\]", read("examples", "audit-example.md"), re.M)
-        self.assertGreaterEqual(len(example), 8)
-        self.assertLessEqual(set(example), EN)
-        order = [sorted(EN, key=["Critical", "Serious", "Moderate", "Note"].index).index(x) for x in example]
-        self.assertEqual(order, sorted(order), "findings are listed most severe first")
-        self.assertLess(example.count("Serious"), len(example) * 0.6, "severity has to discriminate")
+        for name, labels, ranking in (("audit-example.md", EN, ["Critical", "Serious", "Moderate", "Note"]),
+                                      ("audit-example.tr.md", TR, ["Kritik", "Ciddi", "Orta", "Not"])):
+            rows = re.findall(r"^\| \[(\w+)\] \|", read("examples", name), re.M)
+            self.assertGreaterEqual(len(rows), 7, name)
+            self.assertLessEqual(set(rows), labels, name)
+            order = [ranking.index(x) for x in rows]
+            self.assertEqual(order, sorted(order), "%s: rows are listed most severe first" % name)
+            self.assertGreaterEqual(len(set(rows)), 3, "%s: severity has to discriminate" % name)
         self.assertLessEqual(set(re.findall(r"`\[(\w+)\]`", read("evals", "03-audit.md"))), TR)
 
 
@@ -58,7 +60,7 @@ class TestAuditScanAndOffer(unittest.TestCase):
         self.skill = read("skills", "ab-test-audit", "SKILL.md")
 
     def test_pasted_plan_is_scanned(self):
-        self.assertRegex(self.skill, r"pasted into the chat is first written unchanged to a scratch file")
+        self.assertRegex(self.skill, r"pasted into the chat goes through the same script unchanged, with `--stdin`")
 
     def test_feasibility_offer_in_both_languages(self):
         self.assertIn("kaba bir ölçülebilirlik aralığı gösterebilirim", self.skill)

@@ -3,7 +3,7 @@
 What `/ab-test audit` returns for a plan with most of the common faults in it at
 once. The plan is fictional. The audit reviews the proposal itself (UX, CRO,
 methodology, ethics, privacy, regulation, accessibility and feasibility); it
-doesn't read the plan's numbers.
+doesn't read the plan's numbers. Turkish version: [`audit-example.tr.md`](audit-example.tr.md).
 
 ## The plan the user brought
 
@@ -23,78 +23,58 @@ Shared as a file, `plan.md`:
 The file is scanned before it is read (CLAUDE.md rule 18):
 
 ```bash
-python3 scripts/validate_input.py plan.md
+python3 scripts/validate_input.py --lang en plan.md
 ```
 
 Nothing instruction-shaped in it, so it is audited as data.
 
 ## What the audit says
 
-Each finding carries the fixed label its checklist item gives (`[Critical]`,
-`[Serious]`, `[Moderate]`, `[Note]`; Turkish `[Kritik]`, `[Ciddi]`, `[Orta]`,
-`[Not]`), most severe first.
+The table comes first, most severe first, each row with the fixed label its
+checklist item gives (`[Critical]`, `[Serious]`, `[Moderate]`, `[Note]`;
+Turkish `[Kritik]`, `[Ciddi]`, `[Orta]`, `[Not]`). Details follow only for the
+critical rows, and the fixed plan closes the audit.
 
-**[Critical] Two variables in one variant.** B adds the banner *and* rewrites
-the hero button. Any difference can't be attributed to either. Fix: keep the
-button copy identical in both arms; test the copy separately.
+| Severity | Finding | Fix |
+|---|---|---|
+| [Critical] | B also rewrites the hero button | Keep "Shop now" in both arms; test the copy separately |
+| [Critical] | "Banner clicks / banner views" exists only in B | Count both arms over everyone who reached the homepage |
+| [Serious] | No hypothesis | The sentence in the fixed plan |
+| [Serious] | Banner clicks stand in for orders | Orders per homepage visitor as primary; clicks a diagnostic |
+| [Serious] | Cart abandonment sits inside that primary | Guard returns, the harm a free-returns promise can cause |
+| [Serious] | The tappable banner has no accessibility check | A pass/fail check on B before traffic |
+| [Serious] | The winning segment is picked after the fact | Name the breakdowns before launch |
+| [Moderate] | Nothing says what would invalidate the test | The "Held constant" line below |
 
-**[Critical] Different denominators.** "Banner clicks / banner views" exists
-only in B, since A has no banner, so the two arms are not measured on the same
-population. Fix: measure both arms over everyone who reached the homepage.
+**Decision: it cannot start as designed; it can start with the fixed plan.**
 
-**[Serious] The primary metric is a mid-funnel proxy.** Banner clicks can rise
-while orders stay flat. The change is meant to reduce returns anxiety before
-purchase, so the primary is orders (or revenue) per homepage visitor; banner
-clicks stay as a diagnostic.
+**B also rewrites the hero button.** A difference could come from either
+change, so neither can be credited.
+**"Banner clicks / banner views" exists only in B.** A has no banner, so the
+arms are measured on different populations.
 
-**[Serious] No hypothesis.** The plan never says why a returns banner would
-change behavior. Suggested: "Showing free 30-day returns on the homepage
-answers the fit objection (what if it doesn't fit?) earlier, so more visitors
-start shopping; we'd learn whether returns anxiety blocks first purchases."
+To verify: free 30-day returns are the store's real policy in the target
+market; the tag hides the page until assignment and logs exposure apart from
+it; no other test runs on the homepage.
 
-**[Serious] The winner is picked by segment after the fact.** "Ship to whichever of mobile,
-desktop, new or returning wins" chooses the breakdown once results are in. Name the
-breakdowns you will look at before launch (device and new vs returning are the
-usual pair). Which segment wins, and whether to ship, is decided in your testing
-tool, not in this playbook.
+Of the 20 headings checked, clean: Targeting and measurement scope, Exposure
+point, Ethics, protections and regulation, Privacy, Setup hygiene, Multivariate
+plans, Selective attrition, History.
 
-**[Serious] The guardrail isn't an independent harm.** Once the primary is
-orders per homepage visitor, cart abandonment is a step that primary already
-contains: it can't degrade while the primary improves. A free-returns promise
-has an obvious cost the primary can't see: returns. Proposal (to confirm):
-"Return rate within 30 days of delivery (per order) must not rise", with the
-window written into the KPI's name.
+Not checked: the day-5 counts, the "significant" claim, the 50/50 split and the
+7-day duration. This playbook proposes, designs, audits and visualizes A/B
+tests. It doesn't analyze results or compute sample size, duration,
+significance or a winner; use your testing tool's own reporting for that.
+If you share your baseline conversion rate and eligible visitors, I can show a rough detectable range.
 
-**[Serious] No accessibility check.** B adds a tappable banner. It needs a
-pass/fail check on B before launch (keyboard and screen-reader reachable, an
-accessible name, touch target size, contrast), not a metric.
+**Fixed plan**
+- Variable: a "Free returns for 30 days" banner under the hero.
+- A: the current homepage, button "Shop now".
+- B: the same page plus the banner; the button still reads "Shop now".
+- Hypothesis: free 30-day returns shown before shopping answer the fit objection, so more visitors order; we'd learn whether returns anxiety blocks first purchases.
+- Primary KPI: Conversion rate (CR), orders per assigned homepage visitor, counted from homepage load in both arms (banner clicks: a B-only diagnostic).
+- Guardrail: Return rate (30 days), per order, must not rise.
+- Held constant: the hero, the button copy, prices; a second change or an overlapping homepage test invalidates it.
+- Before you start: the accessibility check on the banner (keyboard, a screen-reader name, a target of at least 44×44 pt, contrast of at least 4.5:1); the facts above verified; breakdowns: device, new vs returning.
 
-**[Moderate] No "never do" list.** The plan doesn't state what would
-invalidate it (rule 1). Written up as a finding; the plan is not rewritten into
-the three boxes for the user.
-
-**[Note] The banner's claim is market-dependent and has to be true.** "Free
-returns for 30 days" must match the store's actual returns policy in the target
-market, which the plan doesn't state. Needs verifying before any traffic.
-
-**[Note] Client-side switch after load.** Users can see A flash before B
-(flicker), which both changes the experience and blurs which arm a user saw.
-Needs verifying: whether the tag hides the page until assignment, and whether
-exposure is logged separately from assignment.
-
-**Not checked: the plan's numbers.** The day-5 counts, the "significant" claim,
-the 50/50 split and the 7-day duration are outside this playbook's scope: it
-proposes, designs, audits and visualizes A/B tests, and doesn't analyze results
-or compute sample size, duration, significance or a winner. Read them in your
-testing tool's own report. If you share your baseline conversion rate and
-eligible visitors, I can show a rough detectable range.
-
-## Decision
-
-**Can this test run as-is? No.** Two critical problems (two variables, unequal
-denominators) each invalidate the comparison on their own. It can run once the
-button copy is equalised, both arms are measured per homepage visitor with
-orders as the primary, the guardrail is an independent harm with its follow-up
-window in its name, the accessibility check and the returns-policy check are
-closed before launch, the flicker question is answered, and the segments to
-look at are named in advance.
+If you like, I'll turn the fixed plan into a card.
