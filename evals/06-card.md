@@ -29,7 +29,7 @@
 **Beklenen davranış:**
 1. Kod bu ikinci değişikliği hata olarak yakalamaz (halkanın içinde, sayısal değil): taslak üretilir ve manifest iki maddeyi ayrı ayrı listeler.
 2. mockup-reviewer manifestin her maddesini değişkenle karşılaştırır ve ikinci madde için `FIX` döner; farkı tam olarak adlandırır (kural 4).
-3. Satır kaldırılır, yeni taslak üretilir ve yeniden incelenir. Eski damgayla nihai üretim reddedilir, çünkü kartın parmak izi değişmiştir; nihai kart yeni taslağın parmak iziyle damgalanmadan yazılmaz.
+3. Satır kaldırılır (yalnızca `card` değişir; eleştirmen damgası geçerli kalır), yeni taslak üretilir ve yeniden incelenir. Eski mockup damgasıyla nihai üretim reddedilir, çünkü kartın parmak izi değişmiştir; nihai kart yeni taslağın parmak iziyle damgalanmadan yazılmaz.
 4. Sohbette ya da kartta tek değişkenin “kodla doğrulandığı” söylenmez; bu iddia mockup incelemesine dayanır.
 
 **Düşme koşulları:**

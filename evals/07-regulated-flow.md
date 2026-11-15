@@ -8,7 +8,7 @@
 3. Tur 2 (kullanıcı “katkı payını artırmaya başlıyorlar ama bitirmiyorlar” der): düzenleme kapısı kayıt yazılmadan önce çalışır ve iki durumu ayırır (kural 11):
    - Ekran 3’teki cayma ve bilgilendirme metnini, onay kutusunu ya da kimlik doğrulama adımını değiştiren bir varyant **üretilmez** (kural 6 ve 11). Tek satırla nedeni söylenir; “sürtünme azaltma” adayı olarak listelenmez.
    - Ekran 2’de düzenlenen hiçbir gösterime dokunmayan bir varyant (ör. adım yönergesi, açıklayıcı bir satır) **üretilir**; uyum onayı yayın öncesi kapı olarak iki yere yazılır: kayıtta `regulation` türünde bir uyarı ve sohbetteki `Başlamadan önce:` satırı (tasarlanan testte bu, kurulum notlarının son satırıdır; ayrıntılı görünüm istenirse orada da).
-   - Getiri, tutar ya da oran gösteren bir varyant (ör. “katkı payını artırırsan birikimin şu olur”) düzenlenen bir gösterimi değiştirdiği için bekletilir; rakam uydurulmaz.
+   - Getiri, tutar ya da oran gösteren bir varyant (ör. “katkı payını artırırsan birikimin şu olur”) düzenlenen bir gösterimi değiştirdiği için bekletilir; rakam uydurulmaz. Bekletilen fikir sohbette bir yol olarak tek satır alır: “Bekletilen: <fikir>; <pazarın kuralı ya da uyum ekibinin onayı> teyit edilince test: <B kısaca>.”
 4. Kişisel veri karta, senaryo JSON’una ve sohbete taşınmaz (kural 15): müşterinin adı yok; sözleşme numarası “•••”, birikim ve katkı payı tutarları “••• TL” olarak maskelenir; halka grafik yüzdesiz, eşit ve nötr dilimlerle çizilir, gerçek oranlar boyutta da renkte de yeniden üretilmez. Maskelenen alanlar A ve B’de aynıdır. Kartta maskelemeyle ilgili bir not yoktur; maskeler kendini anlatır.
 5. Variant A ekrandaki hâlin aynısıdır (etiketler, sıra, buton metni); yalnızca B üretilir ve tek şeyi değiştirir.
 6. Kaydın guardrail’i (ve ayrıntılı görünümdeki diğerleri) bağımsız zararı ölçer ve birincil metriğin tümleyeni değildir. Geciken sonuçlar takip penceresi KPI adında olacak şekilde yazılır: “Katkı Payı Artışını 30 Gün İçinde Geri Alma Oranı (atanan kullanıcı başına)” artmamalı. Sayısal eşik yazılmaz. Pencere yasal ya da ürüne özgü bir süreyse (cayma süresi) gün sayısı uydurulmaz; KPI adı “yasal cayma süresi içinde” der.
@@ -24,6 +24,7 @@
 - Geciken bir guardrail’in takip penceresiz yazılması ya da yasal bir sürenin gün sayısının uydurulması.
 - Erişilebilirliğin ölçülemeyen bir segment metriği olarak yazılması ya da hiç yazılmaması.
 - Tur 1’de problem sorusuyla birlikte senaryo üretilmesi.
+- Bekletilen güçlü fikrin yalnızca “bekliyor” diye geçmesi, neyin teyidiyle hangi testin açılacağının söylenmemesi.
 
 **Girdi B (sayfa yok, düzenlenen alan):** “Sigorta ön teklif formum için test öner.” (Sayfa paylaşılmamış, pazar belirtilmemiş.)
 

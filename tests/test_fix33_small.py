@@ -117,9 +117,10 @@ class TestCriticIdeaQuality(unittest.TestCase):
         self.assertIn("pasted unchanged onto any page", item)
         self.assertIn("FIX [fixable]: tie the proposal to an element observed on this page", item)
 
-    def test_report_format_is_unchanged(self):
+    def test_report_format(self):
         self.assertIn('1. [blocking|fixable] <check> (rule <n>): "<quoted text>" → <what to write instead>', self.critic)
-        self.assertIn("verdict: PASS <fingerprint> | FIX | RET", self.critic)
+        # 3.4: the PASS carries the stamp JSON build_card.py --critic-stamp prints (one critic round).
+        self.assertIn("verdict: PASS <the JSON line --critic-stamp printed> | FIX | RET", self.critic)
 
 
 if __name__ == "__main__":

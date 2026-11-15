@@ -80,10 +80,10 @@ A form's own design lives only in `forms-signup.md`. Subscription cancellation i
    - **Mechanism gate, page-type version:** the obstacle typical for this page type ("on a cart page an open coupon field sends code-less shoppers off to hunt for a code"), stated in `problem` as an assumption to check. A generic reason fails.
    - **Fit, never force-fit:** use a block only when its obstacle plausibly exists in the user's context; when none fits but a strong idea does, generate it. Two candidates on one mechanism are one idea: keep the stronger.
    - **History:** state a recorded outcome as the tool reported it. Won → the next step building on it; lost or no difference → retry only with a stated reason, otherwise one line saying it was left out; inconclusive → suggest, noting the run; a pattern that won on the user's product sets `evidence.level: user_data`.
-   - **Order and cap** (rule 9): the tier is the band of the four `priority.inputs` (`Prioritization`), set honestly; the user's explicit asks first, in the order asked, always produced, weak or not; then the playbook's own candidates by priority, problem-acting first, ties as in `Prioritization`; at most three strong, never padded; more → the top three and the count for the offer.
-   - **Gates:** regulation (rule 11: hold (a), produce (b) with its warning), accessibility (rule 3), market (rule 11), sensitive fields (rule 14), protections and dark patterns (rule 6); a stale block is flagged or left out. An unverified fact the idea needs → a critical assumption (rule 10), not a drop and not an invented fact.
+   - **Order and cap** (rule 9): the tier is the band of the four `priority.inputs` (`Prioritization`), set honestly; the user's explicit asks first, in the order asked, always produced, weak or not; then the playbook's own candidates by priority, problem-acting first, ties as in `Prioritization`; at most three strong, never padded; more → the top three, the strongest left out named in one line, and the count for the offer.
+   - **Gates:** regulation (rule 11: hold (a) with its "once X is confirmed, test Y" line, produce (b) with its warning), accessibility (rule 3), market (rule 11), sensitive fields (rule 14), protections and dark patterns (rule 6); a stale block is flagged or left out. An unverified fact the idea needs → a critical assumption (rule 10), not a drop and not an invented fact.
 5. **Write each record once** (`ab-test-card` → The record), localized to the user's sector (a clothing example on a fashion site). `source` is `archive`, `adapted` or `generated`; `problem` is the typical obstacle as an assumption; `is_current: true` only for the user's own page kept here in step 1, else omitted.
-6. **Deliver** through `ab-test-card` → Delivery pipeline. The critic gets, in one call: the record files, the page context (page type plus the step 4 assumption), the history rows, the explicit asks, the whole planned chat (each scenario block, "Stronger alternative:" lines included, and every line after the list) and the reasons for standing validator warnings. `card.mockup_basis` is `representative` unless step 1 set it; neutral palette unless a screenshot gives colors.
+6. **Deliver** through `ab-test-card` → Delivery pipeline (fast mode, rule 17: its Fast mode); each `[fixable]` line is applied as written, no re-call. The critic gets, in one call: the record files, the page context (page type plus the step 4 assumption), the history rows, the explicit asks, the whole planned chat (each scenario block, "Stronger alternative:" lines included, and every line after the list) and the reasons for standing validator warnings. `card.mockup_basis` is `representative` unless step 1 set it; neutral palette unless a screenshot gives colors.
 7. **Backlog (rule 16).** Offer once to append the ranked candidates, strong ones beyond the top three included, to `.abtest-backlog.md` (format `${CLAUDE_PLUGIN_ROOT}/templates/abtest-backlog.md`, tier in `Öncelik`); append only after the user confirms, else show the rows. It is rule 19's kind 9.
 
 ## Output
@@ -94,25 +94,27 @@ Per scenario, exactly:
 **<n>. <title>**
 Öncelik: <Yüksek/Orta/Düşük> · Kaynak: <arşivden / arşivden uyarlandı / bu sayfa için üretildi> · Kanıt: <kendi verin / arşiv örüntüsü / sektör gözlemi / sezgi>
 Neden: <the mechanism in plain words, one sentence, at most 140 characters>
+Doğru olmalı: <the belief B needs>; önce yokla: <one cheap check before the test>
 `abtest-card-<slug>.html`
 ```
 
-English: `Priority: <High/Medium/Low> · Source: <from archive / adapted from archive / generated for this page> · Evidence: <your own data / archive pattern / industry observation / intuition>`, then `Why: …` and the file. The `Neden:` line restates `mechanism` and adds no number or claim (rule 10). Under a weak explicit ask, after `Neden:`: "Daha güçlü alternatif: <the better test>; <why this one is weak>." Nothing else per scenario.
+English: `Priority: <High/Medium/Low> · Source: <from archive / adapted from archive / generated for this page> · Evidence: <your own data / archive pattern / industry observation / intuition>` (rule 10's labels), then `Why: …`, `Must be true: …; check first: …` and the file. The `Neden:` line restates `mechanism` and adds no number or claim (rule 10). `Doğru olmalı:`, at most 160 characters, names what must hold in the user's context and a cheap, qualitative check (session recordings, field analytics, five user tests, support tickets), never a sample size or duration (rule 5). Under a weak explicit ask, after `Neden:`: "Daha güçlü alternatif: <the better test>; <why this one is weak>." Nothing else per scenario.
 
 After the list, one line each, only when it applies, in this order:
 
 - `Başlamadan önce: 2 için B’nin metnine uyum onayı; 1 ve 2 için erişilebilirlik kontrolü.` (pre-start gates, once for the set)
-- `Koşullu (<n>): <every critical assumption, briefly, as a fact to verify, by scenario number, separated by semicolons>` (rule 10; e.g. "Koşullu (2): 1 için yıllık planın kartta görünen fiyatı; 3 için telefonun teklif hesabında gerekip gerekmediği."); the turn's one question, unless a higher kind is open, asks the most critical
-- siblings on one screen, flow or decision run one after the other (priority order) or in separate traffic
+- `Koşullu (<n>): <every critical assumption, briefly, as a fact to verify, by scenario number, separated by semicolons>` (rule 10; e.g. "Koşullu (2): 1 için yıllık planın kartta görünen fiyatı; 3 için telefonun teklif hesabında gerekip gerekmediği."); the turn's one question, unless a higher kind is open, asks the most critical; with two or more open and no higher kind, the line is that question as a numbered list ("Koşullu (2), teyit eder misin: 1) 1 için …; 2) 3 için …?", rule 19)
+- siblings on one screen, flow or decision: `Sıra: 1 → 2 → 3, aynı kullanıcılarda üst üste binmeden. 1 kazanırsa sıradaki <next, built on B>; kaybederse <next>.` (EN `Order: 1 → 2 → 3, never on the same users at once. If 1 wins, next <…>; if it loses, next <…>.`)
+- the strongest candidate left out of the top three: `Sıralamada kalan güçlü aday: <title>.` / `Also strong, not in the top three: <title>.`
 - the primary differs from a metric the user named: one short clause, no general rule ("RPV burada daha uygun: kupon alanı geliri de etkiler.")
-- a held candidate and what it waits for
+- a held candidate as a path: `Bekletilen: <idea>; <X> teyit edilince test: <Y>.` / `Held: <idea>; once <X> is confirmed, test <Y>.`
 - a tested variable retried or left out, with its recorded outcome
 - no page shared: "Bunlar arşivden genel seçimler; sayfanı ya da ekran görüntünü paylaşırsan sayfana özel üretirim." / "These are generic archive picks; share your page or a screenshot and I will design for it."
 - representative or described mockups, only when the user could take them for their own page: "Kartlar anlatımından çizildi; ayrıntılar temsilî."
 - the user asked for suggestions beyond their own ideas and no other candidate passed the bar: "Bu sayfa için başka güçlü aday bulamadım."
 - the history reminder, only when the user mentions past tests or a variable may already have been tested ("Geçmiş test sonuçlarını `.abtest-history.md` olarak tutarsan önerileri onlara göre süzerim.")
 
-Then the two `feasibility.py` lines as printed, only when the user gave the numbers; the stakeholder brief for scenario 1 (`${CLAUDE_PLUGIN_ROOT}/templates/stakeholder-brief.md`: why now and the three outcome lines only; a file only when asked); then at most one question, one sentence (rule 19): step 1's context question when it applies, else e.g. "2 güçlü aday daha var, devam edeyim mi?" No line about colors or the brand (rule 12), no review or elimination text.
+Then the two `feasibility.py` lines as printed, only when the user gave the numbers; the stakeholder brief for scenario 1 only (`${CLAUDE_PLUGIN_ROOT}/templates/stakeholder-brief.md`: why now and the three outcome lines only; a file only when asked), with more scenarios followed by one line: "2 ve 3 için karar özetini istersen yazarım." / "Ask and I will write the brief for 2 and 3."; then at most one question, one sentence (rule 19): step 1's context question when it applies, else e.g. "2 güçlü aday daha var, devam edeyim mi?" No line about colors or the brand (rule 12), no review or elimination text.
 
 ## Detail on request
 
@@ -127,7 +129,7 @@ Why a candidate was left out, and what the critic found, are given the same way,
 ## Never do
 
 - Read a whole archive file, the whole glossary, or a methodology section no decision needs.
-- Repeat the record in chat beyond the four lines, or regenerate the three boxes unasked (rule 9).
+- Repeat the record in chat beyond its scenario lines, or regenerate the three boxes unasked (rule 9).
 - Produce more than three without the offer, pad with a weak candidate, or drop a test the user asked for (rule 9).
 - Force-fit an archive scenario, or present two proposals on one mechanism.
 - Skip the regulation gate or a market or accessibility warning (rules 3, 11).
