@@ -168,14 +168,22 @@ MSG = {
                   "{path}: düğüm tek tür adlandırır, bu düğüm {n} tür adlandırıyor ({keys})"),
     "prop_unknown": ("{path}: \"{key}\" is not a property of a {kind} node",
                      "{path}: \"{key}\" bir {kind} düğümünün özelliği değil"),
+    "align_unknown": ("{path}: \"align\" is not a property of a {kind} node; it works on {kinds} and stack, "
+                      "e.g. {{\"h\": \"Title\", \"align\": \"center\"}} or {{\"stack\": {{\"items\": [..], "
+                      "\"align\": \"center\"}}}}",
+                      "{path}: \"align\" bir {kind} düğümünün özelliği değil; {kinds} ve stack üzerinde çalışır, "
+                      "ör. {{\"h\": \"Başlık\", \"align\": \"center\"}} ya da {{\"stack\": {{\"items\": [..], "
+                      "\"align\": \"center\"}}}}"),
     "prop_value": ("{path}: \"{key}\" must be {want}, got {got!r}",
                    "{path}: \"{key}\" {want} olmalı, gelen {got!r}"),
-    "value": ("{path}: a {kind} node's value must be {want}, got {got!r}",
-              "{path}: {kind} düğümünün değeri {want} olmalı, gelen {got!r}"),
+    "value": ("{path}: a {kind} node's value must be {want}, got {got!r}{ex}",
+              "{path}: {kind} düğümünün değeri {want} olmalı, gelen {got!r}{ex}"),
     "id_dup": ("{path}: id \"{id}\" is already used at {other}",
                "{path}: \"{id}\" kimliği zaten {other} yolunda kullanılıyor"),
-    "top_only": ("{path}: a {kind} node sits only at the top level of the screen",
-                 "{path}: {kind} düğümü yalnızca ekranın en üst düzeyinde durur"),
+    "top_only": ("{path}: a {kind} node sits only at the top level of the screen, between its nodes: "
+                 "\"screen\": [{{\"h\": \"..\"}}, {top}, {{\"cta\": \"..\"}}]",
+                 "{path}: {kind} düğümü yalnızca ekranın en üst düzeyinde, düğümlerinin arasında durur: "
+                 "\"screen\": [{{\"h\": \"..\"}}, {top}, {{\"cta\": \"..\"}}]"),
     "op_unknown": ("card.change.op must be one of {ops}, got {got!r}",
                    "card.change.op şunlardan biri olmalı: {ops}; gelen {got!r}"),
     "target_missing": ("card.change.target is missing: name the id of the node the change applies to",
@@ -273,6 +281,45 @@ WANT_TR = {
     "a rating from 0 to 5, e.g. \"4,4\" or 4.6": "0 ile 5 arası bir puan, ör. \"4,4\" ya da 4.6",
     "a list of two to four nodes": "iki ila dört düğümlük bir liste",
 }
+
+
+# A corrected value for a node whose value has the wrong shape: what a refusal
+# shows, so the fix needs no reading of this file. Names and prices are strings,
+# a marker is true, a sticky bar holds one node and comes before the fold.
+EXAMPLES = {  # kind: (English, Turkish)
+    "fold": ('{"fold": true}',) * 2,
+    "stage": ('{"stage": true}',) * 2,
+    "divider": ('{"divider": true}',) * 2,
+    "plan": ('{"plan": {"name": "Pro", "price": "$49", "per": "/mo", "features": ["Unlimited projects"], "cta": "Start"}}',
+             '{"plan": {"name": "Pro", "price": "499 TL", "per": "/ay", "features": ["Sınırsız proje"], "cta": "Başla"}}'),
+    "sticky": ('[.., {"sticky": {"cta": "Checkout", "id": "cta"}}, {"fold": true}, ..]',
+               '[.., {"sticky": {"cta": "Ödemeye geç", "id": "cta"}}, {"fold": true}, ..]'),
+    "item": ('{"item": {"name": "Linen shirt", "meta": "Size M", "price": "$59"}}',
+             '{"item": {"name": "Keten gömlek", "meta": "Beden M", "price": "899 TL"}}'),
+    "line": ('{"line": ["Subtotal", "$59"]}', '{"line": ["Ara toplam", "899 TL"]}'),
+    "chips": ('{"chips": [{"label": "All", "on": true}, {"label": "New"}]}',
+              '{"chips": [{"label": "Tümü", "on": true}, {"label": "Yeni"}]}'),
+    "tabs": ('{"tabs": [{"label": "Details", "on": true}, {"label": "Reviews"}]}',
+             '{"tabs": [{"label": "Açıklama", "on": true}, {"label": "Yorumlar"}]}'),
+    "steps": ('{"steps": [{"label": "Cart", "state": "done"}, {"label": "Address", "state": "on"}, {"label": "Payment"}]}',
+              '{"steps": [{"label": "Sepet", "state": "done"}, {"label": "Adres", "state": "on"}, {"label": "Ödeme"}]}'),
+    "header": ('{"header": {"logo": "Brand", "nav": ["Products", "Pricing"]}}',
+               '{"header": {"logo": "Marka", "nav": ["Ürünler", "Fiyatlar"]}}'),
+    "band": ('{"band": {"bg": "#f3f4f6", "items": [{"h": ".."}], "pad": [24, 24]}}',) * 2,
+    "stack": ('{"stack": {"items": [{"h": ".."}, {"cta": ".."}], "gap": 16, "align": "center"}}',) * 2,
+    "accordion": ('{"accordion": {"title": "Shipping and returns", "open": true, "items": [{"text": ".."}]}}',
+                  '{"accordion": {"title": "Kargo ve iade", "open": true, "items": [{"text": ".."}]}}'),
+    "stars": ('{"stars": "4.4", "count": "128 reviews"}', '{"stars": "4,4", "count": "128 yorum"}'),
+    "cols": ('{"cols": [{"h": ".."}, {"h": ".."}]}',) * 2,
+    "progress": ('{"progress": 60}',) * 2,
+}
+TOP_EXAMPLES = {"fold": '{"fold": true}', "stage": '{"stage": true}', "sticky": '{"sticky": {"cta": ".."}}, {"fold": true}'}
+ALIGN_KINDS = tuple(k for k, props in EXTRA_PROPS.items() if "align" in props)
+
+
+def _example(kind, lang):
+    ex = EXAMPLES.get(kind)
+    return ("; ör. %s" % ex[1] if lang == "tr" else "; e.g. %s" % ex[0]) if ex else ""
 
 
 def _m(_key, _lang, **kw):
@@ -397,7 +444,10 @@ def _parse(raw, path, top, lang, problems, ids):
         if key == kind:
             continue
         if key not in allowed:
-            problems.append(_m("prop_unknown", lang, path=path, key=key, kind=kind))
+            if key == "align":
+                problems.append(_m("align_unknown", lang, path=path, kind=kind, kinds=", ".join(ALIGN_KINDS)))
+            else:
+                problems.append(_m("prop_unknown", lang, path=path, key=key, kind=kind))
             continue
         props[key] = raw[key]
     _check_props(kind, props, path, lang, problems)
@@ -408,7 +458,7 @@ def _parse(raw, path, top, lang, problems, ids):
         else:
             ids[node_id] = path
     if kind in TOP_ONLY and not top:
-        problems.append(_m("top_only", lang, path=path, kind=kind))
+        problems.append(_m("top_only", lang, path=path, kind=kind, top=TOP_EXAMPLES[kind]))
     value = raw[kind]
     kids = None
     if not _check_value(kind, value, path, lang, problems):
@@ -533,7 +583,7 @@ def _check_value(kind, v, path, lang, problems):
             and (not v.get("open") or bool(v.get("items")))
         want = "{\"title\": .., \"open\": bool, \"items\": [nodes]} (an open accordion needs its items)"
     if not ok:
-        problems.append(_m("value", lang, path=path, kind=kind, want=want, got=v))
+        problems.append(_m("value", lang, path=path, kind=kind, want=want, got=v, ex=_example(kind, lang)))
     return ok
 
 

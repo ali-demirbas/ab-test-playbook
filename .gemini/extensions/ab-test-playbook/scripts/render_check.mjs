@@ -251,11 +251,15 @@ const kebab = (prop) => prop.replace(/[A-Z]/g, (ch) => "-" + ch.toLowerCase());
 
 // What to do about a screen whose content doesn't fit: a smaller phone scale only when it isn't already the
 // smallest; else split the screen (a phone) or draw less.
+// The fix a clipped screen needs, with the value to write: card.screen loses a decoration or repeated row
+// in both arms, or (phones) the rest of the page goes after a {"fold": true} node.
 export function fitAdvice(m, f) {
   const phone = f.kind === "phone" || f.kind === "phone-web";
-  if (phone && m.phoneScale !== 1) return "draw only the part of the screen the test is about, or set card.phone_scale: 1";
-  if (phone) return "card.phone_scale is already 1: draw only the part of the screen the test is about, or put what follows the first view after a .r-fold (drawn under the phone)";
-  return "draw only the part of the page the test is about";
+  const trim = "leave a decoration or repeated row out of card.screen, the same in both arms";
+  const fold = "or put what follows the first view after a .r-fold, in card.screen a {\"fold\": true} node after the tested element (drawn under the phone)";
+  if (phone && m.phoneScale !== 1) return `draw only the part of the screen the test is about (${trim}), set card.phone_scale: 1, ${fold}`;
+  if (phone) return `card.phone_scale is already 1: draw only the part of the screen the test is about (${trim}), ${fold}`;
+  return `draw only the part of the page the test is about (${trim}), or end the first screen with a {"fold": true} node`;
 }
 
 // Clipping, blank screen, rings and labels, text and the sticky bar of one drawn screen: the variant's

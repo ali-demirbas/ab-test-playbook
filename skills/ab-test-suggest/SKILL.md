@@ -15,12 +15,14 @@ metadata:
 
 ## Reading budget
 
-- **Archive:** one or two stage files (Stage map). List titles, shortlist by title and `Değişken:` line, read only the shortlisted blocks (title line to the next `---`):
+- **Archive:** one or two stage files (Stage map). List each block's head, shortlist by title, variable and tags, read only the shortlisted blocks, in the user's language (`--lang en`: the block's English body when it has one, else its English title and the Turkish body; `--lang tr` stops before the English body):
 
   ```bash
-  grep -nE '^## |Değişken:' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
-  python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md --line <title line> [<title line> ...]
+  grep -nE '^(## |Değişken:|Etiket:|EN:)' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
+  python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md --line <title line> [<title line> ...] --lang <tr|en>
   ```
+
+  The `Etiket:` line (`${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/FORMAT.md` → Head): `mercek` is the record's `objection`; `emek` its `priority.inputs.effort` (`düşük` low, `orta` medium, `yüksek` high); `düzey` the kind of change, element level (`görsel`, `gezinme`, `bilgi`, `form`, `metin`, `güven`, `sosyal-kanıt`, `sürtünme`) or structural (`teklif`, `fiyat`, `kişiselleştirme`, `akış`, `elde-tutma`, `onboarding`); `sektör` and `pazar` say where it fits (`pazar=TR` rests on a Turkish practice); `durum=klasik` is a dated pattern. `adapted_from` is always the Turkish `## ` title; an English record takes the block's `EN-Variable:` as its `variable` when there is one.
 
   Before calling a candidate `generated`, one title-only grep across all stage files for its element (a sticky button lives under product-detail): `grep -n '^## .*<element keyword>' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/*.md`.
 - **KPI names:** `grep -niE '<metric>|<synonym>' ${CLAUDE_PLUGIN_ROOT}/knowledge/kpi-glossary.md` (canonical name and denominator); never the whole glossary.
@@ -50,16 +52,16 @@ Files under `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/`; at most two per turn.
 
 | Page or flow | Stage files |
 |---|---|
-| Homepage, landing, campaign page | `home-landing.md` |
+| Homepage, landing, campaign page; on mobile web also the app download banner, the returning-visitor homepage and the recently viewed strip | `home-landing.md` |
 | Search, filters, results; menu and navigation | `search-filtering.md` |
-| Category or listing | `category-listing.md` |
+| Category or listing; a mobile-web exit-intent pop-up | `category-listing.md` |
 | Product detail | `product-detail.md` |
 | Cart, coupon, checkout, address | `cart-checkout.md` |
 | Order confirmation, thank-you | `thank-you.md` |
 | Logged-in, recurring-use home screen | `dashboard.md` |
 | Form, signup, login | `forms-signup.md` |
 | Pricing page, price display, plan comparison | `pricing.md` |
-| App onboarding, permissions, app home | `mobile-app.md` |
+| App onboarding, permissions, app home (native app only; a mobile website goes by its page type) | `mobile-app.md` |
 | SaaS commercial decisions (plan default, trial length, paywall) | `saas-b2b.md` |
 | Finance, insurance, private pension (BES): product text, calculators, call-back and lead requests, offer steps, contract and contribution screens | `finance-pension.md` (every scenario needs compliance sign-off; disclosures, withdrawal, consent and identity steps are never the subject) |
 | Buttons, links, icons on any page | `ui-elements.md` (a lower tier: not first while a stronger candidate exists) |
@@ -69,7 +71,7 @@ Files under `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/`; at most two per turn.
 | App checkout / app paywall | `cart-checkout.md` + `mobile-app.md` / `saas-b2b.md` + `mobile-app.md` |
 | SaaS web onboarding; account or settings; order tracking; help or blog | `saas-b2b.md` + `forms-signup.md`; `dashboard.md` + `forms-signup.md`; `thank-you.md` + `dashboard.md`; `home-landing.md` + `search-filtering.md` |
 
-A form's own design lives only in `forms-signup.md`. Subscription cancellation is legally bound: the regulation gate comes first. A page type without a row: one line naming the stages it was mapped to.
+A form's own design lives only in `forms-signup.md`. Subscription cancellation is legally bound: the regulation gate comes first. Cookie consent and other consent requests are out of scope on purpose (`FORMAT.md`): never suggested, and a scenario next to a consent step leaves it identical in both arms. A page type without a row: one line naming the stages it was mapped to.
 
 ## Flow
 
@@ -78,32 +80,34 @@ A form's own design lives only in `forms-signup.md`. Subscription cancellation i
 3. **Retrieve** (Reading budget), candidates acting on the stated problem first. With a named loss point, separate a clogged vein (a busy step that converts poorly: improve it) from a missing link (a step the funnel lacks: add it).
 4. **Select.**
    - **Mechanism gate, page-type version:** the obstacle typical for this page type ("on a cart page an open coupon field sends code-less shoppers off to hunt for a code"), stated in `problem` as an assumption to check. A generic reason fails.
-   - **Fit, never force-fit:** use a block only when its obstacle plausibly exists in the user's context; when none fits but a strong idea does, generate it. Two candidates on one mechanism are one idea: keep the stronger.
+   - **Fit, never force-fit:** use a block only when its obstacle plausibly exists in the user's context (its `sektör`, and `pazar=TR` only for a Turkish market or with its market note); a `durum=klasik` block only when the user names it; when none fits but a strong idea does, generate it. Two candidates on one mechanism are one idea: keep the stronger.
+   - **Diversity:** among the playbook's own picks, at most one per element-level `düzey` (two `metin` blocks are one slot, the stronger kept); structural levels are not capped. Explicit asks are exempt.
    - **History:** state a recorded outcome as the tool reported it. Won → the next step building on it; lost or no difference → retry only with a stated reason, otherwise one line saying it was left out; inconclusive → suggest, noting the run; a pattern that won on the user's product sets `evidence.level: user_data`.
-   - **Order and cap** (rule 9): the tier is the band of the four `priority.inputs` (`Prioritization`), set honestly; the user's explicit asks first, in the order asked, always produced, weak or not; then the playbook's own candidates by priority, problem-acting first, ties as in `Prioritization`; at most three strong, never padded; more → the top three, the strongest left out named in one line, and the count for the offer.
+   - **Order and cap** (rule 9): the tier is the band of the five `priority.inputs` (`Prioritization`), set honestly (`effort` from the block's `emek`, `impact` from its level and the impact ranking); the user's explicit asks first, in the order asked, always produced, weak or not; then the playbook's own candidates by priority, problem-acting first, ties as in `Prioritization`; at most three strong, never padded; more → the top three, the strongest left out named in one line, and the count for the offer.
    - **Gates:** regulation (rule 11: hold (a) with its "once X is confirmed, test Y" line, produce (b) with its warning), accessibility (rule 3), market (rule 11), sensitive fields (rule 14), protections and dark patterns (rule 6); a stale block is flagged or left out. An unverified fact the idea needs → a critical assumption (rule 10), not a drop and not an invented fact.
-5. **Write each record once** (`ab-test-card` → The record), localized to the user's sector (a clothing example on a fashion site). `source` is `archive`, `adapted` or `generated`; `problem` is the typical obstacle as an assumption; `is_current: true` only for the user's own page kept here in step 1, else omitted.
+5. **Write each record once,** from the skeleton `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/new_record.py` prints (`ab-test-card` → The record), localized to the user's sector (a clothing example on a fashion site). `source` is `archive`, `adapted` or `generated`; `problem` is the typical obstacle as an assumption; `is_current: true` only for the user's own page kept here in step 1, else omitted.
 6. **Deliver** through `ab-test-card` → Delivery pipeline (fast mode, rule 17: its Fast mode); each `[fixable]` line is applied as written, no re-call. The critic gets, in one call: the record files, the page context (page type plus the step 4 assumption), the history rows, the explicit asks, the whole planned chat (each scenario block, "Stronger alternative:" lines included, and every line after the list) and the reasons for standing validator warnings. `card.mockup_basis` is `representative` unless step 1 set it; neutral palette unless a screenshot gives colors.
 7. **Backlog (rule 16).** Offer once to append the ranked candidates, strong ones beyond the top three included, to `.abtest-backlog.md` (format `${CLAUDE_PLUGIN_ROOT}/templates/abtest-backlog.md`, tier in `Öncelik`); append only after the user confirms, else show the rows. It is rule 19's kind 9.
 
 ## Output
 
-Per scenario, exactly:
+Per scenario, exactly the lines `validate_scenario_json.py --chat` printed (`ab-test-card` → Delivery pipeline, step 1), then the file:
 
 ```
 **<n>. <title>**
-Öncelik: <Yüksek/Orta/Düşük> · Kaynak: <arşivden / arşivden uyarlandı / bu sayfa için üretildi> · Kanıt: <kendi verin / arşiv örüntüsü / sektör gözlemi / sezgi>
-Neden: <the mechanism in plain words, one sentence, at most 140 characters>
-Doğru olmalı: <the belief B needs>; önce yokla: <one cheap check before the test>
+Öncelik: <Yüksek/Orta/Düşük> (<score>/9) · Kaynak: <arşivden / arşivden uyarlandı / bu sayfa için üretildi> · Kanıt: <kendi verin / arşiv örüntüsü / sektör gözlemi / sezgi>
+Neden: <the mechanism, at most 140 characters>
+Doğru olmalı: <must_be_true.belief>
+Önce yokla: <must_be_true.probe>
 `abtest-card-<slug>.html`
 ```
 
-English: `Priority: <High/Medium/Low> · Source: <from archive / adapted from archive / generated for this page> · Evidence: <your own data / archive pattern / industry observation / intuition>` (rule 10's labels), then `Why: …`, `Must be true: …; check first: …` and the file. The `Neden:` line restates `mechanism` and adds no number or claim (rule 10). `Doğru olmalı:`, at most 160 characters, names what must hold in the user's context and a cheap, qualitative check (session recordings, field analytics, five user tests, support tickets), never a sample size or duration (rule 5). Under a weak explicit ask, after `Neden:`: "Daha güçlü alternatif: <the better test>; <why this one is weak>." Nothing else per scenario.
+English: `Priority: <High/Medium/Low> (<score>/9) · Source: … · Evidence: …`, `Why:`, `Must be true:`, `Probe first:`, the file. You write only what `--chat` can't: a `Neden:` line for a mechanism over 140 characters (plain words, no number or claim, rule 10) and, under a weak explicit ask, after `Neden:`, "Daha güçlü alternatif: <the better test>; <why this one is weak>." `must_be_true` holds what must hold in the user's context (at most 160 characters) and one cheap, qualitative probe (session recordings, field analytics, five user tests, support tickets), never a sample size or duration (rule 5). Nothing else per scenario.
 
-After the list, one line each, only when it applies, in this order:
+After the list, one line each, in this order, each only when it applies except the first:
 
-- `Başlamadan önce: 2 için B’nin metnine uyum onayı; 1 ve 2 için erişilebilirlik kontrolü.` (pre-start gates, once for the set)
-- `Koşullu (<n>): <every critical assumption, briefly, as a fact to verify, by scenario number, separated by semicolons>` (rule 10; e.g. "Koşullu (2): 1 için yıllık planın kartta görünen fiyatı; 3 için telefonun teklif hesabında gerekip gerekmediği."); the turn's one question, unless a higher kind is open, asks the most critical; with two or more open and no higher kind, the line is that question as a numbered list ("Koşullu (2), teyit eder misin: 1) 1 için …; 2) 3 için …?", rule 19)
+- the `Başlamadan önce:` line as `--chat` printed it (pre-start gates, once for the set; always, `yok` when none)
+- the `Koşullu (<n>):` line as `--chat` printed it (rule 10; every critical assumption by scenario number, as a fact to verify); the turn's one question, unless a higher kind is open, asks the most critical; with two or more open and no higher kind, the line is that question as a numbered list ("Koşullu (2), teyit eder misin: 1) 1 için …; 2) 3 için …?", rule 19)
 - siblings on one screen, flow or decision: `Sıra: 1 → 2 → 3, aynı kullanıcılarda üst üste binmeden. 1 kazanırsa sıradaki <next, built on B>; kaybederse <next>.` (EN `Order: 1 → 2 → 3, never on the same users at once. If 1 wins, next <…>; if it loses, next <…>.`)
 - the strongest candidate left out of the top three: `Sıralamada kalan güçlü aday: <title>.` / `Also strong, not in the top three: <title>.`
 - the primary differs from a metric the user named: one short clause, no general rule ("RPV burada daha uygun: kupon alanı geliri de etkiler.")
@@ -114,7 +118,7 @@ After the list, one line each, only when it applies, in this order:
 - the user asked for suggestions beyond their own ideas and no other candidate passed the bar: "Bu sayfa için başka güçlü aday bulamadım."
 - the history reminder, only when the user mentions past tests or a variable may already have been tested ("Geçmiş test sonuçlarını `.abtest-history.md` olarak tutarsan önerileri onlara göre süzerim.")
 
-Then the two `feasibility.py` lines as printed, only when the user gave the numbers; the stakeholder brief for scenario 1 only (`${CLAUDE_PLUGIN_ROOT}/templates/stakeholder-brief.md`: why now and the three outcome lines only; a file only when asked), with more scenarios followed by one line: "2 ve 3 için karar özetini istersen yazarım." / "Ask and I will write the brief for 2 and 3."; then at most one question, one sentence (rule 19): step 1's context question when it applies, else e.g. "2 güçlü aday daha var, devam edeyim mi?" No line about colors or the brand (rule 12), no review or elimination text.
+Then the two `feasibility.py` lines as printed, only when the user gave the numbers; the stakeholder brief for scenario 1 only, as `--chat` printed it (`${CLAUDE_PLUGIN_ROOT}/templates/stakeholder-brief.md`: why now and the three outcome lines; a file only when asked), with more scenarios followed by one line: "2 ve 3 için karar özetini istersen yazarım." / "Ask and I will write the brief for 2 and 3."; then at most one question, one sentence (rule 19): step 1's context question when it applies, else e.g. "2 güçlü aday daha var, devam edeyim mi?" No line about colors or the brand (rule 12), no review or elimination text.
 
 ## Detail on request
 

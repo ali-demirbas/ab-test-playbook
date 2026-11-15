@@ -58,6 +58,8 @@ SMALL_FIXES = {
     "source_note": lambda sc: sc.update(source_note="Kullanıcının tarif ettiği sepet."),
     "an assumption's wording": lambda sc: sc["assumptions"][0].update(
         text="Kupon kodu kampanya bağlantısıyla dağıtılıyor olabilir.", question="Kodlar nasıl dağıtılıyor?"),
+    "must_be_true": lambda sc: sc.update(must_be_true={"belief": "Kodsuz kullanıcı açık kutuyu görünce kod aramaya çıkıyor.",
+                                                       "probe": "Sepetten çıkıp dönen oturumların kayıtlarına bakın."}),
     "card": lambda sc: sc["card"].update(note_pos="below"),
     "review": lambda sc: sc.update(review={"mockup_reviewer": {"verdict": "PASS", "fingerprint": "a" * 64}}),
 }
@@ -351,7 +353,7 @@ class TestTextContract(unittest.TestCase):
         names = {"title": "title", "problem": "problem", "mechanism": "mechanism", "denominator": "denominators",
                  "note": "evidence note", "rationale": "priority rationale", "source_note": "source note",
                  "objection": "objection", "exposure": "exposure", "warnings": "warnings",
-                 "invariants": "invariants", "text": "an assumption's wording"}
+                 "invariants": "invariants", "text": "an assumption's wording", "must_be_true": "must-be-true lines"}
         fields = set(bc.CRITIC_SMALL_FIX) | {f for fs in bc.CRITIC_SMALL_FIX_IN.values() for f in fs} | \
             {f for fs in bc.CRITIC_SMALL_FIX_ITEMS.values() for f in fs}
         for field in fields - {"question"}:

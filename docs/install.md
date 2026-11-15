@@ -6,6 +6,18 @@ The short version is in the [README](../README.md): two commands in Claude Code,
 
 A/B Test Builder is the display name. The plugin installs as `ab-test-playbook`.
 
+## New to the terminal?
+
+Claude Code runs in a terminal, a window where you type commands. On a Mac open the Terminal app (press Cmd+Space, type "Terminal"); on Windows open PowerShell or Windows Terminal; on Linux your usual terminal. Install Claude Code with the official [quickstart](https://code.claude.com/docs/en/quickstart). Then make a folder for your tests and start Claude Code in it:
+
+```bash
+mkdir ab-tests
+cd ab-tests
+claude
+```
+
+From here on you type into Claude Code: the `/plugin` lines below, your screenshot and `/ab-test`. Only the one-time visual-check command (Visual check below) goes into a plain terminal. Your cards and records are saved in this folder.
+
 ## Requirements
 
 | What | Needed for | Check it with |
@@ -31,6 +43,52 @@ Or clone and add as a local plugin:
 git clone https://github.com/ali-demirbas/ab-test-playbook.git
 claude --plugin-dir ./ab-test-playbook
 ```
+
+## Fewer permission prompts
+
+With the default permission mode Claude Code asks before every script the plugin runs, and a refused call also cancels the calls sent with it. The playbook runs a small, fixed set of its own scripts, always in the main session, so they can be allowed once. First print the plugin folder:
+
+```bash
+python3 -c "import json,os;d=json.load(open(os.path.expanduser('~/.claude/plugins/installed_plugins.json')))['plugins'];print([i['installPath'] for k,v in d.items() if k.startswith('ab-test-playbook@') for i in v][0])"
+```
+
+Then add this to `~/.claude/settings.json` (every project) with `<PLUGIN_ROOT>` replaced by the printed path, written out in full (a rule matches the command text as written, and the skills send it with the path expanded):
+
+```json
+{
+  "permissions": {
+    "additionalDirectories": ["<PLUGIN_ROOT>"],
+    "allow": [
+      "Bash(python3 <PLUGIN_ROOT>/scripts/validate_scenario_json.py *)",
+      "Bash(python3 <PLUGIN_ROOT>/scripts/new_record.py *)",
+      "Bash(python3 <PLUGIN_ROOT>/scripts/build_card.py *)",
+      "Bash(python3 <PLUGIN_ROOT>/scripts/read_section.py *)",
+      "Bash(python3 <PLUGIN_ROOT>/scripts/validate_input.py *)",
+      "Bash(python3 <PLUGIN_ROOT>/scripts/feasibility.py *)",
+      "Bash(node <PLUGIN_ROOT>/scripts/render_check.mjs *)",
+      "Bash(test -d *)",
+      "Bash(node -e \"require.resolve('playwright')\")"
+    ]
+  }
+}
+```
+
+| Rule | Used by |
+|---|---|
+| `additionalDirectories` | Reading the archive, glossary, methodology and templates inside the plugin folder (`grep`, `Read`) without a prompt; the folder is outside your working folder |
+| `validate_scenario_json.py` | Record validation and the chat lines (`--chat`), every design or suggest turn |
+| `new_record.py` | The skeleton every record starts from |
+| `build_card.py` | `--critic-stamp` (scenario-critic), `--draft`, `--quick`, `--stamp` (mockup-reviewer), the final build, `--check`, `--share`, `--overview` |
+| `read_section.py` | One section of `methodology.md` or `mockup-style.md`, or one archive block |
+| `validate_input.py` | Scanning `.abtest-history.md`, `.abtest-backlog.md` and files you hand over |
+| `feasibility.py` | Only when you give a baseline rate and visitors |
+| `render_check.mjs` | The visual check (Node.js 18+ and Playwright, see below) |
+| `test -d`, `node -e "require.resolve('playwright')"` | The `/ab-test` menu's one-line visual-check probe |
+
+- After a plugin update the version in `<PLUGIN_ROOT>` changes: run the first command again and replace the path. A `*` in place of the version also works, but everything after the first `*` is then matched loosely, so the exact path is safer.
+- Never allow `Bash(python3 *)` or `Bash(node *)`: that allows any script on your machine.
+- Records (`*.json`) and cards (`abtest-card-*.html`, `card-*.png`) are written in your working folder; the Write tool asks once per session unless you work in `acceptEdits` mode. Nothing is written inside the plugin folder.
+- The two reviewers are the plugin's own subagents and need no rule; no script runs inside a subagent.
 
 ## Other ways to install
 
@@ -113,5 +171,6 @@ Updates arrive only when the plugin's version number changes. `/plugin` shows th
 | `/plugin update` brings nothing new | Updates arrive only when the version number changes | Run both update commands, then restart Claude Code |
 | `Unrecognized key: "relevance"` from `claude plugin validate` | An older Claude Code release | Safe to ignore, see the note under [Update](#update) |
 | `python3: command not found`, or a script stops on start | Python 3.9 or newer is not on your PATH | Install a current Python 3 and reopen the terminal |
+| Claude Code asks before every script, or a refused call cancels others | The plugin's scripts aren't allowed yet | Add the rules under [Fewer permission prompts](#fewer-permission-prompts) |
 
 Still stuck? [Open an issue](https://github.com/ali-demirbas/ab-test-playbook/issues) and include the last line the command printed.

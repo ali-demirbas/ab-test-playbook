@@ -19,13 +19,20 @@ user asks (page / URL / screenshot / question / test plan)
         ├── design ───┤   (design also writes short setup notes in chat)
         ├── card ─────┤   (a scenario you bring passes the same gates)
         │             ▼
-        │   scripts/validate_scenario_json.py
-        │   record checks; any error refuses · --fingerprint
+        │   scripts/new_record.py: a skeleton record, ⟦hints⟧ to fill
         │             │
         │             ▼
-        │   agents/scenario-critic
-        │   PASS → stamp review.scenario_critic with the record fingerprint
-        │   FIX → fix, re-validate, re-review · RET → not produced
+        │   scripts/validate_scenario_json.py
+        │   record checks; any error refuses · --chat prints the
+        │   chat lines the records fix
+        │             │
+        │             ├── fast mode: build_card.py --quick → quick
+        │             │   draft, never final; "finish" resumes below
+        │             ▼
+        │   agents/scenario-critic (Sonnet, one round)
+        │   PASS → stamp from build_card.py --critic-stamp
+        │   [fixable] → applied by the main session, stamp stays valid
+        │   [blocking] → rework, re-validate, re-review · RET → dropped
         │             │
         │             ▼
         │   scripts/build_card.py --draft
@@ -40,7 +47,7 @@ user asks (page / URL / screenshot / question / test plan)
         │   · 3 VISUAL_CHECK_UNAVAILABLE (nothing measured)
         │             │
         │             ▼
-        │   agents/mockup-reviewer
+        │   agents/mockup-reviewer (Sonnet)
         │   draft + manifest + render_check output, one run for all cards
         │   PASS → runs build_card.py --stamp <draft>; its JSON goes
         │   into review.mockup_reviewer
@@ -51,28 +58,40 @@ user asks (page / URL / screenshot / question / test plan)
         │             │
         │             ▼
         │   scripts/build_card.py (final)
-        │   both stamps must match, or nothing is written
+        │   both stamps must match, or nothing is written;
+        │   --share (1200 × 630) and --overview on request
         │             │
         │             ▼
         │   single-file HTML card(s), the only thing delivered:
         │   title + A/B mockups + ring and label, nothing else
         │
-        └── audit ───► findings by severity + "can this run as-is?"
-                       (your own plan: the review is the work, no critic)
+        └── audit ───► severity table, decision, fixed plan, card offer
+                       (your own plan: the review is the work, no critic;
+                       a yes to the offer goes to design)
 ```
 
 `suggest` and `design` produce compact scenario records (`knowledge/methodology.md`
 → The scenario record), at most three strong ones per turn by default; chat shows
-each as its title, one tag line, one `Neden:` / `Why:` line and the card file, never the record again. The card
+each as its title, a tag line with the score, the `Neden:`, `Doğru olmalı:` and
+`Önce yokla:` lines (printed from the record by `validate_scenario_json.py
+--chat`) and the card file, never the record again. The card
 shows only the comparison (the title, the two mockups, the ring and its label);
 the record stays in the JSON. The three boxes are written only when the user
 asks for a scenario's detail: the producing skill fills `detail`, the critic
 reviews it again and the chat gives it; the card doesn't change. The archive keeps its
-three-box format and is read by `grep` on titles plus the shortlisted blocks,
-never a whole stage file.
+three-box format, in Turkish with an English title and body per block, and is
+read by `grep` on the head lines (title, variable, tags, English title) plus the
+shortlisted blocks in the user's language (`read_section.py --lang`), never a
+whole stage file.
 
 Every card goes through both gates: a record without a critic stamp gets no
-draft, and a draft without a mockup stamp gets no final card. `ab-test-audit`
+draft, and a draft without a mockup stamp gets no final card. The critic runs
+once: its `[fixable]` findings are exact text in a fixed list of small-fix
+fields, which the critic stamp leaves out, so the main session applies them
+without a second call; only a `[blocking]` finding (anything the stamp covers)
+calls it again. Fast mode, when the user asks for it, stops after the validator
+with quick drafts that say so on the card and in chat; "finish" runs both
+reviews on the same records. `ab-test-audit`
 skips the critic because there the review *is* the requested
 work and findings are reported directly rather than silently fixed (CLAUDE.md
 rule 17). A request to analyze results or compute a sample size, duration or
@@ -98,7 +117,7 @@ has the full table and what the gates can't guarantee).
 | Regulation | Refuses a regulated-looking record without a `regulation` warning, unverified urgency | Refuses B dropping legal or security text, or pre-ticking consent | Dark patterns, held displays | |
 | Personal data | | Refuses values shaped like personal data | | Masking right |
 | Layout and readability | | `render_check.mjs` errors on size, clipping, blank screen, ring overlaps, text size, contrast | | Reads that output; judges size and misleading clipping |
-| Gates | `--fingerprint` | Draft needs the critic stamp; final needs both; `--stamp` prints the mockup stamp, `--check` verifies a delivered card | Stamps the record fingerprint on PASS | Stamps what `build_card.py --stamp` prints on PASS |
+| Gates | `--fingerprint`; `--chat` prints the record-bound chat lines | `--critic-stamp` prints the critic stamp; the draft needs it, the final needs both; `--stamp` prints the mockup stamp, `--check` verifies a delivered card; `--quick` drafts are never stamped | One round; stamps what `--critic-stamp` prints on PASS | Stamps what `build_card.py --stamp` prints on PASS |
 
 ## Where each concern lives
 
@@ -107,18 +126,20 @@ has the full table and what the gates can't guarantee).
 | Binding rules (one variable, one primary KPI, guardrail, no dark patterns) | `CLAUDE.md` | Applies to every skill; a skill cannot opt out of it |
 | Method reasoning (KPI choice, guardrails, isolation, priority) | `knowledge/methodology.md` | Referenced by skills rather than restated in each one |
 | What a card shows and how it looks | `knowledge/mockup-style.md` | Same reason: one definition, many consumers (the card skill, the template, the builder, render_check, the mockup reviewer) |
-| Curated scenarios | `knowledge/scenarios/` | Content, not logic, in the three-box format. Adding a scenario is a content change |
+| Curated scenarios | `knowledge/scenarios/` | Content, not logic, in the three-box format: Turkish blocks with a tag line, an English title and an English body ([`FORMAT.md`](../knowledge/scenarios/FORMAT.md)). Adding a scenario is a content change |
 | Per-task instructions | `skills/ab-test-*/SKILL.md` | The task-specific part, kept thin because the rules live above |
 | Adversarial review | `agents/` | Separate context: the producer systematically misses its own single-variable violation |
-| Delivery gates (review stamps, draft and final card) | `scripts/validate_scenario_json.py --fingerprint` + `scripts/build_card.py` | A review the builder can't see is one it can't enforce; a fingerprint of the reviewed content is something it can check ([`design-notes.md`](design-notes.md) → Rule 17) |
+| Record skeleton | `scripts/new_record.py` | What the validator decides from a few facts (the KPI's denominator, the accessibility criteria, the invariant, the exposure sentence, the priority inputs) is written by code, so a first draft rarely fails validation |
+| Record-bound chat lines | `scripts/validate_scenario_json.py --chat` | The tag line with its score, `Neden:`, the must-be-true lines, the conditional and pre-start lines and the brief are printed from the record, so they can't drift from it |
+| Delivery gates (review stamps, draft and final card) | `scripts/build_card.py --critic-stamp` + `scripts/build_card.py` | A review the builder can't see is one it can't enforce; a fingerprint of the reviewed content is something it can check ([`design-notes.md`](design-notes.md) → Rule 17) |
 | Text escaping, template fill, drift check | `scripts/build_card.py` | Deterministic: a model rewriting ~180 lines of CSS per card is both the slowest step and the drift risk |
 | Structural rules on a test definition | `templates/scenario.schema.json` + `scripts/validate_scenario_json.py` | Rules 1-3 become shape, not prose: a record has one `primary_kpi` and one `guardrail`, each with its denominator or criterion, so a second primary can't be written |
 | Detailed view | optional `detail` in the same schema | Written only on request: regenerating three boxes per proposal cost tokens and repeated the record |
-| Priority (a tier and a one-sentence reason) | optional `priority` object in the same schema | The tier is a closed set (`high`, `medium`, `low`) and the rationale is words, because a numeric score suggested a precision its inputs never had (`methodology.md` → Prioritization) |
+| Priority (a tier, its score and a one-sentence reason) | `priority` in the same schema: `tier`, `rationale` and the five `inputs` | The tier is the band of a score out of 9 that the validator recomputes from the recorded inputs, so it can't be chosen; the chat shows the score next to the tier, while the rationale stays in words (`methodology.md` → Prioritization) |
 | Untrusted input (pasted files, plans, history) | `scripts/validate_input.py` | Instruction-shaped lines and script payloads are reported with line numbers and quoted back, never followed |
 | Rationale behind the binding rules | [`design-notes.md`](design-notes.md) | Kept out of `CLAUDE.md` so the always-loaded rules stay short |
-| Archive format | `scripts/validate_scenarios.py` | Guards the 221 shipped scenarios against silent format rot |
-| KPI vocabulary | `knowledge/kpi-glossary.md` | 105 canonical KPI names, each with its definition and denominator; the archive uses them and the validator reads the table |
+| Archive format | `scripts/validate_scenarios.py` | Guards the 217 shipped scenarios against silent format rot: head lines, tag values and unique ids, the English body's parallel boxes |
+| KPI vocabulary | `knowledge/kpi-glossary.md` | Canonical KPI names, each with its definition, denominator and English name; the archive uses them and the validator reads the table |
 | Cross-file consistency | `scripts/validate.sh` | Frontmatter, links, plugin-root paths, rule citations, the scenario and rule counts the docs quote, description length, bundle freshness: the seams no single validator sees |
 
 ## Why two review agents rather than one
@@ -129,7 +150,10 @@ honest. `mockup-reviewer` reads the *picture*: do the two variants differ in
 exactly one thing. A single reviewer asked to do both reliably does the first
 and skims the second, because the second is a tedious line-by-line diff and the
 first is interesting. Splitting them is not redundancy; it is putting the
-boring check somewhere it cannot be skipped.
+boring check somewhere it cannot be skipped. Both run on Sonnet: their
+checklists are explicit and the code has already refused what it can, so a
+smaller, cheaper model carries them, and their instructions say the bar stays
+where it was.
 
 ## What code deliberately does not decide
 

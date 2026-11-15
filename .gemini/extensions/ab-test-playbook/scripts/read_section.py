@@ -3,6 +3,7 @@
 
   read_section.py FILE "Heading" ["Heading 2" ...]   one section per heading
   read_section.py FILE --line N [N ...]              the block that starts at line N
+  read_section.py FILE --line N [N ...] --lang tr|en an archive block in one language
   read_section.py FILE --until "Heading"             everything above that heading
   read_section.py FILE --list                        the headings, with line numbers
 
@@ -12,6 +13,12 @@ A section runs to the next heading of the same or a higher level; a block
 read by line number also ends at the first `---` separator line (the scenario
 archive's block end). A closing `---` is never printed.
 Lines inside a code fence are never taken for headings.
+
+--lang reads a bilingual archive block (knowledge/scenarios/FORMAT.md) in one
+language: tr stops before its `### EN` line; en prints the title, the head lines
+(Değişken, Etiket, EN, EN-Variable) and the English body after `### EN`, or the
+whole block when it has no English body yet. Without --lang the block is
+printed whole.
 
 Standard library only, Python 3.9. Exit 0 printed, 1 not found, 2 usage.
 """
@@ -82,6 +89,34 @@ def block(lines, heads, start, stop_at_rule):
     return "\n".join(lines[start:end]) + "\n"
 
 
+EN_MARKER = "### EN"
+HEAD_PREFIXES = ("Değişken:", "Etiket:", "EN:", "EN-Variable:")
+
+
+def in_language(text, lang):
+    """An archive block in one language (FORMAT.md): tr up to `### EN`, en the head plus the English body."""
+    lines = text.rstrip("\n").split("\n")
+    marker = next((i for i, line in enumerate(lines) if line.strip() == EN_MARKER), None)
+    if lang is None or marker is None:
+        return text
+    if lang == "tr":
+        keep = lines[:marker]
+    else:
+        head = 1
+        while head < marker and (not lines[head].strip() or lines[head].startswith(HEAD_PREFIXES)):
+            head += 1
+        keep = lines[:head] + [""] + lines[marker + 1:]
+    while len(keep) > 1 and not keep[-1].strip():
+        keep.pop()
+    out, blank = [], False
+    for line in keep:
+        if not line.strip() and blank:
+            continue
+        blank = not line.strip()
+        out.append(line)
+    return "\n".join(out) + "\n"
+
+
 def listing(heads):
     return "".join("%d:%s %s\n" % (i + 1, "#" * lvl, title) for i, lvl, title in heads)
 
@@ -93,6 +128,8 @@ def main(argv=None):
     ap.add_argument("--list", action="store_true", help="list the headings with their line numbers")
     ap.add_argument("--line", type=int, nargs="+", metavar="N", help="print the block starting at line N")
     ap.add_argument("--until", metavar="HEADING", help="print everything above this heading")
+    ap.add_argument("--lang", choices=("tr", "en"),
+                    help="with --line: an archive block in one language (tr up to ### EN, en its head and English body)")
     args = ap.parse_args(argv)
 
     try:
@@ -119,7 +156,7 @@ def main(argv=None):
             parts.append("\n".join(lines[:h[0]]).rstrip("\n") + "\n")
     for n in args.line or []:
         if 1 <= n <= len(lines):
-            parts.append(block(lines, heads, n - 1, True))
+            parts.append(in_language(block(lines, heads, n - 1, True), args.lang))
         else:
             missing.append("line %d (the file has %d lines)" % (n, len(lines)))
     for q in args.heading:

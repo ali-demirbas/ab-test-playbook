@@ -696,5 +696,50 @@ class TestEndToEnd(unittest.TestCase):
         self.assertIn("render_check: VERIFIED", p.stdout + p.stderr)
 
 
+class TestRefusalsCarryTheCorrectedValue(unittest.TestCase):
+    """Item 8: a refused node, prop or marker shows the value to write, so the fix needs no source reading."""
+
+    BASE = [{"h": "Sepet", "id": "a"}]
+
+    def problems(self, screen, lang="en"):
+        out = ss.compile_card({"screen": self.BASE + screen,
+                               "change": {"op": "edit", "target": "a", "set": {"h": "Sepetim"}, "label": "Yeni başlık"}},
+                              lang=lang)
+        return [p for part in out if isinstance(part, list) for p in part]
+
+    def test_every_example_value_compiles(self):
+        for kind, pair in ss.EXAMPLES.items():
+            for lang, ex in zip(("en", "tr"), pair):
+                if kind == "sticky":  # "[.., sticky, fold, ..]": the bar, the fold, then the page goes on
+                    screen = json.loads("[" + ex[len("[.., "):-len(", ..]")] + "]") + [{"text": "Devamı"}]
+                else:
+                    screen = [json.loads(ex)]
+                self.assertEqual(self.problems(screen, lang), [], (kind, lang))
+
+    def test_a_wrong_value_names_the_example(self):
+        cases = [({"plan": {"name": "Pro", "price": 499}}, "plan", '"price": "$49"', '"price": "499 TL"'),
+                 ({"fold": 1}, "fold", 'e.g. {"fold": true}', 'ör. {"fold": true}'),
+                 ({"sticky": "Öde"}, "sticky", '{"sticky": {"cta": "Checkout"', '{"sticky": {"cta": "Ödemeye geç"')]
+        for node, kind, en, tr in cases:
+            self.assertTrue(any(en in p for p in self.problems([node], "en")), kind)
+            self.assertTrue(any(tr in p for p in self.problems([node], "tr")), kind)
+
+    def test_align_on_a_kind_without_it_lists_the_kinds_that_take_it(self):
+        found = self.problems([{"item": {"name": "Gömlek"}, "align": "center"}])
+        self.assertTrue(any("it works on h, sub, text, link, cta and stack" in p and '"align": "center"' in p
+                            for p in found), found)
+        self.assertTrue(any('"colour" is not a property of a h node' in p
+                            for p in self.problems([{"h": "x", "colour": "#000000"}])))
+
+    def test_a_nested_marker_shows_where_it_goes(self):
+        found = self.problems([{"band": {"items": [{"fold": True}]}}])
+        self.assertTrue(any('"screen": [{"h": ".."}, {"fold": true}, {"cta": ".."}]' in p for p in found), found)
+
+    def test_a_sticky_bar_without_a_fold_shows_the_order(self):
+        text = bc._lm("sticky_fold", "en", v="variant_b")
+        self.assertIn('{"sticky": {"cta": "Checkout", "id": "cta"}}, {"fold": true}', text)
+        self.assertIn('{"fold": true}', bc._lm("sticky_fold", "tr", v="variant_b"))
+
+
 if __name__ == "__main__":
     unittest.main()

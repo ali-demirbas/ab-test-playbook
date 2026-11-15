@@ -4,7 +4,7 @@
     "name": "Ali Demirbaş"
   },
   "metadata": {
-    "description": "A/B Test Builder for Claude Code: 221 experiment scenarios (e-commerce, mobile app, SaaS, finance, insurance and pension), single-variable test design, plan audits and rendered HTML scenario cards.",
+    "description": "A/B Test Builder for Claude Code: 217 experiment scenarios (e-commerce, mobile app, SaaS, finance, insurance and pension), single-variable test design, plan audits and rendered HTML scenario cards.",
     "version": "3.3.0"
   },
   "plugins": [

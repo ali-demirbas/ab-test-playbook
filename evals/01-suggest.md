@@ -4,10 +4,10 @@
 
 **Beklenen davranış:**
 1. Ön kapı: trafik, test aracı veya kurulum bilgisi **sorulmaz** (trafik: kural 5; araç/kurulum: senaryo üretimi için gerekli değildir, `ab-test-suggest` adım 1). Sayfa paylaşılmadığı için kural 13’ün problem sorusu da zorunlu değildir; senaryo doğrudan üretilir.
-2. `cart-checkout.md` baştan sona okunmaz. Önce `grep -nE '^## |Değişken:'` ile başlıklar listelenir, yalnızca seçilen senaryo blokları okunur. Form tasarımına dair aday çıkarsa `forms-signup.md` için de aynı yol izlenir.
+2. `cart-checkout.md` baştan sona okunmaz. Önce `grep -nE '^(## |Değişken:|Etiket:|EN:)'` ile başlıklar ve etiket satırları listelenir, yalnızca seçilen senaryo blokları `read_section.py --line … --lang tr` ile, İngilizce gövdeleri olmadan okunur. `durum=klasik` bir blok kullanıcı adını anmadıkça seçilmez; seçilen üç fikirden ikisi aynı öğe düzeyinde (`düzey`, ör. iki `metin`) olmaz; kaydın `priority.inputs.effort` değeri bloğun `emek` etiketinden gelir. Form tasarımına dair aday çıkarsa `forms-signup.md` için de aynı yol izlenir.
 3. En fazla 3 **güçlü aday** gelir (mekanizma kapısını geçen ve önceliği en az Orta olan); adaylar önceliğe göre sıralanır, her birinin önceliği kayıtta tek cümleyle gerekçelendirilir. Aynı davranışsal mekanizmaya dayanan iki öneri gelmez. Sayıyı tamamlamak için zayıf aday eklenmez; tek güçlü senaryo da tam bir yanıttır (kural 9).
 4. Sayfa paylaşılmadığı için her kaydın `problem` cümlesi sepet sayfası tipinde tipik olan engeli, kendi sayfada doğrulanacak bir varsayım olarak adlandırır. Sohbete bunun için ayrı satır yazılmaz; kartların temsili olduğu satırı yalnızca kullanıcı mockup’ı kendi sayfası sanabilecekse (sitesini ya da ürününü adlandırdıysa) yazılır.
-5. Her senaryo kısa bir kayıttır ve doğrudan `ab-test-card` ile HTML kart olarak üretilir (“arşivden” ya da “arşivden uyarlandı” etiketiyle). Sohbette senaryo başına yalnızca başlık, tek etiket satırı, mekanizmayı sade sözlerle anlatan tek `Neden:` satırı (en fazla 140 karakter, sayı ya da artış iddiası yok), tek `Doğru olmalı:` satırı (B’nin dayandığı inanç ve testten önce ucuz bir yoklama; örneklem ya da süre yok) ve kart dosyası kalır; KPI, guardrail, öncelik gerekçesi ya da üç kutu sohbete yazılmaz (kural 9).
+5. Her senaryo kısa bir kayıttır ve doğrudan `ab-test-card` ile HTML kart olarak üretilir (“arşivden” ya da “arşivden uyarlandı” etiketiyle). Sohbette senaryo başına yalnızca başlık, tek etiket satırı, mekanizmayı sade sözlerle anlatan tek `Neden:` satırı (en fazla 140 karakter, sayı ya da artış iddiası yok), `Doğru olmalı:` ve `Önce yokla:` satırları (B’nin dayandığı inanç ve testten önce ucuz bir yoklama; örneklem ya da süre yok) ve kart dosyası kalır; KPI, guardrail, öncelik gerekçesi ya da üç kutu sohbete yazılmaz (kural 9).
 6. Marka kılavuzu **sorulmaz**: nötr palet kullanılır; ne kartta ne sohbette marka ya da yeniden renklendirme notu vardır (kural 12).
 7. Her kaydın birincil KPI’ı paydasıyla yazılır; guardrail “…memeli” kalıbındadır ve birincilin tümleyeni değildir. Kart bunları göstermez: yalnızca başlık, yan yana iki mockup, halka ve kısa etiketi vardır.
 8. Örnekler moda bağlamına yerelleştirilmiş (kulaklık örneği geçmiyor).
@@ -47,17 +47,18 @@
 **Girdi D (kısa kayıt):** “Ürün detay sayfam için test öner.” (Sayfa paylaşılmamış; `product-detail.md` içinde uyan çok sayıda senaryo var.)
 
 **Beklenen davranış:**
-1. Arşiv yalnızca `grep -nE '^## |Değişken:' <dosya>` ile listelenen başlıklar ve kısa listeye giren bloklar (başlık satırından sonraki `---` ayracına kadar, `python3 scripts/read_section.py <dosya> --line <başlık satırı>` ile) üzerinden okunur; hiçbir aşama dosyası baştan sona, bütün dosyalar hiçbir zaman okunmaz. KPI adı `kpi-glossary.md` içinde `grep` ile aranır, sözlük bütün olarak okunmaz. `methodology.md` turun başında okunmaz; bir karar gerektirdiğinde (düzenleme, erişilebilirlik, hassas alan, etik) yalnızca ilgili bölüm okunur. Bunlar araç çağrıları kaydında görülür.
+1. Arşiv yalnızca `grep -nE '^(## |Değişken:|Etiket:|EN:)' <dosya>` ile listelenen başlıklar ve kısa listeye giren bloklar (başlık satırından sonraki `---` ayracına kadar, `python3 scripts/read_section.py <dosya> --line <başlık satırı> --lang tr` ile) üzerinden okunur; hiçbir aşama dosyası baştan sona, bütün dosyalar hiçbir zaman okunmaz. KPI adı `kpi-glossary.md` içinde `grep` ile aranır, sözlük bütün olarak okunmaz. `methodology.md` turun başında okunmaz; bir karar gerektirdiğinde (düzenleme, erişilebilirlik, hassas alan, etik) yalnızca ilgili bölüm okunur. Bunlar araç çağrıları kaydında görülür.
 2. Tur en fazla 3 kayıt döndürür. Her kayıt `validate_scenario_json.py` ile hatasız geçer ve on bilgiyi taşır: soru biçiminde `title`, `problem`, tek cümlelik `mechanism`, `variable`, iki varyant ve `difference`, paydasıyla `primary_kpi`, `guardrail`, `source` (`adapted_from` ile) ve `evidence`, gerekçeli `priority`, yalnızca gerekiyorsa `warnings`. Kayıtta `detail` yoktur; üç kutu yeniden üretilmez.
-3. Sohbet her senaryo için tam olarak beş satırdır:
+3. Sohbet her senaryo için tam olarak altı satırdır; kart dosyası dışındakiler `validate_scenario_json.py --chat` çıktısından aynen kopyalanır (araç çağrıları kaydında görülür):
    ```
    **1. <başlık>**
-   Öncelik: Orta · Kaynak: arşivden · Kanıt: arşiv örüntüsü
+   Öncelik: Orta (<puan>/9) · Kaynak: arşivden · Kanıt: arşiv örüntüsü
    Neden: <mekanizma, sade sözlerle, tek cümle>
-   Doğru olmalı: <B’nin dayandığı inanç>; önce yokla: <ucuz yoklama>
+   Doğru olmalı: <B’nin dayandığı inanç>
+   Önce yokla: <ucuz yoklama>
    `<kart dosyası>`
    ```
-   Senaryo başına başka metin yazılmaz: KPI, öncelik gerekçesi, eleme gerekçesi ya da denetçi raporu yok (kullanıcı isterse verilir). Kanıt etiketi kural 10’daki dört addan biridir (İngilizcede “industry observation”, asla “sector observation”). Listeden sonra yalnızca geçerli olan satırlar gelir (ör. `Başlamadan önce:`, `Koşullu (<n>):`, sıra satırı), her biri tek satır ve her bilgi bir kez.
+   Senaryo başına başka metin yazılmaz: KPI, öncelik gerekçesi, eleme gerekçesi ya da denetçi raporu yok (kullanıcı isterse verilir). Kanıt etiketi kural 10’daki dört addan biridir (İngilizcede “industry observation”, asla “sector observation”). Listeden sonra `Başlamadan önce:` satırı (kapı yoksa “yok”) ve yalnızca geçerli olan satırlar gelir (ör. `Koşullu (<n>):`, sıra satırı), her biri tek satır ve her bilgi bir kez. Kayıtlar `new_record.py` iskeletinden başlar: ilk doğrulamada `⟦…⟧` ipucu kalmaz.
 4. 3’ten fazla güçlü aday varsa sıralamada kalan en güçlü aday tek satırla adlandırılır (“Sıralamada kalan güçlü aday: <başlık>.”), kalanların sayısı söylenir ve devam teklifi turun tek sorusu olur (kural 19, tür 8). Daha yüksek türden bir soru varken de o satır yazılır.
 5. Paydaş özeti yalnızca 1. senaryo içindir; ardından tek satır gelir: “2 ve 3 için karar özetini istersen yazarım.”
 

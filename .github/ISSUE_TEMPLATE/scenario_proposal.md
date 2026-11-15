@@ -6,10 +6,11 @@ labels: scenario
 ---
 
 <!--
-Scenarios in knowledge/scenarios/ are written in Turkish; English is fine here
-and will be translated when the scenario is added. Use exactly the three boxes
-below with five items each (CONTRIBUTING.md). No vendor, brand or study names:
-state the mechanism, not who reported it.
+Scenarios in knowledge/scenarios/ are written in Turkish with an English title
+and, once translated, an English body (knowledge/scenarios/FORMAT.md). English
+is fine here; the maintainer fills in the other language and the tag line. Use
+the three boxes below with 3 to 6 items each (CONTRIBUTING.md). No vendor, brand
+or study names: state the mechanism, not who reported it.
 -->
 
 **Journey stage / file**
@@ -31,26 +32,20 @@ objection it answers, one of the six lenses: Trust / Price / Fit / Timing / Effo
 **Evidence level**
 <!-- your own test data / an archive pattern (a curated idea, not a test result) / industry observation / intuition. Don't call it "tested" or "proven" unless it is your own data. -->
 
-**Test edilmesi gerekenler (What to test)**: 5 items, each `Label: question?`, at least one device or segment question
+**Test edilmesi gerekenler (What to test)**: 3 to 6 items, each `Label: question?`, at least one device or segment question, at most one `Sonraki test:` (next test) item that builds on this scenario's winning B
 1.
 2.
 3.
-4.
-5.
 
-**Takip edilecek ana KPI’lar (Primary KPIs to track)**: 5 items, the first is the primary metric (a rate with its denominator, not a count), at least one guardrail in "must not ..." form. The guardrail is an independent harm, never the complement of the primary; a lagging one (returns, cancellations) names its follow-up window
+**Takip edilecek ana KPI’lar (Primary KPIs to track)**: 3 to 6 items, the first is the primary metric (a rate with its denominator, not a count), at least one guardrail in "must not ..." form. The guardrail is an independent harm, never the complement of the primary; a lagging one (returns, cancellations) names its follow-up window
 1. Primary:
 2.
-3.
-4.
-5. Guardrail:
+3. Guardrail:
 
-**Yapılmaması gerekenler (Never do)**: 5 items, at least one protecting variable isolation
+**Yapılmaması gerekenler (Never do)**: 3 to 6 items, at least one protecting variable isolation
 1.
 2.
 3.
-4.
-5.
 
 **Market or regulation dependency**
 <!-- Does this depend on payment culture, price-display law, consent rules? Which market? Does it sit in a legally bound area (discount display, consent, subscription cancellation, credit cost and rate display, insurance or pension offer and contract steps, data-purpose copy)? "None" is a valid answer. -->

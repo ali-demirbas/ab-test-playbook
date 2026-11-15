@@ -2,7 +2,7 @@
 
 [![validate](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/ali-demirbas/ab-test-playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
-![Scenarios](https://img.shields.io/badge/scenarios-221-blue)
+![Scenarios](https://img.shields.io/badge/scenarios-217-blue)
 
 **Dil:** [English](README.md) · [Türkçe](README.tr.md)
 
@@ -14,7 +14,7 @@ Sayfanızın ekran görüntüsünü tek değişkenli A/B test planlarına çevir
 
 <p align="center"><sub>Gerçek bir kart, eklentinin her test için çizdiği haliyle: kurgusal mağaza, nötr renkler. <a href="https://ali-demirbas.github.io/ab-test-playbook/">Canlı demo</a> · <a href="docs/demo/">diğer örnek kartlar</a></sub></p>
 
-- **Siz verirsiniz:** sayfanızın ekran görüntüsünü, adresini ya da kısa bir tarifini. Paylaşacak sayfa yoksa sayfa türünü söyleyin ("ödeme sayfam"), 221 senaryoluk derlenmiş arşivden fikir seçer.
+- **Siz verirsiniz:** sayfanızın ekran görüntüsünü, adresini ya da kısa bir tarifini. Paylaşacak sayfa yoksa sayfa türünü söyleyin ("ödeme sayfam"), 217 senaryoluk derlenmiş arşivden fikir seçer.
 - **Siz alırsınız:** bir ile üç arası test planı. Her planda tek değişiklik, neden işe yarayacağı, bir birincil KPI ve bir guardrail vardır. Plan, A ile B'nin yan yana durduğu ve değişikliğin halkayla işaretlendiği bir HTML kart olarak gelir.
 - **Yapmadıkları:** örneklem, süre, anlamlılık ya da kazanan hesaplamaz, analitik ya da test aracınıza bağlanmaz, canlı sitenize dokunmaz. Sonuçlar test aracınızda kalır.
 
@@ -24,7 +24,7 @@ Sırada neyi test edeceğine karar veren growth, CRO ve ürün ekipleri için. K
 
 ## 3 adımda ilk kart
 
-**Gerekenler:** Claude Code ve Python 3.9 veya üstü. Node 18 veya üstü ve Playwright yalnızca son görsel kontrol için gerekir (2. adım).
+**Gerekenler:** Claude Code ve Python 3.9 veya üstü. Node 18 veya üstü ve Playwright yalnızca son görsel kontrol için gerekir (2. adım). Terminale yeni misiniz? [Buradan başlayın](docs/install.tr.md#terminale-yeni-misiniz).
 
 **1. Eklentiyi kurun.** Şunları Claude Code'a yazın:
 
@@ -57,28 +57,55 @@ En fazla tek soru sorar (hangi problemi çözdüğünüz). Trafik, araç ya da b
 
 Codex, Gemini CLI ya da claude.ai mı kullanıyorsunuz, güncelleme mi yapacaksınız, bir şey ters mi görünüyor? [Kurulum, güncelleme ve sorun giderme](docs/install.tr.md) sayfasına bakın.
 
+## Daha az izin sorusu
+
+Claude Code eklentinin çalıştırdığı her betikten önce izin ister. Yalnızca eklentinin kendi betiklerine bir kez izin vermek için önce eklenti klasörünü yazdırın:
+
+```bash
+python3 -c "import json,os;d=json.load(open(os.path.expanduser('~/.claude/plugins/installed_plugins.json')))['plugins'];print([i['installPath'] for k,v in d.items() if k.startswith('ab-test-playbook@') for i in v][0])"
+```
+
+Sonra şunu `~/.claude/settings.json` dosyasına ekleyin, `<PLUGIN_ROOT>` yerine o yolu yazın. Eklenti güncellenince satırı yeniden çalıştırıp yolu değiştirin. Her kuralın ne için olduğu: [kurulum rehberi](docs/install.tr.md#daha-az-izin-sorusu).
+
+```json
+{"permissions": {
+  "additionalDirectories": ["<PLUGIN_ROOT>"],
+  "allow": [
+    "Bash(python3 <PLUGIN_ROOT>/scripts/validate_scenario_json.py *)",
+    "Bash(python3 <PLUGIN_ROOT>/scripts/new_record.py *)",
+    "Bash(python3 <PLUGIN_ROOT>/scripts/build_card.py *)",
+    "Bash(python3 <PLUGIN_ROOT>/scripts/read_section.py *)",
+    "Bash(python3 <PLUGIN_ROOT>/scripts/validate_input.py *)",
+    "Bash(python3 <PLUGIN_ROOT>/scripts/feasibility.py *)",
+    "Bash(node <PLUGIN_ROOT>/scripts/render_check.mjs *)",
+    "Bash(test -d *)",
+    "Bash(node -e \"require.resolve('playwright')\")"
+  ]
+}}
+```
+
 ## Neler isteyebilirsiniz
 
 | Siz şöyle dersiniz | Şu olur |
 |---|---|
 | `/ab-test design`: "buna test tasarla" ve ekran görüntüsü, adres ya da tarif | Sayfanız için en fazla üç yeni tek değişkenli test tasarlar, her biri kartıyla gelir |
 | `/ab-test suggest`: "ürün sayfam için test öner" | Arşivden uyan fikirleri seçer, yüksek, orta, düşük diye sıralar ve ilk üçünü çizer |
-| `/ab-test audit`: "bu test doğru kurulmuş mu?" ve planınız | Planı trafik almadan önce denetler: tek varyantta iki değişiklik, asıl sonucun yerine geçen tıklama metriği, eksik guardrail, erişilebilirlik ve uyum açıkları, dark pattern (kullanıcıyı yanıltan tasarım) |
+| `/ab-test audit`: "bu test doğru kurulmuş mu?" ve planınız | Planı trafik almadan önce denetler: tek varyantta iki değişiklik, asıl sonucun yerine geçen tıklama metriği, eksik guardrail, erişilebilirlik ve uyum açıkları, dark pattern (kullanıcıyı yanıltan tasarım). Sonda karta çevrilebilecek düzeltilmiş bir plan verir |
 | `/ab-test card`: "bunu karta çevir" | Elinizdeki senaryoyu kart olarak çizer |
 | "2. öneriyi detaylandır" | Tek bir önerinin ayrıntısını sohbette verir: test edilmesi gerekenler, takip edilecek KPI'lar, yapılmaması gerekenler |
+| "Hızlı taslak" | Aynı kartlar dakikalar içinde, henüz incelenmeden ve öyle etiketli gelir; "tamamla" derseniz iki inceleme yapılır |
 | "Bu anlamlı mı?" | Kapsam dışı. Test aracınızın raporunu gösteren tek satır ve planı denetleme teklifi |
 
-Bütün komutlar, uçtan uca bir oturum ve test hafızası dosyası (`.abtest-history.md`, kaybetmiş bir test yeniden önerilmesin diye) [başvuru](docs/reference.tr.md) sayfasında.
+Bütün komutlar, uçtan uca bir oturum ve test hafızası dosyası (`.abtest-history.md`, kaybetmiş bir test yeniden önerilmesin diye) [başvuru](docs/reference.tr.md) sayfasında; guardrail, birincil KPI ve maruz kalma gibi terimler oradaki [8 terimlik sözlükte](docs/reference.tr.md#sözlük).
 
 ## Neden kullanılır
 
 | Sistem olmadan | A/B Test Builder ile |
 |---|---|
-| Test fikirleri hafızadan ya da o gün akla gelenden çıkar | Fikirler 221 senaryoluk arşivden sıralı gelir ya da sayfanız için gerekçesi yazılarak tasarlanır. "Daha dikkat çekici olur" gerekçe sayılmaz |
+| Test fikirleri hafızadan ya da o gün akla gelenden çıkar | Fikirler 217 senaryoluk arşivden sıralı gelir ya da sayfanız için gerekçesi yazılarak tasarlanır. "Daha dikkat çekici olur" gerekçe sayılmaz |
 | Varyant B sessizce iki şeyi değiştirir, sonuç açıklanamaz | Test başına tek değişken. İkinci bir incelemeci çizilen kartta gizli ikinci farkı arar |
 | Beş metrik izlenir, hiçbiri kararı vermez | Kararı tek birincil KPI verir, bozulmaması gerekeni tek guardrail korur |
 | Kupon alanını gizlemek geliri artırır, çünkü kodu olan artık tam fiyat öder ve bu kazanç gibi okunur | Bir kullanıcı faydasına dokunan değişiklikte gelir hedefi, o faydayı koruyan guardrail olmadan reddedilir |
-| Biri isterse dark pattern yayına girer | İstense bile reddedilir, nedeni söylenir |
 
 Karşılaştırmanın tamamı [başvuru](docs/reference.tr.md#neden-rastgele-test-etmek-yerine-bir-rehber) sayfasında.
 
@@ -91,13 +118,12 @@ Karşılaştırmanın tamamı [başvuru](docs/reference.tr.md#neden-rastgele-tes
 
 ## Dil
 
-Skill'ler yazdığınız dilde yanıt verir, kartlar da o dilde gelir. Senaryo arşivinin kendisi Türkçedir. Metrik kısaltmaları (CR, AOV, LCP) olduğu gibi kalır.
+Skill'ler yazdığınız dilde yanıt verir, kartlar da o dilde gelir. Senaryo arşivi iki dillidir: İngilizce bir konuşma her senaryoyu İngilizce, Türkçe konuşma Türkçe okur. Metrik kısaltmaları (CR, AOV, LCP) olduğu gibi kalır.
 
 ## Daha fazlası
 
 - [Canlı demo](https://ali-demirbas.github.io/ab-test-playbook/): Türkçe ve İngilizce örnek kartlar
 - [SSS](FAQ.md): önce neyi test etmeli, guardrail, düşük trafik, sık yapılan hatalar (İngilizce)
-- [Kurulum, güncelleme ve sorun giderme](docs/install.tr.md): bütün kurulum yolları ve görsel kontrol
 - [Başvuru](docs/reference.tr.md): bütün komutlar, tam bir oturum, repoda ne var, kapsam
 - [Örnekler](examples/): uçtan uca taşınmış bir senaryo kaydı ve hatalı bir planın denetimi
 - [Katkı](CONTRIBUTING.md) · [Değişiklik günlüğü](CHANGELOG.md) · [Gizlilik](PRIVACY.md)

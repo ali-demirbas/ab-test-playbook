@@ -1413,10 +1413,15 @@ CARD_MSG = {
                      "değişebilir, değişen metin, boyut ya da biçim ikinci bir değişkendir"),
     "outside": ("A and B differ outside any ring ({where}: {na} node(s) in A, {nb} in B), e.g. {what}; a second "
                 "variable is refused, and a linked consequence of the variable belongs inside the ring (one ring "
-                "around the group, its label naming the consequence)",
+                "around the group, its label naming the consequence). Drawn from one card.screen with one "
+                "card.change, the arms can't differ elsewhere: {{\"op\": \"edit\", \"target\": \"<id>\", "
+                "\"set\": {{\"cta\": \"<B's text>\"}}, \"label\": \"<two to four words>\"}}; a consequence "
+                "goes in card.soft",
                 "A ile B halkanın dışında da farklı ({where}: A'da {na}, B'de {nb} düğüm), ör. {what}; ikinci bir "
                 "değişken reddedilir, değişkenin bağlı bir sonucu halkanın içine alınır (grubun etrafında tek halka, "
-                "etiketi sonucu adlandırır)"),
+                "etiketi sonucu adlandırır). Tek card.screen ve tek card.change ile çizilen kollar başka yerde "
+                "farklılaşamaz: {{\"op\": \"edit\", \"target\": \"<kimlik>\", \"set\": {{\"cta\": "
+                "\"<B'nin metni>\"}}, \"label\": \"<iki ila dört kelime>\"}}; bir sonuç card.soft'a yazılır"),
     "colour_b": ("inline colour only in Variant B, inside the ring: {vals}; a colour that exists only in B is a "
                  "second variable unless colour is what the test changes (the manifest lists it for the reviewer)",
                  "yalnızca B varyantında, halkanın içinde geçen satır içi renk: {vals}; yalnızca B'de olan renk, "
@@ -2025,8 +2030,11 @@ LAYOUT_MSG = {
                        "{v}: .r-sticky tam olarak bir öğe taşır (sabit öğe; değişken oysa halkalı), çıplak metin "
                        "taşımaz"),
     "sticky_fold": ("{v}: .r-sticky is the bar at the bottom of the first view: the screen needs a .r-fold and the "
-                    "bar comes before it",
-                    "{v}: .r-sticky ilk ekranın altındaki bardır: ekranda bir .r-fold olmalı ve bar ondan önce gelir"),
+                    "bar comes before it; in card.screen: [{{\"h\": \"..\"}}, {{\"sticky\": {{\"cta\": "
+                    "\"Checkout\", \"id\": \"cta\"}}}}, {{\"fold\": true}}, {{\"text\": \"..\"}}]",
+                    "{v}: .r-sticky ilk ekranın altındaki bardır: ekranda bir .r-fold olmalı ve bar ondan önce gelir; "
+                    "card.screen içinde: [{{\"h\": \"..\"}}, {{\"sticky\": {{\"cta\": \"Ödemeye geç\", "
+                    "\"id\": \"cta\"}}}}, {{\"fold\": true}}, {{\"text\": \"..\"}}]"),
     "pinned": ("difference 'move': {where} says the element is pinned (“{word}”) but Variant B has no .r-sticky: a "
                "pinned element is drawn as a bar at the bottom of the first view (.r-sticky with .r-fold), not inside "
                "the page flow",
@@ -4183,7 +4191,9 @@ def record_fingerprint_of(record):
 #   small-fix fields: title, problem, mechanism (wording); primary_kpi and
 #     guardrail denominator (phrasing); evidence.note, priority.rationale,
 #     source_note; objection; exposure; warnings and invariants (adding a
-#     required one, completing its text); an assumption's text and question.
+#     required one, completing its text); an assumption's text and question;
+#     must_be_true (the chat's Doğru olmalı and Önce yokla lines, which the
+#     review reads with the rest of the planned chat, never stamped).
 #   covered: id, lang, stage, device, market, variable, difference, variants,
 #     primary_kpi name and direction, guardrail name, kind, direction and
 #     criterion, source, adapted_from, evidence.level, priority tier and
@@ -4196,7 +4206,7 @@ def record_fingerprint_of(record):
 CRITIC_STAMP_SCHEME = "ab-test-playbook/scenario-critic/v2"
 CRITIC_UNSTAMPED = ("review", "card")  # as validate_scenario_json.FINGERPRINT_EXCLUDED
 CRITIC_SMALL_FIX = ("title", "problem", "mechanism", "source_note", "objection", "exposure", "warnings",
-                    "invariants")
+                    "invariants", "must_be_true")
 CRITIC_SMALL_FIX_IN = {"primary_kpi": ("denominator",), "guardrail": ("denominator",), "evidence": ("note",),
                        "priority": ("rationale",)}
 CRITIC_SMALL_FIX_ITEMS = {"assumptions": ("text", "question")}
@@ -4247,12 +4257,12 @@ STAMP_MSG = {
                "review.{key}.fingerprint bir sha256 onaltılık dizesi olmalı (64 küçük harf karakter), gelen {val!r}"),
     "stale_critic": ("review.scenario_critic.fingerprint ({val}…) doesn't match the record: the record changed after "
                      "scenario-critic reviewed it, outside the small-fix fields (title, problem, mechanism, the "
-                     "denominators, notes, rationale, objection, exposure, warnings, invariants, assumption wording), "
-                     "so it goes back to scenario-critic",
+                     "denominators, notes, rationale, objection, exposure, warnings, invariants, assumption wording, "
+                     "must_be_true), so it goes back to scenario-critic",
                      "review.scenario_critic.fingerprint ({val}…) kayıtla eşleşmiyor: kayıt scenario-critic "
                      "incelemesinden sonra küçük düzeltme alanlarının (başlık, problem, mekanizma, paydalar, notlar, "
-                     "gerekçe, itiraz, maruz kalma, uyarılar, değişmezler, varsayım metni) dışında değişmiş, yeniden "
-                     "scenario-critic'e gider"),
+                     "gerekçe, itiraz, maruz kalma, uyarılar, değişmezler, varsayım metni, must_be_true) dışında "
+                     "değişmiş, yeniden scenario-critic'e gider"),
     "critic_refused": ("no critic stamp: {n} validator error(s); fix the record first",
                        "eleştirmen damgası yok: {n} doğrulayıcı hatası; önce kaydı düzeltin"),
     "quick_stamp": ("--stamp {path} is a quick draft (fast mode): it is never stamped; after scenario-critic's PASS "
