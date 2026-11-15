@@ -402,12 +402,15 @@ MSG = {
     "kpi_mismatch": ("{path}: {name!r} adı koşullu bir kitleyi ölçüyor ({word!r}: teklif ya da sipariş başına, "
                      "X yapanlar arasında) ama payda {den!r} atanan kitle; ad ve payda farklı şeyleri ölçüyor. "
                      "Atanan ziyaretçi başına metriğin adını yazın ya da koşullu paydayı yazıp metriği detayda "
-                     "etiketli bir tanısal olarak tutun; birincil olmaz (kural 2)",
+                     "etiketli bir tanısal olarak tutun; birincil olmaz. Düzeltilmiş örnek: “Teklif → Sözleşme” "
+                     "yerine {{\"name\": \"Sözleşme Oranı (30 gün)\", \"denominator\": \"Teste atanan ziyaretçi\"}} "
+                     "(kural 2)",
                      "{path}: the name {name!r} measures a conditional population ({word!r}: per quote or order, "
                      "among users who did X) but the denominator {den!r} is the assigned population; name and "
                      "denominator measure different things. Name the per-assigned-visitor metric, or write the "
                      "conditional denominator and keep the metric a labelled diagnostic in the detail view; it is "
-                     "never the primary (rule 2)"),
+                     "never the primary. Corrected example: instead of \"Quote → Contract\", {{\"name\": \"Contract "
+                     "Rate (30 days)\", \"denominator\": \"Visitors assigned to the test\"}} (rule 2)"),
     "kpi_mismatch_reverse": ("{path}: {name!r} adı atanan ziyaretçi başına diyor ama payda {den!r} bir {fam} "
                              "kitlesi; ad ve payda farklı şeyleri ölçüyor (kural 2)",
                              "{path}: the name {name!r} says per assigned visitor but the denominator {den!r} belongs "
@@ -415,12 +418,18 @@ MSG = {
     "kpi_glossary_family": ("{path}: {name!r} sözlükte {canon!r}: {definition}; paydası “{payda}”, yani bir {gfam} "
                             "kitlesi. Kayıttaki payda {den!r} bir {rfam} kitlesi, bu yüzden kayıt bu adla başka bir "
                             "şeyi ölçüyor.{hint} Bir KPI adının tek anlamı vardır: paydası bu olan sözlük adını "
-                            "kullanın ya da metriğe yeni bir ad verin (knowledge/kpi-glossary.md, kural 2)",
+                            "kullanın ya da metriğe yeni bir ad verin. Düzeltilmiş örnek: {example} "
+                            "(knowledge/kpi-glossary.md, kural 2)",
                             "{path}: {name!r} is the glossary's {canon!r}: {definition}; counted over “{payda}” (the "
                             "{gfam} family). The denominator {den!r} belongs to the {rfam} family, so the record "
                             "measures something else under this name.{hint} One KPI name has one meaning: use the glossary name "
-                            "whose denominator this is, or give the metric a new name (knowledge/kpi-glossary.md, "
-                            "rule 2)"),
+                            "whose denominator this is, or give the metric a new name. Corrected example: {example} "
+                            "(knowledge/kpi-glossary.md, rule 2)"),
+    "kpi_assigned_hint": (" Paydadaki “atanan” sözü onu atanan kitlesine çeviriyor; atama her metrikte zaten vardır, "
+                          "payda yalnız neyin sayıldığını söyler, o sözü çıkarın.",
+                          " The word \"assigned\" in the denominator turns it into the assigned population; every "
+                          "metric is read in assigned traffic already, the denominator only says what is counted, so "
+                          "drop that word."),
     "kpi_trigger_hint": (" Atama o tetikte yapılıyorsa paydada söyleyin: “Teste atanan ziyaretçi (atama … "
                          "ulaşınca)”.",
                          " If assignment happens at that trigger, say so in the denominator: \"Visitors assigned "
@@ -442,13 +451,15 @@ MSG = {
                           "benefit ({word!r}); the guardrail must watch that benefit (e.g. \"Coupon-Order Visitor Rate\" must "
                           "not drop), or the lost benefit reads as a revenue win (rule 3)"),
     "a11y_missing": ("warnings: değişiklik etkileşimli bir öğeye dokunuyor ({word!r}); geçti/kaldı ölçütlerini taşıyan "
-                     "'accessibility' türünde bir uyarı ekleyin: {criteria} (kural 3)",
+                     "'accessibility' türünde bir uyarı ekleyin: {criteria} (kural 3). Örnek: "
+                     "{{\"type\": \"accessibility\", \"text\": \"{example}\"}}",
                      "warnings: the change touches an interactive element ({word!r}); add a warning of type "
-                     "'accessibility' that states its pass/fail criteria: {criteria} (rule 3)"),
+                     "'accessibility' that states its pass/fail criteria: {criteria} (rule 3). Example: "
+                     "{{\"type\": \"accessibility\", \"text\": \"{example}\"}}"),
     "a11y_criteria": ("warnings: erişilebilirlik uyarısında şu ölçüt(ler) yok: {criteria} ({word!r} için); her biri "
-                      "geçti/kaldı ölçütü olarak yazılır (kural 3)",
+                      "geçti/kaldı ölçütü olarak yazılır, ör. “{example}” (kural 3)",
                       "warnings: the accessibility warning does not state: {criteria} (for {word!r}); write each as a "
-                      "pass/fail criterion (rule 3)"),
+                      "pass/fail criterion, e.g. \"{example}\" (rule 3)"),
     "numeric_unsourced": ("numeric_change: {val!r} rakamın nereden geldiğini söylemiyor; sayfada görünüyorsa "
                           "“sayfadaki …”, kullanıcı verdiyse “kullanıcının verdiği …” ya da nasıl hesaplandığını "
                           "(“1.500 − 1.230 = 270”) yazın; doğrulanmadıysa rakamı sorusuyla bir kritik varsayım olarak "
@@ -457,15 +468,14 @@ MSG = {
                           "it (\"from the page\"), that the user gave it, or how it was derived (\"1,500 − 1,230 = "
                           "270\"); if it isn't verified, mark the figure as a critical assumption with its question "
                           "(rule 10; mockup-style → Numbers the mockup needs but must not invent)"),
-    "a11y_threshold": ("warnings: erişilebilirlik uyarısındaki {what} {val!r} eşiğin altında; en az {need} "
-                       "(kural 3)",
+    "a11y_threshold": ("warnings: erişilebilirlik uyarısındaki {what} {val!r} eşiğin altında; en az {need}, "
+                       "{val!r} yerine “{fix}” yazın (kural 3)",
                        "warnings: the accessibility warning states {what} {val!r}, below the threshold: at least "
-                       "{need} (rule 3)"),
+                       "{need}; write \"{fix}\" instead of {val!r} (rule 3)"),
     "invariants": ("invariants: değişiklik işlevsel bir öğeye dokunuyor ({word!r}); iki kolda aynı çalışması gereken "
-                   "işlevleri (1-5 cümle) yazın, ör. “Geçerli bir kod iki kolda da aynı adımla uygulanır.” (kural 4)",
+                   "işlevleri (1-5 cümle) yazın, ör. \"invariants\": [“{example}”] (kural 4)",
                    "invariants: the change touches a functional element ({word!r}); list the functions that must work "
-                   "identically in both arms (1-5 sentences), e.g. \"A valid code applies in the same step in both "
-                   "arms.\" (rule 4)"),
+                   "identically in both arms (1-5 sentences), e.g. \"invariants\": [\"{example}\"] (rule 4)"),
     "regulated": ("warnings: kayıt düzenlemeye tabi bir akışta görünüyor ({word}); 'regulation' türünde bir uyarı "
                   "ekleyin (kural 11), ör. “B’nin metni için uyum onayı alınmadan teste trafik açılmaz.”",
                   "warnings: the record looks like a regulated flow ({word}); add a warning of type 'regulation' "
@@ -865,6 +875,32 @@ FUNCTIONAL_TR = ("kupon", "indirim", "ödeme", "sepet", "filtre", "arama", "giri
 FUNCTIONAL_EN = ("coupon", "discount", "payment", "cart", "checkout", "filter", "search", "login", "signup",
                  "sign-up")
 FUNCTIONAL_RE = keywords(FUNCTIONAL_TR, FUNCTIONAL_EN)
+# The invariant a refusal suggests, by what the change touches (TR, EN): the first family whose keywords
+# the hit word starts with, else the generic one for any operated element.
+INVARIANT_EXAMPLES = (
+    (("kupon", "indirim", "coupon", "discount", "voucher", "promo"),
+     ("Geçerli bir kod iki kolda da aynı adımla uygulanır.", "A valid code applies in the same step in both arms.")),
+    (("arama", "filtre", "search", "filter"),
+     ("Aynı arama iki kolda da aynı sonuçları döndürür.", "The same query returns the same results in both arms.")),
+    (("ödeme", "sepet", "payment", "cart", "checkout"),
+     ("Sepet tutarı iki kolda da aynı hesapla çıkar.", "The cart total is computed the same way in both arms.")),
+    (("form", "alan", "giriş", "kayıt", "onay kutusu", "field", "input", "checkbox", "login", "sign"),
+     ("Alanın doğrulaması ve hata mesajları iki kolda da aynıdır.",
+      "The field's validation and error messages are the same in both arms.")),
+    (("modal", "pop-up", "popup", "açılır pencere", "alt sayfa", "diyalog", "iletişim kutusu", "overlay", "sheet",
+      "bottom sheet", "dialog"),
+     ("Pencere iki kolda da aynı içerikle açılır ve aynı yollarla kapanır.",
+      "The window opens with the same content and closes the same ways in both arms.")),
+)
+INVARIANT_GENERIC = ("Öğeye dokunmak iki kolda da aynı hedefi açar.", "Tapping the element opens the same destination in "
+                                                                     "both arms.")
+
+
+def invariant_example(word, lang="tr"):
+    """A checkable invariant for the element `word` names, in `lang`."""
+    low = (word or "").casefold()
+    pair = next((ex for stems, ex in INVARIANT_EXAMPLES if low.startswith(stems)), INVARIANT_GENERIC)
+    return pair[1 if lang == "en" else 0]
 # Elements that take more accessibility criteria than a link or a button.
 MODAL_RE = keywords(("modal", "pop-up", "popup", "açılır pencere", "alt sayfa", "diyalog", "iletişim kutusu"),
                     ("overlay", "bottom sheet", "sheet", "dialog"))
@@ -977,6 +1013,53 @@ A11Y_MODAL = (
 A11Y_AUTO_ADVANCE = (
     ("durdurulabilmesi", "a way to pause it", re.compile(r"durdur|duraklat|pause", re.IGNORECASE)),
 )
+# Each criterion written the way the checks above read it, (TR, EN): the corrected value a refusal
+# prints, and the warning new_record.py writes. tests/test_v34_validator.py proves every one passes.
+A11Y_PHRASES = {
+    A11Y_BASE[0][2]: ("dokunma alanı en az 44×44 pt / 48×48 dp", "touch target at least 44×44 pt / 48×48 dp"),
+    A11Y_BASE[1][2]: ("metin kontrastı en az 4.5:1", "text contrast at least 4.5:1"),
+    A11Y_BASE[2][2]: ("klavyeyle erişim", "keyboard access"),
+    A11Y_BASE[3][2]: ("ekran okuyucuda adıyla okunma", "a name screen readers announce"),
+    A11Y_MODAL[0][2]: ("açılınca odağı alma", "taking focus when it opens"),
+    A11Y_MODAL[1][2]: ("görünür bir kapat düğmesi", "a visible close control"),
+    A11Y_MODAL[2][2]: ("Esc ile kapanma", "closing with Esc"),
+    A11Y_AUTO_ADVANCE[0][2]: ("otomatik geçişin durdurulabilmesi", "a way to pause auto-advance"),
+}
+
+
+def a11y_criteria(text):
+    """[(criterion, the word that asks for it)] the change described by `text` needs (rule 3)."""
+    word = first_hit(INTERACTIVE_RE, text, NOT_INTERACTIVE)
+    needed = [(c, word) for c in A11Y_BASE] if word else []
+    modal = MODAL_RE.search(text)
+    if modal:
+        needed += [(c, modal.group(0)) for c in A11Y_MODAL]
+    carousel = CAROUSEL_RE.search(text)
+    if carousel and AUTO_ADVANCE_RE.search(text):
+        needed += [(c, carousel.group(0)) for c in A11Y_AUTO_ADVANCE]
+    return needed
+
+
+def a11y_phrase(criteria, lang="tr"):
+    """The criteria as one pass/fail clause: "dokunma alanı …, … ve Esc ile kapanma"."""
+    parts = [A11Y_PHRASES[c[2]][1 if lang == "en" else 0] for c in criteria]
+    if len(parts) < 2:
+        return "".join(parts)
+    return "%s %s %s" % (", ".join(parts[:-1]), "and" if lang == "en" else "ve", parts[-1])
+
+
+def a11y_example(criteria, lang="tr"):
+    """A whole accessibility warning text stating `criteria`, as the checks read it."""
+    if lang == "en":
+        return "Must pass: %s." % a11y_phrase(criteria, lang)
+    return "Geçmeli: %s." % a11y_phrase(criteria, lang)
+
+
+def target_fix(figure):
+    """The touch-target size to write instead of a lower one: 48×48 dp, else 44×44 in the stated unit."""
+    m = SIZE_RE.search(figure or "")
+    unit = m.group(3).lower() if m else "pt"
+    return "48×48 dp" if unit == "dp" else "44×44 %s" % ("pt" if unit.startswith("pi") else unit)
 
 # Rule 3: a revenue primary on a change to a user benefit can read the lost
 # benefit as a win (hide a coupon field and code holders pay full price), so
@@ -1337,6 +1420,50 @@ def _family_label(fams, lang):
     return " + ".join(FAMILY_LABEL[f][idx] for f in sorted(fams))
 
 
+# The glossary's Payda column is Turkish; an English record writes it in English. The common ones, word for
+# word (new_record.py writes these too); any other is shown as the glossary's text to translate.
+PAYDA_EN = {
+    "Teste atanan ziyaretçi": "Visitors assigned to the test",
+    "Teste atanan kullanıcı": "Users assigned to the test",
+    "Teste atanan müşteri": "Customers assigned to the test",
+    "Teste atanan yeni kullanıcı": "New users assigned to the test",
+    "Ürün sayfasına atanan ziyaretçi": "Visitors assigned on the product page",
+    "Form sayfasına atanan ziyaretçi": "Visitors assigned on the form page",
+    "Liste sayfasına atanan ziyaretçi": "Visitors assigned on the listing page",
+    "Hesaplayıcı sayfasına atanan ziyaretçi": "Visitors assigned on the calculator page",
+    "Checkout’a ulaşan ziyaretçi (iki kolda aynı tetikleyici)": "Visitors who reached checkout (same trigger in both "
+                                                                 "arms)",
+    "Ödeme adımına ulaşan ziyaretçi (iki kolda aynı tetikleyici)": "Visitors who reached the payment step (same "
+                                                                    "trigger in both arms)",
+    "Ödeme adımına ulaşan ziyaretçi": "Visitors who reached the payment step",
+    "Sepete ulaşan ziyaretçi": "Visitors who reached the cart",
+    "Kayıt akışını başlatan (iki kolda aynı tetikleyici)": "Users who started the sign-up flow (same trigger in both "
+                                                            "arms)",
+    "Giriş ekranına ulaşan ziyaretçi (iki kolda aynı tetikleyici)": "Visitors who reached the login screen (same "
+                                                                     "trigger in both arms)",
+    "Akışın ilk adımına ulaşan ziyaretçi (iki kolda aynı tetikleyici)": "Visitors who reached the flow's first step "
+                                                                         "(same trigger in both arms)",
+    "Sayfayla başlayan oturum": "Sessions starting on the page",
+    "Oturum": "Sessions",
+    "Sayfa görüntüleme": "Page views",
+    "Sipariş": "Orders",
+    "Plan satın alımı": "Plan purchases",
+    "Testte başlayan abonelik": "Subscriptions started during the test",
+}
+
+
+def payda_text(payda, lang="tr"):
+    """The glossary denominator in the record's language, or None when English has no fixed wording for it."""
+    return payda if lang != "en" else PAYDA_EN.get(payda)
+
+
+def glossary_example(canon, row, lang="tr"):
+    """{"name": …, "denominator": …} as the glossary row writes it, in the record's language."""
+    name = (row.get("english") or [canon])[0] if lang == "en" else canon
+    den = payda_text(row["payda"], lang) or "<“%s”, in English>" % row["payda"]
+    return json.dumps({"name": name, "denominator": den}, ensure_ascii=False)
+
+
 def kpi_meaning_entries(scenario):
     """(path, name, denominator) of the KPI lines whose name and denominator are both written."""
     out = []
@@ -1370,9 +1497,13 @@ def check_kpi_meaning(scenario, errors, lang="tr"):
             if not families_compatible(glossary_fams, rec):
                 definition = re.split(r"[;.]\s", row["definition"], maxsplit=1)[0].rstrip(".")
                 hint = msg(lang, "kpi_trigger_hint") if glossary_fams == {"trigger"} and rec == {"assigned"} else ""
+                written = {family for family, regex in FAMILY_RES if regex.search(den)}
+                if "assigned" in written and (written - {"assigned"}) & glossary_fams:
+                    hint += msg(lang, "kpi_assigned_hint")
                 errors.append(msg(lang, "kpi_glossary_family", path=path, name=name, canon=canon, hint=hint,
                                   definition=definition, payda=row["payda"],
-                                  gfam=_family_label(glossary_fams, lang), den=den, rfam=_family_label(rec, lang)))
+                                  gfam=_family_label(glossary_fams, lang), den=den, rfam=_family_label(rec, lang),
+                                  example=glossary_example(canon, row, lang)))
                 continue
         else:
             hit = CONDITIONAL_NAME_RE.search(name)
@@ -2168,29 +2299,31 @@ def warning_text(scenario, kind):
 
 def check_accessibility(scenario, text, word, errors, lang="tr"):
     """Rule 3: an interactive change carries an accessibility warning that
-    states the criteria its element needs."""
-    needed = list(A11Y_BASE)
-    if MODAL_RE.search(text):
-        needed += A11Y_MODAL
-    if CAROUSEL_RE.search(text) and AUTO_ADVANCE_RE.search(text):
-        needed += A11Y_AUTO_ADVANCE
+    states the criteria its element needs. A missing criterion is named with
+    the word that asks for it ("Esc ile kapanma" for the sheet, not the chip)
+    and the clause to write."""
+    needed = a11y_criteria(text) or [(c, word) for c in A11Y_BASE]
     label = 1 if lang == "en" else 0
     stated = warning_text(scenario, "accessibility")
     if not stated:
-        errors.append(msg(lang, "a11y_missing", word=word, criteria=", ".join(c[label] for c in needed)))
+        errors.append(msg(lang, "a11y_missing", word=word, criteria=", ".join(c[label] for c, _ in needed),
+                          example=a11y_example([c for c, _ in needed], lang)))
         return
     missing, lower = [], []
-    for c in needed:
+    for c, by in needed:
         figure = c[2].below(stated) if isinstance(c[2], FigureCriterion) else None
         if figure:
             lower.append((c[2], figure))
         elif not c[2].search(stated):
-            missing.append(c[label])
-    if missing:
-        errors.append(msg(lang, "a11y_criteria", word=word, criteria=", ".join(missing)))
+            missing.append((c, by))
+    for by in sorted(set(b for _, b in missing), key=[b for _, b in missing].index):
+        group = [c for c, b in missing if b == by]
+        errors.append(msg(lang, "a11y_criteria", word=by, criteria=", ".join(c[label] for c in group),
+                          example=a11y_phrase(group, lang)))
     for criterion, figure in lower:
         what, need = A11Y_THRESHOLD_LABELS[criterion][label]
-        errors.append(msg(lang, "a11y_threshold", what=what, val=figure, need=need))
+        fix = target_fix(figure) if criterion is A11Y_BASE[0][2] else "4.5:1"
+        errors.append(msg(lang, "a11y_threshold", what=what, val=figure, need=need, fix=fix))
 
 
 def check_benefit_guardrail(scenario, text, errors, lang="tr"):
@@ -2228,7 +2361,7 @@ def check_change(scenario, errors, lang="tr"):
         check_accessibility(scenario, text, interactive, errors, lang)
     functional = interactive or first_hit(FUNCTIONAL_RE, text)
     if functional and "invariants" not in scenario:
-        errors.append(msg(lang, "invariants", word=functional))
+        errors.append(msg(lang, "invariants", word=functional, example=invariant_example(functional, lang)))
     check_benefit_guardrail(scenario, text, errors, lang)
     word = regulated_word(scenario)
     if word and not has_regulation_warning(scenario):

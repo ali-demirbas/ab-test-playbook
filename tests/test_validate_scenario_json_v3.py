@@ -301,7 +301,7 @@ class TestAccessibility(unittest.TestCase):
         e = errs(self.link_record("Bağlantı ekran okuyucuda adıyla okunur, dokunma alanı en az 44×44 pt ve kontrastı en "
                                   "az 4.5:1 olmalı."))
         self.assertIn("warnings: the accessibility warning does not state: keyboard access (for 'bağlantısı'); write "
-                      "each as a pass/fail criterion (rule 3)", e)
+                      "each as a pass/fail criterion, e.g. \"keyboard access\" (rule 3)", e)
         tr = errs(self.link_record("Bağlantı ekran okuyucuda okunur, 44×44 pt ve 4.5:1 olmalı."), "tr")
         self.assertTrue(has(tr, "erişilebilirlik uyarısında şu ölçüt(ler) yok: klavyeyle erişim"), tr)
 
@@ -383,8 +383,8 @@ class TestInvariants(unittest.TestCase):
                    variants=[{"id": "A", "description": "Özet altta"}, {"id": "B", "description": "Özet üstte"}])
         e = errs(sc)
         self.assertIn("invariants: the change touches a functional element ('Sepet'); list the functions that must "
-                      "work identically in both arms (1-5 sentences), e.g. \"A valid code applies in the same step in "
-                      "both arms.\" (rule 4)", e)
+                      "work identically in both arms (1-5 sentences), e.g. \"invariants\": [\"The cart total is "
+                      "computed the same way in both arms.\"] (rule 4)", e)
         self.assertTrue(has(errs(sc, "tr"), "invariants: değişiklik işlevsel bir öğeye dokunuyor ('Sepet')"))
         sc["invariants"] = ["Sepet tutarı iki kolda da aynı hesaplanır."]
         self.assertEqual(errs(sc), [])
