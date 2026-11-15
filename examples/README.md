@@ -101,11 +101,19 @@ surfacing later as a quietly malformed deliverable.
 ## What the chat side looks like
 
 The record lives in the JSON. Chat deliberately does not repeat it, and neither
-does the card (CLAUDE.md rule 9): a scenario costs two lines in the
-conversation, not forty:
+does the card (CLAUDE.md rule 9): a scenario costs a few short lines in the
+conversation, not forty, and those lines are printed from the record by
+`python3 scripts/validate_scenario_json.py --chat examples/scenario.json`, so
+they can't drift from it:
 
-> **1. Kupon alanını “İndirim kodum var” bağlantısının arkasına almak siparişi artırır mı?**
-> Öncelik: Orta · Kaynak: arşivden uyarlandı · Kanıt: arşiv örüntüsü · `abtest-card-kupon-alani.html`
+> **1. Kupon alanını “İndirim kodum var” bağlantısının arkasına almak geliri artırır mı?**
+> Öncelik: Orta (6/9) · Kaynak: arşivden uyarlandı · Kanıt: arşiv örüntüsü
+> Neden: <the mechanism in at most 140 characters; this record's runs longer, so `--chat` asks for a short one>
+> `abtest-card-kupon-alani.html`
+
+A record with `must_be_true` adds its `Doğru olmalı:` and `Önce yokla:` lines
+under `Neden:`; after the list come the pre-start line and the stakeholder brief
+for the first scenario, printed the same way.
 
 Everything else (the problem, the mechanism, the primary KPI, the guardrail and
 the accessibility warning) stays in the JSON; the card named there shows the

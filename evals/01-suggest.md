@@ -49,15 +49,16 @@
 **Beklenen davranış:**
 1. Arşiv yalnızca `grep -nE '^## |Değişken:' <dosya>` ile listelenen başlıklar ve kısa listeye giren bloklar (başlık satırından sonraki `---` ayracına kadar, `python3 scripts/read_section.py <dosya> --line <başlık satırı>` ile) üzerinden okunur; hiçbir aşama dosyası baştan sona, bütün dosyalar hiçbir zaman okunmaz. KPI adı `kpi-glossary.md` içinde `grep` ile aranır, sözlük bütün olarak okunmaz. `methodology.md` turun başında okunmaz; bir karar gerektirdiğinde (düzenleme, erişilebilirlik, hassas alan, etik) yalnızca ilgili bölüm okunur. Bunlar araç çağrıları kaydında görülür.
 2. Tur en fazla 3 kayıt döndürür. Her kayıt `validate_scenario_json.py` ile hatasız geçer ve on bilgiyi taşır: soru biçiminde `title`, `problem`, tek cümlelik `mechanism`, `variable`, iki varyant ve `difference`, paydasıyla `primary_kpi`, `guardrail`, `source` (`adapted_from` ile) ve `evidence`, gerekçeli `priority`, yalnızca gerekiyorsa `warnings`. Kayıtta `detail` yoktur; üç kutu yeniden üretilmez.
-3. Sohbet her senaryo için tam olarak beş satırdır:
+3. Sohbet her senaryo için tam olarak altı satırdır; kart dosyası dışındakiler `validate_scenario_json.py --chat` çıktısından aynen kopyalanır (araç çağrıları kaydında görülür):
    ```
    **1. <başlık>**
-   Öncelik: Orta · Kaynak: arşivden · Kanıt: arşiv örüntüsü
+   Öncelik: Orta (<puan>/9) · Kaynak: arşivden · Kanıt: arşiv örüntüsü
    Neden: <mekanizma, sade sözlerle, tek cümle>
-   Doğru olmalı: <B’nin dayandığı inanç>; önce yokla: <ucuz yoklama>
+   Doğru olmalı: <B’nin dayandığı inanç>
+   Önce yokla: <ucuz yoklama>
    `<kart dosyası>`
    ```
-   Senaryo başına başka metin yazılmaz: KPI, öncelik gerekçesi, eleme gerekçesi ya da denetçi raporu yok (kullanıcı isterse verilir). Kanıt etiketi kural 10’daki dört addan biridir (İngilizcede “industry observation”, asla “sector observation”). Listeden sonra yalnızca geçerli olan satırlar gelir (ör. `Başlamadan önce:`, `Koşullu (<n>):`, sıra satırı), her biri tek satır ve her bilgi bir kez.
+   Senaryo başına başka metin yazılmaz: KPI, öncelik gerekçesi, eleme gerekçesi ya da denetçi raporu yok (kullanıcı isterse verilir). Kanıt etiketi kural 10’daki dört addan biridir (İngilizcede “industry observation”, asla “sector observation”). Listeden sonra `Başlamadan önce:` satırı (kapı yoksa “yok”) ve yalnızca geçerli olan satırlar gelir (ör. `Koşullu (<n>):`, sıra satırı), her biri tek satır ve her bilgi bir kez. Kayıtlar `new_record.py` iskeletinden başlar: ilk doğrulamada `⟦…⟧` ipucu kalmaz.
 4. 3’ten fazla güçlü aday varsa sıralamada kalan en güçlü aday tek satırla adlandırılır (“Sıralamada kalan güçlü aday: <başlık>.”), kalanların sayısı söylenir ve devam teklifi turun tek sorusu olur (kural 19, tür 8). Daha yüksek türden bir soru varken de o satır yazılır.
 5. Paydaş özeti yalnızca 1. senaryo içindir; ardından tek satır gelir: “2 ve 3 için karar özetini istersen yazarım.”
 

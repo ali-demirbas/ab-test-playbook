@@ -4183,7 +4183,9 @@ def record_fingerprint_of(record):
 #   small-fix fields: title, problem, mechanism (wording); primary_kpi and
 #     guardrail denominator (phrasing); evidence.note, priority.rationale,
 #     source_note; objection; exposure; warnings and invariants (adding a
-#     required one, completing its text); an assumption's text and question.
+#     required one, completing its text); an assumption's text and question;
+#     must_be_true (the chat's Doğru olmalı and Önce yokla lines, which the
+#     review reads with the rest of the planned chat, never stamped).
 #   covered: id, lang, stage, device, market, variable, difference, variants,
 #     primary_kpi name and direction, guardrail name, kind, direction and
 #     criterion, source, adapted_from, evidence.level, priority tier and
@@ -4196,7 +4198,7 @@ def record_fingerprint_of(record):
 CRITIC_STAMP_SCHEME = "ab-test-playbook/scenario-critic/v2"
 CRITIC_UNSTAMPED = ("review", "card")  # as validate_scenario_json.FINGERPRINT_EXCLUDED
 CRITIC_SMALL_FIX = ("title", "problem", "mechanism", "source_note", "objection", "exposure", "warnings",
-                    "invariants")
+                    "invariants", "must_be_true")
 CRITIC_SMALL_FIX_IN = {"primary_kpi": ("denominator",), "guardrail": ("denominator",), "evidence": ("note",),
                        "priority": ("rationale",)}
 CRITIC_SMALL_FIX_ITEMS = {"assumptions": ("text", "question")}
@@ -4247,12 +4249,12 @@ STAMP_MSG = {
                "review.{key}.fingerprint bir sha256 onaltılık dizesi olmalı (64 küçük harf karakter), gelen {val!r}"),
     "stale_critic": ("review.scenario_critic.fingerprint ({val}…) doesn't match the record: the record changed after "
                      "scenario-critic reviewed it, outside the small-fix fields (title, problem, mechanism, the "
-                     "denominators, notes, rationale, objection, exposure, warnings, invariants, assumption wording), "
-                     "so it goes back to scenario-critic",
+                     "denominators, notes, rationale, objection, exposure, warnings, invariants, assumption wording, "
+                     "must_be_true), so it goes back to scenario-critic",
                      "review.scenario_critic.fingerprint ({val}…) kayıtla eşleşmiyor: kayıt scenario-critic "
                      "incelemesinden sonra küçük düzeltme alanlarının (başlık, problem, mekanizma, paydalar, notlar, "
-                     "gerekçe, itiraz, maruz kalma, uyarılar, değişmezler, varsayım metni) dışında değişmiş, yeniden "
-                     "scenario-critic'e gider"),
+                     "gerekçe, itiraz, maruz kalma, uyarılar, değişmezler, varsayım metni, must_be_true) dışında "
+                     "değişmiş, yeniden scenario-critic'e gider"),
     "critic_refused": ("no critic stamp: {n} validator error(s); fix the record first",
                        "eleştirmen damgası yok: {n} doğrulayıcı hatası; önce kaydı düzeltin"),
     "quick_stamp": ("--stamp {path} is a quick draft (fast mode): it is never stamped; after scenario-critic's PASS "

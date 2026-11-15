@@ -82,28 +82,29 @@ A form's own design lives only in `forms-signup.md`. Subscription cancellation i
    - **History:** state a recorded outcome as the tool reported it. Won → the next step building on it; lost or no difference → retry only with a stated reason, otherwise one line saying it was left out; inconclusive → suggest, noting the run; a pattern that won on the user's product sets `evidence.level: user_data`.
    - **Order and cap** (rule 9): the tier is the band of the five `priority.inputs` (`Prioritization`), set honestly (`effort` from the block's `emek`, `impact` from its level and the impact ranking); the user's explicit asks first, in the order asked, always produced, weak or not; then the playbook's own candidates by priority, problem-acting first, ties as in `Prioritization`; at most three strong, never padded; more → the top three, the strongest left out named in one line, and the count for the offer.
    - **Gates:** regulation (rule 11: hold (a) with its "once X is confirmed, test Y" line, produce (b) with its warning), accessibility (rule 3), market (rule 11), sensitive fields (rule 14), protections and dark patterns (rule 6); a stale block is flagged or left out. An unverified fact the idea needs → a critical assumption (rule 10), not a drop and not an invented fact.
-5. **Write each record once** (`ab-test-card` → The record), localized to the user's sector (a clothing example on a fashion site). `source` is `archive`, `adapted` or `generated`; `problem` is the typical obstacle as an assumption; `is_current: true` only for the user's own page kept here in step 1, else omitted.
+5. **Write each record once,** from `new_record.py`'s skeleton (`ab-test-card` → The record), localized to the user's sector (a clothing example on a fashion site). `source` is `archive`, `adapted` or `generated`; `problem` is the typical obstacle as an assumption; `is_current: true` only for the user's own page kept here in step 1, else omitted.
 6. **Deliver** through `ab-test-card` → Delivery pipeline (fast mode, rule 17: its Fast mode); each `[fixable]` line is applied as written, no re-call. The critic gets, in one call: the record files, the page context (page type plus the step 4 assumption), the history rows, the explicit asks, the whole planned chat (each scenario block, "Stronger alternative:" lines included, and every line after the list) and the reasons for standing validator warnings. `card.mockup_basis` is `representative` unless step 1 set it; neutral palette unless a screenshot gives colors.
 7. **Backlog (rule 16).** Offer once to append the ranked candidates, strong ones beyond the top three included, to `.abtest-backlog.md` (format `${CLAUDE_PLUGIN_ROOT}/templates/abtest-backlog.md`, tier in `Öncelik`); append only after the user confirms, else show the rows. It is rule 19's kind 9.
 
 ## Output
 
-Per scenario, exactly:
+Per scenario, exactly the lines `validate_scenario_json.py --chat` printed (`ab-test-card` → Delivery pipeline, step 1), then the file:
 
 ```
 **<n>. <title>**
-Öncelik: <Yüksek/Orta/Düşük> · Kaynak: <arşivden / arşivden uyarlandı / bu sayfa için üretildi> · Kanıt: <kendi verin / arşiv örüntüsü / sektör gözlemi / sezgi>
-Neden: <the mechanism in plain words, one sentence, at most 140 characters>
-Doğru olmalı: <the belief B needs>; önce yokla: <one cheap check before the test>
+Öncelik: <Yüksek/Orta/Düşük> (<score>/9) · Kaynak: <arşivden / arşivden uyarlandı / bu sayfa için üretildi> · Kanıt: <kendi verin / arşiv örüntüsü / sektör gözlemi / sezgi>
+Neden: <the mechanism, at most 140 characters>
+Doğru olmalı: <must_be_true.belief>
+Önce yokla: <must_be_true.probe>
 `abtest-card-<slug>.html`
 ```
 
-English: `Priority: <High/Medium/Low> · Source: <from archive / adapted from archive / generated for this page> · Evidence: <your own data / archive pattern / industry observation / intuition>` (rule 10's labels), then `Why: …`, `Must be true: …; check first: …` and the file. The `Neden:` line restates `mechanism` and adds no number or claim (rule 10). `Doğru olmalı:`, at most 160 characters, names what must hold in the user's context and a cheap, qualitative check (session recordings, field analytics, five user tests, support tickets), never a sample size or duration (rule 5). Under a weak explicit ask, after `Neden:`: "Daha güçlü alternatif: <the better test>; <why this one is weak>." Nothing else per scenario.
+English: `Priority: <High/Medium/Low> (<score>/9) · Source: … · Evidence: …`, `Why:`, `Must be true:`, `Probe first:`, the file. You write only what `--chat` can't: a `Neden:` line for a mechanism over 140 characters (plain words, no number or claim, rule 10) and, under a weak explicit ask, after `Neden:`, "Daha güçlü alternatif: <the better test>; <why this one is weak>." `must_be_true` holds what must hold in the user's context (at most 160 characters) and one cheap, qualitative probe (session recordings, field analytics, five user tests, support tickets), never a sample size or duration (rule 5). Nothing else per scenario.
 
-After the list, one line each, only when it applies, in this order:
+After the list, one line each, in this order, each only when it applies except the first:
 
-- `Başlamadan önce: 2 için B’nin metnine uyum onayı; 1 ve 2 için erişilebilirlik kontrolü.` (pre-start gates, once for the set)
-- `Koşullu (<n>): <every critical assumption, briefly, as a fact to verify, by scenario number, separated by semicolons>` (rule 10; e.g. "Koşullu (2): 1 için yıllık planın kartta görünen fiyatı; 3 için telefonun teklif hesabında gerekip gerekmediği."); the turn's one question, unless a higher kind is open, asks the most critical; with two or more open and no higher kind, the line is that question as a numbered list ("Koşullu (2), teyit eder misin: 1) 1 için …; 2) 3 için …?", rule 19)
+- the `Başlamadan önce:` line as `--chat` printed it (pre-start gates, once for the set; always, `yok` when none)
+- the `Koşullu (<n>):` line as `--chat` printed it (rule 10; every critical assumption by scenario number, as a fact to verify); the turn's one question, unless a higher kind is open, asks the most critical; with two or more open and no higher kind, the line is that question as a numbered list ("Koşullu (2), teyit eder misin: 1) 1 için …; 2) 3 için …?", rule 19)
 - siblings on one screen, flow or decision: `Sıra: 1 → 2 → 3, aynı kullanıcılarda üst üste binmeden. 1 kazanırsa sıradaki <next, built on B>; kaybederse <next>.` (EN `Order: 1 → 2 → 3, never on the same users at once. If 1 wins, next <…>; if it loses, next <…>.`)
 - the strongest candidate left out of the top three: `Sıralamada kalan güçlü aday: <title>.` / `Also strong, not in the top three: <title>.`
 - the primary differs from a metric the user named: one short clause, no general rule ("RPV burada daha uygun: kupon alanı geliri de etkiler.")
@@ -114,7 +115,7 @@ After the list, one line each, only when it applies, in this order:
 - the user asked for suggestions beyond their own ideas and no other candidate passed the bar: "Bu sayfa için başka güçlü aday bulamadım."
 - the history reminder, only when the user mentions past tests or a variable may already have been tested ("Geçmiş test sonuçlarını `.abtest-history.md` olarak tutarsan önerileri onlara göre süzerim.")
 
-Then the two `feasibility.py` lines as printed, only when the user gave the numbers; the stakeholder brief for scenario 1 only (`${CLAUDE_PLUGIN_ROOT}/templates/stakeholder-brief.md`: why now and the three outcome lines only; a file only when asked), with more scenarios followed by one line: "2 ve 3 için karar özetini istersen yazarım." / "Ask and I will write the brief for 2 and 3."; then at most one question, one sentence (rule 19): step 1's context question when it applies, else e.g. "2 güçlü aday daha var, devam edeyim mi?" No line about colors or the brand (rule 12), no review or elimination text.
+Then the two `feasibility.py` lines as printed, only when the user gave the numbers; the stakeholder brief for scenario 1 only, as `--chat` printed it (`${CLAUDE_PLUGIN_ROOT}/templates/stakeholder-brief.md`: why now and the three outcome lines; a file only when asked), with more scenarios followed by one line: "2 ve 3 için karar özetini istersen yazarım." / "Ask and I will write the brief for 2 and 3."; then at most one question, one sentence (rule 19): step 1's context question when it applies, else e.g. "2 güçlü aday daha var, devam edeyim mi?" No line about colors or the brand (rule 12), no review or elimination text.
 
 ## Detail on request
 
