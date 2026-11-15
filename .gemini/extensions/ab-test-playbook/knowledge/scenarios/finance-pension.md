@@ -222,7 +222,8 @@ Sigorta ya da emeklilik ön teklif formunda kimlik numarası veya doğum tarihi 
 - Talep Oluşturma Oranı (ön teklif formuna atanan ziyaretçi başına): Formu gönderip teklif isteyenlerin payı artıyor mu?
 - Alan Bazlı Terk Oranı: Kimlik numarası alanında formu bırakanların payı; tanı metriği.
 - Doğrulama Hatası Oranı: Geçersiz ya da doğrulanamayan numara girişleri artmamalı.
-- Teklif → Sözleşme Dönüşüm Oranı (90 gün): Gerekçeli formdan gelen tekliflerin sözleşmeye dönüşen payı düşmemeli.
+- Sözleşme Oranı (90 gün): Ön teklif formuna atanan ziyaretçilerden pencerede sözleşmeyi ya da poliçeyi tamamlayanların payı düşmemeli; gerekçe teklif isteyenleri artırıp sözleşmeye dönmeyen talep getiriyorsa burada görünür.
+- Teklif → Sözleşme Dönüşüm Oranı (90 gün): Tanı metriği; teklif alan ziyaretçi sayısı B’de değişebildiği için kazanan seçmez ve guardrail yerine geçmez.
 - Veri Şikâyeti Oranı: Kişisel verinin kullanımıyla ilgili başvuru ve şikâyetler çoğalmamalı.
 
 **Yapılmaması gerekenler**
@@ -252,7 +253,7 @@ Teklif akışında yalnızca numara gösteren bir gösterge (“2 / 4”) kullan
 - Cihaz: Dar ekranda dört adım adı tek satıra sığıyor mu, yoksa mobilde kırpılan adlar etkiyi siliyor mu?
 
 **Takip edilecek ana KPI’lar**
-- Teklif → Sözleşme Dönüşüm Oranı (teklif akışına atanan ziyaretçi başına): Akışı sözleşmeyle bitirenlerin payı artıyor mu? Gösterge teklif ekranından önceki adımlarda da durduğu için payda atanan ziyaretçidir.
+- Sözleşme Oranı (30 gün): Teklif akışına atanan ziyaretçilerden pencerede sözleşmeyi ya da poliçeyi tamamlayanların payı artıyor mu? Gösterge teklif ekranından önceki adımlarda da durduğu için payda teklif alanlar değil, atanan ziyaretçidir.
 - Teklif Görüntüleme Oranı: Fiyatın gösterildiği adıma ulaşanların payı; tanı metriği.
 - Adım Bazlı Terk Oranı: Hangi adımda bırakıldığını gösteren tanı metriği.
 - Cayma Süresi İçinde İptal Oranı (yasal cayma süresi): Adlı göstergeyle biten sözleşmelerde cayma artmamalı.

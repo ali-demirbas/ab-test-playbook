@@ -251,6 +251,50 @@ class TestLooserPattern(unittest.TestCase):
                         self.assertIsNone(vs.RULE_NUMBER.search(body))
 
 
+class TestConditionedKpis(unittest.TestCase):
+    """Item 36: the per-quote quote-to-contract rate is never the primary, and a
+    guardrail uses the glossary's per-assigned-visitor equivalent."""
+    BASE = ["- Talep Oluşturma Oranı: Formu gönderip teklif isteyenlerin payı artıyor mu bu testte?",
+            "- Alan Bazlı Terk Oranı: Formu bırakanların son alanı nerede; tanı metriği olarak izlenir.",
+            "- Doğrulama Hatası Oranı: Geçersiz numara girişleri bu testte artmamalı.",
+            "- Veri Şikâyeti Oranı: Kişisel veriyle ilgili şikâyetler çoğalmamalı.",
+            "- Sayfa Yüklenme Süresi: Form sayfası bu değişiklikle yavaşlamamalı."]
+
+    def errors(self, kpis):
+        title, body = first(make_scenario(kpis=kpis))
+        return vs.check_scenario("t.md", title, body, glossary=vs.load_glossary())
+
+    def test_per_quote_primary_is_refused(self):
+        kpis = ["- Teklif → Sözleşme Dönüşüm Oranı (teklif akışına atanan ziyaretçi başına): Sözleşme artıyor mu?"] \
+            + self.BASE[1:]
+        self.assertTrue(any("paydası kollar arasında" in e for e in self.errors(kpis)))
+
+    def test_per_quote_guardrail_names_the_equivalent(self):
+        kpis = self.BASE[:4] + ["- Teklif → Sözleşme Dönüşüm Oranı (90 gün): Tekliflerin sözleşmeye dönüşen payı düşmemeli."]
+        errors = self.errors(kpis)
+        self.assertTrue(any("Sözleşme Oranı (30 gün)" in e for e in errors), errors)
+
+    def test_assigned_equivalent_and_diagnostic_pass(self):
+        kpis = self.BASE[:4] + [
+            "- Sözleşme Oranı (90 gün): Atanan ziyaretçilerden sözleşmeyi tamamlayanların payı düşmemeli.",
+            "- Teklif → Sözleşme Dönüşüm Oranı (90 gün): Tanı metriği; kazanan seçmez."]
+        self.assertFalse(any("kollar arasında" in e or "koşullu paydalı" in e for e in self.errors(kpis)))
+
+    def test_archive_finance_blocks_are_fixed(self):
+        with open(os.path.join(vs.SCENARIO_DIR, "finance-pension.md"), encoding="utf-8") as fh:
+            text = fh.read()
+        glossary = vs.load_glossary()
+        for title, body in vs.parse_scenarios(text):
+            kpis = vs.box_items(body, vs.KPI_BOX)
+            with self.subTest(block=title[:40]):
+                self.assertEqual(vs.conditioned_kpi_problems(kpis, glossary), [])
+
+    def test_parsed_glossary_keeps_its_rows(self):
+        glossary = vs.load_glossary()
+        self.assertIn("Sözleşme Oranı (30 gün)", glossary.rows)
+        self.assertEqual(vs.glossary_row("Sözleşme Oranı (90 gün)", glossary), "Sözleşme Oranı (30 gün)")
+
+
 class TestArchiveWide(unittest.TestCase):
     def test_duplicate_id_and_en_title(self):
         meta = [("a.md", "A mı?", {"id": "cc-001"}, "Is it A?"),

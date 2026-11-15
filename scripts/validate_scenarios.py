@@ -49,6 +49,9 @@ Denetlenen kurallar (CLAUDE.md ve knowledge/methodology.md'den):
      guardrail, çevrilmiş notlar, İngilizce başlıkla çözülen atıflar.
  19. Senaryo metninde iç kural numarası (“kural 6”, “rule 11”) yok; kuralın kendisi
      yazılır.
+ 20. Birincil KPI’ın sözlükteki paydası kollar arasında değişemez; sözlük satırı
+     guardrail için atanan paydalı bir karşılık adlandırıyorsa (Teklif → Sözleşme →
+     Sözleşme Oranı (30 gün)) guardrail o karşılıkla yazılır.
  FORMAT.md gibi büyük harfli dosyalar senaryo içermez ve denetlenmez;
  `--next-id <dosya>` sıradaki boş kimliği basar.
 
@@ -206,6 +209,46 @@ def primary_glossary_problems(primary, glossary):
         return [f"birincil KPI sözlükte eş anlamlı; kanonik adı yazın → {label} → {status.split(':', 1)[1]}"]
     return [f"birincil KPI sözlükte yok; kpi-glossary.md’deki kanonik adı yazın ya da metriği sözlüğe "
             f"paydasıyla ekleyin → {label}"]
+
+
+# Paydası kollar arasında değişen metrik (sözlükte “(kollar arasında değişebilir)”)
+# birincil olmaz; sözlük satırı guardrail için atanan paydalı bir karşılık
+# adlandırıyorsa guardrail o karşılıkla yazılır (methodology → KPI denominator).
+VARYING_DENOMINATOR = re.compile(r"kollar arasında değiş", re.IGNORECASE)
+GUARDRAIL_EQUIVALENT = re.compile(r"guardrail için atanan paydalı (?:bir )?(?:karşılığı|eşdeğeri) (?P<eq>.+?) seçilir")
+
+
+def glossary_row(label, glossary):
+    """Bir KPI adının sözlük satırı (kanonik ad, kısaltmasız biçim ya da eş anlamlı); yoksa None."""
+    rows = getattr(glossary, "rows", None) or {}
+    for c in (label, bare_label(label)):
+        if c in rows:
+            return c
+        bare = [n for n in rows if bare_label(n) == c]
+        if len(bare) == 1:
+            return bare[0]
+    status = glossary_status(label, glossary)
+    return status.split(":", 1)[1] if status.startswith("synonym:") else None
+
+
+def conditioned_kpi_problems(kpis, glossary):
+    """Birincil KPI’ın paydası kollar arasında değişemez; adlandırılmış atanan paydalı
+    karşılığı olan metrik guardrail olarak yazılmaz (sözlük satırı)."""
+    out = []
+    rows = getattr(glossary, "rows", None) or {}
+    for i, item in enumerate(kpis):
+        name = glossary_row(kpi_label(item), glossary)
+        if name is None or name not in rows:
+            continue
+        row = rows[name]
+        if i == 0 and VARYING_DENOMINATOR.search(row["payda"]):
+            out.append(f"birincil KPI’ın paydası kollar arasında değişebilir (sözlük: {row['payda']}); birincil "
+                       f"atanan ziyaretçi paydalı bir oran olur → {kpi_label(item)}")
+        m = GUARDRAIL_EQUIVALENT.search(row["definition"])
+        if i and m and is_guardrail_line(item):
+            out.append(f"guardrail koşullu paydalı bir metrikle yazılmış; sözlükteki atanan paydalı karşılığını "
+                       f"yazın → {kpi_label(item)} → {m.group('eq')}")
+    return out
 
 
 def glossary_name_warnings(kpis, glossary):
@@ -619,6 +662,7 @@ def check_scenario(filename, title, body, glossary=None):
         errors.extend(f"{where}: {e}" for e in kpi_window_problems(kpis))
         if glossary is not None:
             errors.extend(f"{where}: {e}" for e in primary_glossary_problems(kpis[0], glossary))
+            errors.extend(f"{where}: {e}" for e in conditioned_kpi_problems(kpis, glossary))
 
     tests = box_items(body, TEST_BOX)
     if tests:
@@ -857,7 +901,8 @@ def find_title_variable_duplicates(scenarios, threshold=TITLE_DUP_THRESHOLD):
 # --- KPI sözlüğü --------------------------------------------------------------
 
 class Glossary(dict):
-    """{kanonik ad: [eş anlamlılar]}; `english` = {İngilizce ad: kanonik ad}.
+    """{kanonik ad: [eş anlamlılar]}; `english` = {İngilizce ad: kanonik ad};
+    `rows` = parse_glossary_rows çıktısı (tanım ve payda).
 
     İngilizce ad bir eş anlamlı değil, kaydın İngilizce kanonik adıdır:
     glossary_status onu 'canonical' sayar."""
@@ -865,6 +910,7 @@ class Glossary(dict):
     def __init__(self, *args, **kwargs):
         super(Glossary, self).__init__(*args, **kwargs)
         self.english = {}
+        self.rows = {}
 
 
 # Sözlük tablolarının sütunları başlık satırından okunur; başka bir sütun
@@ -941,9 +987,10 @@ def parse_glossary_rows(text):
 
 def parse_glossary(text):
     """kpi-glossary.md tablolarından {kanonik ad: [eş anlamlılar]} çıkar
-    (Glossary; İngilizce kanonik adlar `english` içinde)."""
+    (Glossary; İngilizce kanonik adlar `english` içinde, satırların tamamı `rows`)."""
     glossary = Glossary()
-    for name, row in parse_glossary_rows(text).items():
+    glossary.rows = parse_glossary_rows(text)
+    for name, row in glossary.rows.items():
         glossary[name] = row["synonyms"]
         for en in row["english"]:
             glossary.english.setdefault(en, name)
