@@ -235,6 +235,17 @@ class TestNodeKinds(unittest.TestCase):
         ({"stack": {"items": [{"h": "Bir"}, {"sub": "İki"}], "gap": 4}},
          ['<div style="display:flex;flex-direction:column">\n<div class="r-h" style="margin-bottom:4px">Bir</div>\n'
           '<div class="r-sub">İki</div>\n</div>']),
+        ({"logos": ["Nordika", "Ege Servis"], "caption": "Bizi seçen ekipler"},
+         ['<div class="r-logos"><div class="r-logos-cap">Bizi seçen ekipler</div><div class="r-logos-row">'
+          '<span>Nordika</span><span>Ege Servis</span></div></div>']),
+        ({"price": "2.499 TL", "old": "2.999 TL", "per": "KDV dahil"},
+         ['<div class="r-amount"><span class="r-old">2.999 TL</span><span class="r-big">2.499 TL</span>'
+          '<span class="r-per">KDV dahil</span></div>']),
+        ({"stars": "4,4", "count": "312 değerlendirme"},
+         ['<span class="r-stars" role="img" aria-label="4,4 out of 5">★★★★☆</span>',
+          '<span class="r-meta">4,4 (312 değerlendirme)</span>']),
+        ({"cols": [{"text": "Bir"}, {"text": "İki"}, {"text": "Üç"}]},
+         ['<div class="r-cols c3"><div>Bir</div><div>İki</div><div>Üç</div></div>']),
         ({"accordion": {"title": "Kargo ve iade"}},
          ['<div role="button" aria-expanded="false"', '<span>Kargo ve iade</span>', '>+</span></div></div>']),
         ({"accordion": {"title": "Kargo ve iade", "open": True, "items": [{"text": "Ücretsiz iade."}]}},

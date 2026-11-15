@@ -34,7 +34,16 @@ Node shapes, one key names the kind (knowledge/mockup-style.md, "Screen spec"):
   {"plan": {"name": "..", "price": "..", "per": "/ay", "featured": true, "badge": "..", "cta": "..", "cta_style": "outline", "features": [".."]}}
   {"badge": "..", "style": "warn"|"brand"}  {"banner": ".."}  {"img": 150}  {"divider": true}  {"gap": 16}
   {"band": {"bg": "#f5f5f5", "items": [..], "pad": [top, bottom]}}
-  {"fold": true}  {"stage": true}  {"sticky": node}  {"stack": {"items": [..], "gap": 16}}
+  {"fold": true}  {"stage": true}  {"sticky": node}  {"stack": {"items": [..], "gap": 16, "align": "center"}}
+  {"logos": ["Nordika", ".."], "caption": ".."}  {"price": "2.499 TL", "old": "2.999 TL", "per": "KDV dahil"}
+  {"stars": "4,4", "count": "312 değerlendirme"}  {"cols": [node, node, node]}
+
+h, sub, text, cta and link take "align": "center" (a heading or line centred, a
+button or link centred at its own width); a stack with "align": "center"
+centres everything in it. A plan may add "old" (a struck-through old price) and
+"note" (a line under the price). On a desktop page (device web) a fold is the
+dashed "end of first screen" line, drawn where it stands; on a phone it splits
+the screen into the first view and the sheet under the phone.
 
 Every node may carry "id" (the change's target), "mb" (margin-bottom in px,
 instead of the screen's 16px rhythm) and the page-colour overrides "fg",
@@ -93,19 +102,31 @@ ACC_BODY_STYLE = "padding-bottom:14px;color:#374151"
 
 KINDS = ("header", "h", "sub", "text", "field", "row", "cta", "link", "help", "info", "check", "radio",
          "chips", "tabs", "steps", "progress", "line", "item", "plan", "badge", "banner", "img", "divider",
-         "gap", "band", "fold", "stage", "sticky", "stack", "accordion")
+         "gap", "band", "fold", "stage", "sticky", "stack", "accordion", "logos", "price", "stars", "cols")
 COMMON_PROPS = ("id", "mb", "fg", "bg", "border", "radius", "height")
 EXTRA_PROPS = {
+    "h": ("align",),
+    "sub": ("align",),
     "text": ("align",),
+    "link": ("align",),
     "field": ("label", "select", "value"),
-    "cta": ("style", "size"),
+    "cta": ("style", "size", "align"),
+    "logos": ("caption",),
+    "price": ("old", "per"),
+    "stars": ("count",),
+
     "check": ("on",),
     "radio": ("on",),
     "line": ("total",),
     "badge": ("style",),
 }
 TOP_ONLY = ("fold", "stage", "sticky")
-CONTAINERS = ("row", "band", "stack", "sticky", "accordion")
+CONTAINERS = ("row", "band", "stack", "sticky", "accordion", "cols")
+# A row of columns: two to four, side by side and top-aligned.
+COLS_MIN, COLS_MAX = 2, 4
+# How many whole stars a rating draws (out of five): the nearest, half up (4.5 -> 5).
+STARS_OUT_OF = 5
+STARS_LABEL = {"tr": "5 üzerinden %s", "en": "%s out of 5"}
 OPS = ("insert_after", "insert_before", "replace", "remove", "move_after", "move_before", "edit")
 # The difference type each op draws (card_problems checks the record's difference against the rings).
 OP_DIFFERENCE = {"insert_after": "add", "insert_before": "add", "replace": "change", "edit": "change",
@@ -114,8 +135,8 @@ LABEL_POSITIONS = ("below", "above")
 # What an edit rings instead of the whole node: {kind: {set key: part}}. A plan's "per" belongs to its
 # price, its "cta_style" to its button; a field's placeholder ("field"), value and select are its box.
 RING_PARTS = {
-    "plan": {"cta": "cta", "cta_style": "cta", "price": "price", "per": "price", "name": "name", "badge": "badge",
-             "features": "features"},
+    "plan": {"cta": "cta", "cta_style": "cta", "price": "price", "per": "price", "old": "price", "name": "name",
+             "badge": "badge", "features": "features", "note": "note"},
     "field": {"label": "label", "field": "box", "text": "box", "value": "box", "select": "box"},
     "item": {"name": "name", "meta": "meta", "price": "price"},
 }
@@ -248,6 +269,9 @@ WANT_TR = {
     "a short label, two to four words": "iki ila dört kelimelik kısa bir etiket",
     "an object of the properties to change": "değişecek özelliklerin nesnesi",
     "the id of the node the moved node lands next to": "taşınan düğümün yanına ineceği düğümün kimliği",
+    "a non-empty list of short names": "kısa adlardan oluşan boş olmayan bir liste",
+    "a rating from 0 to 5, e.g. \"4,4\" or 4.6": "0 ile 5 arası bir puan, ör. \"4,4\" ya da 4.6",
+    "a list of two to four nodes": "iki ila dört düğümlük bir liste",
 }
 
 
@@ -305,10 +329,11 @@ def form_problems(card, lang="en"):
 # ------------------------------------------------------------------ the tree
 
 class _Node(object):
-    __slots__ = ("kind", "value", "props", "kids", "raw", "ring", "part", "soft")
+    __slots__ = ("kind", "value", "props", "kids", "raw", "ring", "part", "soft", "ncols")
 
     def __init__(self, kind, value, props, kids, raw):
         self.kind, self.value, self.props, self.kids, self.raw = kind, value, props, kids, raw
+        self.ncols = len(value) if kind == "cols" and isinstance(value, list) else 0
         self.ring = None   # (label, pos) when this node carries the ring in this arm
         self.part = None   # the part of the node the ring goes around (RING_PARTS), None = the whole node
         self.soft = None   # (note or "") when this node carries a soft ring
@@ -320,6 +345,32 @@ class _Node(object):
 
 def _is_int(v):
     return isinstance(v, int) and not isinstance(v, bool)
+
+
+ALIGN_SELF = {"center": "center", "left": "flex-start"}
+STARS_RE = re.compile(r"^\d(?:[.,]\d{1,2})?\Z")
+
+
+def stars_value(v, lang="en"):
+    """A rating as the page shows it and as a number, ("4,4", 4.4); None when it is not one from 0 to 5.
+    A string is shown as written (the page's own decimal mark); a number takes the card language's."""
+    if isinstance(v, bool):
+        return None
+    if isinstance(v, (int, float)):
+        value = float(v)
+        shown = "%g" % value
+        if lang == "tr":
+            shown = shown.replace(".", ",")
+    elif isinstance(v, str) and STARS_RE.match(v.strip()):
+        shown = v.strip()
+        value = float(shown.replace(",", "."))
+    else:
+        return None
+    return (shown, value) if 0 <= value <= STARS_OUT_OF else None
+
+
+def _text_align(props):
+    return ["text-align:%s" % props["align"]] if props.get("align") in ("center", "left") else []
 
 
 def _str(v):
@@ -362,8 +413,8 @@ def _parse(raw, path, top, lang, problems, ids):
     kids = None
     if not _check_value(kind, value, path, lang, problems):
         return None
-    if kind == "row":
-        kids = [n for n in (_parse(v, "%s.row[%d]" % (path, i), False, lang, problems, ids)
+    if kind in ("row", "cols"):
+        kids = [n for n in (_parse(v, "%s.%s[%d]" % (path, kind, i), False, lang, problems, ids)
                             for i, v in enumerate(value)) if n is not None]
     elif kind in ("band", "stack"):
         kids = [n for n in (_parse(v, "%s.%s.items[%d]" % (path, kind, i), False, lang, problems, ids)
@@ -398,6 +449,8 @@ def _check_props(kind, props, path, lang, problems):
             _want(problems, lang, path, key, isinstance(v, str), "a string", v)
         elif key in ("select", "on", "total"):
             _want(problems, lang, path, key, isinstance(v, bool), "true or false", v)
+        elif key in ("caption", "old", "per", "count"):
+            _want(problems, lang, path, key, _str(v), "a non-empty string", v)
         elif key == "style":
             styles = CTA_STYLES if kind == "cta" else BADGE_STYLES
             _want(problems, lang, path, key, v in styles, "one of " + "/".join(styles), v)
@@ -421,13 +474,20 @@ def _labelled_list(value, state_key, states):
 def _check_value(kind, v, path, lang, problems):
     """True when the kind's value has the right shape (problems appended otherwise)."""
     ok, want = True, ""
-    if kind in ("h", "sub", "text", "field", "cta", "link", "help", "info", "check", "radio", "badge", "banner"):
+    if kind in ("h", "sub", "text", "field", "cta", "link", "help", "info", "check", "radio", "badge", "banner",
+                "price"):
         ok, want = _str(v), "a non-empty string"
     elif kind == "header":
         ok, want = _header_ok(v), ("{\"logo\": true|\"Text\", \"nav\": [..], \"tel\": \"..\", \"icons\": [{\"icon\": "
                                    "close|support|menu|search|back, \"label\": \"..\"}], \"line\": false}")
     elif kind == "row":
         ok, want = isinstance(v, list) and len(v) >= 1, "a list of nodes"
+    elif kind == "cols":
+        ok, want = isinstance(v, list) and COLS_MIN <= len(v) <= COLS_MAX, "a list of two to four nodes"
+    elif kind == "logos":
+        ok, want = isinstance(v, list) and len(v) >= 1 and all(_str(s) for s in v), "a non-empty list of short names"
+    elif kind == "stars":
+        ok, want = stars_value(v) is not None, "a rating from 0 to 5, e.g. \"4,4\" or 4.6"
     elif kind == "chips":
         ok, want = _labelled_list(v, "on", (True, False)), "a list of {\"label\": .., \"on\": bool}"
     elif kind == "tabs":
@@ -462,8 +522,10 @@ def _check_value(kind, v, path, lang, problems):
         ok, want = isinstance(v, dict), "one node"
     elif kind == "stack":
         ok = isinstance(v, dict) and isinstance(v.get("items"), list) and len(v["items"]) >= 1 \
-            and all(k in ("items", "gap") for k in v) and ("gap" not in v or (_is_int(v["gap"]) and v["gap"] >= 0))
-        want = "{\"items\": [nodes], \"gap\": px}"
+            and all(k in ("items", "gap", "align") for k in v) \
+            and ("gap" not in v or (_is_int(v["gap"]) and v["gap"] >= 0)) \
+            and v.get("align", "left") in ("center", "left")
+        want = "{\"items\": [nodes], \"gap\": px, \"align\": \"center\"}"
     elif kind == "accordion":
         ok = isinstance(v, dict) and _str(v.get("title")) and all(k in ("title", "open", "items") for k in v) \
             and ("open" not in v or isinstance(v["open"], bool)) \
@@ -512,7 +574,7 @@ def _plan_ok(v):
     if not isinstance(v, dict) or not _str(v.get("name")) or not _str(v.get("price")):
         return False
     for k, x in v.items():
-        if k in ("name", "price", "per", "badge", "cta"):
+        if k in ("name", "price", "per", "badge", "cta", "old", "note"):
             if not isinstance(x, str):
                 return False
         elif k == "featured":
@@ -663,7 +725,10 @@ def _plan(node, extra):
         body.append(_ring(node, '<div><span class="r-badge brand">%s</span></div>' % esc(v["badge"]), "badge"))
     body.append(_ring(node, '<div class="r-plan-name">%s</div>' % esc(v["name"]), "name"))
     per = '<span class="r-per">%s</span>' % esc(v["per"]) if v.get("per") else ""
-    body.append(_ring(node, '<div class="r-plan-price">%s%s</div>' % (esc(v["price"]), per), "price"))
+    old = '<span class="r-old">%s</span>' % esc(v["old"]) if v.get("old") else ""
+    body.append(_ring(node, '<div class="r-plan-price">%s%s%s</div>' % (old, esc(v["price"]), per), "price"))
+    if v.get("note"):
+        body.append(_ring(node, '<div class="r-plan-note">%s</div>' % esc(v["note"]), "note"))
     if v.get("features"):
         body.append(_ring(node, '<ul class="r-plan-feat">%s</ul>' % "".join("<li>%s</li>" % esc(f) for f in v["features"]),
                           "features"))
@@ -679,11 +744,34 @@ def _element(node, lang, extra, top):
     d = _decls(node)
     if k == "header":
         return _header(node, lang, extra)
-    if k in ("h", "sub", "link", "help", "info", "banner"):
+    if k in ("h", "sub"):
+        return "<div%s>%s</div>" % (_attrs(["r-" + k], _text_align(p) + d + extra), esc(v))
+    if k in ("link", "help", "info", "banner"):
         return "<div%s>%s</div>" % (_attrs(["r-" + k], d + extra), esc(v))
     if k == "text":
         align = ["text-align:center"] if p.get("align") == "center" else []
         return "<div%s>%s</div>" % (_attrs([], align + d + extra), esc(v))
+    if k == "logos":
+        cap = '<div class="r-logos-cap">%s</div>' % esc(p["caption"]) if p.get("caption") else ""
+        row = '<div class="r-logos-row">%s</div>' % "".join("<span>%s</span>" % esc(s) for s in v)
+        return "<div%s>%s%s</div>" % (_attrs(["r-logos"], d + extra), cap, row)
+    if k == "price":
+        old = '<span class="r-old">%s</span>' % esc(p["old"]) if p.get("old") else ""
+        per = '<span class="r-per">%s</span>' % esc(p["per"]) if p.get("per") else ""
+        return '<div%s>%s<span class="r-big">%s</span>%s</div>' % (_attrs(["r-amount"], d + extra), old, esc(v), per)
+    if k == "stars":
+        shown, value = stars_value(v, lang)
+        full = int(value + 0.5)
+        meta = shown + (" (%s)" % p["count"] if p.get("count") else "")
+        return ('<div%s><span class="r-stars" role="img" aria-label="%s">%s</span><span class="r-meta">%s</span></div>'
+                % (_attrs(["r-rating"], d + extra), esc(STARS_LABEL[lang] % shown),
+                   "\u2605" * full + "\u2606" * (STARS_OUT_OF - full), esc(meta)))
+    if k == "cols":
+        # The column count is the screen's (A's): a remove or insert inside the row keeps its grid, so the
+        # container itself never differs between the arms.
+        classes = ["r-cols"] + (["c%d" % node.ncols] if node.ncols > 2 else [])
+        return "<div%s>%s</div>" % (_attrs(classes, d + extra), "".join(_render(kid, [], lang, False)
+                                                                         for kid in node.kids))
     if k == "field":
         return _field(node, extra)
     if k == "row":
@@ -762,7 +850,8 @@ def _element(node, lang, extra, top):
         return "<div%s>%s%s</div>" % (_attrs([], [ACC_BOX_STYLE] + d + extra), head, body)
     if k == "stack":
         gap = v.get("gap", GAP)
-        return "<div%s>\n%s\n</div>" % (_attrs([], ["display:flex", "flex-direction:column"] + d + extra),
+        centre = ["align-items:center", "text-align:center"] if v.get("align") == "center" else []
+        return "<div%s>\n%s\n</div>" % (_attrs([], ["display:flex", "flex-direction:column"] + centre + d + extra),
                                         _children(node.kids, gap, lang, False))
     raise ValueError(k)  # pragma: no cover - every kind in KINDS is drawn above
 
@@ -806,6 +895,10 @@ def _margins(node, gap, last, top):
     out = []
     if wanted:
         out.append("margin-bottom:%dpx" % wanted)
+    # A button or link keeps its own width where it is aligned; the alignment belongs to the outer element (the
+    # ring, when it is ringed), so the ring stays as wide as the button.
+    if node.kind in ("cta", "link") and node.props.get("align") in ALIGN_SELF:
+        out.append("align-self:%s" % ALIGN_SELF[node.props["align"]])
     return out
 
 
