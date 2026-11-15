@@ -173,7 +173,7 @@ The model’s height and the size they are wearing can speed up the user’s own
 - Add-to-Cart Rate: Does adding increase once the uncertainty drops?
 - Size Chart Engagement: Do clicks on the chart go down?
 - Return Rate (30 days): Must not rise; it should fall in the expected direction.
-- Product Review Time: Must not get longer.
+- Product Viewing Time: Must not get longer.
 
 **What not to do**
 - Don’t give unrealistic or inconsistent size information.
@@ -1488,7 +1488,7 @@ EN-Variable: Multi-pack options
 - Ziyaretçi Başına Gelir (RPV): Paket sunumu toplam geliri artırıyor mu?
 - Ortalama Sepet Tutarı (AOV): Paket seçimi sepet değerini yükseltiyor mu?
 - Dönüşüm Oranı (CR): Pakete yönelme satın alma oranını düşürüyor mu?
-- Paket Seçim Oranı: Kullanıcılar hangi pakete yöneliyor?
+- Çoklu Paket Seçim Oranı: Kullanıcılar hangi pakete yöneliyor?
 - İade Oranı (30 gün): Yükselmemeli; fazla alınan paket geri dönmemeli.
 
 **Yapılmaması gerekenler**
@@ -1512,7 +1512,7 @@ Offering 2-pack and 3-pack options on the product page can change the user’s p
 - Revenue per Visitor (RPV): Does the pack presentation raise total revenue?
 - Average Order Value (AOV): Does choosing a pack raise cart value?
 - Conversion Rate (CR): Does leaning toward packs lower the purchase rate?
-- Pack Selection Rate: Which pack do users lean toward?
+- Multi-Pack Selection Rate: Which pack do users lean toward?
 - Return Rate (30 days): Must not rise; an over-bought pack must not come back.
 
 **What not to do**

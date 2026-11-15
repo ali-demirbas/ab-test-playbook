@@ -51,7 +51,7 @@ Payda kuralı (`knowledge/methodology.md` → KPI denominator): bir oran yalnız
 |---|---|---|---|---|
 | **Form Başlama Oranı** | Forma ilk girişi yapan ziyaretçilerin payı. | Form sayfasına atanan ziyaretçi | Form Başlatma Oranı | Form Start Rate |
 | **Form Tamamlama Oranı** | Formu gönderen ziyaretçilerin payı. | Form sayfasına atanan ziyaretçi (başlatanlar değil, çünkü başlatma B’de değişebilir) | Form Gönderim Oranı; Form Dönüşüm Oranı; Talep Formu Dönüşümü | Form Completion Rate |
-| **Ortalama Doldurma Süresi** | Forma ilk girişten gönderime kadar geçen medyan süre. | Formu gönderen | Form Doldurma Süresi | Median Form Fill Time |
+| **Form Doldurma Süresi** | Forma ilk girişten gönderime kadar geçen medyan süre (süreler çarpık dağıldığı için ortalama değil medyan); tek bir alanın süresi ölçülüyorsa alan KPI adında yazılır (“Form Doldurma Süresi (adres alanı)”) ve payda o alana veri girendir. Tanısal veya guardrail’dir, birincil olmaz. | Formu gönderen (kollar arasında değişebilir) | Ortalama Doldurma Süresi; Doldurma Süresi | Form Fill Time |
 | **Doğrulama Hatası Oranı** | En az bir doğrulama hatası alan gönderim denemelerinin payı. | Gönderim denemesi | Form Hata Oranı | Validation Error Rate |
 | **Alan Bazlı Terk Oranı** | Formu bırakanların son dokunduğu alana göre dağılımı; tanısal. | Formu başlatan | Alan Terk Oranı; Alan Başına Terk | Field-Level Abandonment Rate |
 | **Alan Bazlı Hata Oranı** | Her alanda hata alan girişlerin payı; tanısal. | Alana veri giren | Alan Hata Oranı | Field-Level Error Rate |
@@ -119,6 +119,7 @@ Payda kuralı (`knowledge/methodology.md` → KPI denominator): bir oran yalnız
 | **Ürün Sorusu Oranı** | Ürünle ilgili sorulan soruların (soru alanı, sohbet, destek) atanan ziyaretçiye oranı; sayı olarak yazılmışsa bu orana çevrilerek okunur. | Ürün sayfasına atanan ziyaretçi | Ürün Sorusu Sayısı | Product Question Rate |
 | **Marka Algısı (anket)** | Kısa anketle ölçülen marka algısı; yalnızca yanıtlayanları kapsayan tanısal sinyal. Yanıt verenler her kolda kendini seçtiği için yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir ve maddede yazılır; tek guardrail olamaz. | Anketi yanıtlayan | Marka Algısı Anketi (varsa); Marka Güven Skoru | Brand Perception (survey) |
 | **Güven Algısı (anket)** | Kısa anketle ölçülen güven algısı; yalnızca yanıtlayanları kapsayan tanısal sinyal. Yanıt verenler her kolda kendini seçtiği için yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir ve maddede yazılır; tek guardrail olamaz. | Anketi yanıtlayan | Güven Anketi | Trust Perception (survey) |
+| **Sipariş Bilgisi Görünürlüğü (anket)** | Sipariş onayı veya teşekkür ekranında sipariş numarasını ve teslimat bilgisini bulabildiğini söyleyen yanıtlayanların payı; onay ekranına öğe ekleyen testlerin tanısal guardrail’i (düşmemeli). Yanıt verenler her kolda kendini seçtiği için yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir ve maddede yazılır; tek guardrail olamaz. | Anketi yanıtlayan | Sipariş Bilgisi Bulunabilirliği | Order Information Visibility (survey) |
 
 ## SaaS, B2B ve abonelik
 

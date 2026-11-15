@@ -328,7 +328,7 @@ Liste sayfasındaki hızlı ekleme butonu, kullanıcının ürünü incelemeden 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Hızlı ekleme satın almayı artırıyor mu?
 - Sepete Ekleme Oranı: Listeden ekleme yükseliyor mu?
-- Ödeme Tamamlama Süresi: Adımlar hızlanıyor mu?
+- Görev Tamamlama Süresi (checkout): Adımlar hızlanıyor mu?
 - İade Oranı (30 gün): İncelenmeden alınan ürün geri dönmemeli.
 - Liste → Ürün Tıklama Oranı: Aşırı düşmemeli.
 
@@ -353,7 +353,7 @@ A quick-add button on the listing page can change the behavior of adding a produ
 **KPIs to track**
 - Conversion Rate (CR): Does quick add raise purchases?
 - Add-to-Cart Rate: Does adding from the list go up?
-- Checkout Completion Time: Do the steps get faster?
+- Task Completion Time (checkout): Do the steps get faster?
 - Return Rate (30 days): Products bought without being inspected must not come back.
 - List-to-Product Click Rate: Must not drop excessively.
 
@@ -651,7 +651,7 @@ When an offer or newsletter pop-up appears as soon as the page opens, the visito
 - Offer-Accepting Visitor Rate: A diagnostic metric; the share of assigned visitors who accept the pop-up offer, not of those who see the pop-up.
 - Pop-up Display Share: A diagnostic metric; how many of the assigned visitors were shown the pop-up; it shows the reach lost by the late trigger.
 - Bounce Rate: The early pop-up must not drive the visitor away on the first page.
-- Page Views per Session: Browsing in the session must not drop after the pop-up is closed.
+- Pages per Session: Browsing in the session must not drop after the pop-up is closed.
 
 **What not to do**
 - Don’t also change the offer or the text in the pop-up while changing the display moment in the same test.
@@ -949,7 +949,7 @@ Showing color or size options on the card lets the user understand fit without e
 **KPIs to track**
 - Conversion Rate (CR): Does showing variants turn into sales?
 - List-to-Product Click Rate: Does moving on to the product increase?
-- Product Page Bounce-Back Rate: Entering with the wrong variant and coming back must not increase.
+- Product Page Back-Navigation Rate: Entering with the wrong variant and coming back must not increase.
 - Return Rate (30 days): Wrong variant selection must not increase returns.
 - Page Load Time: The extra images must not damage speed.
 
@@ -1009,7 +1009,7 @@ Space on the card is limited; the information that is highlighted (price, delive
 **KPIs to track**
 - Conversion Rate (CR): Does the choice of information turn into sales?
 - List-to-Product Click Rate: Does moving on to the product increase?
-- Product Page Bounce-Back Rate: Users whose expectation isn’t met must not bounce back.
+- Product Page Back-Navigation Rate: Users whose expectation isn’t met must not bounce back.
 - Add-to-Cart Rate: Add-to-cart must not drop.
 - Misclick Rate: Tapping the wrong element must not increase on a crowded card.
 
@@ -1069,7 +1069,7 @@ Adding an image next to the category name speeds up scanning and quickly communi
 **KPIs to track**
 - Conversion Rate (CR): Does being routed to the right category turn into sales?
 - Category Click Rate: A diagnostic metric; does moving on to the category increase?
-- Category Bounce-Back Rate: Entering the wrong category and coming back must not increase.
+- Category Back-Navigation Rate: Entering the wrong category and coming back must not increase.
 - Page Load Time: The images must not damage speed.
 - Categories Viewed (average per assigned visitor): The number of categories the user sees must not drop.
 

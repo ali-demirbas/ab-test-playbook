@@ -26,7 +26,7 @@ Sola hizalı etiket dikeyde yer kazandırır ama gözün her alanda yatay sıçr
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Hizalama gönderime kadar gidenleri artırıyor mu?
 - Form Başlama Oranı: İlk alana dokunan kullanıcı oranı değişiyor mu?
-- Ortalama Doldurma Süresi: Hizalama doldurmayı hızlandırıyor mu?
+- Form Doldurma Süresi: Hizalama doldurmayı hızlandırıyor mu?
 - Alan Bazlı Hata Oranı: Yanlış alana yazma artmamalı.
 - Erişilebilirlik: Ekran okuyucuda etiket ile alanın eşleşmesi bozulmamalı.
 
@@ -51,7 +51,7 @@ A left-aligned label saves vertical space but forces the eye to jump sideways at
 **KPIs to track**
 - Form Completion Rate: Does the alignment get more people through to submission?
 - Form Start Rate: Does the share of users who touch the first field change?
-- Median Form Fill Time: Does the alignment speed up filling?
+- Form Fill Time: Does the alignment speed up filling?
 - Field-Level Error Rate: Typing into the wrong field must not increase.
 - Accessibility Check: The label-to-field association for screen readers must not break.
 
@@ -86,7 +86,7 @@ Yüzen etiket (alanın içinde başlayıp yazmaya başlayınca üste kayan etike
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Yüzen etiket gönderimi artırıyor mu?
 - Alan Bazlı Hata Oranı: Yanlış format girişi artmamalı.
-- Ortalama Doldurma Süresi: Etiketi anlamak için harcanan süre uzamamalı.
+- Form Doldurma Süresi: Etiketi anlamak için harcanan süre uzamamalı.
 - Alan Bazlı Terk Oranı: Belirli bir alanda bırakma artıyor mu?
 - Erişilebilirlik: Etiket kontrastı ve ekran okuyucu okuması bozulmamalı.
 
@@ -111,7 +111,7 @@ A floating label (it starts inside the field and slides up once typing begins) s
 **KPIs to track**
 - Form Completion Rate: Does the floating label raise submissions?
 - Field-Level Error Rate: Wrong-format entries must not increase.
-- Median Form Fill Time: The time spent figuring out the label must not grow.
+- Form Fill Time: The time spent figuring out the label must not grow.
 - Field-Level Abandonment Rate: Does dropout increase at a particular field?
 - Accessibility Check: Label contrast and screen-reader output must not degrade.
 
@@ -146,7 +146,7 @@ EN-Variable: Number of form columns
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Düzen gönderimi artırıyor mu?
 - Boş Bırakılan Alan Sayısı (gönderilen form başına ortalama): Atlanan alan sayısı artmamalı.
-- Ortalama Doldurma Süresi: Tek sütun doldurmayı yavaşlatıyor mu?
+- Form Doldurma Süresi: Tek sütun doldurmayı yavaşlatıyor mu?
 - Form Başlama Oranı: Uzayan form ilk dokunuşu azaltıyor mu?
 - Doğrulama Hatası Oranı: Gönderimde geri dönen hata sayısı artmamalı.
 
@@ -171,7 +171,7 @@ A two-column form looks short on screen but makes the eye zigzag and risks a col
 **KPIs to track**
 - Form Completion Rate: Does the layout raise submissions?
 - Blank Fields per Submitted Form (average): The number of skipped fields must not increase.
-- Median Form Fill Time: Does the single column slow filling down?
+- Form Fill Time: Does the single column slow filling down?
 - Form Start Rate: Does the longer form reduce first touches?
 - Validation Error Rate: The number of errors returned at submission must not increase.
 
@@ -207,7 +207,7 @@ Formu doldurmaya başlayan kullanıcının bitirme olasılığı artar. Bu neden
 - Form Tamamlama Oranı: Sıra değişikliği gönderimi artırıyor mu?
 - Form Başlama Oranı: İlk alana dokunma artıyor mu?
 - Alan Bazlı Terk Oranı: Terk başka bir alana kaymamalı, azalmalı.
-- Ortalama Doldurma Süresi: Toplam süre uzamamalı.
+- Form Doldurma Süresi: Toplam süre uzamamalı.
 - Gönderim Kalitesi: Hızlı başlayan kullanıcı geçersiz veri bırakmamalı.
 
 **Yapılmaması gerekenler**
@@ -232,7 +232,7 @@ A user who has started a form is more likely to finish it. So a first field that
 - Form Completion Rate: Does the reordering raise submissions?
 - Form Start Rate: Do touches on the first field increase?
 - Field-Level Abandonment Rate: Abandonment must fall, not just move to another field.
-- Median Form Fill Time: Total time must not grow.
+- Form Fill Time: Total time must not grow.
 - Submission Quality: Users who start fast must not leave invalid data.
 
 **What not to do**
@@ -266,7 +266,7 @@ Tüm alanları baştan göstermek beklentiyi netleştirir ama form uzun görün�
 - Form Tamamlama Oranı: Kademeli açma gönderimi artırıyor mu?
 - Form Başlama Oranı: Kısalan form ilk dokunuşu artırıyor mu?
 - Alan Doldurma Oranı: Toplanan veri kalitesi kabul edilemez seviyeye düşmemeli.
-- Ortalama Doldurma Süresi: Açılıp kapanan bölümler süreyi uzatmamalı.
+- Form Doldurma Süresi: Açılıp kapanan bölümler süreyi uzatmamalı.
 - Alan Bazlı Terk Oranı: Beliren alanda ani bırakma olmamalı.
 
 **Yapılmaması gerekenler**
@@ -290,7 +290,7 @@ Showing every field up front sets clear expectations but makes the form look lon
 - Form Completion Rate: Does progressive reveal raise submissions?
 - Form Start Rate: Does the shorter form raise first touches?
 - Field Fill Rate: The quality of the collected data must not fall to an unacceptable level.
-- Median Form Fill Time: Sections that open and close must not lengthen the time.
+- Form Fill Time: Sections that open and close must not lengthen the time.
 - Field-Level Abandonment Rate: There must be no sudden dropout at the field that appears.
 
 **What not to do**
@@ -385,7 +385,7 @@ Daha büyük giriş alanı dokunma hedefini büyütür, mobilde yanlış dokunma
 - Form Tamamlama Oranı: Büyük alan gönderimi artırıyor mu?
 - Yanlış Tıklama Oranı: Hedef dışına dokunma azalıyor mu?
 - Form Başlama Oranı: İlk dokunuş artıyor mu?
-- Ortalama Doldurma Süresi: Süre uzamamalı.
+- Form Doldurma Süresi: Süre uzamamalı.
 - Erişilebilirlik: Dokunma hedefi erişilebilirlik alt sınırının altına inmemeli.
 
 **Yapılmaması gerekenler**
@@ -410,7 +410,7 @@ A larger input field enlarges the touch target, reduces mistaps on mobile and ma
 - Form Completion Rate: Do larger fields raise submissions?
 - Misclick Rate: Do taps outside the target fall?
 - Form Start Rate: Do first touches increase?
-- Median Form Fill Time: The time must not grow.
+- Form Fill Time: The time must not grow.
 - Accessibility Check: The touch target must not drop below the accessibility minimum.
 
 **What not to do**
@@ -444,7 +444,7 @@ Adres, şehir, şirket gibi alanlarda öneri listesi yazma yükünü azaltır ve
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Öneri gönderimi artırıyor mu?
 - Adres/Alan Doğruluk Oranı: Hatalı veri oranı artmamalı.
-- Ortalama Doldurma Süresi: Alan doldurma süresi kısalıyor mu?
+- Form Doldurma Süresi (öneri listeli alan): Alan doldurma süresi kısalıyor mu?
 - Alan Bazlı Terk Oranı: Öneri listesi olan alanda bırakma artmamalı.
 - Operasyonel Yük: Yanlış veriden doğan düzeltme/iletişim maliyeti artmamalı.
 
@@ -469,7 +469,7 @@ For fields such as address, city or company, a suggestion list cuts typing effor
 **KPIs to track**
 - Form Completion Rate: Do suggestions raise submissions?
 - Address/Field Accuracy Rate: The share of wrong data must not increase.
-- Median Form Fill Time: Does the time to fill the field get shorter?
+- Form Fill Time (field with the suggestion list): Does the time to fill the field get shorter?
 - Field-Level Abandonment Rate: Abandonment at the field with the suggestion list must not increase.
 - Operational Load: The cost of corrections and contact caused by wrong data must not increase.
 
@@ -505,7 +505,7 @@ Kısa bir yardım metni (“Fatura adresinizle aynı olmalı”, “Örnek: 5xx 
 - Form Tamamlama Oranı: Form sayfasına atanan ziyaretçilerin formu gönderme oranı artıyor mu?
 - Doğrulama Hatası Oranı: Tanı metriği; hatalı gönderim azalıyor mu? Hata düşüp gönderim artmıyorsa kazanç veri kalitesindedir, dönüşümde değil.
 - Alan Bazlı Terk Oranı: Açıklama eklenen alanda bırakma azalıyor mu?
-- Ortalama Doldurma Süresi: Okuma yükü süreyi belirgin uzatmamalı.
+- Form Doldurma Süresi: Okuma yükü süreyi belirgin uzatmamalı.
 - Destek Talebi: Aynı konudaki soru sayısı azalıyor mu?
 
 **Yapılmaması gerekenler**
@@ -530,7 +530,7 @@ A short help text (“Must match your billing address”, “Example: 5xx xxx xx
 - Form Completion Rate: Does the share of visitors assigned to the form page who submit the form rise?
 - Validation Error Rate: Diagnostic metric; do erroneous submissions fall? If errors fall and submissions don’t rise, the gain is in data quality, not conversion.
 - Field-Level Abandonment Rate: Does abandonment fall at the field where help text was added?
-- Median Form Fill Time: The reading load must not lengthen the time noticeably.
+- Form Fill Time: The reading load must not lengthen the time noticeably.
 - Support Contact Rate: Does the number of questions on the same topic fall?
 
 **What not to do**
@@ -807,7 +807,7 @@ Görünür bir geri düğmesi hata düzeltmeyi kolaylaştırır ve kullanıcıya
 - Veri Kaybı Oranı: Geri dönüşte girilen veri kaybolmamalı.
 - Adım Bazlı Terk Oranı: Belirli bir adımda bırakma artmamalı.
 - Doğrulama Hatası Oranı: Gönderimde geri dönen hata azalıyor mu?
-- Ortalama Doldurma Süresi: Gidip gelmeler süreyi kabul edilemez ölçüde uzatmamalı.
+- Form Doldurma Süresi: Gidip gelmeler süreyi kabul edilemez ölçüde uzatmamalı.
 
 **Yapılmaması gerekenler**
 - Geri düğmesini ekleyip veri korumasını uygulamadan test etmeyin; kaybolan veriyi değil kendi hatanızı ölçersiniz.
@@ -831,7 +831,7 @@ A visible back button makes correcting mistakes easier and gives the user a sens
 - Data Loss Rate: Entered data must not be lost on going back.
 - Step-Level Abandonment Rate: Dropout at a particular step must not increase.
 - Validation Error Rate: Do the errors returned at submission fall?
-- Median Form Fill Time: Going back and forth must not lengthen the time to an unacceptable degree.
+- Form Fill Time: Going back and forth must not lengthen the time to an unacceptable degree.
 
 **What not to do**
 - Don’t test by adding the back button without implementing data preservation; you would measure your own bug, not the lost data.
@@ -864,7 +864,7 @@ Alanları bir cümlenin içine yerleştirmek (“Ben [ad], [şehir]’de [hizmet
 - Form Tamamlama Oranı: Cümle formu gönderimi artırıyor mu?
 - Form Başlama Oranı: İlk alana giriş artıyor mu?
 - Doğrulama Hatası Oranı: Hatalı gönderim artmamalı.
-- Ortalama Doldurma Süresi: Süre uzamamalı.
+- Form Doldurma Süresi: Süre uzamamalı.
 - Erişilebilirlik: Ekran okuyucuda alan etiketleri anlaşılmaz hâle gelmemeli.
 
 **Yapılmaması gerekenler**
@@ -888,7 +888,7 @@ Placing the fields inside a sentence (“I’m [name], looking for [service] in 
 - Form Completion Rate: Does the sentence form raise submissions?
 - Form Start Rate: Does entry into the first field increase?
 - Validation Error Rate: Erroneous submissions must not increase.
-- Median Form Fill Time: The time must not grow.
+- Form Fill Time: The time must not grow.
 - Accessibility Check: Field labels must not become unintelligible in a screen reader.
 
 **What not to do**
@@ -923,7 +923,7 @@ Ortalanmış form dikkati toplar ve tek amaçlı sayfalarda doğal durur. Sola h
 - Form Tamamlama Oranı: Hizalama gönderimi artırıyor mu?
 - Form Başlama Oranı: İlk dokunuş artıyor mu?
 - Destek İçerik Görülme Oranı: Yandaki güvencelerin görülmesi kabul edilemez ölçüde düşmemeli.
-- Ortalama Doldurma Süresi: Süre uzamamalı.
+- Form Doldurma Süresi: Süre uzamamalı.
 - Destek Talebi: Güvence ve özet bloğunu görmeden gönderenlerin açtığı talepler artmamalı.
 
 **Yapılmaması gerekenler**
@@ -948,7 +948,7 @@ A centered form gathers attention and sits naturally on single-purpose pages. A 
 - Form Completion Rate: Does the alignment raise submissions?
 - Form Start Rate: Do first touches increase?
 - Supporting Content View Rate: Views of the reassurances beside the form must not fall to an unacceptable level.
-- Median Form Fill Time: The time must not grow.
+- Form Fill Time: The time must not grow.
 - Support Contact Rate: Requests opened by people who submitted without seeing the reassurance and summary block must not increase.
 
 **What not to do**
@@ -983,7 +983,7 @@ Arka planı karartmak veya bulanıklaştırmak modalı öne çıkarır ve form d
 - Form Tamamlama Oranı: Karartma gönderimi artırıyor mu?
 - Yanlışlıkla Kapatma Oranı: Veri girildikten sonra kapatma artmamalı.
 - Form Başlama Oranı: Formun fark edilmesi artıyor mu?
-- Ortalama Doldurma Süresi: Arkadaki bilgiye bakmak için modalı kapatıp yeniden açmak süreyi uzatmamalı.
+- Form Doldurma Süresi: Arkadaki bilgiye bakmak için modalı kapatıp yeniden açmak süreyi uzatmamalı.
 - Erişilebilirlik: Odak modaldan kaçmamalı, klavyeyle kapatma yolu kaybolmamalı.
 
 **Yapılmaması gerekenler**
@@ -1008,7 +1008,7 @@ Dimming or blurring the background makes the modal stand out and visually silenc
 - Form Completion Rate: Does dimming raise submissions?
 - Accidental Close Rate: Closing after data has been entered must not increase.
 - Form Start Rate: Does noticing of the form increase?
-- Median Form Fill Time: Closing and reopening the modal to look at the information behind must not lengthen the time.
+- Form Fill Time: Closing and reopening the modal to look at the information behind must not lengthen the time.
 - Accessibility Check: Focus must not escape the modal, and the keyboard way to close must not disappear.
 
 **What not to do**
@@ -1043,7 +1043,7 @@ Boş bir metin kutusu, ne yazacağını bilmeyen kullanıcıyı durdurur. Hazır
 - Alan Doldurma Oranı: Serbest metin alanının doldurulması artıyor mu?
 - Form Tamamlama Oranı: Gönderim artıyor mu?
 - Metin Özgünlük Oranı: Aynı metnin tekrarı kabul edilemez seviyeye çıkmamalı.
-- Ortalama Doldurma Süresi: Süre kısalıyor mu?
+- Form Doldurma Süresi: Süre kısalıyor mu?
 - Alıcı Yanıt Oranı: Gönderilen metne alıcının yanıt verme oranı düşmemeli.
 
 **Yapılmaması gerekenler**
@@ -1068,7 +1068,7 @@ An empty text box stops a user who doesn’t know what to write. Offering a read
 - Field Fill Rate: Does the fill rate of the free-text field rise?
 - Form Completion Rate: Do submissions rise?
 - Text Uniqueness Rate: Repetition of the same text must not reach an unacceptable level.
-- Median Form Fill Time: Does the time get shorter?
+- Form Fill Time: Does the time get shorter?
 - Recipient Response Rate: The rate at which recipients reply to the text sent must not drop.
 
 **What not to do**
@@ -1341,7 +1341,7 @@ Radio button tüm seçenekleri aynı anda görünür kılar, kullanıcı tıklam
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Biçim gönderimi artırıyor mu?
 - Alan Bazlı Hata Oranı: Yanlış veya eksik seçim artmamalı.
-- Ortalama Doldurma Süresi: İlgili alanı doldurma süresi uzamamalı.
+- Form Doldurma Süresi (ilgili alan): İlgili alanı doldurma süresi uzamamalı.
 - Alan Bazlı Terk Oranı: İlgili alanda bırakma artmamalı.
 - Erişilebilirlik: Klavye ile gezinme ve ekran okuyucu davranışı biçime göre bozulmamalı.
 
@@ -1365,7 +1365,7 @@ Radio buttons show all options at once, letting the user compare without clickin
 **KPIs to track**
 - Form Completion Rate: Does the format raise submissions?
 - Field-Level Error Rate: Wrong or missing choices must not increase.
-- Median Form Fill Time: The time to fill the field must not grow.
+- Form Fill Time (the field): The time to fill the field must not grow.
 - Field-Level Abandonment Rate: Abandonment at the field must not increase.
 - Accessibility Check: Keyboard navigation and screen-reader behavior must not break depending on the format.
 

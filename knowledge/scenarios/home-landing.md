@@ -1852,7 +1852,7 @@ A new visitor needs brand information, while a returning visitor needs a quick w
 - Revenue per Visitor (RPV): Should be read by segment.
 - Homepage Click Rate: Is the first block noticed?
 - Return-to-Cart Rate: The returning user flow.
-- New User Conversion: Must not fall.
+- New-User Conversion Rate: Must not fall.
 - Page Load Time: Personalization must not hurt LCP (Largest Contentful Paint).
 
 **What not to do**
