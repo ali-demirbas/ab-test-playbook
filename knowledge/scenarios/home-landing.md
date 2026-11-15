@@ -149,7 +149,6 @@ Video karmaşık bir ürünü metinden hızlı anlatabilir. Otomatik oynatma dik
 **Test edilmesi gerekenler**
 - Oynatma: Video otomatik mi başlamalı, tıklayınca mı?
 - Ses açma: Sessiz başlayan otomatik videoda ziyaretçilerin kaçı sesi açıp anlatımı sonuna kadar izliyor?
-- Sonraki test: Kazanan oynatma biçimi sabitken videoyu hero’dan açıklama bölümüne taşımak ayrı bir testte izlenmeyi değiştiriyor mu?
 - İzleme derinliği: İzlemeyi yarıda bırakanlar aksiyonu alıyor mu?
 - Cihaz: Mobilde veri tüketimi ve yükleme süresi sonucu değiştiriyor mu?
 
@@ -185,7 +184,6 @@ Tanınan kurum logoları hızlı bir güven kısayolu sağlar. Ancak logolar ziy
 - Varlık: Logo bandı eklemek aksiyonu artırıyor mu?
 - Tanınırlık: Bandı gören ziyaretçiler kısa ankette logolardaki kurumlardan en az birini tanıdığını söylüyor mu?
 - Ölçek uyumu: Kurumsal logolar küçük ölçekli ziyaretçiyi uzaklaştırıyor mu?
-- Sonraki test: Logo bandı kazanırsa, bandı başlığın hemen altından sayfanın ilerisine taşımak ayrı bir testte aksiyonu değiştiriyor mu?
 - Segment: Logo bandının etkisi, logolardaki kurumlarla aynı sektörden gelen ziyaretçide diğer sektörlerden gelenlere göre daha mı güçlü?
 
 **Takip edilecek ana KPI’lar**
@@ -250,7 +248,6 @@ Uzun sayfa itirazları tek tek karşılar ve karmaşık ürünü anlatmaya yer b
 **Test edilmesi gerekenler**
 - Uzunluk: Bölüm sayısını azaltmak aksiyonu artırıyor mu?
 - İhtiyaç: Çıkarılan bölümler gerçekten okunuyor muydu?
-- Sonraki test: Kısaltmak yerine yalnızca bölümlerin sırasını değiştirmek, ayrı bir testte aynı etkiyi veriyor mu?
 - İtiraz: Kısalan sayfada cevapsız kalan itiraz destek talebine dönüşüyor mu?
 - Segment: Yeni ziyaretçi uzun, geri dönen ziyaretçi kısa sayfaya mı daha iyi tepki veriyor?
 
@@ -462,9 +459,9 @@ Bir teklifin yanına açık bir “şimdi değil” seçeneği koymak kullanıc�
 - İzin İptal Oranı (30 gün): Sonradan izin geri çekme artmamalı.
 
 **Yapılmaması gerekenler**
-- Reddetme seçeneğini okunmaz derecede soluk veya küçük yapan bir varyant kurmayın (kural 6).
+- Reddetme seçeneğini okunmaz derecede soluk veya küçük yapan bir varyant kurmayın.
 - Reddedeni aynı oturumda tekrar tekrar aynı teklifle karşılamayın.
-- Reddetme seçeneğine basanı suçlayıcı veya utandırıcı bir metinle (“Hayır, tasarruf istemiyorum”) karşılamayın (kural 6).
+- Reddetme seçeneğine basanı suçlayıcı veya utandırıcı bir metinle (“Hayır, tasarruf istemiyorum”) karşılamayın.
 - Yasal izin gerektiren alanlarda (iletişim izni, çerez) reddetme seçeneğini zorlaştırmayı test konusu yapmayın.
 - Aynı testte hem reddetme seçeneğini hem teklifin içeriğini değiştirmeyin.
 
@@ -483,7 +480,6 @@ Başlığın hemen üstünde veya altında duran ince bir şerit (ücretsiz karg
 **Test edilmesi gerekenler**
 - Varlık: Fayda çubuğu eklemek aksiyonu artırıyor mu?
 - Fark edilme: Çubuk varken ziyaretçiler kargo ve iade bilgisini yine de sayfanın altında veya yardım sayfasında arıyor mu?
-- Sonraki test: Fayda çubuğu kazanırsa, çubuğu başlığın üstünden altına taşımak ayrı bir testte okunmayı değiştiriyor mu?
 - Görsel ağırlık: Çubuk dikkat çekince başlığın etkisi zayıflıyor mu?
 - Cihaz: Kısa mobil ilk ekranda fayda çubuğunun başlığı ve CTA’yı aşağı itmesi, masaüstünde görülmeyen bir aksiyon kaybı yaratıyor mu?
 
@@ -924,7 +920,7 @@ Bir marka sayfasının yanında görünen takipçi veya beğeni sayısı, ürün
 - Sayfada Kalma Süresi: Sayaç dikkat dağıtıp asıl aksiyonu geciktirmemeli.
 
 **Yapılmaması gerekenler**
-- Gerçek olmayan veya şişirilmiş bir sayıyı göstermeyin (kural 6).
+- Gerçek olmayan veya şişirilmiş bir sayıyı göstermeyin.
 - Aynı testte sayacın biçimini ve konumunu birlikte değiştirmeyin.
 - Sayı küçükken büyük bir görsel ağırlıkla öne çıkarmayın; ağırlığı sayının gerçek gücüne göre ayarlayın.
 - Farklı platformlardan gelen sayıları tek bir toplam gibi birleştirip yanıltıcı bir büyüklük izlenimi yaratmayın.
@@ -957,7 +953,7 @@ Küçük bir pop-up’tan farklı olarak, kısmi karşılama ekranı sayfanın b
 - Tekrar Ziyaret Oranı: Atanan ziyaretçilerin siteye tekrar dönüş oranı düşmemeli.
 
 **Yapılmaması gerekenler**
-- Kapatma işaretini gizleyip ziyaretçiyi teklifi kabul etmeye zorlamayın (kural 6).
+- Kapatma işaretini gizleyip ziyaretçiyi teklifi kabul etmeye zorlamayın.
 - Aynı testte ekranın kapsamını ve içeriğini birlikte değiştirmeyin.
 - Ekranı, arama motoru botlarının asıl içeriği görmesini engelleyecek şekilde kurmayın.
 - Mobilde ekranı kapatma alanını dokunma hedefi için çok küçük bırakmayın.
@@ -1042,7 +1038,6 @@ EN: Does a recently viewed products strip help visitors pick up where they left 
 Dönen ziyaretçinin anasayfada ilk aradığı çoğu zaman bir önceki ziyarette baktığı üründür; onu bulmak için aramayı ya da kategoriyi baştan yürümesi gerekir. Anasayfaya son gezilen ürünler şeridi eklemek bu yolu tek dokunuşa indirir ve kişinin kendi geçmişine dayandığı için algoritmik öneriden daha alakalıdır. Riski: şerit çok satanlar ve kampanya bloklarını aşağı iter; satın alınmış ya da tükenmiş ürünü tekrar göstermek deneyimi bozar.
 
 **Test edilmesi gerekenler**
-- Sonraki test: Şerit kazanırsa, şeridin anasayfadaki yeri (ilk ekran / çok satanların altı) ayrı bir testte tıklamayı değiştiriyor mu?
 - Sayı: Kaç ürün göstermek optimum? (3 / 6 / 10)
 - Varlık: Son gezilen ürünler şeridi, dönen kullanıcının satın almasını artırıyor mu?
 - Yamyamlık: Şerit çok satanlar bloğunun performansını yiyor mu?
@@ -1077,7 +1072,6 @@ Mobil webe eklenen uygulama indirme banner’ı kurulum sayısını artırır am
 **Test edilmesi gerekenler**
 - Kazanç: Banner uygulama kurulumunu ne kadar artırıyor?
 - Kayıp: Aynı oturumdaki web dönüşümü ne kadar düşüyor?
-- Sonraki test: Banner kazanırsa, yerleşimi (üstte sabit / içerik arasında) ayrı bir testte kurulum ile web dönüşümü arasındaki dengeyi değiştiriyor mu?
 - Segment: Sadece yeni ziyaretçiye göstermek dengeyi kuruyor mu?
 - Kurulum sonrası: Banner’dan uygulamayı kuran kullanıcı, webde yarım kalan işlemini uygulamada tamamlıyor mu?
 

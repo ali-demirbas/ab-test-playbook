@@ -31,8 +31,8 @@ Bir sigorta ürününün akordeonu açıldığında tek blok hâlinde uzun bir p
 **Yapılmaması gerekenler**
 - Aynı testte açıklamanın biçimi ile cümlelerin içeriğini birlikte değiştirmeyin; iki kolda aynı bilgi durmalı.
 - Maddeleştirirken istisna, bekleme süresi veya koşul cümlelerini kısaltmayın ya da çıkarmayın; düzenlemeye tabi metin kelimesi kelimesine korunur.
-- Maddeli sürümü uyum biriminin yazılı onayı olmadan yayına almayın; kapsam metni hedef pazarın kuralına bağlı bir bilgilendirmedir (kural 11).
-- “Neleri kapsamaz” maddesini katlanmış, soluk veya en sona itilmiş biçimde göstermeyin (kural 6).
+- Maddeli sürümü uyum biriminin yazılı onayı olmadan yayına almayın; kapsam metni hedef pazarın kuralına bağlı bir bilgilendirmedir.
+- “Neleri kapsamaz” maddesini katlanmış, soluk veya en sona itilmiş biçimde göstermeyin.
 - Etiketleri ikon veya renkle süsleyip aynı testte görsel yoğunluğu da artırmayın.
 
 ---
@@ -63,9 +63,9 @@ Fon dağılımını müşteri adına yöneten bir hizmetin tanıtım ekranında 
 
 **Yapılmaması gerekenler**
 - Aynı testte cümlelerin yeri ile cümlelerin metnini birlikte değiştirmeyin; taşınan cümle kelimesi kelimesine aynı kalır.
-- Hizmet ücretini, kesintiyi veya risk uyarısını taşırken küçültmeyin ya da bağlantı arkasına almayın; mevzuatın istediği bilgilendirme iki kolda aynı görünürlükte durur (kural 11).
+- Hizmet ücretini, kesintiyi veya risk uyarısını taşırken küçültmeyin ya da bağlantı arkasına almayın; mevzuatın istediği bilgilendirme iki kolda aynı görünürlükte durur.
 - Geçmiş fon getirisini veya beklenen kazancı adım açıklamasına eklemeyin; getiri vaadi yazılmaz, rakam uydurulmaz.
-- Onay adımını atlayan ya da risk profili sorularını azaltan bir akışı bu testin parçası yapmayın (kural 6).
+- Onay adımını atlayan ya da risk profili sorularını azaltan bir akışı bu testin parçası yapmayın.
 - Adımların sayısını veya sırasını bu testte oynatmayın; üç adım iki kolda da aynıdır.
 
 ---
@@ -96,9 +96,9 @@ Uygulamanın ana ekranındaki bir slayt “Size özel katkı payı önerimiz haz
 
 **Yapılmaması gerekenler**
 - Aynı testte butonu eklerken slaytın başlığını, görselini veya dizideki sırasını birlikte değiştirmeyin.
-- Buton “Önerimi gör” diyorsa arkasında herkese aynı tutarı sunan genel bir ekran açmayın; vaat edilen kişisel öneri gerçek sözleşme verisinden hesaplanır (kural 6).
+- Buton “Önerimi gör” diyorsa arkasında herkese aynı tutarı sunan genel bir ekran açmayın; vaat edilen kişisel öneri gerçek sözleşme verisinden hesaplanır.
 - Butona veya slayta “Son gün”, “Kaçırmayın” gibi aciliyet ifadesi ya da gerçek olmayan bir süre sınırı koymayın.
-- Devlet katkısını, getiriyi veya birikim tutarını slayta rakamla yazmayın; uyum onayından geçmemiş hiçbir oran ya da tutar gösterilmez (kural 11).
+- Devlet katkısını, getiriyi veya birikim tutarını slayta rakamla yazmayın; uyum onayından geçmemiş hiçbir oran ya da tutar gösterilmez.
 - Artırım onayındaki bilgilendirmeyi kısaltmayın; buton yalnızca öneri ekranını açar, onayın yerine geçmez.
 
 ---
@@ -129,10 +129,10 @@ Sigorta ürünleri yalnızca adlarıyla sıralandığında (“Ferdi Kaza”, �
 
 **Yapılmaması gerekenler**
 - Aynı testte yönlendirmeyi eklerken ürünlerin sırasını, adlarını veya kart tasarımını birlikte değiştirmeyin.
-- Yönlendirmeyi kişiye özel tavsiye gibi sunmayın (“Sizin için en doğru ürün”); genel bilgilendirme ile tavsiye arasındaki sınırı hedef pazarın kuralına göre uyum birimiyle doğrulayın (kural 11).
-- İhtiyaç seçeneklerinin hepsini aynı ürüne ya da komisyonu yüksek ürüne bağlamayın; eşleşme ürünün gerçek kapsamına dayanır (kural 6).
+- Yönlendirmeyi kişiye özel tavsiye gibi sunmayın (“Sizin için en doğru ürün”); genel bilgilendirme ile tavsiye arasındaki sınırı hedef pazarın kuralına göre uyum birimiyle doğrulayın.
+- İhtiyaç seçeneklerinin hepsini aynı ürüne ya da komisyonu yüksek ürüne bağlamayın; eşleşme ürünün gerçek kapsamına dayanır.
 - Yönlendirmeyi kapatılamayan bir katman olarak açmayın; ürün listesi onun altında her zaman erişilebilir kalır.
-- Yönlendirmede sağlık durumu veya gelir gibi hassas bilgileri sormayın; seçenekler ihtiyaç düzeyinde kalır (kural 14).
+- Yönlendirmede sağlık durumu veya gelir gibi hassas bilgileri sormayın; seçenekler ihtiyaç düzeyinde kalır.
 
 ---
 
@@ -161,10 +161,10 @@ Birden fazla sözleşmesi olan müşteri bir işlem akışına girdiğinde (katk
 - Yanlış Sözleşme Şikâyeti Oranı: İstenmeyen sözleşmede işlem yapıldığı gerekçesiyle açılan kayıtlar çoğalmamalı.
 
 **Yapılmaması gerekenler**
-- Sözleşme kutusunu önceden işaretli getirmeyin; işlemin hangi sözleşmeyi kapsayacağını müşteri yerine seçmek reddedilen bir varyanttır (kural 6).
+- Sözleşme kutusunu önceden işaretli getirmeyin; işlemin hangi sözleşmeyi kapsayacağını müşteri yerine seçmek reddedilen bir varyanttır.
 - Aynı testte yönerge satırını eklerken sözleşme kartlarının içeriğini veya “Devam” butonunun metnini birlikte değiştirmeyin.
 - Yönergeyi “Tümünü seç” kısayoluna çevirmeyin; kapsamı genişleten bir varsayılan bu testin konusu olamaz.
-- Seçimden sonraki bilgilendirme ve işlem onayı ekranını atlamayın ya da daraltmayın; mevzuatın istediği onay adımı iki kolda aynen durur (kural 11).
+- Seçimden sonraki bilgilendirme ve işlem onayı ekranını atlamayın ya da daraltmayın; mevzuatın istediği onay adımı iki kolda aynen durur.
 - Yönerge satırına sözleşmenin birikimi, getirisi veya kesintisi hakkında yeni bir rakam ya da vaat yazmayın; satır yalnızca yapılacak eylemi söyler.
 
 ---
@@ -195,8 +195,8 @@ Emeklilik birikimi ya da prim hesaplama aracı sonucu gösterip orada bitiyorsa 
 
 **Yapılmaması gerekenler**
 - Aynı testte butonu eklerken sonuç tablosunun içeriğini, varsayımlarını veya hesaplama formülünü birlikte değiştirmeyin.
-- Sonucu garanti edilmiş getiri ya da kesin prim gibi sunan bir buton metni yazmayın (“Bu birikimi garantile”); hesap bir tahmindir ve varsayım notu iki kolda yerinde kalır (kural 11).
-- Butonu, sonucu görmek için iletişim bilgisi isteyen bir kapıya çevirmeyin; sonuç iki kolda da talepsiz görünür (kural 6).
+- Sonucu garanti edilmiş getiri ya da kesin prim gibi sunan bir buton metni yazmayın (“Bu birikimi garantile”); hesap bir tahmindir ve varsayım notu iki kolda yerinde kalır.
+- Butonu, sonucu görmek için iletişim bilgisi isteyen bir kapıya çevirmeyin; sonuç iki kolda da talepsiz görünür.
 - Butona dokunmayı talep saymayın; iletişim izni ve aydınlatma metni formda aynen durur, buton onların yerine geçmez.
 - “Bu teklif yalnızca bugün geçerli” gibi süre baskısı kuran ifadeleri butonun yanına koymayın.
 
@@ -210,13 +210,12 @@ Etiket: id=fp-007 · mercek=Güven · düzey=güven · sektör=finans · pazar=T
 
 EN: Does writing why the ID number is needed next to its field on a pre-quote form raise quotes?
 
-Sigorta ya da emeklilik ön teklif formunda kimlik numarası veya doğum tarihi alanı, henüz fiyat bile almamış ziyaretçiye ağır gelir: “neden şimdi istiyorlar” sorusu yanıtsız kalınca form orada bırakılır. Alanı kaldırmak çoğu zaman mümkün değildir, çünkü teklif bu bilgiyle hesaplanır; kural 14’teki ara yöntemlerden biri olan gerekçe vermek, alanın yanına bilginin ne için kullanılacağını yazar (“Primi yaşınıza göre hesaplayabilmemiz için gerekir”). Riski: gerekçe yayımlanan aydınlatma metniyle birebir örtüşmezse yanıltıcı olur; ayrıca gerekçe, ziyaretçinin aklına gelmemiş bir kaygıyı uyandırabilir. “Alanın yanına “neden soruyoruz” açıklaması eklemek, amacı belirsiz görünen bir alanı doldurtur mu?” (`saas-b2b.md`) senaryosundan farkı: orada alan hassas olmayan bir niteleme sorusudur ve ölçülen o alanın doldurulmasıdır; burada alan zorunlu ve hassastır, gerekçenin metni kişisel veri kurallarına bağlıdır ve ölçülen teklifin alınmasıdır.
+Sigorta ya da emeklilik ön teklif formunda kimlik numarası veya doğum tarihi alanı, henüz fiyat bile almamış ziyaretçiye ağır gelir: “neden şimdi istiyorlar” sorusu yanıtsız kalınca form orada bırakılır. Alanı kaldırmak çoğu zaman mümkün değildir, çünkü teklif bu bilgiyle hesaplanır; alanı kaldırmak yerine denenen ara yöntemlerden biri olan gerekçe vermek, alanın yanına bilginin ne için kullanılacağını yazar (“Primi yaşınıza göre hesaplayabilmemiz için gerekir”). Riski: gerekçe yayımlanan aydınlatma metniyle birebir örtüşmezse yanıltıcı olur; ayrıca gerekçe, ziyaretçinin aklına gelmemiş bir kaygıyı uyandırabilir. “Alanın yanına “neden soruyoruz” açıklaması eklemek, amacı belirsiz görünen bir alanı doldurtur mu?” (`saas-b2b.md`) senaryosundan farkı: orada alan hassas olmayan bir niteleme sorusudur ve ölçülen o alanın doldurulmasıdır; burada alan zorunlu ve hassastır, gerekçenin metni kişisel veri kurallarına bağlıdır ve ölçülen teklifin alınmasıdır.
 
 **Test edilmesi gerekenler**
 - Varlık: Gerekçe satırı eklenince ön teklif formunu gönderip teklif isteyenlerin payı artıyor mu?
 - Alan düzeyi: Kimlik numarası alanına gelip formu orada bırakanların payı azalıyor mu?
 - Ters etki: Gerekçe, alanı sorgulamadan dolduran ziyaretçide tereddüt uyandırıp doldurma süresini uzatıyor mu?
-- Sonraki test: Gerekçe kazanırsa, bilginin nasıl korunduğunu söyleyen bir güvence satırı ayrı bir testte teklif almayı artırıyor mu?
 - Segment: Reklamdan ilk kez gelen ziyaretçi ile mevcut müşteri gerekçeye farklı mı tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
@@ -228,8 +227,8 @@ Sigorta ya da emeklilik ön teklif formunda kimlik numarası veya doğum tarihi 
 
 **Yapılmaması gerekenler**
 - Aynı testte gerekçe satırını eklerken alanın zorunluluğunu, sırasını veya etiketini birlikte değiştirmeyin.
-- Alanı tümden kaldırmayı ya da kimlik doğrulamasını gevşetmeyi bu senaryonun varyantı yapmayın; doğrulama bir koruma adımıdır (kural 6), alanın kaldırılıp kaldırılamayacağı ayrıca sorulur (kural 14).
-- Gerekçeyi yayımlanan aydınlatma metninde yer almayan bir amaçla yazmayın; cümle hukuk ve uyum onayından geçmeden yayına girmez (kural 11).
+- Alanı tümden kaldırmayı ya da kimlik doğrulamasını gevşetmeyi bu senaryonun varyantı yapmayın; doğrulama bir koruma adımıdır, alanın kaldırılıp kaldırılamayacağı ayrıca sorulur.
+- Gerekçeyi yayımlanan aydınlatma metninde yer almayan bir amaçla yazmayın; cümle hukuk ve uyum onayından geçmeden yayına girmez.
 - “Bilginiz kimseyle paylaşılmaz” gibi doğrulanmamış bir güvenceyi gerekçe satırına katmayın; güvence ayrı bir değişkendir ve gerçek veri akışına uymak zorundadır.
 - Gerekçe satırını açık rıza ya da ticari ileti izni kutusunun yanına koyup izni vermeye yönlendiren bir metne dönüştürmeyin.
 
@@ -261,7 +260,7 @@ Teklif akışında yalnızca numara gösteren bir gösterge (“2 / 4”) kullan
 
 **Yapılmaması gerekenler**
 - Aynı testte adım adlarını yazarken adımların sayısını, sırasını veya adımlardaki alanları birlikte değiştirmeyin.
-- Bilgilendirme formu, onay veya kimlik doğrulama adımını göstergede gizlemeyin ya da başka bir adın altına saklamayın; zorunlu adımlar adıyla görünür ve akışta aynen kalır (kural 6 ve 11).
+- Bilgilendirme formu, onay veya kimlik doğrulama adımını göstergede gizlemeyin ya da başka bir adın altına saklamayın; zorunlu adımlar adıyla görünür ve akışta aynen kalır.
 - Göstergede yazmayan bir adımı (ör. ödeme) akışın sonunda sürpriz olarak çıkarmayın; adlar gerçek akışla birebir örtüşür.
 - Adım adına “Ücretsiz teklif” ya da “Anında onay” gibi doğrulanmamış bir vaat yazmayın; ad yalnızca adımın işini söyler ve uyum onayından geçer.
 - Adım adlarını dar ekranda okunmayacak kadar küçültmeyin veya üç noktayla kırpılmış bırakmayın.
@@ -282,7 +281,6 @@ Giriş yapmış müşteri uygulamadaki birikim hesaplama aracını açtığında
 - Başlangıç değeri: Alanlar sözleşme verisiyle dolu açıldığında hesaplamayı sonuca ulaştıran müşteri payı, boş açılana göre yüksek mi?
 - Düzenleme: Dolu gelen değerleri değiştirip farklı bir katkı payıyla yeniden hesaplayan müşteri payı ne kadar?
 - Doğruluk: Dolu gelen değerlerin güncel kayıtlarla uyuşmadığı müşteriler aracı yarıda mı bırakıyor?
-- Sonraki test: Dolu başlangıç kazanırsa, sonuç ekranına katkı payı artırma butonu eklemek ayrı bir testte artırımı yükseltiyor mu?
 - Platform: iOS ve Android uygulamasında verinin yüklenme süresi farklıyken dolu başlangıcın etkisi aynı mı?
 
 **Takip edilecek ana KPI’lar**
@@ -295,9 +293,9 @@ Giriş yapmış müşteri uygulamadaki birikim hesaplama aracını açtığında
 **Yapılmaması gerekenler**
 - Aynı testte alanları dolu açarken alanların sayısını, sırasını veya sonuç ekranının tasarımını birlikte değiştirmeyin.
 - Dolu gelen alanları kilitlemeyin; müşteri her değeri değiştirebilir ve değerin hangi sözleşmeden, hangi tarihte alındığı alanın altında yazar.
-- Getiri oranı, enflasyon veya devlet katkısı varsayımını müşteri verisi gibi sessizce doldurmayın; varsayımlar uyum onaylı metniyle ayrı gösterilir, yeni oran uydurulmaz (kural 11).
+- Getiri oranı, enflasyon veya devlet katkısı varsayımını müşteri verisi gibi sessizce doldurmayın; varsayımlar uyum onaylı metniyle ayrı gösterilir, yeni oran uydurulmaz.
 - Aracı, aydınlatma metninde bildirilmeyen bir amaçla işlenen veriyle doldurmayın (ör. başka şirketteki birikim, tahmini gelir).
-- Dolu açılan hesaplamayı müşteri adına başlatılmış bir artırım talebi gibi kaydetmeyin; hesaplama hiçbir işlemi kendiliğinden başlatmaz (kural 6).
+- Dolu açılan hesaplamayı müşteri adına başlatılmış bir artırım talebi gibi kaydetmeyin; hesaplama hiçbir işlemi kendiliğinden başlatmaz.
 
 ---
 
@@ -329,5 +327,5 @@ EN: Does stating on a “Call me back” form who will get back to you, and thro
 - Ölçülmemiş bir geri dönüş süresi vaat etmeyin (“10 dakika içinde arıyoruz”); süre ancak çağrı kayıtlarıyla doğrulanmış ve her talepte tutulabiliyorsa yazılır.
 - Satırda şirketin gerçekte yürütmediği bir süreci anlatmayın; arayan dış arama ekibiyse ya da ilk temas SMS ise satır bunu söyler ve uyum onayından geçer.
 - Aynı testte sonraki adım satırını eklerken form alanlarını veya buton metnini birlikte değiştirmeyin.
-- Satırı iletişim izni ve aydınlatma metninin yerine koymayın, izin kutusunu önceden işaretlemeyin; izin metni onaylı hâliyle aynen kalır (kural 6 ve 11).
+- Satırı iletişim izni ve aydınlatma metninin yerine koymayın, izin kutusunu önceden işaretlemeyin; izin metni onaylı hâliyle aynen kalır.
 - “Danışmanlarımız şu an müsait” gibi gerçek zamanlı veriye dayanmayan bir doluluk ya da aciliyet sinyali eklemeyin.

@@ -84,7 +84,6 @@ Fiyatı erken göstermek beklentiyi netleştirir ve bütçesi uymayan ziyaretçi
 
 **Test edilmesi gerekenler**
 - Sıra: Fiyat faydadan önce mi, sonra mı gösterilmeli?
-- Sonraki test: Kazanan sıra sabitken fiyat puntosunu büyütmek ayrı bir testte algılanan pahalılığı değiştiriyor mu?
 - Nitelik: Erken fiyat gelen talebin niteliğini yükseltiyor mu?
 - Güven: Fiyatı geciktirmek gizleme algısı yaratıyor mu?
 - Segment: Fiyata duyarlı ve değere duyarlı ziyaretçi farklı mı tepki veriyor?
@@ -183,7 +182,6 @@ Abonelik yorgunluğu yaşayan kullanıcı, her ödemenin tekrarlayacağını var
 
 **Test edilmesi gerekenler**
 - İfade: Tek seferlik olduğunu belirtmek geliri artırıyor mu?
-- Sonraki test: İfade kazanırsa fiyatın yanında mı, ödeme butonunun altında mı durduğu ayrı bir testte ödeme tamamlamayı değiştiriyor mu?
 - Karşılaştırma yükü: Abonelik seçeneği de sunulan sayfada ifade, ziyaretçiyi iki ödeme modeli arasında kararsız bırakıp karar süresini uzatıyor mu?
 - Yan etki: İfade tekrar satın alma veya abonelik geçişini azaltıyor mu?
 - Segment: Yeni ziyaretçi ile daha önce satın almış kullanıcı farklı mı tepki veriyor?
@@ -230,7 +228,7 @@ Vergi hariç fiyat rakamı küçük gösterir ve kurumsal alıcının zaten hari
 
 **Yapılmaması gerekenler**
 - Tüketiciye vergi dahil gösterimin zorunlu olduğu pazarlarda bunu test değişkeni yapmayın; orada seçim yoktur.
-- Hedef pazarın kuralını doğrulamadan varyant kurmayın (kural 11).
+- Hedef pazarın kuralını doğrulamadan varyant kurmayın.
 - Vergi hariç gösterip bunu belirten ifadeyi okunmaz küçüklükte yazmayın.
 - Aynı testte vergi gösterimi ile kargo ücreti gösterimini birlikte değiştirmeyin.
 - Tek pazarda ölçüp sonucu diğer pazarlara taşımayın.
@@ -263,7 +261,7 @@ Fiyatın yanında “içindekilerin toplam değeri” göstermek alınan şeyin 
 
 **Yapılmaması gerekenler**
 - Ayrı satılmayan bir kalemin “ayrı fiyatı” varmış gibi bir değer üretmeyin.
-- Doğrulanamayan bir referans değeri fiyatın yanına yazmayın (kural 6).
+- Doğrulanamayan bir referans değeri fiyatın yanına yazmayın.
 - Aynı testte değer gösterimi ile paket içeriğini birlikte değiştirmeyin.
 - Referans fiyat gösteriminin düzenlendiği pazarlarda kuralı doğrulamadan yayınlamayın.
 - Değer toplamına, kullanıcının zaten ücretsiz aldığı kalemleri (ör. standart kargo) parasal değer biçip eklemeyin.
@@ -281,7 +279,6 @@ EN: Does adding a decoy third plan raise the share choosing the middle plan?
 İki plan arasında seçim yapmak zordur çünkü karşılaştırılacak ortak bir ölçüt yoktur. Orta plana yakın fiyatlı ama daha az içerikli üçüncü bir plan eklemek, orta planı “açık ara daha iyi seçenek” gibi gösterebilir; üçüncü planın kendisi neredeyse hiç seçilmez, işlevi karşılaştırma çıpası olmaktır. Bu, yeni bir avantaj eklemez; var olan iki planın algısını üçüncüsüne göre değiştirir.
 
 **Test edilmesi gerekenler**
-- Sonraki test: Çekici-alternatif plan kazanırsa orta planın hemen yanında mı, en pahalı sırada mı durduğu ayrı bir testte orta plan seçimini değiştiriyor mu?
 - Fiyat farkı: Çekici-alternatif ile orta plan arasındaki fark küçüldükçe etki güçleniyor mu?
 - Gerçek talep: Çekici-alternatif planın kendisi ciddi bir oranda seçiliyor mu, yoksa beklendiği gibi arka planda mı kalıyor?
 - Algı: Üç seçenek göstermek genel fiyat algısını pahalı mı gösteriyor?
@@ -361,8 +358,8 @@ Bir fiyat, yanında yüksek bir referans sayı (“piyasa ortalaması ₺X”, �
 - Ortalama Sepet Tutarı (AOV): Referans sayı ortalama tutarı düşürmemeli.
 
 **Yapılmaması gerekenler**
-- Doğrulanamayan veya uydurma bir referans sayı göstermeyin (kural 6); piyasa ortalaması veya rakip fiyatı iddiası gerçek, güncel bir kaynağa dayanmalı.
+- Doğrulanamayan veya uydurma bir referans sayı göstermeyin; piyasa ortalaması veya rakip fiyatı iddiası gerçek, güncel bir kaynağa dayanmalı.
 - Aynı testte referans sayının varlığını ve asıl fiyat seviyesini birlikte değiştirmeyin.
 - Referans sayıyı gerçekçi olmayacak kadar büyük seçip asıl fiyatı yapay biçimde ucuz göstermeyin.
-- Rakip fiyatını isim vererek gösteriyorsanız haksız rekabet veya karşılaştırmalı reklam kurallarını hedef pazarda doğrulamadan yayınlamayın (kural 11).
+- Rakip fiyatını isim vererek gösteriyorsanız haksız rekabet veya karşılaştırmalı reklam kurallarını hedef pazarda doğrulamadan yayınlamayın.
 - Referans sayıyı güncellemiyorsanız eski veya geçersiz bir rakamda donmuş bırakmayın.

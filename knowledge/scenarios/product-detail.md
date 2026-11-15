@@ -12,11 +12,10 @@ Etiket: id=pd-001 · mercek=Güven · düzey=görsel · sektör=e-ticaret · paz
 
 EN: Studio shot or real customer photo: which sells more?
 
-Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. İzinli, gerçekten o kullanıcıdan alınmış bir kullanıcı fotoğrafı ürünün gerçek hayattaki halini gösterip güveni artırabilir; ama markanın algılanan kalitesini de düşürebilir. Gerçek olmayan bir fotoğrafı “kullanıcı fotoğrafı” gibi sunmak bu testin kapsamı dışındadır (CLAUDE.md kural 6). “Ürünü kullanım ortamında göstermek düz stüdyo çekiminden daha mı etkili?” senaryosundan farkı: orada iki profesyonel çekim tarzı karşılaştırılır, burada değişken fotoğrafın kaynağıdır (marka mı, müşteri mi).
+Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. İzinli, gerçekten o kullanıcıdan alınmış bir kullanıcı fotoğrafı ürünün gerçek hayattaki halini gösterip güveni artırabilir; ama markanın algılanan kalitesini de düşürebilir. Gerçek olmayan bir fotoğrafı “kullanıcı fotoğrafı” gibi sunmak aldatıcıdır ve bu testin kapsamı dışındadır. “Ürünü kullanım ortamında göstermek düz stüdyo çekiminden daha mı etkili?” senaryosundan farkı: orada iki profesyonel çekim tarzı karşılaştırılır, burada değişken fotoğrafın kaynağıdır (marka mı, müşteri mi).
 
 **Test edilmesi gerekenler**
 - Güven: Kullanıcı fotoğrafı satın alma güvenini artırıyor mu, yoksa “amatör” algısı mı yaratıyor?
-- Sonraki test: Kullanıcı fotoğrafı kazanırsa, ayrı bir testte yeri (ana görsel / galerideki ek görsel) satın alma güvenini değiştiriyor mu?
 - Kategori farkı: Modada etkisi teknoloji ürününe göre farklı mı?
 - Fark edilme: Ziyaretçi ana görselin bir müşteri tarafından çekildiğini anlıyor mu, yoksa onu sıradan bir ürün fotoğrafı gibi mi okuyor?
 - Cihaz: Mobilin küçük ekranında kullanıcı fotoğrafının etkisi masaüstünden farklı mı?
@@ -86,7 +85,6 @@ Modelin boyu ve giydiği beden, kullanıcının kendi bedenini seçmesini hızla
 - Bilgi: “Model 1,75 m, S beden giyiyor” karar süresini kısaltıyor mu?
 - Eksiklik: Model bilgisi yokken sepetten dönüş artıyor mu?
 - Cihaz: Mobilde görsel üzerindeki model bilgisi masaüstündeki kadar fark ediliyor mu?
-- Sonraki test: Model bilgisi kazanırsa, yeri (görsel üzeri / açıklama altı) ayrı bir testte karar süresini değiştiriyor mu?
 - Kategori farkı: Paça boyunun model boyuna bağlı olduğu pantolonda model bilgisi, elbiseye göre beden kararını daha mı çok hızlandırıyor?
 
 **Takip edilecek ana KPI’lar**
@@ -252,7 +250,6 @@ EN: Does fit feedback from buyers lower the return rate?
 Kullanıcıların “kalıbı dar/normal/bol geldi” oyları, beden tablosundan daha hızlı okunan bir sinyaldir. Moda kategorisinde iadenin en büyük sebebi beden uyumsuzluğu olduğu için doğrudan kâra dokunur.
 
 **Test edilmesi gerekenler**
-- Sonraki test: Geri bildirim kutusu kazanırsa, yeri (beden tablosunun üstü / altı) ayrı bir testte beden kaynaklı iadeyi değiştiriyor mu?
 - Beden kayması: Geri bildirimi gören kullanıcı, normalde seçeceği bedenden bir büyük ya da bir küçük bedene geçiyor mu?
 - Eşik: Kaç oydan sonra göstermek güvenilir algılanıyor?
 - Segment: İlk kez alan ile markadan daha önce alışveriş yapmış kullanıcıda etki farklı mı?
@@ -319,7 +316,6 @@ EN: Size chart or personalized recommendation: which works better?
 
 **Test edilmesi gerekenler**
 - Format: Ham ölçü tablosu mu, “sana önerimiz” kutusu mu daha çok tıklanıyor?
-- Sonraki test: Öneri kutusu kazanırsa, yanına eklenen sosyal kanıt ifadesi (var / yok) ayrı bir testte öneri kabulünü artırıyor mu?
 - Girdi: Boy/kilo istemek eklenen sürtünme kararı ne kadar geciktiriyor?
 - Cihaz: Mobilde boy/kilo girişi masaüstüne göre daha çok terk ediliyor mu?
 - Kategori: Elbise ile ayakkabıda hangi format daha iyi çalışıyor?
@@ -414,11 +410,10 @@ Etiket: id=pd-013 · mercek=Zamanlama · düzey=bilgi · sektör=e-ticaret · pa
 
 EN: Does stock information create a sense of urgency?
 
-“Son 3 ürün kaldı” gibi mesajlar bazı kullanıcıyı tetikler, bazısında baskı yaratıp kaçırır. Satın alma davranışına net etkisi ölçülmelidir. Uyarı yalnızca gerçek envanterden beslenebiliyorsa test edilir (kural 6).
+“Son 3 ürün kaldı” gibi mesajlar bazı kullanıcıyı tetikler, bazısında baskı yaratıp kaçırır. Satın alma davranışına net etkisi ölçülmelidir. Uyarı yalnızca gerçek envanterden beslenebiliyorsa test edilir.
 
 **Test edilmesi gerekenler**
 - Tepki: Uyarıyı gören kullanıcı kararını hızlandırıyor mu, yoksa baskı hissedip ürün sayfasından mı çıkıyor?
-- Sonraki test: Stok uyarısı kazanırsa, yeri (görselin üzeri / fiyatın altı) ayrı bir testte sepete eklemeyi değiştiriyor mu?
 - Cihaz: Aciliyet mesajının etkisi mobil ve masaüstünde aynı mı?
 - Eşik: 3 ürün mü, 5 ürün mü davranışı daha çok değiştiriyor?
 - Kategori: Hangi kategoride etki daha yüksek?
@@ -431,7 +426,7 @@ EN: Does stock information create a sense of urgency?
 - Karar Süresi: Ürün sayfasında geçen süre (tanı metriği).
 
 **Yapılmaması gerekenler**
-- Gerçek envantere dayanmayan stok uyarısı kullanmayın (kural 6); güven kaybı ve yasal risk yaratır.
+- Gerçek envantere dayanmayan stok uyarısı kullanmayın; güven kaybı ve yasal risk yaratır.
 - Aynı mesajı her üründe tekrar etmeyin; aciliyet algısı ölür.
 - Aynı testte stok uyarısını eklerken fiyatı veya indirim etiketini de değiştirmeyin.
 - Aciliyet mesajını fiyat ve CTA’nın önüne geçirmeyin.
@@ -447,7 +442,7 @@ Etiket: id=pd-014 · mercek=Zamanlama · düzey=bilgi · sektör=e-ticaret · pa
 
 EN: Live activity notice or stock warning: which is less intrusive?
 
-“Son 24 saatte 37 kişi satın aldı” sosyal kanıt üretirken, “son 3 ürün kaldı” baskı yaratır. İkisi de aciliyet kurar ama güven üzerindeki etkileri farklı olabilir. “Stok bilgisi aciliyet hissi oluşturur mu?” senaryosundan farkı: orada stok uyarısının varlığı ve biçimi, burada iki aciliyet mesajı tipinin birbirine karşı etkisi test edilir. Her iki sayı da gerçek veriden gelmelidir (kural 6).
+“Son 24 saatte 37 kişi satın aldı” sosyal kanıt üretirken, “son 3 ürün kaldı” baskı yaratır. İkisi de aciliyet kurar ama güven üzerindeki etkileri farklı olabilir. “Stok bilgisi aciliyet hissi oluşturur mu?” senaryosundan farkı: orada stok uyarısının varlığı ve biçimi, burada iki aciliyet mesajı tipinin birbirine karşı etkisi test edilir. Her iki sayı da gerçek veriden gelmelidir.
 
 **Test edilmesi gerekenler**
 - Tip: Hangi mesaj tipi daha yüksek dönüşüm getiriyor?
@@ -464,7 +459,7 @@ EN: Live activity notice or stock warning: which is less intrusive?
 - Marka Algısı (anket): NPS düşmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 
 **Yapılmaması gerekenler**
-- Gerçek satış veya stok verisine dayanmayan sayı göstermeyin (kural 6); en hızlı güven kaybı buradan gelir.
+- Gerçek satış veya stok verisine dayanmayan sayı göstermeyin; en hızlı güven kaybı buradan gelir.
 - Her üründe aynı mesajı tekrar etmeyin.
 - Aynı testte mesaj tipini değiştirirken mesajın yerini veya rengini de değiştirmeyin.
 - Sayıyı sürekli artan sahte sayaca bağlamayın.
@@ -541,7 +536,7 @@ EN: Charm price or round price?
 - Kategori genelinde tutarsız format bırakmayın.
 - Küsuratlı fiyatı sepette veya ödeme adımında tam sayıya yuvarlayıp ürün sayfasındakinden farklı göstermeyin.
 
-> **Pazar notu:** Fiyat sonu etkisi kültüre bağlıdır: bazı pazarlarda 9 ile biten fiyat ucuzluk sinyali verirken, bazılarında tam sayı fiyat prestij ve şeffaflık algısı yaratır; belirli rakamların kültürel çağrışımı olan pazarlar da vardır. Kendi pazarınızda ölçmeden başka bir pazarın sonucuna güvenmeyin. Ayrıca bu test aynı ürünü eşzamanlı iki farklı fiyatla göstermeyi gerektirir; bazı pazarlarda fiyat A/B’si tüketici hukuku riski taşır, hedef pazarın kuralını doğrulamadan koşmayın (kural 11).
+> **Pazar notu:** Fiyat sonu etkisi kültüre bağlıdır: bazı pazarlarda 9 ile biten fiyat ucuzluk sinyali verirken, bazılarında tam sayı fiyat prestij ve şeffaflık algısı yaratır; belirli rakamların kültürel çağrışımı olan pazarlar da vardır. Kendi pazarınızda ölçmeden başka bir pazarın sonucuna güvenmeyin. Ayrıca bu test aynı ürünü eşzamanlı iki farklı fiyatla göstermeyi gerektirir; bazı pazarlarda fiyat A/B’si tüketici hukuku riski taşır, hedef pazarın kuralını doğrulamadan koşmayın.
 
 ---
 
@@ -572,12 +567,12 @@ EN: How should you present a discount?
 **Yapılmaması gerekenler**
 - Sürekli aktif indirim göstererek kullanıcıyı yanıltmayın.
 - Aynı anda birden fazla indirim mesajı göstermeyin.
-- İndirim sepette koşula bağlıysa “Anında” yazmayın; metin gerçekte uygulanan indirimle aynı olmalı (kural 6).
+- İndirim sepette koşula bağlıysa “Anında” yazmayın; metin gerçekte uygulanan indirimle aynı olmalı.
 - Aynı testte indirim mesajının metnini değiştirirken indirim oranını veya etiketin yerini de değiştirmeyin.
 - Hiç uygulanmamış fiyatı eski fiyat diye göstermeyin.
 
 
-> **Pazar notu:** İndirim gösterimi yasal olarak düzenlenen bir alandır (kural 11): yüzde/tutar gösterimi serbest olsa da referans fiyatın nasıl kurulacağı pazara bağlıdır. AB’de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatı olmak zorundadır; hedef pazarın kuralı doğrulanmadan varyant yayınlanmaz.
+> **Pazar notu:** İndirim gösterimi yasal olarak düzenlenen bir alandır: yüzde/tutar gösterimi serbest olsa da referans fiyatın nasıl kurulacağı pazara bağlıdır. AB’de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatı olmak zorundadır; hedef pazarın kuralı doğrulanmadan varyant yayınlanmaz.
 
 ---
 
@@ -628,7 +623,6 @@ Taksit, ücretsiz kargo ve kolay iade gibi avantajlar zaten sayfadayken bunları
 
 **Test edilmesi gerekenler**
 - Format: İkon, kısa başlık ve sade açıklama anlaşılırlığı artırıyor mu?
-- Sonraki test: Kazanan sunum biçimi sabitken avantaj kutusunun yeri (fiyatın yanı / sayfanın altı) ayrı bir testte fark edilmeyi değiştiriyor mu?
 - Hiyerarşi: Güçlü görsel hiyerarşi kararı hızlandırıyor mu?
 - Cihaz: Dağınık avantajların uzun kaydırmaya yayıldığı mobilde tek düzenli kutu, hepsinin tek ekranda göründüğü masaüstünden daha mı etkili?
 - Taranabilirlik: Aynı avantajlar düzenli kutuda sunulunca ziyaretçi aradığı avantajı daha hızlı buluyor mu?
@@ -664,7 +658,6 @@ Taksit, iade, garanti ve teslimat gibi sık sorulan bilgilerin ürün sayfasınd
 - Belirsizlik: Ürüne özel SSS belirsizliği azaltıyor mu?
 - Cihaz: Soru sormak için canlı destek veya yeni sekme açmanın zahmetli olduğu mobilde SSS, masaüstüne göre kararı daha çok mu hızlandırıyor?
 - Format: Soru-cevap formatı güven algısını artırıyor mu?
-- Sonraki test: SSS bölümü kazanırsa, yeri (fiyatın altı / açıklamanın sonu) ayrı bir testte okunma oranını değiştiriyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): SSS satın alma oranını artırıyor mu?
@@ -827,7 +820,6 @@ EN: Do multi-pack options raise cart value?
 **Test edilmesi gerekenler**
 - Değer algısı: Paket seçenekleri algılanan değeri artırıyor mu?
 - Tercih: Kullanıcılar tekli yerine pakete yöneliyor mu?
-- Sonraki test: Paket seçenekleri kazanırsa, yerleri (CTA’nın hemen üstü / açıklamanın altı) ayrı bir testte karar süresini değiştiriyor mu?
 - Cihaz: Paket seçeneklerinin yan yana sığmayıp alt alta dizildiği mobilde, masaüstüne göre pakete yönelme oranı düşüyor mu?
 - Sayı: Kaç paket seçeneği optimum? (2 / 3 / 4)
 
@@ -862,7 +854,6 @@ EN: Does delivery information affect purchases?
 - Netlik: Net teslimat tarihi kararı hızlandırıyor mu?
 - Kesim saati: Kesim saatinden önce gelen ziyaretçi “yarın kargoda” vaadini gördüğünde, saat geçtikten sonra gelene göre daha çok satın alıyor mu?
 - Dinamik: “Yarın kargoda” gösterimi etkileşimi artırıyor mu?
-- Sonraki test: Teslimat bilgisi kazanırsa, yeri (fiyatın altı / CTA’nın yanı) ayrı bir testte dönüşümü değiştiriyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Teslimat bilgisi satın almayı artırıyor mu?
@@ -1037,10 +1028,10 @@ Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal k�
 - Bildirim Şikâyeti: Gereksiz veya sık bildirim şikâyeti artmamalı.
 
 **Yapılmaması gerekenler**
-- Gerçekte belirsiz olan bir stok geliş tarihini kesinmiş gibi göstermeyin (kural 10); tahminse tahmin olduğu belirtilir.
+- Gerçekte belirsiz olan bir stok geliş tarihini kesinmiş gibi göstermeyin; tahminse tahmin olduğu belirtilir.
 - Aynı testte haber ver biçimini ve alternatif ürün önerisinin varlığını birlikte değiştirmeyin.
 - Kullanıcıdan yalnızca haber ver kaydı için gereğinden fazla bilgi istemeyin.
-- Haber ver akışına gerçek stok verisiyle doğrulanmamış bir aciliyet mesajı (ör. “sadece birkaç adet kalacak”) eklemeyin (kural 6).
+- Haber ver akışına gerçek stok verisiyle doğrulanmamış bir aciliyet mesajı (ör. “sadece birkaç adet kalacak”) eklemeyin.
 - Butonu kaldırırken sayfanın geri kalanını (fiyat, görsel, açıklama) aynı anda yeniden düzenlemeyin; tek değişken haber ver mekanizmasının kendisidir.
 
 ---
@@ -1090,7 +1081,6 @@ EN: Does showing the country where the product was made or designed affect the p
 
 **Test edilmesi gerekenler**
 - Varlık: Köken bilgisi eklemek satın alma oranını artırıyor mu?
-- Sonraki test: Köken bilgisi kazanırsa, yeri (ürün başlığının yanı / ayrı rozet) ayrı bir testte güven algısını değiştiriyor mu?
 - Kategori: Etki hangi ürün kategorilerinde güçlü, hangilerinde önemsiz?
 - İnanılırlık: Köken bilgisini gören ziyaretçi bunu ürün bilgisi olarak mı okuyor, yoksa pazarlama iddiası sanıp şüpheleniyor mu?
 - Segment: Hedef pazara göre (yerel üretim ile ithal algısı) etki değişiyor mu?
@@ -1103,10 +1093,10 @@ EN: Does showing the country where the product was made or designed affect the p
 - Destek Talebi: Köken bilgisiyle ilgili doğrulama talebi artmamalı.
 
 **Yapılmaması gerekenler**
-- Gerçek üretim veya tasarım yerinden farklı bir köken iddia etmeyin (kural 6, kural 10); bu hem etik hem yasal bir ihlaldir.
+- Gerçek üretim veya tasarım yerinden farklı bir köken iddia etmeyin; bu hem etik hem yasal bir ihlaldir.
 - Aynı testte köken bilgisinin varlığını ve ürün fiyatını birlikte değiştirmeyin.
 - Köken bilgisini yalnızca algı yüksek olan ülkelerde gösterip düşük olanlarda gizleyerek seçici bir yanıltma kurmayın.
-- Hedef pazarın köken veya menşei etiketleme mevzuatını doğrulamadan format değiştirmeyin (kural 11).
+- Hedef pazarın köken veya menşei etiketleme mevzuatını doğrulamadan format değiştirmeyin.
 - Köken rozetini gerçek boyutundan büyük göstererek asıl ürün görselinin önüne geçirmeyin.
 
 ---
@@ -1138,6 +1128,6 @@ Bir paket ucuz ve pahalı ürünleri bir araya getirdiğinde, ucuz ürün pahal�
 **Yapılmaması gerekenler**
 - Aynı testte paket kompozisyonunu ve paketin toplam fiyatını birlikte değiştirmeyin.
 - Pakete stokta olmayan veya düşük kaliteli bir ürünü yalnızca dolgu malzemesi olarak eklemeyin.
-- Paketin toplam değerini gerçek ayrı satış fiyatlarının toplamından farklı hesaplayıp yanıltıcı bir tasarruf iddiası kurmayın (kural 6).
+- Paketin toplam değerini gerçek ayrı satış fiyatlarının toplamından farklı hesaplayıp yanıltıcı bir tasarruf iddiası kurmayın.
 - Kullanıcıyı paketin tamamını almaya zorlayıp tekli ürün seçeneğini gizlemeyin.
 - Tamamen ilgisiz kategorilerdeki ürünleri yalnızca fiyatı doldurmak için bir araya getirmeyin.

@@ -18,7 +18,6 @@ Tüm servisleri eşit boyutta göstermek nötr bir deneyim yaratır. Öncelikli 
 - Vurgu: Öncelikli servisin ikonunu büyütmek tıklamayı artırıyor mu?
 - Segment: Öncelikli servisi daha önce kullanmış kullanıcı ile hiç kullanmamış kullanıcı büyük ikona farklı mı tepki veriyor?
 - Yan etki: Diğer servislerin tıklanması azalıyor mu?
-- Sonraki test: Büyütme kazanırsa, büyük ikonun yeri (ilk sıra / sol bölge) ayrı bir testte tıklamayı değiştiriyor mu?
 - Sayı: Kaç servisi öne çıkarmak optimum? (1 / 2 / 3)
 
 **Takip edilecek ana KPI’lar**
@@ -50,7 +49,6 @@ Uygulamayı açar açmaz üye olmayı zorunlu tutmak (sert duvar), kullanıcın�
 **Test edilmesi gerekenler**
 - Zamanlama: Kayıt ekranı açılışta mı, ilk değerden sonra mı gösterilmeli?
 - Misafir modu: Sınırlı özellik seti kullanıcıyı ikna edip kaydolmaya yönlendiriyor mu?
-- Sonraki test: Kazanan duvar sabitken mevcut bir hesapla giriş seçeneği ayrı bir testte kaydı hızlandırıyor mu?
 - Duvar önü kaybı: Kayıt ekranını görüp hiçbir şey yapmadan uygulamayı kapatan kullanıcı oranı yumuşak duvarda düşüyor mu?
 - Segment: Yeni kullanıcıda mı, geri dönende mi etki daha büyük?
 
@@ -132,7 +130,7 @@ Yükleme ekranları çoğunlukla boş geçer. Bu anlarda kampanya veya avantaj b
 **Yapılmaması gerekenler**
 - Yükleme ekranında uzun metin kullanmayın; okunmaz.
 - Ağır görsel koymayın; yükleme süresini uzatır.
-- Gerçekte olmayan veya süresi bitmiş bir indirimi (“%70’e varan”) yükleme ekranında göstermeyin; gerçek olmayan indirim/teklif göstermeyin (kural 6).
+- Gerçekte olmayan veya süresi bitmiş bir indirimi (“%70’e varan”) yükleme ekranında göstermeyin; gerçek olmayan indirim/teklif göstermeyin.
 - Aynı testte indirim, tasarım ve metni birlikte değiştirmeyin.
 - Kampanya görseli yükleme animasyonunu gizlemesin.
 
@@ -197,7 +195,7 @@ Sistem izin penceresi tek seferliktir ve reddedildiğinde geri dönmek zordur. �
 
 **Yapılmaması gerekenler**
 - Hazırlık ekranını sistem penceresine benzetip kullanıcıyı yanıltmayın.
-- İzin vermeden devam etmeyi engelleyen bir akış kurmayın (kural 6).
+- İzin vermeden devam etmeyi engelleyen bir akış kurmayın.
 - Aynı testte hazırlık ekranı ile iznin istendiği anı birlikte değiştirmeyin.
 - Sistem penceresinin kabulünü tek başına başarı sayıp toplam kabule bakmamazlık etmeyin.
 - İzin metinlerinin düzenlendiği platformlarda mağaza kurallarını doğrulamadan varyant yayınlamayın.
@@ -262,7 +260,7 @@ Görünürde biten ama tam dolu olmayan bir gösterge (“Profiliniz %70 tamamla
 - Oturum Süresi: Atanan kullanıcıların genel kullanım süresi düşmemeli.
 
 **Yapılmaması gerekenler**
-- Kullanıcının doldurmadığı hassas bir alanı (kural 14) yalnızca yüzdeyi yükseltmek için zorunlu göstermeyin; opsiyonel kalmalı.
+- Kullanıcının doldurmadığı hassas bir alanı yalnızca yüzdeyi yükseltmek için zorunlu göstermeyin; opsiyonel kalmalı.
 - Yüzdeyi gerçek doluluktan farklı hesaplayıp yapay biçimde yüksek göstermeyin.
 - Aynı testte gösterge biçimi ile hangi alanların “profilde” sayıldığını birlikte değiştirmeyin.
 - Göstergeyi kapatılamaz veya ertelenemez hâle getirmeyin; kullanıcı “sonra” diyebilmeli.

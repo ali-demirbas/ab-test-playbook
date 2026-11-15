@@ -209,6 +209,48 @@ class TestFreshnessNotes(unittest.TestCase):
         self.assertIn("Cookie consent", text)
 
 
+class TestLooserPattern(unittest.TestCase):
+    """Item 40: 3 to 6 items, at most one patched-looking follow-up, no rule numbers."""
+    TESTS = ["- Metin: Hangi ifade daha çok tıklanıyor peki?",
+             "- Boyut: Daha büyük olması fark yaratıyor mu acaba?",
+             "- Cihaz: Mobilde ve masaüstünde aynı sonuç mu çıkıyor?"]
+
+    def errors(self, text):
+        title, body = first(text)
+        return vs.check_scenario("t.md", title, body)
+
+    def test_three_questions_are_enough(self):
+        self.assertEqual(self.errors(make_scenario(tests=self.TESTS)), [])
+
+    def test_one_next_test_at_most(self):
+        tests = self.TESTS + ["- Sonraki test: Kazanan renk sabitken metin ayrı testte fark yaratıyor mu?",
+                              "- Sonraki test: Kazanan renk sabitken boyut ayrı testte fark yaratıyor mu?"]
+        self.assertTrue(any("Sonraki test" in e for e in self.errors(make_scenario(tests=tests))))
+
+    def test_position_follow_up_warns(self):
+        tests = self.TESTS + ["- Sonraki test: Buton kazanırsa yeri (üst / alt) ayrı bir testte tıklamayı değiştiriyor mu?"]
+        title, body = first(make_scenario(tests=tests))
+        self.assertTrue(any("kazananın yerini" in w for w in vs.check_warnings("t.md", title, body)))
+        tests[-1] = "- Sonraki test: Buton kazanırsa metni (“Al” / “Sepete ekle”) ayrı bir testte tıklamayı değiştiriyor mu?"
+        title, body = first(make_scenario(tests=tests))
+        self.assertFalse(any("kazananın yerini" in w for w in vs.check_warnings("t.md", title, body)))
+
+    def test_rule_numbers_are_refused(self):
+        for text in ("Bu bir aldatma örüntüsüdür (kural 6).", "Bkz. kural 14’teki yöntemler.",
+                     "This is a dark pattern (rule 6)."):
+            with self.subTest(text=text):
+                errs = self.errors(make_scenario(intro="Açıklama paragrafı burada duruyor. " + text))
+                self.assertTrue(any("kural numarası" in e for e in errs), errs)
+        self.assertEqual(self.errors(make_scenario(intro="Hedef pazarın kuralını doğrulamadan yayınlamayın.")), [])
+
+    def test_archive_has_no_rule_numbers_in_blocks(self):
+        for name in vs.archive_files():
+            with open(os.path.join(vs.SCENARIO_DIR, name), encoding="utf-8") as fh:
+                for title, body in vs.parse_scenarios(fh.read()):
+                    with self.subTest(block=title[:40]):
+                        self.assertIsNone(vs.RULE_NUMBER.search(body))
+
+
 class TestArchiveWide(unittest.TestCase):
     def test_duplicate_id_and_en_title(self):
         meta = [("a.md", "A mı?", {"id": "cc-001"}, "Is it A?"),

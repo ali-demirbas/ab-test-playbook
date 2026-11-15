@@ -95,7 +95,7 @@ Kullanıcı memnuniyetinin tepe noktası satın alma anının hemen sonrasıdır
 - Brüt Marj: Ödül maliyeti, davetle gelen siparişlerin marjını eritmemeli.
 
 **Yapılmaması gerekenler**
-- Vaat edilen ödülü gerçekte vermeyin ya da koşullarını sayfada belirtmeden bırakmayın (kural 6).
+- Vaat edilen ödülü gerçekte vermeyin ya da koşullarını sayfada belirtmeden bırakmayın.
 - Aynı testte teşvik türü ile paylaşım kanallarının sırasını birlikte değiştirmeyin.
 - Daveti kapatılamaz hâle getirmeyin; kullanıcı sipariş bilgisine daveti görmeden de ulaşabilmeli.
 - Kullanıcının rızası olmadan davet linkini otomatik olarak sosyal medyada paylaşmayın.

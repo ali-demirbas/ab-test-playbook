@@ -83,7 +83,6 @@ EN: Does a free-shipping progress bar raise cart value?
 **Test edilmesi gerekenler**
 - Motivasyon: Çubuk “ücretsiz kargoya ulaşmak için ürün ekle” davranışını artırıyor mu?
 - Fark edilme: Kullanıcılar çubuğu görüp ücretsiz kargoya kalan tutarı doğru okuyor mu?
-- Sonraki test: Çubuğun etkisi kanıtlanırsa yeri (sepet / mini sepet / ürün sayfası) ayrı bir testte sepet tutarını değiştiriyor mu?
 - Eşiğe uzaklık: Eşiğe az kalan sepetlerde çubuğun etkisi, eşiğe uzak sepetlerdekinden daha mı büyük?
 - Cihaz: Mobil ve masaüstünde karar süresi farklı mı?
 
@@ -96,7 +95,7 @@ EN: Does a free-shipping progress bar raise cart value?
 
 **Yapılmaması gerekenler**
 - İlerleme çubuğunu CTA’nın önüne geçecek şekilde yerleştirmeyin.
-- Eşiğe kalan tutarı gerçek sepet hesabından farklı göstermeyin (kural 6).
+- Eşiğe kalan tutarı gerçek sepet hesabından farklı göstermeyin.
 - Mobilde çubuğu görünmeyecek kadar aşağı koymayın.
 - Aynı testte renk, eşik ve metni birlikte değiştirmeyin.
 - Eşiğe ulaşıldığında geri bildirim vermeyi atlamayın.
@@ -149,7 +148,6 @@ EN: Does a guest checkout option pay off?
 Zorunlu üyelik satın alma sürecini uzatır ve terk oranını yükseltebilir. Misafir ödemenin dönüşüme etkisi ölçülmelidir.
 
 **Test edilmesi gerekenler**
-- Sonraki test: Misafir seçeneği eklendikten sonra butonunun görsel ağırlığı ayrı bir testte artırılınca tercih oranı yükseliyor mu?
 - Kayıt dengesi: Misafir seçeneğinin getirdiği ek sipariş, kaybedilen yeni üye kaydını telafi ediyor mu?
 - Cihaz: Mobilde misafir ödeme seçeneği masaüstüne göre daha mı çok tercih ediliyor?
 - Kategori: Moda ve hızlı tüketimde misafir ödeme daha mı çok tercih ediliyor?
@@ -230,7 +228,7 @@ Her ek form alanı bir sürtünme noktasıdır. Posta koduyla otomatik il/ilçe 
 
 **Yapılmaması gerekenler**
 - Otomatik doldurmayı düzenlenemez yapmayın.
-- Kargo için gerçekten gereken alanı kaldırmayın; hassas alanlarda önce kural 14’teki ara yöntemleri değerlendirin.
+- Kargo için gerçekten gereken alanı kaldırmayın; hassas alanlarda önce ara yöntemleri (isteğe bağlı yapmak, gerekçe yazmak, sonraya ertelemek, daha az veri istemek) değerlendirin.
 - Aynı testte hem alan sayısını hem validasyon kurallarını değiştirmeyin.
 - Hata mesajlarını alan altından kaldırmayın.
 - Posta kodundan doldurulan il/ilçeyi kullanıcıya göstermeden siparişe yazmayın.
@@ -251,7 +249,6 @@ Sepette adet seçimini daha net sunmak, kullanıcıların adedi artırma davran�
 - Cihaz: Mobilde ve masaüstünde adet artırma davranışı aynı mı?
 - Görünürlük: Görünürlük artınca adet artırma davranışı değişiyor mu?
 - Buton: “+ / −” butonlarını belirginleştirmek ekleme hızını artırıyor mu?
-- Sonraki test: Belirgin adet seçici sabitken alanın satır ortasına alınması ayrı bir testte sepet tutarını yükseltiyor mu?
 - Hata: Net adet alanı yanlışlıkla ürün silmeyi azaltıyor mu?
 
 **Takip edilecek ana KPI’lar**
@@ -285,7 +282,6 @@ Sepet adımında tamamlayıcı ürün göstermek ortalama sepet tutarını yüks
 - Etkileşim: Kullanıcılar öneri alanına tıklayıp inceliyor mu?
 - Akıştan sapma: Öneri kartına tıklayan kullanıcılar ürün sayfasına gidip sepete geri dönmeden ayrılıyor mu?
 - Sayı: Öneri sayısı kaç olmalı? (2 / 4 / 6)
-- Sonraki test: Öneri alanı kazanırsa sipariş özetinin üstünde mi altında mı durduğu ayrı bir testte tamamlamayı değiştiriyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Ziyaretçi Başına Gelir (RPV): Öneriler dönüşümü düşürmeden toplam geliri artırıyor mu?
@@ -386,7 +382,6 @@ Kayıtlı kartla tek tıkla ödeme, veri girişini ortadan kaldırarak süreci h
 **Test edilmesi gerekenler**
 - Otomatik gösterim: Kayıtlı kartın otomatik gelmesi tamamlamayı artırıyor mu?
 - Benimsenme: Kayıtlı kartı olan kullanıcıların ne kadarı hızlı ödemeyi seçiyor, ne kadarı kartı yine elle giriyor?
-- Sonraki test: Hızlı ödeme kazanırsa seçeneğin ödeme adımındaki yeri ayrı bir testte fark edilme oranını değiştiriyor mu?
 - Cihaz: Mobilde hızlı ödemenin etkisi masaüstünden daha mı yüksek?
 - Sağlayıcı: Kayıtlı-kart cüzdan çözümlerinde etki değişiyor mu?
 
@@ -469,7 +464,7 @@ EN: How does applying a discount code automatically affect behavior?
 - Aynı testte kodu otomatik uygularken indirim oranını veya kampanya koşulunu da değiştirmeyin.
 - Aynı ekranda birden fazla indirim kodu alanı göstermeyin.
 - Kod uygulandı mesajını geciktirmeyin; güveni azaltır.
-- Otomatik uygulandı denen indirimi gerçek tutarından farklı göstermeyin veya ödemede sessizce düşürmeyin (kural 6).
+- Otomatik uygulandı denen indirimi gerçek tutarından farklı göstermeyin veya ödemede sessizce düşürmeyin.
 - Manuel kod girme yolunu tamamen kapatmayın.
 
 ---
@@ -485,7 +480,6 @@ EN: Do trust badges at the payment step raise completion?
 Kart bilgisi girilen ekran, terk oranının en yüksek olduğu andır. Güvenli ödeme, iade garantisi ve 3D Secure gibi görsel sinyaller tereddüdü azaltabilir; fazlası ise şüphe uyandırabilir.
 
 **Test edilmesi gerekenler**
-- Sonraki test: Rozet şeridi kazanırsa kart alanının üstünde mi altında mı durduğu ayrı bir testte ödeme tamamlamayı değiştiriyor mu?
 - Sayı: Kaç rozet optimum? (1 / 3 / 5)
 - Fark edilme: Kart bilgisini giren kullanıcılar rozet şeridini fark ediyor mu, oturum kayıtları bunu doğruluyor mu?
 - Tereddüt anı: Rozet şeridi, kart numarası alanında duraksayıp sayfadan çıkan kullanıcı oranını azaltıyor mu?
@@ -522,7 +516,6 @@ Formdaki hangi alanın zorunlu, hangisinin isteğe bağlı olduğu genelde belir
 **Test edilmesi gerekenler**
 - Etiket: “(isteğe bağlı)” etiketi eklemek tamamlama süresini/hata oranını düşürüyor mu?
 - Kapsam: Sadece isteğe bağlı alanları mı, yoksa zorunlu alanları da yıldızla mı işaretlemeli?
-- Sonraki test: Etiket eklemek kazanırsa etiketin alan adının yanında mı, alan içinde mi durduğu ayrı bir testte fark edilmeyi değiştiriyor mu?
 - Cihaz: Mobilde dar ekranda etiket yer kaplaması okunabilirliği bozuyor mu?
 - Tutarlılık: Formun tamamında aynı işaretleme kuralı uygulandığında etki büyüyor mu?
 
@@ -569,9 +562,9 @@ EN: Does asking for the payment method before the address pay off?
 - Destek Talebi: “Toplam tutarı göremedim” türü talepler artmamalı.
 
 **Yapılmaması gerekenler**
-- Toplam tutarı ödeme bilgisi alındıktan sonra göstermeyin; gizlenen fiyat kabul edilemez (kural 6).
+- Toplam tutarı ödeme bilgisi alındıktan sonra göstermeyin; gizlenen fiyat kabul edilemez.
 - Aynı testte adım sırası ile adım sayısını birlikte değiştirmeyin.
-- Ödeme güvenlik doğrulamalarını sıralama testinin kapsamına almayın (kural 6).
+- Ödeme güvenlik doğrulamalarını sıralama testinin kapsamına almayın.
 - Adrese bağlı yöntemleri test öncesi teknik olarak doğrulamadan varyantı açmayın.
 - Adres girilince geçersiz kalan ödeme yöntemi seçimini sessizce sıfırlamayın; kullanıcıya nedenini gösterin.
 
@@ -602,7 +595,7 @@ Checkout sırasında üst menüyü, kategori bağlantılarını ve alt bilgi ba�
 - Ziyaretçi Başına Gelir (RPV): Gelir düşmemeli.
 
 **Yapılmaması gerekenler**
-- Kullanıcının akıştan çıkmasını tamamen engelleyen bir tasarım kurmayın (kural 6).
+- Kullanıcının akıştan çıkmasını tamamen engelleyen bir tasarım kurmayın.
 - Yasal olarak bulunması gereken bağlantıları (mesafeli satış, iade, gizlilik) kaldırmayın.
 - Aynı testte bağlantı temizliği ile adım sayısını birlikte değiştirmeyin.
 - Güven rozetlerini ve iletişim bilgisini dikkat dağıtıcı sayıp birlikte kaldırmayın.
@@ -668,11 +661,11 @@ Bir kutunun önceden işaretli gelmesi kullanıcıyı hızlandırabilir, ama bu 
 - Ziyaretçi Başına Gelir (RPV): Gelir düşmemeli.
 
 **Yapılmaması gerekenler**
-- Pazarlama izni, veri paylaşımı veya ek ücretli hizmeti önceden işaretli getirmeyin; bu bir test değişkeni değildir (kural 6).
+- Pazarlama izni, veri paylaşımı veya ek ücretli hizmeti önceden işaretli getirmeyin; bu bir test değişkeni değildir.
 - Kullanıcının ödeyeceği tutarı artıran bir seçeneği varsayılan yapmayın.
 - Varsayılanı fark edilmeyecek kadar silik göstermeyin.
 - Aynı testte varsayılan ile seçeneklerin sırasını birlikte değiştirmeyin.
-- Hedef pazarın izin kurallarını doğrulamadan varyant kurmayın (kural 11).
+- Hedef pazarın izin kurallarını doğrulamadan varyant kurmayın.
 
 ---
 
@@ -701,7 +694,7 @@ Tek bir dönen ikon, arka planda ne olduğu hakkında hiçbir şey söylemez ve 
 - Ödeme Başarı Oranı: Genel ödeme tamamlama oranı düşmemeli.
 
 **Yapılmaması gerekenler**
-- Gerçek işlemi yapay olarak yavaşlatıp adımları uzatmayın; gösterilen süre gerçek işlem süresini aşarsa bu manipülasyondur (kural 6).
+- Gerçek işlemi yapay olarak yavaşlatıp adımları uzatmayın; gösterilen süre gerçek işlem süresini aşarsa bu manipülasyondur.
 - Gerçekleşmeyen bir adımı (ör. çalışmayan bir “dolandırıcılık taraması”) ekrana koymayın.
 - Aynı testte yükleme ekranı biçimi ile ödeme akışının adım sayısını birlikte değiştirmeyin.
 - Hata durumunda kullanıcıyı adımlı ekranda takılı bırakmayın; başarısızlık anında net bir hata mesajına geçin.
@@ -720,7 +713,6 @@ EN: Does adding payment method icons to the cart page build trust?
 Kullanıcı ödeme adımına gelmeden önce hangi kartların veya yöntemlerin kabul edildiğini bilmek ister; bu bilgi genelde yalnızca ödeme sayfasında ortaya çıkar. İkonları bir adım önce, sepet sayfasında göstermek, desteklenmeyen bir yöntemi kullanan ziyaretçinin ödeme adımında sürprizle karşılaşmasını önleyebilir; ama fazla ikon görsel gürültü yaratabilir.
 
 **Test edilmesi gerekenler**
-- Sonraki test: Sepetteki ikonlar kazanırsa aynı şeridi ürün sayfasına da eklemek ayrı bir testte ödeme adımına ulaşmayı daha çok artırıyor mu?
 - Sayı: Tüm yöntemler mi, yalnızca en çok kullanılan 3-4’ü mü daha iyi çalışıyor?
 - Terkin yer değiştirmesi: Desteklenmeyen yöntemi kullanan ziyaretçi artık sepette mi ayrılıyor, yani terk yalnızca öne mi kayıyor?
 - Sepet tutarı: Yüksek tutarlı sepetlerde kabul edilen kartları erken görmek ödeme adımına geçişi daha çok artırıyor mu?

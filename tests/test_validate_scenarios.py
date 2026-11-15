@@ -94,11 +94,19 @@ class TestCheckScenario(unittest.TestCase):
         errs = self.check(make_scenario(title="Soru işareti yok"))
         self.assertTrue(any("soru işaretiyle bitmiyor" in e for e in errs))
 
-    def test_four_items_fail(self):
+    def test_three_to_six_items_per_box(self):
+        """3.4: the archive box holds 3 to 6 items, the record detail view's range."""
         s = make_scenario()
-        s = s.replace("- Renk değişirken buton metnini de yeniden yazmayın lütfen.\n", "")
-        errs = self.check(s)
-        self.assertTrue(any("4 madde" in e for e in errs))
+        four = s.replace("- Renk değişirken buton metnini de yeniden yazmayın lütfen.\n", "")
+        self.assertEqual(self.check(four), [])
+        two = four.replace("- Guardrail metriklerini görmezden gelip karar vermeyin asla.\n", "").replace(
+            "- Tek segmentte ölçüp tüm kullanıcılara genellemeyin bunu.\n", "")
+        self.assertTrue(any("2 madde" in e for e in self.check(two)))
+        seven = s.replace("- Renk değişirken buton metnini de yeniden yazmayın lütfen.\n",
+                          "- Renk değişirken buton metnini de yeniden yazmayın lütfen.\n"
+                          "- Butonun boyutunu bu testte büyütmeyin ya da küçültmeyin.\n"
+                          "- Butonun yerini bu testin içinde başka bir bölüme taşımayın.\n")
+        self.assertTrue(any("7 madde" in e for e in self.check(seven)))
 
     def test_duplicate_items_fail(self):
         dup = ["- Aynı testte iki değişkeni birlikte değiştirmeyin sakın."] * 5

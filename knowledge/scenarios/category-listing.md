@@ -17,7 +17,6 @@ Geri sayım sayacı “şimdi karar ver” baskısı yaratır ve kısa vadede t�
 **Test edilmesi gerekenler**
 - Aciliyet: Sayaç varken kampanyaya tıklama artıyor mu?
 - Zamanlama: Sayaç satın alma kararını yalnızca kampanyanın son günlerine mi çekiyor, yoksa toplam kampanya satışını mı artırıyor?
-- Sonraki test: Sayaç kazanırsa konumu (sayfa üstü / ürün kartı içi) ayrı bir testte kampanya tıklamasını değiştiriyor mu?
 - Segment: Dönen ziyaretçide mi, yeni ziyaretçide mi etkisi daha büyük?
 - Kalan süre: Kampanyanın son 24 saatinde sayacın tıklamaya etkisi, kampanyanın ilk günlerindekinden daha mı büyük?
 
@@ -29,7 +28,7 @@ Geri sayım sayacı “şimdi karar ver” baskısı yaratır ve kısa vadede t�
 - Destek Talebi: “Süre bitmedi ama kampanya durdu” gibi şikâyetler atanan ziyaretçi başına artmamalı.
 
 **Yapılmaması gerekenler**
-- Sayacın gerçek kampanya bitişine bağlı olduğu ve sıfırda teklifin gerçekten bittiği doğrulanmadan testi başlatmayın; bu bir başlatma koşuludur, test sorusu değil. Sahte veya sürekli sıfırlanan sayaç kullanılmaz (kural 6).
+- Sayacın gerçek kampanya bitişine bağlı olduğu ve sıfırda teklifin gerçekten bittiği doğrulanmadan testi başlatmayın; bu bir başlatma koşuludur, test sorusu değil. Sahte veya sürekli sıfırlanan sayaç kullanılmaz.
 - Aynı testte sayaç ile indirim oranını birlikte değiştirmeyin.
 - Sayacı kapatma imkânı olmadan zorunlu göstermeyin.
 - Sayacı kampanyaya dahil olmayan ürünlerin bulunduğu listede göstermeyin; aciliyet yalnızca kampanyalı ürüne ait olmalı.
@@ -217,7 +216,6 @@ Liste sayfasında teknik özellik yerine kısa ve duygusal mesaj kullanmak, ür�
 **Test edilmesi gerekenler**
 - Değer algısı: Hikâye mesajı algılanan değeri artırıyor mu?
 - İçerik: Teknik bilgi yerine hikâye inceleme oranını yükseltiyor mu?
-- Sonraki test: Hikâye mesajı kazanırsa kart içindeki yeri (görselin altı / fiyatın altı) ayrı bir testte etkileşimi değiştiriyor mu?
 - Segment: Yeni ziyaretçi mi, dönen müşteri mi hikâye mesajına daha çok tepki veriyor?
 - Kategori farkı: Modada teknolojiye göre daha mı etkili?
 
@@ -251,7 +249,6 @@ Karşılaştırma tablosunda tüm özellikler yerine sadece farkları göstermek
 - Varsayılan: “Yalnızca farkları göster” varsayılan olduğunda karar hızı artıyor mu?
 - Sadelik: Sade tablo gereksiz bilgi yükünü engelliyor mu?
 - Ayrışma: Farkların net ayrıştırılması sepete ekleme oranını artırıyor mu?
-- Sonraki test: Farklar görünümü kazanırsa görünüm değiştirme düğmesinin yeri (tablonun üstü / yanı) ayrı bir testte kullanımı değiştiriyor mu?
 - Cihaz: Mobilde daralan tabloda etki masaüstüyle aynı mı?
 
 **Takip edilecek ana KPI’lar**
@@ -396,7 +393,7 @@ Zamana bağlı pop-up herkesi keser; çıkış niyetine bağlı pop-up sadece za
 **Yapılmaması gerekenler**
 - Mobilde güvenilmez sinyalle pop-up tetiklemeyin.
 - Kapatma butonunu gizlemeyin veya küçültmeyin.
-- Pop-up’taki indirim teklifini, sepette gerçekten uygulanmayan bir oran veya süreyle yazmayın (kural 6).
+- Pop-up’taki indirim teklifini, sepette gerçekten uygulanmayan bir oran veya süreyle yazmayın.
 - Aynı oturumda birden fazla pop-up açmayın.
 - Aynı testte hem tetikleyiciyi hem teklifi değiştirmeyin.
 
@@ -680,7 +677,6 @@ Liste sayfasında, ürün kartında taksit avantajını küçük bir rozetle gö
 - Taksit tercihi: Rozetli varyantta ödemede taksit seçen sipariş oranı artıyor mu?
 - Fiyat Algısı: Rozet ürünü daha uygun algılatıyor mu?
 - Cihaz: Mobilde küçülen kartta rozet fark ediliyor mu, yoksa görselin içinde kayboluyor mu?
-- Sonraki test: Rozet kazanırsa kart üzerindeki yeri (üst sağ / üst sol / görsel içi) ayrı bir testte tıklamayı değiştiriyor mu?
 - Kategori: Hangi kategoride rozet daha iyi çalışıyor?
 
 **Takip edilecek ana KPI’lar**
@@ -693,7 +689,7 @@ Liste sayfasında, ürün kartında taksit avantajını küçük bir rozetle gö
 **Yapılmaması gerekenler**
 - Rozeti her üründe kullanmayın; etkisi sulanır.
 - Rozeti ürün görselini gölgeleyecek kadar büyütmeyin.
-- Rozeti gerçekten vade farksız taksit sunulmayan üründe göstermeyin; koşulu karşılamayan rozet yanıltıcıdır (kural 6).
+- Rozeti gerçekten vade farksız taksit sunulmayan üründe göstermeyin; koşulu karşılamayan rozet yanıltıcıdır.
 - Aynı testte taksit rozetini eklerken karttaki fiyatı veya indirim etiketini de değiştirmeyin.
 - Mobilde rozet kartı sıkıştırmasın veya görseli kapatmasın.
 
@@ -717,7 +713,6 @@ Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edi
 - Görünürlük: Rozet ürünün görünürlüğünü artırıyor mu?
 - Algı: Kullanıcı kampanya fiyatı olduğunu daha hızlı anlıyor mu?
 - Cihaz: Kartların küçük kaldığı mobil listede kampanya rozeti, geniş kartlı masaüstündeki kadar fark edilip sepete eklemeyi artırıyor mu?
-- Sonraki test: Kampanya rozeti kazanırsa yeri (kartın üstü / fiyatın yanı) ayrı bir testte sepete eklemeyi değiştiriyor mu?
 - Kapsam: Sadece bazı ürünlerde olması bilgi eksikliği yaratıyor mu?
 
 **Takip edilecek ana KPI’lar**
@@ -730,12 +725,12 @@ Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edi
 **Yapılmaması gerekenler**
 - Aynı testte kampanya rozetini eklerken indirim oranını veya karttaki fiyat gösterimini de değiştirmeyin.
 - Fiyat rozetiyle kampanya rozetini aynı renkte yapmayın.
-- Gerçekte kampanyada olmayan veya indirimi uydurma referans fiyata dayanan üründe rozet göstermeyin (kural 6).
+- Gerçekte kampanyada olmayan veya indirimi uydurma referans fiyata dayanan üründe rozet göstermeyin.
 - Rozeti ürün fotoğrafını kapatacak kadar büyütmeyin.
 - Kampanyası biten ürünün rozetini kartta bırakmayın; rozet kampanya bitişiyle birlikte kalkmalı.
 
 
-> **Pazar notu:** İndirim ve referans fiyat gösterimi yasal olarak düzenlenen bir alandır (kural 11). Rozet bir indirim iması taşıyorsa hedef pazarın kuralını doğrulamadan varyantı yayınlamayın; AB’de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatına bağlıdır.
+> **Pazar notu:** İndirim ve referans fiyat gösterimi yasal olarak düzenlenen bir alandır. Rozet bir indirim iması taşıyorsa hedef pazarın kuralını doğrulamadan varyantı yayınlamayın; AB’de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatına bağlıdır.
 
 ---
 
@@ -765,7 +760,7 @@ EN: Does a first-purchase discount affect purchases?
 
 **Yapılmaması gerekenler**
 - İndirimi aşırı büyük ve agresif tasarlamayın; güven azaltır.
-- Ödeme adımında gerçekten düşülmeyen bir indirimi kartta göstermeyin (kural 6).
+- Ödeme adımında gerçekten düşülmeyen bir indirimi kartta göstermeyin.
 - Yalnızca yeni kullanıcıya özel olduğunu açıkça belirtin.
 - Aynı testte hem indirimi hem kampanya alanını değiştirmeyin.
 - Metni ürün görselinin üzerine taşırmayın.

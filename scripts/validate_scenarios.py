@@ -11,7 +11,8 @@ doğrular. Yeni senaryo eklerken veya mevcut bir senaryoyu düzenlerken çalış
 Denetlenen kurallar (CLAUDE.md ve knowledge/methodology.md'den):
   1. Üç kutu eksiksiz: Test edilmesi gerekenler / Takip edilecek ana KPI'lar /
      Yapılmaması gerekenler.
-  2. Her kutu tam 5 madde.
+  2. Her kutu 3 ile 6 madde (üretilen kaydın detay görünümüyle aynı aralık); test
+     kutusunda en çok bir “Sonraki test:” maddesi.
   3. KPI listesinde en az bir guardrail ("…memeli/…mamalı" kalıbı).
   4. Test listesinde en az bir cihaz/segment kırılımı sorusu.
   5. Test maddeleri `Etiket: soru?` biçiminde.
@@ -46,6 +47,8 @@ Denetlenen kurallar (CLAUDE.md ve knowledge/methodology.md'den):
      Türkçe kutularla aynı sayıda maddeli What to test / KPIs to track / What not
      to do kutuları, sözlüğün English name sütunundan birincil KPI, “must not”
      guardrail, çevrilmiş notlar, İngilizce başlıkla çözülen atıflar.
+ 19. Senaryo metninde iç kural numarası (“kural 6”, “rule 11”) yok; kuralın kendisi
+     yazılır.
  FORMAT.md gibi büyük harfli dosyalar senaryo içermez ve denetlenmez;
  `--next-id <dosya>` sıradaki boş kimliği basar.
 
@@ -64,6 +67,8 @@ Uyarılar (çıkış kodunu etkilemez; sonda “Uyarı sayısı: N” satırı b
     testte …”, “… aynı anda …”, “… birlikte … değiştirmeyin”, “tek değişken”).
   - Başlığı ve Değişken ifadesi neredeyse aynı olan iki senaryo (dosyalar arası
     da), biri diğerine “… senaryosundan farkı” atfı vermiyorsa.
+  - “Sonraki test:” maddesi kazananın yerini soruyor (“yeri”, “konumu”): her öğeye
+    yapıştırılabilen bir kalıp, senaryonun kazanan varyantı üstüne kurulmuyor.
   - knowledge/kpi-glossary.md varsa: sözlükte kanonik adı olmayan birincil KPI
     sayısı da basılır (kural 15'in hataları; --verbose ile liste).
 
@@ -89,7 +94,15 @@ GLOSSARY_PATH = os.path.join(ROOT, "knowledge", "kpi-glossary.md")
 
 BOXES = ("Test edilmesi gerekenler", "Takip edilecek ana KPI’lar", "Yapılmaması gerekenler")
 KPI_BOX, TEST_BOX, NEVER_BOX = BOXES[1], BOXES[0], BOXES[2]
-ITEMS_PER_BOX = 5
+# Kutu başına madde aralığı: üretilen kaydın detay görünümüyle aynı (3 ile 6).
+MIN_ITEMS, MAX_ITEMS = 3, 6
+NEXT_TEST_LABEL = "- Sonraki test:"
+# Kazananın yerini ayrı testte sormak her öğeye yapıştırılabilen bir kalıptır;
+# “Sonraki test” bu senaryonun kazanan varyantı üstüne kurulur.
+GENERIC_NEXT_TEST = re.compile(r"\b(?:yeri|konumu|yerleşimi)\b", re.IGNORECASE)
+# Senaryo metninde iç kural numarası (kural 6, rule 11) kullanıcıya dönük metne
+# sızar; kuralın kendisi yazılır.
+RULE_NUMBER = re.compile(r"\b(?:kural(?:ı|a|da|ın)?|rule)\s+\d+", re.IGNORECASE)
 # Guardrail = "bozulmaması gereken" bir metrik. Yalnızca "…melidir" eki yetmez:
 # "Müşteri memnun kalmalıdır" bir hedeftir, guardrail değil. Olumsuzlama şart.
 GUARDRAIL_PATTERN = r"\w+(?:memeli|mamalı)|(?:düşme|bozulma|artma|uzama|kaybetme|çıkma|inme)meli"
@@ -577,8 +590,10 @@ def check_scenario(filename, title, body, glossary=None):
         if items is None:
             errors.append(f"{where}: '{header}' kutusu yok veya madde listesi bulunamadı")
             continue
-        if len(items) != ITEMS_PER_BOX:
-            errors.append(f"{where}: '{header}' {len(items)} madde (beklenen {ITEMS_PER_BOX})")
+        if not MIN_ITEMS <= len(items) <= MAX_ITEMS:
+            errors.append(f"{where}: '{header}' {len(items)} madde ({MIN_ITEMS} ile {MAX_ITEMS} arası olmalı)")
+        if header == TEST_BOX and sum(1 for i in items if i.startswith(NEXT_TEST_LABEL)) > 1:
+            errors.append(f"{where}: test kutusunda birden fazla ‘Sonraki test:’ maddesi var (en çok bir)")
         # Doldurma maddesi denetimi: tekrar eden veya çok kısa madde.
         bodies = [i[2:].strip() for i in items]
         if len(set(bodies)) != len(bodies):
@@ -614,6 +629,11 @@ def check_scenario(filename, title, body, glossary=None):
             # ("Kaç rozet optimum? (1 / 3 / 5)"), o yüzden soru işareti sonda olmak zorunda değil.
             if not re.match(r"^- [^:\n]{2,}:\s*\S[^?]*\?", item):
                 errors.append(f"{where}: test maddesi 'Etiket: soru?' biçiminde değil → {item[:45]}")
+
+    hits = sorted({m.group(0) for m in RULE_NUMBER.finditer(body)})
+    if hits:
+        errors.append(f"{where}: senaryo metninde iç kural numarası var ({', '.join(hits)}); kullanıcıya dönük "
+                      f"metinde kural numarası değil kuralın kendisi yazılır")
 
     for item in box_items(body, NEVER_BOX) or []:
         text = item[2:].strip()
@@ -675,6 +695,11 @@ def check_warnings(filename, title, body, glossary=None):
         warnings.extend(f"{where}: {w}" for w in guardrail_metric_warnings(kpis, glossary))
         if glossary is not None:
             warnings.extend(f"{where}: {w}" for w in glossary_name_warnings(kpis[1:], glossary))
+    for item in box_items(body, TEST_BOX) or []:
+        if item.startswith(NEXT_TEST_LABEL) and GENERIC_NEXT_TEST.search(item):
+            warnings.append(f"{where}: ‘Sonraki test’ kazananın yerini soruyor; bu her öğeye yapıştırılabilen bir "
+                            f"kalıptır, bu senaryonun kazanan varyantı üstüne kurulan bir soru yazın ya da maddeyi "
+                            f"çıkarın → {item[2:70]}")
     nevers = box_items(body, NEVER_BOX)
     if nevers and not any(ISOLATION_HINT.search(item) for item in nevers):
         warnings.append(

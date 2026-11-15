@@ -148,7 +148,6 @@ Tüm alanları baştan göstermek beklentiyi netleştirir ama form uzun görün�
 
 **Test edilmesi gerekenler**
 - Görünürlük: Alanlar baştan mı görünmeli, doldurdukça mı açılmalı?
-- Sonraki test: Alanları tek tek açmak yerine yalnızca isteğe bağlı alanları katlanmış bir bölümde toplamak, ayrı bir testte tamamlamayı artırıyor mu?
 - Beklenti: Kaç adım kaldığı belirsizleşince terk artıyor mu?
 - Doluluk: Kademeli açmada isteğe bağlı alanların doldurulma oranı ne kadar düşüyor?
 - Cihaz: Küçük ekranda kademeli açma daha mı çok fayda veriyor?
@@ -165,7 +164,7 @@ Tüm alanları baştan göstermek beklentiyi netleştirir ama form uzun görün�
 - Açılan alanı sayfayı zıplatarak göstermeyin; içerik kayması ayrı bir değişkendir.
 - Aynı testte hem kademeli açma hem alan sayısı azaltma yapmayın.
 - Kademeli açılan alanın gönderim anında zorunlu çıktığı bir varyant kurmayın; kullanıcıya isteğe bağlı gibi gösterilen alan sonradan şart koşulmamalı.
-- Kademeli açmayı hassas alanı gizlemek için kullanmayın; hassas alan için kural 14’teki yöntemler geçerlidir.
+- Kademeli açmayı hassas alanı gizlemek için kullanmayın; hassas alanda alanı isteğe bağlı yapmak, gerekçe yazmak ya da sonraya ertelemek gibi ara yöntemler geçerlidir.
 
 ---
 
@@ -314,7 +313,6 @@ Sosyal giriş şifre oluşturma yükünü kaldırır ve kaydı hızlandırır. B
 **Test edilmesi gerekenler**
 - Seçenek: Sosyal giriş eklemek kayıt oranını artırıyor mu?
 - Sağlayıcı sayısı: Tek sağlayıcı mı, birkaç sağlayıcı mı daha iyi çalışıyor?
-- Sonraki test: Sosyal giriş eklendikten sonra butonların e-posta ile kaydın üstünde ya da altında durması, ayrı bir testte kaydı değiştiriyor mu?
 - Geri dönüş: Kullanıcılar sonraki girişte aynı yöntemi bulabiliyor mu?
 - Segment: Bireysel ve kurumsal kullanıcı farklı yönteme mi yöneliyor?
 
@@ -330,7 +328,7 @@ Sosyal giriş şifre oluşturma yükünü kaldırır ve kaydı hızlandırır. B
 - Hangi verilerin alındığını gizleyen bir buton metni kullanmayın.
 - Aynı testte hem sosyal giriş eklemeyi hem form alanı azaltmayı yapmayın.
 - Sosyal hesapla gelen kullanıcıyı, aynı e-postayla açılmış mevcut hesabından ayrı ikinci bir hesaba düşürmeyin.
-- Kimlik doğrulama akışının güvenlik adımlarını sürtünme diye testin konusu yapmayın (kural 6).
+- Kimlik doğrulama akışının güvenlik adımlarını sürtünme diye testin konusu yapmayın.
 
 ---
 
@@ -359,7 +357,7 @@ EN: Does sending a one-time code instead of a password raise sign-ins?
 - Destek Talebi: Giriş kaynaklı talepler atanan ziyaretçi başına artmamalı.
 
 **Yapılmaması gerekenler**
-- İki adımlı doğrulamayı veya kimlik doğrulamayı bu testin kapsamına almayın; bunlar koruma amaçlıdır (kural 6).
+- İki adımlı doğrulamayı veya kimlik doğrulamayı bu testin kapsamına almayın; bunlar koruma amaçlıdır.
 - Kod ekranında kodun hangi adrese veya numaraya gönderildiğini gizlemeyin; kullanıcı yanlış kanalı düzeltebilmeli.
 - Güvenlik ekibi B’nin kod süresini, deneme sınırını ve hesap kurtarma akışını onaylamadan testi başlatmayın; bu onay bir başlatma koşuludur. Şifreli girişi de aynı anda kaldırmayın.
 - Kodun gelmediği durumda yeniden gönderme seçeneğini kaldırmayın veya uzun bir bekleme süresinin arkasına saklamayın.
@@ -394,7 +392,7 @@ Kayıt ekranını aksiyonun önüne koymak niyeti test eder ama hazır olmayan k
 - Destek Talebi: “İşlemimi bulamıyorum” talepleri artmamalı.
 
 **Yapılmaması gerekenler**
-- Kaydı erteleyip sonra kullanıcıyı kapatılamayan bir ekranla kayda zorlamayın (kural 6).
+- Kaydı erteleyip sonra kullanıcıyı kapatılamayan bir ekranla kayda zorlamayın.
 - İşlemi tamamlatıp ardından sonucu kayıt arkasına kilitlemeyin.
 - Aynı testte hem zamanlamayı hem kayıt formunun alanlarını değiştirmeyin.
 - Kayıtsız tamamlanan işlemin sonucuna yeniden ulaşma yolunu (e-posta bağlantısı, takip kodu) bırakmadan varyantı açmayın.
@@ -427,7 +425,7 @@ Modal form dikkati toplar ve kullanıcıyı sayfadan koparmaz. Ancak küçük ek
 - Erişilebilirlik: Modal açıkken odak dışarı kaçmamalı, klavyeyle kapatma bozulmamalı.
 
 **Yapılmaması gerekenler**
-- Kapatılamayan veya kapatma düğmesi gizlenmiş modal önermeyin (kural 6).
+- Kapatılamayan veya kapatma düğmesi gizlenmiş modal önermeyin.
 - Modalın arka planını karartma yoğunluğunu aynı testte değiştirmeyin; bu ayrı bir değişkendir.
 - Veri girilmiş bir modalı dışına tıklayınca uyarısız kapatan varyantı kazanan ilan etmeyin.
 - Mobilde modalı ekranın yarısına sıkıştırıp masaüstü sonucuyla karşılaştırmayın.
@@ -448,7 +446,6 @@ Görünür bir geri düğmesi hata düzeltmeyi kolaylaştırır ve kullanıcıya
 **Test edilmesi gerekenler**
 - Görünürlük: Geri düğmesi görünür olduğunda tamamlama değişiyor mu?
 - Veri koruma: Geri dönünce girilen veri korunuyor mu?
-- Sonraki test: Geri düğmesi yerine son adımdaki özete düzenleme bağlantısı koymak, ayrı bir testte aynı kurtarma işlevini görüyor mu?
 - Kullanım: Geri düğmesi ne sıklıkla kullanılıyor, kullanan tamamlıyor mu?
 - Cihaz: Mobilde tarayıcı geri hareketi ile form geri düğmesi çakışıyor mu?
 
@@ -464,7 +461,7 @@ Görünür bir geri düğmesi hata düzeltmeyi kolaylaştırır ve kullanıcıya
 - Aynı testte adım sayısını da değiştirmeyin.
 - Tarayıcı geri hareketini engelleyen bir varyant kurmayın.
 - Geri düğmesini “İleri” düğmesiyle aynı görsel ağırlıkta yan yana koymayın; yanlış dokunuş ilerlemeyi geri alır.
-- Ödeme adımında geri dönüşü test ederken işlem güvenliği kontrollerini zayıflatmayın (kural 6).
+- Ödeme adımında geri dönüşü test ederken işlem güvenliği kontrollerini zayıflatmayın.
 
 ---
 
@@ -480,7 +477,6 @@ Alanları bir cümlenin içine yerleştirmek (“Ben [ad], [şehir]’de [hizmet
 
 **Test edilmesi gerekenler**
 - Biçim: Cümle formu klasik alan listesinden daha mı çok dolduruluyor?
-- Sonraki test: Cümle formu kazanırsa, daha uzun bir formda ayrı bir testle denendiğinde cümle yapısı kaçıncı alandan sonra okunmaz hâle geliyor?
 - Hata: Hata mesajları cümle içinde anlaşılır kalıyor mu?
 - Tarama: Kullanıcı hangi bilgilerin isteneceğini bir bakışta görebiliyor mu?
 - Cihaz: Mobilde satır kaymaları cümleyi okunmaz yapıyor mu?
@@ -559,7 +555,7 @@ Arka planı karartmak veya bulanıklaştırmak modalı öne çıkarır ve form d
 - Erişilebilirlik: Odak modaldan kaçmamalı, klavyeyle kapatma yolu kaybolmamalı.
 
 **Yapılmaması gerekenler**
-- Kapatma yolu bırakmayan bir karartma kurmayın (kural 6).
+- Kapatma yolu bırakmayan bir karartma kurmayın.
 - Aynı testte karartma yoğunluğu ile modal içeriğini birlikte değiştirmeyin.
 - Karar için gereken bilgiyi arkada karartılmış hâlde bırakmayın.
 - Veri girilmiş formu dışına tıklayınca uyarısız kapatmayın.
@@ -626,7 +622,7 @@ Hazır tutar butonları karar yükünü kaldırır, bir aralık önerir ve yazma
 
 **Yapılmaması gerekenler**
 - Serbest giriş imkânını tamamen kaldırıp kullanıcıyı hazır tutarlara hapsetmeyin.
-- Yüksek bir tutarı önceden seçili getirip kullanıcıyı fark etmeden ona yönlendirmeyin; ödenecek tutarı artıran varsayılan kural 6 sınırındadır (bkz. cart-checkout → varsayılan işaretli seçenekler).
+- Yüksek bir tutarı önceden seçili getirip kullanıcıyı fark etmeden ona yönlendirmeyin; ödenecek tutarı artıran varsayılan manipülasyon sınırındadır (bkz. cart-checkout → varsayılan işaretli seçenekler).
 - Aynı testte butonların varlığı ile buton tutarlarını birlikte değiştirmeyin.
 - Butona dokununca kullanıcının serbest giriş kutusuna yazdığı tutarı uyarısız silmeyin.
 - Tutarları görünmez küçüklükte yazıp seçim yapmayı zorlaştırmayın.
@@ -721,14 +717,14 @@ E-posta veya telefon isteyen bir form, kullanıcıda “bu bilgi spam’e mi dö
 - Alan Bazlı Terk Oranı: İlgili alanda bırakma artmamalı.
 - Güven Algısı (anket): Metin güveni artırdığını hissettiriyor mu, yoksa şüphe mi uyandırıyor? Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Sayfada Kalma Süresi: Ek metin okuma süresini kabul edilemez ölçüde uzatmamalı.
-- Kayıt Sonrası Şikâyet: Verilen sözle kayıt sonrası gönderim davranışı tutarsızsa bu artmamalı; artıyorsa ayrı, engelleyici bir bulgudur (kural 6).
+- Kayıt Sonrası Şikâyet: Verilen sözle kayıt sonrası gönderim davranışı tutarsızsa bu artmamalı; artıyorsa ayrı, engelleyici bir bulgudur.
 
 **Yapılmaması gerekenler**
-- Vermediğiniz bir sözü yazmayın; “asla paylaşmayız” derken üçüncü taraf pazarlama ortaklarıyla paylaşıyorsanız bu kural 6 ihlalidir.
+- Vermediğiniz bir sözü yazmayın; “asla paylaşmayız” derken üçüncü taraf pazarlama ortaklarıyla paylaşıyorsanız bu yanıltıcı bir vaattir.
 - Aynı testte güvence metnini ve form alan sayısını birlikte değiştirmeyin.
 - Metni, gerçek bir gizlilik politikası bağlantısının yerine geçecek şekilde sunmayın; ayrıntılı politika hâlâ erişilebilir olmalı.
 - Güvence metnini o kadar büyük veya göze batan yapmayın ki asıl formu gölgelesin.
-- Hedef pazarın veri koruma mevzuatının gerektirdiği açık rıza metnini bu güvence cümlesiyle karıştırıp eksik bırakmayın (kural 11).
+- Hedef pazarın veri koruma mevzuatının gerektirdiği açık rıza metnini bu güvence cümlesiyle karıştırıp eksik bırakmayın.
 
 ---
 
@@ -744,7 +740,6 @@ Radio button tüm seçenekleri aynı anda görünür kılar, kullanıcı tıklam
 
 **Test edilmesi gerekenler**
 - Biçim: Radio button mu, dropdown mu ilgili alanın doldurulma oranını artırıyor?
-- Sonraki test: Seçenek sayısı farklı alanlarda ayrı testler kurulduğunda, dropdown kaç seçenekten sonra radio button’dan daha avantajlı hâle geliyor?
 - Atlanma: Dropdown’da alanı seçim yapmadan geçip gönderimde hata alan kullanıcı oranı radio button’a göre artıyor mu?
 - Hata: Yanlış seçim oranı biçime göre değişiyor mu?
 - Cihaz: Mobilde platformun kendi dropdown bileşeni radio button’a göre nasıl bir fark yaratıyor?

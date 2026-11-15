@@ -18,7 +18,6 @@ Aynı işlevi yapan CTA’nın kelime seçimi (kısa/soyut vs. somut/süre belir
 - Somutluk: Süreyi (14 gün) belirtmek tıklamayı artırıyor mu, yoksa taahhüt hissi mi yaratıyor?
 - Uzunluk: Kısa mı uzun CTA metni mi daha çok tıklanıyor?
 - Fiil: “Dene” mi “Başla” mı daha çok harekete geçiriyor?
-- Sonraki test: Kazanan metin hero’da sabitken header’daki CTA’ya farklı bir metin yazmak ayrı bir testte kayıt oranını değiştiriyor mu?
 - Segment: Küçük ekip ile kurumsal ziyaretçi farklı ifadeye mi tepki veriyor?
 
 **Takip edilecek ana KPI’lar**
@@ -216,7 +215,6 @@ Kurumsal planın fiyatını gizlemek satış ekibine görüşme kazandırır ama
 - Gösterim: Fiyat görünürken talep sayısı nasıl değişiyor?
 - Kalite: “Bize ulaşın” gelen talepleri daha mı nitelikli?
 - Aralık: “X TL’den başlayan” demek dengeyi kuruyor mu?
-- Sonraki test: Fiyat gizli kalırsa, talep formunun alan sayısı ayrı bir testte nitelikli talep oranını değiştiriyor mu?
 - Segment: Küçük ekip ile kurumsal farklı tepki veriyor mu?
 
 **Takip edilecek ana KPI’lar**
@@ -361,7 +359,7 @@ Aynı bilgi iki farklı çerçeveyle verilebilir: “Yükseltmezsen 3 gün sonra
 - Destek Talebi: Çerçeveyle ilgili şikâyet veya soru artmamalı.
 
 **Yapılmaması gerekenler**
-- Gerçekte kaybedilmeyecek bir özelliği kaybedilecekmiş gibi göstermeyin (kural 6).
+- Gerçekte kaybedilmeyecek bir özelliği kaybedilecekmiş gibi göstermeyin.
 - Aynı testte mesajın çerçevesini ve gönderim zamanlamasını birlikte değiştirmeyin.
 - Kayıp çerçevesini, kullanıcıyı gerçek düşünme süresi olmadan anlık karara zorlayacak bir aciliyetle birleştirmeyin.
 - Aynı mesajı kısa aralıklarla tekrar tekrar göndererek baskıyı artırmayın; sıklığı ayrıca test edin.
@@ -383,7 +381,6 @@ Bir lead formundaki “şirket büyüklüğü” veya “yıllık bütçe” gib
 - Varlık: Gerekçe eklemek alanın doldurulma oranını artırıyor mu?
 - Kapsam: Gerekçe yalnızca amacı belirsiz alanlara mı, tüm alanlara mı eklenmeli?
 - Yanıt kalitesi: Gerekçe eklenince alana girilen yanıtlar daha mı gerçekçi oluyor, yoksa yalnızca boş bırakma mı azalıyor?
-- Sonraki test: Gerekçe kazanırsa, alanın hemen altında mı yoksa bir ipucu simgesinin arkasında mı durduğu ayrı bir testte doldurma oranını değiştiriyor mu?
 - Segment: Farklı sektörlerden gelen kullanıcı aynı gerekçeye aynı tepkiyi mi veriyor?
 
 **Takip edilecek ana KPI’lar**
@@ -395,9 +392,9 @@ Bir lead formundaki “şirket büyüklüğü” veya “yıllık bütçe” gib
 
 **Yapılmaması gerekenler**
 - Aynı testte gerekçe metni ile alanın zorunlu/isteğe bağlı durumunu birlikte değiştirmeyin.
-- Gerekçeyi, alanın gerçek kullanım amacını gizleyen yanıltıcı bir cümleyle yazmayın (kural 10).
+- Gerekçeyi, alanın gerçek kullanım amacını gizleyen yanıltıcı bir cümleyle yazmayın.
 - Her alana gerekçe ekleyip hangisinin fark yarattığını ölçemez hâle gelmeyin.
-- Hassas bir alan (kimlik no, doğum tarihi vb.) için yalnızca gerekçe eklemeyi tek çözüm gibi sunmayın; kural 14’teki diğer yöntemler de değerlendirilmeli.
+- Hassas bir alan (kimlik no, doğum tarihi vb.) için yalnızca gerekçe eklemeyi tek çözüm gibi sunmayın; alanı isteğe bağlı yapmak, sonraya ertelemek ve daha az veri istemek de değerlendirilmeli.
 - Gerekçe metnini alanın kendisinden daha büyük veya dikkat çekici yapıp formu ağırlaştırmayın.
 
 ---

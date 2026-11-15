@@ -26,6 +26,10 @@ Four lines in this order under the title (the title is a question), a blank line
 
 Levels. Element level changes how one thing on the page looks or reads: `görsel` visual weight, position, format; `gezinme` search, navigation, listing and discovery; `bilgi` information added or shown at the decision point (price and offer display included); `form` form and field design; `metin` copy and microcopy; `güven` trust and assurance signals; `sosyal-kanıt` reviews, testimonials, logos; `sürtünme` removing effort inside the same flow (defaults, saved data, shortcuts). Structural level changes the thing itself: `teklif` what is offered (threshold, trial length, a new offer); `fiyat` price point or package and plan structure; `kişiselleştirme` content that differs by visitor or segment; `akış` the steps, their order or a new path; `elde-tutma` what happens after the purchase or sign-up; `onboarding` first use and activation.
 
+### Body
+
+An intro paragraph (the concrete obstacle, the risk on each side, what stays equal in both arms, how the block differs from a sibling), then `**Test edilmesi gerekenler**`, `**Takip edilecek ana KPI’lar**` and `**Yapılmaması gerekenler**`, 3 to 6 items each; the validator's docstring lists the box rules. A `Sonraki test:` item, at most one, builds on this scenario's winning variant; asking where the winner should sit is not a follow-up. Block text never cites an internal rule number (“kural 6”); it states the rule.
+
 ### Notes under a block
 
 `> **Pazar notu:** …` names a market dependency. `> **Güncellik notu (YYYY-MM):** …` records that the ground under a scenario shifted (a platform rule, a regulation, a pattern turned standard, the technology): what changed, then what to test instead. A stale block keeps its place with its note; it is not deleted (methodology: When the archive goes stale). The month is when the note was written.

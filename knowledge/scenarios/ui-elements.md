@@ -89,7 +89,6 @@ Butona benzeyen bir öğe tıklanabilirliğini açıkça duyurur; bağlantı ise
 - Biçim: İkincil aksiyon buton olduğunda toplam ilerleme artıyor mu?
 - Yamyamlık: İkincil aksiyon birincilin tıklamasını mı alıyor?
 - Görünürlük: Bağlantı hâlinde kaç kullanıcı öğeyi fark ediyor?
-- Sonraki test: Kazanan biçim sabitken ikincil aksiyonun konumu (birincilin yanı / altı) ayrı bir testte toplam ilerlemeyi değiştiriyor mu?
 - Cihaz: Mobilde bağlantının dokunma hedefi yeterli mi?
 
 **Takip edilecek ana KPI’lar**
@@ -154,7 +153,6 @@ EN: Big-commitment button or small-step button: which moves more people forward?
 **Test edilmesi gerekenler**
 - Taahhüt: Küçük adım butonu toplam dönüşümü artırıyor mu?
 - Zincir: Küçük adımı atanların kaçı sonuca ulaşıyor?
-- Sonraki test: Kazanan buton sabitken yanına ikinci bir buton eklemek (tek buton / iki buton) ayrı bir testte nihai dönüşümü büyütüyor mu?
 - Metin: Küçük adımın ne kadar küçük olduğu ifadeden anlaşılıyor mu?
 - Segment: Yeni ziyaretçi ile karar aşamasındaki ziyaretçi farklı mı tepki veriyor?
 
@@ -187,7 +185,6 @@ EN: Does adding a text label next to icons pay off?
 **Test edilmesi gerekenler**
 - Etiket: İkona metin eklemek kullanımı artırıyor mu?
 - Tanınırlık: Hangi ikonlar etiketsiz zaten anlaşılıyor?
-- Sonraki test: Etiket kazanırsa, etiketin ikona göre yeri (alt / yan) ayrı bir testte işlev kullanımını değiştiriyor mu?
 - Kalabalık: Etiketler diğer öğelerin alanını daraltıyor mu?
 - Cihaz: Mobilde etiket için yer kalıyor mu?
 
@@ -252,7 +249,6 @@ Açıklama metninin içine gömülü bir bağlantı, tam ilgili düşünce oluş
 
 **Test edilmesi gerekenler**
 - Yerleşim: Metin içi bağlantı ayrı bir butondan daha mı çok tıklanıyor?
-- Sonraki test: Metin içi bağlantı kazanırsa, bağlantının paragraftaki yeri (baş / son) ayrı bir testte aksiyonu değiştiriyor mu?
 - Görünürlük: Bağlantı yeterince ayırt edilebiliyor mu?
 - Erken ayrılma: Bağlantı okuma akışını bölüp asıl mesajı yarıda mı bırakıyor?
 - Segment: Okuyan ve tarayan kullanıcı farklı mı tepki veriyor?
@@ -364,9 +360,9 @@ Belirli bir süre boyunca tüm sayfalarda görünen bir duyuru şeridi kampanyay
 - Sayfa Yüklenme Süresi: Her sayfaya eklenen şerit ana içeriğin yüklenmesini geciktirmemeli.
 
 **Yapılmaması gerekenler**
-- Kapatılamayan bir çubuk kurmayın (kural 6).
+- Kapatılamayan bir çubuk kurmayın.
 - Aynı testte çubuğun varlığı ile içeriğini birlikte değiştirmeyin.
-- Süresi dolunca gerçekten kalkmayan “süreli” kampanya duyurmayın; sayaç ve tarih gerçek olmalı (kural 6).
+- Süresi dolunca gerçekten kalkmayan “süreli” kampanya duyurmayın; sayaç ve tarih gerçek olmalı.
 - Çubuğu sabitleyip ekranın önemli bir kısmını kalıcı olarak kaplamayın.
 - Şeridi ödeme adımında da gösterip kullanıcıyı siparişin ortasında kampanya sayfasına çekmeyin.
 
@@ -419,7 +415,6 @@ Sayılı rozet ne kadar bekleyen iş olduğunu söyler ve aciliyeti ölçeklendi
 - Biçim: Sayılı rozet mi, sade nokta mı daha çok tıklanıyor?
 - Büyüklük: Yüksek sayılar caydırıcı hâle geliyor mu?
 - Alışma: Sade nokta birkaç gün sonra görmezden gelinirken sayılı rozet daha uzun süre tıklanmaya devam ediyor mu?
-- Sonraki test: Kazanan biçim sabitken rozetin bulunduğu öğe (alt menü sekmesi / profil ikonu) ayrı bir testte bölüme girişi değiştiriyor mu?
 - Cihaz: Mobilde küçük rozet fark ediliyor mu?
 
 **Takip edilecek ana KPI’lar**
@@ -430,7 +425,7 @@ Sayılı rozet ne kadar bekleyen iş olduğunu söyler ve aciliyeti ölçeklendi
 - Erişilebilirlik: Rozet yalnızca renkle anlatılmamalı, ekran okuyucuya duyurusuz kalmamalı.
 
 **Yapılmaması gerekenler**
-- Karşılığı olmayan bir rozet göstermeyin; sahte bekleyen iş üretmeyin (kural 6).
+- Karşılığı olmayan bir rozet göstermeyin; sahte bekleyen iş üretmeyin.
 - Aynı testte rozet biçimi ile rozetin konumunu birlikte değiştirmeyin.
 - Sıfırlanamayan, kullanıcının kapatamadığı bir rozet kurmayın.
 - Rozeti yalnızca kırmızı renkle ayırt edilebilir bırakmayın.
@@ -451,7 +446,6 @@ Erişilebilir bir destek düğmesi tereddüt eden kullanıcıya çıkış yolu v
 **Test edilmesi gerekenler**
 - Varlık: Destek düğmesi dönüşümü artırıyor mu?
 - Yanıt süresi: Gelen taleplere yanıt süresi vaadi karşılıyor mu?
-- Sonraki test: Düğme kazanırsa, düğmenin yeri (sağ alt köşe / akıştaki tereddüt noktası) ayrı bir testte dönüşümü değiştiriyor mu?
 - Kapsam: Her sayfada mı, yalnızca tereddüt noktalarında mı görünmeli?
 - Cihaz: Mobilde düğme içeriği veya ana butonu kapatıyor mu?
 
@@ -496,7 +490,7 @@ Kendiliğinden açılan sohbet penceresi yardımın varlığını duyurur ve pas
 - Destek Talebi: Ekibin taşıyabileceği talep seviyesi aşılmamalı.
 
 **Yapılmaması gerekenler**
-- Kapatılamayan veya kapatma düğmesi gizlenmiş bir pencere kurmayın (kural 6).
+- Kapatılamayan veya kapatma düğmesi gizlenmiş bir pencere kurmayın.
 - Kullanıcı bir form doldururken veya ödeme yaparken pencereyi açmayın.
 - Aynı testte açılma davranışı ile karşılama mesajını birlikte değiştirmeyin.
 - Kapatılan pencereyi aynı oturumda tekrar açmayın.
@@ -600,7 +594,7 @@ Bir sitenin herhangi bir noktasındaki tanıtım banner’ı genellikle birden f
 
 **Yapılmaması gerekenler**
 - Aynı testte banner’ın odağı ile konumunu/boyutunu birlikte değiştirmeyin.
-- Gerçekte sınırlı olmayan bir teklifi “bugüne özel” gibi göstermeyin (kural 6).
+- Gerçekte sınırlı olmayan bir teklifi “bugüne özel” gibi göstermeyin.
 - Çıkarılan diğer teklifleri sitenin hiçbir yerinde göstermeyip tamamen kaybettirmeyin; en azından ilgili sayfada bulunabilir olmalılar.
 - Tek motivasyonlu banner’ı, vaat ettiği teklifin geçerli olmadığı bir ürün veya kategori sayfasına bağlamayın.
 - Tek motivasyonu, aslında farklı ziyaretçi segmentlerine göre değişmesi gereken bir mesajı zorla tekleştirmek için kullanmayın.
@@ -632,7 +626,7 @@ Kullanıcıya birden fazla eşdeğer seçenek (ör. ürün varyantı, özellik k
 - Memnuniyet (anket): Seçim sonrası memnuniyet öne çıkarma nedeniyle düşmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 
 **Yapılmaması gerekenler**
-- Gerçek veriye dayanmayan bir seçeneği “en çok tercih edilen” gibi göstermeyin (kural 6).
+- Gerçek veriye dayanmayan bir seçeneği “en çok tercih edilen” gibi göstermeyin.
 - Aynı testte ağırlık yöntemini (boyut/renk/konum) ve seçeneklerin içeriğini birlikte değiştirmeyin.
 - Diğer seçenekleri tıklanamayacak veya bulunamayacak kadar küçültmeyin.
 - Öne çıkarma ağırlığını kullanıcıyı gerçek ihtiyacından farklı bir seçeneğe yönlendirmek için kullanmayın.

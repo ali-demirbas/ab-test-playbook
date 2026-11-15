@@ -50,7 +50,6 @@ Arama çubuğunun konumu ve görünürlüğü, kullanıcının ürün keşif dav
 **Test edilmesi gerekenler**
 - Konum: Header’da mı, menü içinde mi, yalnızca ikon olarak mı?
 - Görünürlük: Açık arama alanı mı, sadece ikon mu daha çok tıklanıyor?
-- Sonraki test: Kazanan görünürlük sabitken placeholder metni (“Ürün ara…” / “Favori markanı yaz”) ayrı bir testte arama başlatmayı artırıyor mu?
 - Menü etkisi: Arama alanı öne çıkınca kategori menüsüyle gezinme azalıyor mu, yani arama menünün yerini mi alıyor?
 - Cihaz: Mobilde ve masaüstünde görünürlük ihtiyacı aynı mı?
 
@@ -184,7 +183,6 @@ Menünün sabit kalması sayfa içi gezinme hızını artırabilir, ancak ekran 
 - Kaydırma: Yukarı çıkma zorunluluğunu ortadan kaldırıyor mu?
 - Mobil: Uzun sayfalarda gezinme performansını artırıyor mu?
 - Alan: Ekran alanını kaplaması rahatsız ediyor mu?
-- Sonraki test: Sabit menü kazanırsa, mobilde ekranın üstüne mi altına mı sabitlendiği ayrı bir testte menü kullanımını değiştiriyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Sticky menü satın almayı artırıyor mu?
@@ -295,7 +293,7 @@ EN: How does a discount filter affect behavior?
 **Yapılmaması gerekenler**
 - Çok fazla filtre ekleyip kullanıcıyı kararsız bırakmayın.
 - Tutarsız sonuç veren indirim aralığı tasarlamayın.
-- Uydurma referans fiyattan hesaplanan indirim oranını filtreye dahil etmeyin; filtre yalnızca gerçek indirimi göstermeli (kural 6).
+- Uydurma referans fiyattan hesaplanan indirim oranını filtreye dahil etmeyin; filtre yalnızca gerçek indirimi göstermeli.
 - Mobilde filtre alanını ekranı kaplayacak kadar büyütmeyin.
 - Aynı testte indirim filtresini eklerken varsayılan sıralamayı veya diğer filtrelerin sırasını da değiştirmeyin.
 
