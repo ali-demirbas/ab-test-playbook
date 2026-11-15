@@ -125,7 +125,8 @@ has the full table and what the gates can't guarantee).
 |---|---|---|
 | Binding rules (one variable, one primary KPI, guardrail, no dark patterns) | `CLAUDE.md` | Applies to every skill; a skill cannot opt out of it |
 | Method reasoning (KPI choice, guardrails, isolation, priority) | `knowledge/methodology.md` | Referenced by skills rather than restated in each one |
-| What a card shows and how it looks | `knowledge/mockup-style.md` | Same reason: one definition, many consumers (the card skill, the template, the builder, render_check, the mockup reviewer) |
+| What a card shows and how it looks | `knowledge/mockup-style.md` (the core) + `knowledge/mockup-style/` (one file per trigger) | Same reason: one definition, many consumers (the card skill, the template, the builder, render_check, the mockup reviewer); the core is read for every card, a fold, raw markup, fast mode, the UNVERIFIED preview or a render_check finding opens only its own file |
+| How a record is written | `templates/record-checklist.md` | The skeleton command, the fields it leaves to the producer and the first-validation list, shared by suggest, design and card so none of them restates it |
 | Curated scenarios | `knowledge/scenarios/` | Content, not logic, in the three-box format: Turkish blocks with a tag line, an English title and an English body ([`FORMAT.md`](../knowledge/scenarios/FORMAT.md)). Adding a scenario is a content change |
 | Per-task instructions | `skills/ab-test-*/SKILL.md` | The task-specific part, kept thin because the rules live above |
 | Adversarial review | `agents/` | Separate context: the producer systematically misses its own single-variable violation |
@@ -133,7 +134,7 @@ has the full table and what the gates can't guarantee).
 | Record-bound chat lines | `scripts/validate_scenario_json.py --chat` | The tag line with its score, `Neden:`, the must-be-true lines, the conditional and pre-start lines and the brief are printed from the record, so they can't drift from it |
 | Delivery gates (review stamps, draft and final card) | `scripts/build_card.py --critic-stamp` + `scripts/build_card.py` | A review the builder can't see is one it can't enforce; a fingerprint of the reviewed content is something it can check ([`design-notes.md`](design-notes.md) → Rule 17) |
 | Text escaping, template fill, drift check | `scripts/build_card.py` | Deterministic: a model rewriting ~180 lines of CSS per card is both the slowest step and the drift risk |
-| Structural rules on a test definition | `templates/scenario.schema.json` + `scripts/validate_scenario_json.py` | Rules 1-3 become shape, not prose: a record has one `primary_kpi` and one `guardrail`, each with its denominator or criterion, so a second primary can't be written |
+| Structural rules on a test definition | `templates/scenario.schema.json` + `scripts/validate_scenario_json.py` | Rules 1-3 become shape, not prose: a record has one `primary_kpi` and one `guardrail`, each with its denominator or criterion, so a second primary can't be written. Only the validator reads the schema: a record starts from `new_record.py`, and a refusal names the field and its fix |
 | Detailed view | optional `detail` in the same schema | Written only on request: regenerating three boxes per proposal cost tokens and repeated the record |
 | Priority (a tier, its score and a one-sentence reason) | `priority` in the same schema: `tier`, `rationale` and the five `inputs` | The tier is the band of a score out of 9 that the validator recomputes from the recorded inputs, so it can't be chosen; the chat shows the score next to the tier, while the rationale stays in words (`methodology.md` → Prioritization) |
 | Untrusted input (pasted files, plans, history) | `scripts/validate_input.py` | Instruction-shaped lines and script payloads are reported with line numbers and quoted back, never followed |
@@ -141,6 +142,25 @@ has the full table and what the gates can't guarantee).
 | Archive format | `scripts/validate_scenarios.py` | Guards the 217 shipped scenarios against silent format rot: head lines, tag values and unique ids, the English body's parallel boxes |
 | KPI vocabulary | `knowledge/kpi-glossary.md` | Canonical KPI names, each with its definition, denominator and English name; the archive uses them and the validator reads the table |
 | Cross-file consistency | `scripts/validate.sh` | Frontmatter, links, plugin-root paths, rule citations, the scenario and rule counts the docs quote, description length, bundle freshness: the seams no single validator sees |
+
+## What each flow reads
+
+Everything a flow reads before it produces anything is billed again on every
+model call of the run, so the always-read set is kept small and the rest is read
+when its trigger applies. `python3 tests/test_reading_budget.py --table` prints
+the bytes; the test holds each flow under a ceiling and checks that every named
+section, on-demand file and bundled path still resolves.
+
+| Flow | Read whole, once per session | On demand |
+|---|---|---|
+| design, suggest | `CLAUDE.md`, the flow's skill, `ab-test-card`, `templates/record-checklist.md`, `knowledge/mockup-style.md` | One `methodology.md` section per decision (the skill's table); one or two archive blocks by line; a glossary grep; a `knowledge/mockup-style/` file by its trigger |
+| card | `CLAUDE.md`, `ab-test-card`, the checklist, the mockup core | The same mockup files |
+| audit | `CLAUDE.md`, `ab-test-audit` | The methodology section a checklist item names |
+| scenario-critic, per round | Its agent file, `CLAUDE.md` | Methodology sections a check needs |
+| mockup-reviewer, per round | Its agent file, the mockup core, `CLAUDE.md` | The mockup file a card uses |
+
+The schema and the worked example are never read by a model (the validator and
+the skeleton use them); the card template only for a card in raw markup.
 
 ## Why two review agents rather than one
 
@@ -173,4 +193,4 @@ really took place, and was careful, rests on rule 17, not on code.
 - **A new scenario** → `knowledge/scenarios/<stage>.md`, then `bash scripts/validate.sh`: it runs the archive validator and fails until every doc that quotes the scenario total states the new number. A **new scenario file** also needs a line in the stage-to-file map of `skills/ab-test-suggest/SKILL.md`; without one nothing routes to it.
 - **A new rule that applies everywhere** → `CLAUDE.md`, numbered. If it can be checked mechanically, add the check to a script in the same change; a rule with no enforcement path degrades into a suggestion.
 - **A new skill** → `skills/ab-test-<name>/SKILL.md` with the `metadata` block (`version`, `category`, `updated`). Keep it thin: reference `CLAUDE.md` and `knowledge/` instead of restating them.
-- **A change to the card's look** → `knowledge/mockup-style.md` first, then `templates/scenario-card.html` and the matching `render_check.mjs` check. `build_card.py` self-verifies against the template, so a structural edit will surface immediately as a drift error rather than as a quietly malformed card.
+- **A change to the card's look** → `knowledge/mockup-style.md` (or the on-demand file in `knowledge/mockup-style/` that holds the case) first, then `templates/scenario-card.html` and the matching `render_check.mjs` check. `build_card.py` self-verifies against the template, so a structural edit will surface immediately as a drift error rather than as a quietly malformed card.
