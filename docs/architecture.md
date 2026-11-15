@@ -114,7 +114,7 @@ has the full table and what the gates can't guarantee).
 | Text escaping, template fill, drift check | `scripts/build_card.py` | Deterministic: a model rewriting ~180 lines of CSS per card is both the slowest step and the drift risk |
 | Structural rules on a test definition | `templates/scenario.schema.json` + `scripts/validate_scenario_json.py` | Rules 1-3 become shape, not prose: a record has one `primary_kpi` and one `guardrail`, each with its denominator or criterion, so a second primary can't be written |
 | Detailed view | optional `detail` in the same schema | Written only on request: regenerating three boxes per proposal cost tokens and repeated the record |
-| Priority (a tier and a one-sentence reason) | optional `priority` object in the same schema | The tier is a closed set (`high`, `medium`, `low`) and the rationale is words, because a numeric score suggested a precision its inputs never had (`methodology.md` → Prioritization) |
+| Priority (a tier, its score and a one-sentence reason) | `priority` in the same schema: `tier`, `rationale` and the five `inputs` | The tier is the band of a score out of 9 that the validator recomputes from the recorded inputs, so it can't be chosen; the chat shows the score next to the tier, while the rationale stays in words (`methodology.md` → Prioritization) |
 | Untrusted input (pasted files, plans, history) | `scripts/validate_input.py` | Instruction-shaped lines and script payloads are reported with line numbers and quoted back, never followed |
 | Rationale behind the binding rules | [`design-notes.md`](design-notes.md) | Kept out of `CLAUDE.md` so the always-loaded rules stay short |
 | Archive format | `scripts/validate_scenarios.py` | Guards the 217 shipped scenarios against silent format rot |

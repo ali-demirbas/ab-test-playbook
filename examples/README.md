@@ -13,7 +13,7 @@ looks like while that happens.
 
 ## Upgrading a record from 3.1
 
-A record saved with 3.1 fails the 3.2 validator with `priority: missing required field 'inputs'`. Add the four score inputs under `priority` and keep a tier that matches their band (`knowledge/methodology.md` → Prioritization), for example `"inputs": {"evidence": "archive_or_research", "main_path": true, "noticeable": true, "effort": "low"}`. An element in an accordion, modal or tab or below the fold also needs `exposure`: who counts as exposed, logged at the same point in both arms. Both change the record's fingerprint, so both reviews run again before the card is rebuilt.
+A record saved with 3.1 fails the 3.2 validator with `priority: missing required field 'inputs'`. Add the five score inputs under `priority` and keep a tier that matches the band of their score out of 9 (`knowledge/methodology.md` → Prioritization), for example `"inputs": {"evidence": "archive_or_research", "impact": "persuasive", "main_path": true, "noticeable": true, "effort": "low"}` (1 + 1 + 1 + 1 + 2 = 6, medium). A record saved with 3.2 or 3.3 lacks only `impact`: add it and recheck the tier, since the bands moved to 7-9 high, 4-6 medium, 0-3 low. An element in an accordion, modal or tab or below the fold also needs `exposure`: who counts as exposed, logged at the same point in both arms. Both change the record's fingerprint, so both reviews run again before the card is rebuilt.
 
 ## Reproducing the card
 

@@ -175,7 +175,7 @@ The mechanism is the record's `mechanism` field: exactly one sentence, resting o
 
 A third-tier candidate with a strong mechanism is still suggested; this isn't a ban, it's a tie-break criterion under equal conditions. The ranking is a heuristic priority, not a measured outcome. The user's test memory (rule 16) overrides this ranking **only for the same component or the same mechanism**: a CTA-color test having won in the past doesn't mean every cosmetic candidate now jumps ahead of structural ones.
 
-These four filters don't replace prioritization, they run before it: the lens answers "is this idea worth suggesting at all," priority (Prioritization below) answers "which of the remaining ones goes first." The impact tiers above break a tie between two candidates of the same score; they aren't a score input.
+These four filters don't replace prioritization, they run before it: the lens answers "is this idea worth suggesting at all," priority (Prioritization below) answers "which of the remaining ones goes first." The impact tiers above are also the score's `impact` input (structural 2, persuasive 1, cosmetic 0), and the higher one breaks a tie between two candidates of the same score.
 
 ## Variable isolation
 
@@ -341,8 +341,8 @@ A page known to be low-traffic (the user said so, or it's obvious from the page'
 Its two lines go into chat as printed, a range and a one-line caveat; never computed by hand, never a promise, never a sample size or duration to aim for. The script runs first in the turn, before the problem question (rule 13), so a page that can't be tested costs no extra turn. Routing by verdict:
 
 - **Small changes detectable:** no limit from traffic.
-- **Small changes not detectable:** a B a user wouldn't notice within seconds (`noticeable: false`) or a third-tier cosmetic change (the impact ranking: colour, corner radius, font, micro-spacing) doesn't pass the gate.
-- **Bold changes only:** only a bold B on the main path passes (`main_path` and `noticeable` true, a first- or second-tier change).
+- **Small changes not detectable:** a B a user wouldn't notice within seconds (`noticeable: false`) or an `impact: cosmetic` change (the impact ranking's third tier: colour, corner radius, font, micro-spacing) doesn't pass the gate.
+- **Bold changes only:** only a bold B on the main path passes (`main_path` and `noticeable` true, `impact` structural or persuasive).
 - **Not testable:** no test card and no problem question: the two lines, then one line with the alternatives (a bolder single change on the main path, a higher-traffic page with the same problem, qualitative research such as user tests or surveys), then stop.
 
 An explicit ask that fails its band is still produced with its "Stronger alternative:" line giving the traffic reason (rule 9). The single-variable rule stays (rule 4).
