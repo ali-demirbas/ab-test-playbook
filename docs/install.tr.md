@@ -6,6 +6,18 @@ Kısa hali [README](../README.tr.md) içinde: Claude Code’da iki komut ve gör
 
 A/B Test Builder görünen addır. Plugin `ab-test-playbook` adıyla kurulur.
 
+## Terminale yeni misiniz?
+
+Claude Code bir terminalde, yani komut yazdığınız bir pencerede çalışır. Mac’te Terminal uygulamasını açın (Cmd+Boşluk, "Terminal" yazın); Windows’ta PowerShell ya da Windows Terminal’i, Linux’ta kendi terminalinizi açın. Claude Code’u resmi [hızlı başlangıç](https://code.claude.com/docs/en/quickstart) sayfasıyla kurun (İngilizce). Sonra testleriniz için bir klasör açıp Claude Code’u orada başlatın:
+
+```bash
+mkdir ab-tests
+cd ab-tests
+claude
+```
+
+Bundan sonra yazdıklarınız Claude Code’a gider: aşağıdaki `/plugin` satırları, ekran görüntünüz ve `/ab-test`. Yalnızca bir kezlik görsel kontrol komutu (aşağıda Görsel kontrol) düz bir terminalde çalışır. Kartlarınız ve kayıtlarınız bu klasöre kaydedilir.
+
 ## Gerekenler
 
 | Ne | Ne için gerekir | Kontrol komutu |
@@ -31,6 +43,52 @@ Ya da klonlayıp yerel bir plugin olarak ekleyin:
 git clone https://github.com/ali-demirbas/ab-test-playbook.git
 claude --plugin-dir ./ab-test-playbook
 ```
+
+## Daha az izin sorusu
+
+Varsayılan izin kipinde Claude Code eklentinin çalıştırdığı her betikten önce izin ister; reddedilen bir çağrı onunla birlikte gönderilen çağrıları da iptal eder. Playbook kendi küçük ve sabit betik kümesini her zaman ana oturumda çalıştırır, bu yüzden bunlara bir kez izin verilebilir. Önce eklenti klasörünü yazdırın:
+
+```bash
+python3 -c "import json,os;d=json.load(open(os.path.expanduser('~/.claude/plugins/installed_plugins.json')))['plugins'];print([i['installPath'] for k,v in d.items() if k.startswith('ab-test-playbook@') for i in v][0])"
+```
+
+Sonra şunu `~/.claude/settings.json` dosyasına ekleyin (bütün projeler için), `<PLUGIN_ROOT>` yerine yazdırılan yolu tam olarak yazın (bir kural komut metniyle yazıldığı gibi eşleşir, skill’ler de komutu yolu açılmış olarak gönderir):
+
+```json
+{
+  "permissions": {
+    "additionalDirectories": ["<PLUGIN_ROOT>"],
+    "allow": [
+      "Bash(python3 <PLUGIN_ROOT>/scripts/validate_scenario_json.py *)",
+      "Bash(python3 <PLUGIN_ROOT>/scripts/new_record.py *)",
+      "Bash(python3 <PLUGIN_ROOT>/scripts/build_card.py *)",
+      "Bash(python3 <PLUGIN_ROOT>/scripts/read_section.py *)",
+      "Bash(python3 <PLUGIN_ROOT>/scripts/validate_input.py *)",
+      "Bash(python3 <PLUGIN_ROOT>/scripts/feasibility.py *)",
+      "Bash(node <PLUGIN_ROOT>/scripts/render_check.mjs *)",
+      "Bash(test -d *)",
+      "Bash(node -e \"require.resolve('playwright')\")"
+    ]
+  }
+}
+```
+
+| Kural | Ne için |
+|---|---|
+| `additionalDirectories` | Eklenti klasöründeki arşivi, sözlüğü, metodolojiyi ve şablonları soru sormadan okumak (`grep`, `Read`); klasör çalışma klasörünüzün dışındadır |
+| `validate_scenario_json.py` | Kayıt doğrulaması ve sohbet satırları (`--chat`), her tasarım ya da öneri turunda |
+| `new_record.py` | Her kaydın başladığı iskelet |
+| `build_card.py` | `--critic-stamp` (scenario-critic), `--draft`, `--quick`, `--stamp` (mockup-reviewer), nihai üretim, `--check`, `--share`, `--overview` |
+| `read_section.py` | `methodology.md` ya da `mockup-style.md` dosyasının tek bölümü veya tek arşiv bloğu |
+| `validate_input.py` | `.abtest-history.md`, `.abtest-backlog.md` ve verdiğiniz dosyaların taranması |
+| `feasibility.py` | Yalnızca temel oranı ve ziyaretçi sayısını siz verdiğinizde |
+| `render_check.mjs` | Görsel kontrol (Node.js 18+ ve Playwright, aşağıda) |
+| `test -d`, `node -e "require.resolve('playwright')"` | `/ab-test` menüsündeki tek satırlık görsel kontrol yoklaması |
+
+- Eklenti güncellenince `<PLUGIN_ROOT>` içindeki sürüm değişir: ilk komutu yeniden çalıştırıp yolu değiştirin. Sürümün yerine `*` yazmak da çalışır, ama ilk `*` işaretinden sonrası gevşek eşleşir; tam yol daha güvenlidir.
+- `Bash(python3 *)` ya da `Bash(node *)` izni asla vermeyin: bilgisayarınızdaki her betiğe izin verir.
+- Kayıtlar (`*.json`) ve kartlar (`abtest-card-*.html`, `card-*.png`) çalışma klasörünüze yazılır; `acceptEdits` kipinde değilseniz Write aracı oturum başına bir kez sorar. Eklenti klasörünün içine hiçbir şey yazılmaz.
+- İki inceleyici eklentinin kendi alt ajanlarıdır, kural istemez; hiçbir betik alt ajan içinde çalışmaz.
 
 ## Diğer kurulum yolları
 
@@ -113,5 +171,6 @@ Güncellemeler yalnızca plugin’in sürüm numarası değişince gelir. `/plug
 | `/plugin update` yeni bir şey getirmiyor | Güncellemeler yalnızca sürüm numarası değişince gelir | İki güncelleme komutunu da çalıştırıp Claude Code’u yeniden başlatın |
 | `claude plugin validate` çıktısında `Unrecognized key: "relevance"` | Eski bir Claude Code sürümü | Zararsız, [Güncelleme](#güncelleme) altındaki nota bakın |
 | `python3: command not found` ya da bir script başlarken duruyor | PATH üzerinde Python 3.9 veya üstü yok | Güncel bir Python 3 kurup terminali yeniden açın |
+| Claude Code her betikten önce izin istiyor ya da reddedilen bir çağrı diğerlerini iptal ediyor | Eklentinin betiklerine henüz izin verilmedi | [Daha az izin sorusu](#daha-az-izin-sorusu) başlığındaki kuralları ekleyin |
 
 Hâlâ takıldınız mı? [Bir issue açın](https://github.com/ali-demirbas/ab-test-playbook/issues) ve komutun yazdığı son satırı ekleyin.

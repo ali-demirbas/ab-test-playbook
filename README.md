@@ -24,7 +24,7 @@ Made for growth, CRO and product people who decide what to test next. You don't 
 
 ## First card in 3 steps
 
-**Requirements:** Claude Code and Python 3.9 or newer. Node 18 or newer and Playwright are needed only for the final visual check (step 2).
+**Requirements:** Claude Code and Python 3.9 or newer. Node 18 or newer and Playwright are needed only for the final visual check (step 2). New to the terminal? [Start here](docs/install.md#new-to-the-terminal).
 
 **1. Install the plugin.** Type these in Claude Code:
 
@@ -57,18 +57,46 @@ It asks at most one question (which problem you are solving) and never asks for 
 
 Using Codex, Gemini CLI or claude.ai, updating, or something looks off? See [install, update and troubleshooting](docs/install.md).
 
+## Fewer permission prompts
+
+Claude Code asks before each script the plugin runs. To allow only the plugin's own scripts once, print the plugin folder:
+
+```bash
+python3 -c "import json,os;d=json.load(open(os.path.expanduser('~/.claude/plugins/installed_plugins.json')))['plugins'];print([i['installPath'] for k,v in d.items() if k.startswith('ab-test-playbook@') for i in v][0])"
+```
+
+Then add this to `~/.claude/settings.json`, with `<PLUGIN_ROOT>` replaced by that path. After a plugin update, run the line again and replace the path. What each rule covers: [install guide](docs/install.md#fewer-permission-prompts).
+
+```json
+{"permissions": {
+  "additionalDirectories": ["<PLUGIN_ROOT>"],
+  "allow": [
+    "Bash(python3 <PLUGIN_ROOT>/scripts/validate_scenario_json.py *)",
+    "Bash(python3 <PLUGIN_ROOT>/scripts/new_record.py *)",
+    "Bash(python3 <PLUGIN_ROOT>/scripts/build_card.py *)",
+    "Bash(python3 <PLUGIN_ROOT>/scripts/read_section.py *)",
+    "Bash(python3 <PLUGIN_ROOT>/scripts/validate_input.py *)",
+    "Bash(python3 <PLUGIN_ROOT>/scripts/feasibility.py *)",
+    "Bash(node <PLUGIN_ROOT>/scripts/render_check.mjs *)",
+    "Bash(test -d *)",
+    "Bash(node -e \"require.resolve('playwright')\")"
+  ]
+}}
+```
+
 ## What you can ask
 
 | You say | What happens |
 |---|---|
 | `/ab-test design`: "design a test for this" plus a screenshot, URL or description | Designs up to three new single-variable tests for your page, each with a card |
 | `/ab-test suggest`: "suggest tests for my product page" | Picks matching ideas from the archive, ranks them high, medium or low, and draws the top three |
-| `/ab-test audit`: "is this test set up correctly?" plus your plan | Checks a plan before it takes traffic: two changes in one variant, a click standing in for the real outcome, a missing guardrail, accessibility and compliance gaps, dark patterns |
+| `/ab-test audit`: "is this test set up correctly?" plus your plan | Checks a plan before it takes traffic: two changes in one variant, a click standing in for the real outcome, a missing guardrail, accessibility and compliance gaps, dark patterns. Ends with a fixed plan it can turn into a card |
 | `/ab-test card`: "turn this into a card" | Draws a scenario you already have as a card |
 | "explain proposal 2" | Gives the detail behind one proposal in chat: what to test, which KPIs to track, what not to do |
+| "quick draft" | The same cards in minutes, not reviewed yet and labelled so; say "finish" and both reviews run |
 | "is this significant?" | Out of scope. One line pointing to your testing tool's report, and an offer to audit the plan |
 
-Every command, the full session walkthrough and the test memory file (`.abtest-history.md`, so a test that already lost is not suggested again) are in the [reference](docs/reference.md).
+Every command, the full session walkthrough and the test memory file (`.abtest-history.md`, so a test that already lost is not suggested again) are in the [reference](docs/reference.md), with an [8-term glossary](docs/reference.md#glossary) for words like guardrail, primary KPI and exposure.
 
 ## Why use it
 
@@ -78,7 +106,6 @@ Every command, the full session walkthrough and the test memory file (`.abtest-h
 | Variant B quietly changes two things, so the result can't be explained | One variable per test. A second reviewer looks at the drawn card for a hidden second difference |
 | Five metrics get watched, none of them decides | One primary KPI decides, one guardrail protects what must not get worse |
 | Hiding the coupon field lifts revenue because code holders now pay full price, and it reads as a win | A revenue goal on a change that touches a user benefit is refused without a guardrail on that benefit |
-| A dark pattern ships if someone asks for one | Refused even on request, with the reason stated |
 
 The full comparison is in the [reference](docs/reference.md#why-a-playbook-instead-of-ad-hoc-testing).
 
@@ -91,13 +118,12 @@ The full comparison is in the [reference](docs/reference.md#why-a-playbook-inste
 
 ## Language
 
-The skills answer in the language you write in, and cards follow it. The scenario archive itself is written in Turkish. Metric abbreviations (CR, AOV, LCP) stay as they are.
+The skills answer in the language you write in, and cards follow it. The scenario archive is bilingual: an English conversation reads each scenario in English, a Turkish one in Turkish. Metric abbreviations (CR, AOV, LCP) stay as they are.
 
 ## More
 
 - [Live demo](https://ali-demirbas.github.io/ab-test-playbook/): sample cards in English and Turkish
 - [FAQ](FAQ.md): what to test first, guardrails, low traffic, common mistakes
-- [Install, update and troubleshooting](docs/install.md): every install path and the visual check
 - [Reference](docs/reference.md): all commands, a full session, what is in the repo, scope
 - [Examples](examples/): a scenario record carried end to end, and an audit of a flawed plan
 - [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [Privacy](PRIVACY.md)

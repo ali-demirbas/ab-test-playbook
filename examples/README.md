@@ -6,10 +6,11 @@ looks like while that happens.
 
 | File | What it is |
 |---|---|
-| `scenario.json` | **The canonical example: one compact scenario record.** It validates against [`templates/scenario.schema.json`](../templates/scenario.schema.json) and the card builder renders it. Field by field: `title` is the question the test answers (does moving the coupon field behind an “İndirim kodum var” link increase orders?); `problem` names the obstacle on the cart page (an open coupon box sends shoppers without a code off to look for one); `mechanism` is the one sentence on why B changes that; `variable` is the coupon field's visibility; `variants` holds A (the open box) and B (the field behind the link), with `difference: "change"`. `source` is `adapted`, with `adapted_from` naming the archive scenario (“Açık kupon kodu alanı sepet terkini artırır mı?”), whose `Değişken` and `Fark` the record keeps. `primary_kpi` is “Dönüşüm Oranı (CR)” over visitors assigned when they reach the cart page (the same trigger in both arms), direction increase: the change sits before checkout, so it affects reaching checkout and a checkout-based completion rate would hide that. Revenue is deliberately not the primary: hiding a coupon field can raise revenue by making code holders pay full price, and that harm must never read as a win (`knowledge/methodology.md` → KPI rules). `guardrail` is that harm: “Kuponlu Sipariş Oranı” per assigned visitor, must not decrease (a per-order coupon rate would fall mechanically when B adds orders without codes). `invariants` lists the three functions that work identically in both arms: the apply step for a valid code, the discount calculation and totals, and the message for an invalid or expired code. `warnings` holds one `accessibility` item for the new link with its criteria: keyboard reachable, a screen-reader name “İndirim kodum var”, it opens the field and moves focus there, a touch target of at least 44×44 pt, text contrast of at least 4.5:1. `evidence` is `archive` (shown as “Arşiv örüntüsü”), with the note that it rests on an archive pattern and wasn't tested on this page. `priority` holds the tier (medium), its four `inputs` (evidence `archive_or_research` 1, `main_path` 1, `noticeable` 1, `effort` low 2: a score of 5, the medium band) and a one-sentence rationale naming what they rest on without claiming the idea worked anywhere (the chat tag line prints the tier only). `review` holds the two PASS stamps, each with the fingerprint of what was reviewed (Reproducing the card, below). Optional context (`stage`, `lang`, `device`, `market`, `objection`) sits alongside; A variable tested before would be stated in chat from the user's `.abtest-history.md`; the record carries no history field. `detail` is optional and absent here: it holds the three boxes (`test_items`, `kpis`, `dont_items`, 3 to 6 items each; exactly five is the archive's rule and applies to `knowledge/scenarios/` only) and is filled only when the user asks for the detailed view. None of these fields is printed on the card: the card shows only the title, the two mockups, the ring and its label ([`mockup-style.md`](../knowledge/mockup-style.md) → The card), and `detail`, when present, is given in chat. Its `card` object is the visual layer: the two mockup bodies, the difference type (`change`), the device frame (`phone-web`), the address-bar domain and the mockup basis (`representative`, metadata for the mockup reviewer, never printed). On a native app screen (`phone`), `card.bottom_nav` lists the real tab labels and `card.bottom_nav_active` marks the active one. |
+| `scenario.json` | **The canonical example: one compact scenario record.** It validates against [`templates/scenario.schema.json`](../templates/scenario.schema.json) and the card builder renders it. Field by field: `title` is the question the test answers (does moving the coupon field behind an “İndirim kodum var” link increase orders?); `problem` names the obstacle on the cart page (an open coupon box sends shoppers without a code off to look for one); `mechanism` is the one sentence on why B changes that; `variable` is the coupon field's visibility; `variants` holds A (the open box) and B (the field behind the link), with `difference: "change"`. `source` is `adapted`, with `adapted_from` naming the archive scenario (“Açık kupon kodu alanı sepet terkini artırır mı?”), whose `Değişken` and `Fark` the record keeps. `primary_kpi` is “Dönüşüm Oranı (CR)” over visitors assigned when they reach the cart page (the same trigger in both arms), direction increase: the change sits before checkout, so it affects reaching checkout and a checkout-based completion rate would hide that. Revenue is deliberately not the primary: hiding a coupon field can raise revenue by making code holders pay full price, and that harm must never read as a win (`knowledge/methodology.md` → KPI rules). `guardrail` is that harm: “Kuponlu Sipariş Oranı” per assigned visitor, must not decrease (a per-order coupon rate would fall mechanically when B adds orders without codes). `invariants` lists the three functions that work identically in both arms: the apply step for a valid code, the discount calculation and totals, and the message for an invalid or expired code. `warnings` holds one `accessibility` item for the new link with its criteria: keyboard reachable, a screen-reader name “İndirim kodum var”, it opens the field and moves focus there, a touch target of at least 44×44 pt, text contrast of at least 4.5:1. `evidence` is `archive` (shown as “Arşiv örüntüsü”), with the note that it rests on an archive pattern and wasn't tested on this page. `priority` holds the tier (medium), its five `inputs` (evidence `archive_or_research` 1, `impact` persuasive 1, `main_path` 1, `noticeable` 1, `effort` low 2: a score of 6 out of 9, the medium band) and a one-sentence rationale naming what they rest on without claiming the idea worked anywhere (the chat tag line prints the tier with its score, "Öncelik: Orta (6/9)"). `review` holds the two PASS stamps, each with the fingerprint of what was reviewed (Reproducing the card, below). Optional context (`stage`, `lang`, `device`, `market`, `objection`) sits alongside; A variable tested before would be stated in chat from the user's `.abtest-history.md`; the record carries no history field. `detail` is optional and absent here: it holds the three boxes (`test_items`, `kpis`, `dont_items`, 3 to 6 items each; exactly five is the archive's rule and applies to `knowledge/scenarios/` only) and is filled only when the user asks for the detailed view. None of these fields is printed on the card: the card shows only the title, the two mockups, the ring and its label ([`mockup-style.md`](../knowledge/mockup-style.md) → The card), and `detail`, when present, is given in chat. Its `card` object is the visual layer: the two mockup bodies, the difference type (`change`), the device frame (`phone-web`), the address-bar domain and the mockup basis (`representative`, metadata for the mockup reviewer, never printed). On a native app screen (`phone`), `card.bottom_nav` lists the real tab labels and `card.bottom_nav_active` marks the active one. |
 | The other sample records | Each a real scenario on a different screen type (a desktop product page, a native app screen with its tab bar, a form or SaaS page), built through the same pipeline as `scenario.json`: validator, scenario-critic, draft, mockup-reviewer, final. |
 | [`../docs/demo/`](../docs/demo/) | The sample cards: each record's final card and its PNG. One of them is served as the zero-install demo. |
-| [`audit-example.md`](audit-example.md) | A flawed test plan audited against the checklist: isolation, denominators, guardrails, segments named in advance, and the one line a plan's statistical claims get. |
+| [`audit-example.md`](audit-example.md) | A flawed test plan audited against the checklist: the severity table and decision first, then isolation, denominators, guardrails, segments named in advance, the one line a plan's statistical claims get, the coverage line, the fixed plan and the card offer. |
+| [`audit-example.tr.md`](audit-example.tr.md) | The same audit flow on a Turkish plan, in Turkish. |
 
 ## Upgrading a record from 3.1
 
@@ -21,10 +22,19 @@ A card is built in two passes, and the final one only builds when both reviews
 have stamped the record ([`knowledge/methodology.md`](../knowledge/methodology.md) → Quality gates).
 
 ```bash
-# 1. Validate the record and print its fingerprint (refuses on any error)
-python3 scripts/validate_scenario_json.py --fingerprint examples/scenario.json
+# 0. A new record starts from a skeleton: what the validator decides from these
+#    facts is filled in, the rest is a ⟦hint⟧ to replace (scenario.json is complete)
+python3 scripts/new_record.py --device phone-web --difference change \
+  --page cart-checkout --kpi "Ziyaretçi Başına Gelir (RPV)" --element link --out /tmp/new.json
 
-# 2. Draft: needs the scenario-critic stamp matching that fingerprint.
+# 1. Validate the record and print the chat lines it fixes (refuses on any error)
+python3 scripts/validate_scenario_json.py --chat examples/scenario.json
+
+# 1b. Critic stamp (scenario-critic only, after its PASS): the JSON for
+#     review.scenario_critic
+python3 scripts/build_card.py --critic-stamp examples/scenario.json
+
+# 2. Draft: needs the scenario-critic stamp matching the record.
 #    Writes the card with a "Preview · not visually checked" banner and the inside-ring
 #    manifest next to it (<out>.manifest.json); the draft has no fingerprint
 python3 scripts/build_card.py --draft \
@@ -54,13 +64,22 @@ python3 scripts/build_card.py \
 ```
 
 In a session the stamps are written by the pipeline: scenario-critic's PASS
-carries the fingerprint from step 1 into `review.scenario_critic`, and
+carries the JSON from step 1b into `review.scenario_critic`, and
 mockup-reviewer, after its PASS on the draft and its manifest, runs step 3
-and the JSON it prints goes into `review.mockup_reviewer`. Edit the record after
-that and step 1 prints a different fingerprint, so the final build refuses
-until the record is reviewed again; edit only the mockup and the critic's stamp
-still holds, but the mockup reviewer's no longer matches the card. A refused
-build names the gate that failed and leaves an existing `--out` file as it was.
+and the JSON it prints goes into `review.mockup_reviewer`. The critic reviews
+once: a wording fix in one of the small-fix fields (title, problem, mechanism,
+a denominator's phrasing, a note, a warning, an invariant, the must-be-true
+lines) keeps its stamp; any other edit to the record changes it, so the final
+build refuses until the record is reviewed again. Edit only the mockup and the
+critic's stamp still holds, but the mockup reviewer's no longer matches the
+card. A refused build names the gate that failed and leaves an existing `--out`
+file as it was.
+
+Three more modes: `--quick` in place of `--draft` builds fast mode's quick draft
+(no stamp needed, labelled "Hızlı taslak · incelenmedi", never stamped or
+final); `--share` on step 4 also writes `<card>.share.html` and its PNG at
+1200 × 630; `build_card.py --overview /tmp/overview.html /tmp/card.html` writes
+one page of a turn's delivered cards.
 
 Validating the same file:
 

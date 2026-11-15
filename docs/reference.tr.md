@@ -2,7 +2,7 @@
 
 **Dil:** [English](reference.md) · [Türkçe](reference.tr.md)
 
-[README](../README.tr.md) kısa turdur. Bu sayfa eskiden orada duran ayrıntının tamamını taşır: arşivin ne olduğu, bütün komutlar, örnek bir oturum, repodaki dosyalar, test hafızası, bağlayıcı kurallar ve kapsam. Kurulum kendi sayfasında: [kurulum](install.tr.md).
+[README](../README.tr.md) kısa turdur. Bu sayfa eskiden orada duran ayrıntının tamamını taşır: arşivin ne olduğu, bütün komutlar, örnek bir oturum, kart seçenekleri, kısa bir [sözlük](#sözlük), repodaki dosyalar, test hafızası, bağlayıcı kurallar ve kapsam. Kurulum ve eklentinin betiklerine bir kez izin vermek kendi sayfasında: [kurulum](install.tr.md).
 
 ## Bu ne
 
@@ -67,13 +67,15 @@ flowchart LR
 |---|---|
 | `/ab-test suggest`: “checkout sayfam için test öner” | Arşivden uyan senaryoları seçer, önceliğe göre sıralar, en iyi üçünü kısa kayıt olarak, her birini bir HTML kartla teslim eder |
 | `/ab-test design`: “buna test tasarla” (+ ekran görüntüsü, URL ya da kendi sayfanızın tarifi) | Sayfanız için aynı çerçevede yeni, tek-değişkenli bir senaryo tasarlar |
-| `/ab-test audit`: “bu doğru kurulmuş mu?” | Bir öneriyi veya varyant çiftini denetler: confound, vekil birincil metrik, uyuşmayan payda, eksik ya da tümleyen guardrail, erişilebilirlik, düzenlenen alan ve uyum kapıları, dark pattern, uygulanabilirlik |
+| `/ab-test audit`: “bu doğru kurulmuş mu?” | Bir öneriyi veya varyant çiftini denetler: confound, vekil birincil metrik, uyuşmayan payda, eksik ya da tümleyen guardrail, erişilebilirlik, düzenlenen alan ve uyum kapıları, dark pattern, uygulanabilirlik. Önem sırasına göre bir tablo ve tek satırlık kararla açılır, temiz bulduğu başlıkları adlandırır, kısa bir düzeltilmiş planla (yine tek değişken) ve onu karta çevirme teklifiyle biter |
 | “Bu anlamlı mı?” / “Kaç ziyaretçi lazım?” | Kapsam dışı (bkz. [Kapsam](#kapsam)): test aracınızın kendi raporunu gösteren tek satır ve test planını denetleme teklifi |
 | “2. öneriyi detaylandır” / “explain proposal 2” | O önerinin üç kutusunu doldurur, sohbette gerekçesiyle birlikte düz metin olarak verir; kart olduğu gibi kalır |
 | `/ab-test card`: “bunu karta çevir” | Senaryoyu tek dosyalık 16:9 bir HTML kart olarak render eder: testin sorusu ve değişikliği halkayla işaretlenip adlandırılmış Variant A/B mockup’ları |
-| Yalnızca `/ab-test` | Kısa bir menü gösterir: önce tek önerilen başlangıç (ekran görüntüsü paylaşın ya da sayfanızı anlatın), sonra birer örnekle diğer üç komut ve görsel kontrolün kurulu olup olmadığını söyleyen tek satır. Soru sormaz |
+| “hızlı taslak” / “quick draft” ya da menüden `fast` | Aynı kayıtlar ve kartlar dakikalar içinde gelir; doğrulayıcıdan geçmiştir ama henüz incelenmemiştir, kartta ve sohbette “Hızlı taslak · incelenmedi” yazar. “Tamamla” derseniz iki inceleme yapılır ve nihai kartlar onların yerini alır |
+| “paylaşım görseli yap”, “bütün kartlar tek sayfada” | Nihai kartın sohbet uygulamaları ve sosyal paylaşımlar için 1200 × 630 sürümü ya da turun kartlarını tek sayfada toplayan bir genel bakış ([Kartlar](#kartlar)) |
+| Yalnızca `/ab-test` | Kısa bir menü gösterir: önce tek önerilen başlangıç (ekran görüntüsü paylaşın ya da sayfanızı anlatın), sonra birer örnekle diğer komutlar (hızlı kip dahil) ve görsel kontrolün kurulu olup olmadığını söyleyen tek satır. Soru sormaz |
 
-Bir sayfa paylaştığınızda (ekran görüntüsü, URL ya da kendi sayfanızın tarifi), router baştan yalnızca tek bir çoktan seçmeli soru sorar: hangi problemi çözdüğünüz. Senaryo üretmeden önce başka hiçbir şey sormaz; trafik, araç veya kurulum sorusu yok. Mesajınız problemi zaten söylüyor ya da testi adıyla istiyorsa bu soru atlanır. Ekran görüntüsünde göze çarpan bir sorun alanı varsa önce onun kartları gelir, soru kartlardan sonra sorulur. Örneklem büyüklüğü, süre ya da anlamlılık düzeyi hiçbir zaman söylenmez; yalnızca temel dönüşüm oranını ve ziyaretçi sayısını siz kendiniz verirseniz bir betik yakalanabilecek etkinin kaba aralığını ve bir karar bandı yazar, sayfa bu trafikle test edilemiyorsa bunu söyler ve kart yerine alternatif önerir. Marka kaynağı akışı hiçbir zaman durdurmaz: ekran görüntüsü veya sayfa paylaştıysanız marka renkleri doğrudan oradan alınır; yoksa nötr palet kullanılır, sonradan gönderdiğiniz bir marka kılavuzu onun yerini alır. Not düşülmez, soru sorulmaz, cevap beklenmez. Bir tur varsayılan olarak en fazla üç güçlü öneri üretir (`suggest` ya da `design` fark etmez) ve her biri hemen kendi HTML kartı olur; sohbette öneri başına yalnızca başlık, tek etiket satırı (öncelik, kaynak, kanıt), neden işe yarayabileceğini söyleyen kısa bir `Neden:` satırı ve kart dosyası kalır, kayıt ikinci kez yazılmaz. Liste asla şişirilmez: tek güçlü senaryo tam bir yanıttır, sayıyı tamamlamak için zayıf aday eklenmez. Açıkça istediğiniz bir test her zaman üretilir; zayıfsa sohbetteki tek satır zayıflığını söyler ve daha güçlü alternatifin adını verir. Üçten fazla güçlü aday varsa en iyi üçü üretilir, kalanların sayısı tek satırla teklif edilir. Bir tur en fazla bir soru sorar; gereken diğer bilgiler varsayım olarak belirtilir ve sonraki turda sorulur.
+Bir sayfa paylaştığınızda (ekran görüntüsü, URL ya da kendi sayfanızın tarifi), router baştan yalnızca tek bir çoktan seçmeli soru sorar: hangi problemi çözdüğünüz. Senaryo üretmeden önce başka hiçbir şey sormaz; trafik, araç veya kurulum sorusu yok. Mesajınız problemi zaten söylüyor ya da testi adıyla istiyorsa bu soru atlanır. Ekran görüntüsünde göze çarpan bir sorun alanı varsa önce onun kartları gelir, soru kartlardan sonra sorulur. Örneklem büyüklüğü, süre ya da anlamlılık düzeyi hiçbir zaman söylenmez; yalnızca temel dönüşüm oranını ve ziyaretçi sayısını siz kendiniz verirseniz bir betik yakalanabilecek etkinin kaba aralığını ve bir karar bandı yazar, sayfa bu trafikle test edilemiyorsa bunu söyler ve kart yerine alternatif önerir. Marka kaynağı akışı hiçbir zaman durdurmaz: ekran görüntüsü veya sayfa paylaştıysanız marka renkleri doğrudan oradan alınır; yoksa nötr palet kullanılır, sonradan gönderdiğiniz bir marka kılavuzu onun yerini alır. Not düşülmez, soru sorulmaz, cevap beklenmez. Bir tur varsayılan olarak en fazla üç güçlü öneri üretir (`suggest` ya da `design` fark etmez) ve her biri hemen kendi HTML kartı olur; sohbette öneri başına yalnızca başlık, tek etiket satırı (9 üzerinden puanıyla öncelik, kaynak, kanıt), neden işe yarayabileceğini söyleyen kısa bir `Neden:` satırı, B’nin kazanması için neyin doğru olması gerektiğini söyleyen `Doğru olmalı:` satırı, testten önce ucuz bir yoklamayı söyleyen `Önce yokla:` satırı ve kart dosyası kalır, kayıt ikinci kez yazılmaz. Bu satırları kayıttan bir betik basar, kayıttan kayamazlar. Liste asla şişirilmez: tek güçlü senaryo tam bir yanıttır, sayıyı tamamlamak için zayıf aday eklenmez. Açıkça istediğiniz bir test her zaman üretilir; zayıfsa sohbetteki tek satır zayıflığını söyler ve daha güçlü alternatifin adını verir. Üçten fazla güçlü aday varsa en iyi üçü üretilir, kalanların sayısı tek satırla teklif edilir. Bir tur en fazla bir soru sorar; gereken diğer bilgiler varsayım olarak belirtilir ve sonraki turda sorulur.
 
 ## Bir oturum nasıl görünür
 
@@ -83,7 +85,7 @@ Uçtan uca bir ürün sayfası örneği:
 
 **Tek soru sorar:** hangi problemi çözmeye çalıştığınıza dair tek bir çoktan seçmeli soru (kullanıcılar akışa giriyor ama bitirmiyor / hiç başlamıyor / geliyor ama niteliksiz dönüşüyor / belirli bir problemim yok, sen bak). Trafik, araç veya kurulum sorusu yok; senaryo üretmek için hiçbiri gerekli değil.
 
-**Doğrudan** en fazla üç öneri döndürür, “hangisini açayım” gibi bir gidiş-geliş olmadan. Her biri senaryo JSON’unda duran kısa bir kayıttır (mekanizma, değişken, paydasıyla birincil KPI, “bozulmamalı” biçiminde guardrail) ve yalnızca karşılaştırmayı gösteren, kendi kendine yeten bir HTML karttır: soru, yan yana Variant A ve B, halkayla işaretlenip adlandırılmış değişiklik. Sohbette yalnızca bir başlık, tek cümlelik bir `Neden:` satırı ve öncelik, kaynak ve kanıt etiketini taşıyan tek bir etiket satırı kalır: derlenmiş bir arşiv örüntüsüne dayanıyorsa `Kanıt: arşiv örüntüsü` (kazanmış bir test değil, denemeye değer bir fikir), bir sezgiyse `Kanıt: sezgi`, süslenmeden, olduğu gibi söylenir. Variant A sayfanın ekrandaki hâlidir, asla yeniden tasarlanmaz. Tek güçlü senaryo tam bir yanıttır; kota doldurmak için zayıf aday eklenmez. Üçten fazla güçlü aday mı var? En iyi üçünü üretir, gerisini teklif eder. Birinin ayrıntısını isterseniz (“2’yi detaylandır”) üç kutusu ve düz metin bir açıklama sohbette gelir.
+**Doğrudan** en fazla üç öneri döndürür, “hangisini açayım” gibi bir gidiş-geliş olmadan. Her biri senaryo JSON’unda duran kısa bir kayıttır (mekanizma, değişken, paydasıyla birincil KPI, “bozulmamalı” biçiminde guardrail) ve yalnızca karşılaştırmayı gösteren, kendi kendine yeten bir HTML karttır: soru, yan yana Variant A ve B, halkayla işaretlenip adlandırılmış değişiklik. Sohbette yalnızca bir başlık, öncelik ve puanı (“Öncelik: Orta (6/9)”), kaynak ve kanıt etiketini taşıyan tek bir etiket satırı, tek cümlelik bir `Neden:` satırı ve iki “doğru olmalı” satırı kalır: derlenmiş bir arşiv örüntüsüne dayanıyorsa `Kanıt: arşiv örüntüsü` (kazanmış bir test değil, denemeye değer bir fikir), bir sezgiyse `Kanıt: sezgi`, süslenmeden, olduğu gibi söylenir. Variant A sayfanın ekrandaki hâlidir, asla yeniden tasarlanmaz. Tek güçlü senaryo tam bir yanıttır; kota doldurmak için zayıf aday eklenmez. Üçten fazla güçlü aday mı var? En iyi üçünü üretir, gerisini teklif eder. Birinin ayrıntısını isterseniz (“2’yi detaylandır”) üç kutusu ve düz metin bir açıklama sohbette gelir.
 
 <p align="center">
   <img src="../assets/example-card.png" alt="Örnek senaryo kartı: kupon alanını “İndirim kodum var” bağlantısının arkasına almak geliri artırır mı? Üstte soru, altında yan yana Variant A ve Variant B, değişen öğe halkayla işaretli ve etiketli." width="900">
@@ -91,26 +93,35 @@ Uçtan uca bir ürün sayfası örneği:
 
 <p align="center"><sub>Bir arşiv senaryosundan uyarlanmış kayıttan üretilmiş kart: kurgusal ürün ve mağaza, nötr palet (sayfa ya da marka kılavuzu paylaşılmadı). `ab-test card`’ın her senaryo için render ettiği şey budur, elle yapılmış bir mockup değil. <a href="https://ali-demirbas.github.io/ab-test-playbook/">canlı demo</a> · kaynak <a href="../examples/">examples/</a>’da</sub></p>
 
-**Her senaryo şunlarla birlikte gelir:** kaydı (senaryo JSON’unda) ve tasarlanan bir test için kartlardan sonra sohbete bir kez yazılan kısa kurulum notları: hedef kitle, maruz kalma anı (kimin teste girmiş sayılacağı; ör. değişiklik bir akordeonun içindeyse yalnızca onu açanlar), dışlamalar ve eşzamanlı testler, uyum onayı ya da B’nin erişilebilirlik kontrolü gibi yayın öncesi kapılar. Birincil KPI ve guardrail orada tekrarlanmaz; bir araç belirttiyseniz notlar onun dilini kullanır. Bilmediği bir şey “sizden gelmesi gerekiyor” diye yazılır, asla tahmin edilmez. Kartlardan sonra ilk öneri için tek sayfalık bir karar özeti gelir: soru, neden şimdi, ne değişiyor, KPI ve guardrail, B kazanır, kaybeder ya da belirgin fark çıkmazsa ne yapılacağı. Ardından kartın kendisi gelir (paylaştığınız ekran görüntüsünden alınan marka renkleri; yoksa nötr palet).
+**Her senaryo şunlarla birlikte gelir:** kaydı (senaryo JSON’unda) ve tasarlanan bir test için kartlardan sonra sohbete bir kez yazılan kısa kurulum notları: hedef kitle, maruz kalma anı (kimin teste girmiş sayılacağı; ör. değişiklik bir akordeonun içindeyse yalnızca onu açanlar), dışlamalar ve eşzamanlı testler, uyum onayı ya da B’nin erişilebilirlik kontrolü gibi yayın öncesi kapılar. Birincil KPI ve guardrail orada tekrarlanmaz; bir araç belirttiyseniz notlar onun dilini kullanır. Bilmediği bir şey “sizden gelmesi gerekiyor” diye yazılır, asla tahmin edilmez. Kartlardan sonra ilk öneri için kısa bir karar özeti gelir: neden şimdi ve B önde çıkarsa, geride kalırsa ya da belirgin fark çıkmazsa karar sahibinin seçenekleri (diğerlerinin özeti istenirse). Ardından kartın kendisi gelir (paylaştığınız ekran görüntüsünden alınan marka renkleri; yoksa nötr palet).
 
 **Test, test aracınızda bitti** → nasıl gittiğini aracın kendi raporu söyler. `.abtest-history.md` dosyasına bir satır ekleyin (tarih, sayfa, tek değişken, aracınızın raporladığı sonuç, akılda tutulacak örüntü); sıradaki öneri, tasarım ya da denetim bunu okur: zaten kaybetmiş bir değişken gerekçesiz yeniden önerilmez, küçük testlerin art arda fark üretmediği bir sayfaya daha yapısal bir fikir gelir.
+
+## Kartlar
+
+Her kart 1600 × 900’dür: üstte soru, altında yan yana A ve B, değişiklik halkalı. Mobil uygulama ekranı, mobil web sayfası ve masaüstü sayfa kendi çerçevesini alır; masaüstü sayfada logo şeridi, eski fiyatı üstü çizili büyük fiyat, yıldız puanı, sütunlar, sağa yaslı menü ve “ilk ekranın sonu” çizgisi çizilebilir. Koyu bir sunum için kart `card.theme: "dark"` alır (zemin, başlık ve haplar koyulaşır, mockup’lar sayfanın renklerini korur). İstenirse nihai kart sohbet uygulamaları ve sosyal paylaşımlar için 1200 × 630 bir paylaşım görseli olarak da gelir (`--share`), turun kartları da tek bir genel bakış sayfasında toplanır (`--overview`). Koşullu kartta amber renkli “KOŞULLU” bandı, hızlı taslakta “Hızlı taslak · incelenmedi” bandı vardır; ikisine de nihai denmez.
 
 ## İçinde ne var
 
 ```
 skills/          ab-test (router) + suggest / design / audit / card
-agents/          scenario-critic: senaryo render edilmeden önce metodolojik denetim
-                 mockup-reviewer: iki mockup’ın tam olarak tek bir şeyde farklılaştığını kontrol eder
-knowledge/       methodology.md · mockup-style.md · kpi-glossary.md (105 kanonik KPI adı, her biri paydasıyla)
-                 scenarios/: 13 aşama dosyasında derlenmiş senaryolar (TR): ana sayfa ve landing, arama ve filtreleme,
+agents/          scenario-critic: senaryo render edilmeden önce metodolojik denetim, tek tur
+                 mockup-reviewer: iki mockup’ın tam olarak tek bir şeyde farklılaştığını kontrol eder (ikisi de Sonnet’te çalışır)
+knowledge/       methodology.md · mockup-style.md · kpi-glossary.md (kanonik KPI adları, her biri paydası ve İngilizce adıyla)
+                 scenarios/: 13 aşama dosyasında derlenmiş 217 senaryo, Türkçe yazılmış, İngilizce başlık, etiket satırı ve
+                 İngilizce gövdeyle (FORMAT.md): ana sayfa ve landing, arama ve filtreleme,
                  kategori, ürün detay, sepet ve ödeme, teşekkür sayfası, panel, form ve kayıt, fiyatlandırma,
                  mobil uygulama, SaaS/B2B, arayüz öğeleri, finans, sigorta ve bireysel emeklilik
 scripts/         validate_scenarios.py: senaryo arşivi için format kontrolü
                  build_card.py: deterministik kart render’ı; şablonu doldurur, metni kaçırır, kendini drift’e karşı doğrular;
-                 önce A/B fark manifestli bir taslak, nihai kartı ise yalnızca iki inceleme damgasıyla üretir
-                 validate_scenario_json.py: bir senaryoyu şemaya ve kapı kurallarına göre kontrol eder; --fingerprint denetçi damgası için
+                 önce A/B fark manifestli bir taslak, nihai kartı ise yalnızca iki inceleme damgasıyla üretir; --critic-stamp,
+                 --quick (hızlı kip), --share (1200 × 630) ve --overview
+                 new_record.py: bir senaryonun başladığı iskelet kaydı, doğrulayıcının karar verdiği alanlar dolu olarak basar
+                 validate_scenario_json.py: bir senaryoyu şemaya ve kapı kurallarına göre kontrol eder; --chat kaydın belirlediği
+                 sohbet satırlarını, --fingerprint kaydın tamamının özetini basar
                  validate_input.py: dosya olarak verdiğiniz girdideki talimat-biçimli metni ve script payload’larını işaretler
-                 read_section.py: bilgi dosyasının tek bölümünü ya da arşivin tek bloğunu yazdırır, beceriler awk ve sed istemez
+                 read_section.py: bilgi dosyasının tek bölümünü ya da arşivin tek bloğunu yazdırır (--lang tr|en), beceriler awk ve
+                 sed istemez
                  validate.sh: repo tutarlılığı; frontmatter, iç bağlantılar, plugin-root referansları, kural atıfları
                  check_frontmatter.py: her skill ve agent frontmatter’ını kurulum araçlarının okuduğu gibi ayrıştırır
                  build_gemini.py · build_llms_full.py: Gemini CLI eklentisini ve docs/llms-full.txt dosyasını üretir
@@ -124,8 +135,9 @@ tests/           validator’lar ve kart üreticisi için birim testleri
 evals/           manuel kabul testleri: üç temel akış (suggest, kupon zararı örneğiyle design, audit), ortak kurallar (tur başına tek soru,
                  ret, enjeksiyon, kapsam dışı sonuç isteği, istek üzerine ayrıntı, iki incelemeden sonra teslim, test edilmiş gibi sunulmayan arşiv
                  kanıtı), kart gerçekçiliği ve kapılar (halkanın içindeki ikinci değişiklik, erişilebilirlik ölçütleri), düzenlemeye tabi
-                 sigorta/emeklilik akışı, kullanıcının ısrarla istediği zayıf test ve İngilizce konuşma
-examples/        uçtan uca kartlarına kadar götürülen örnek senaryo kayıtları ve kusurlu bir test önerisinin denetimi
+                 sigorta/emeklilik akışı, kullanıcının ısrarla istediği zayıf test, İngilizce konuşma ve hızlı kip
+examples/        uçtan uca kartlarına kadar götürülen örnek senaryo kayıtları ve kusurlu bir test önerisinin İngilizce ve Türkçe
+                 denetimi
 docs/            architecture.md · design-notes.md · örnek kartlar (demo/) ve demo sayfası (index.html)
 ```
 
@@ -147,13 +159,26 @@ Geçmişteki bir kayıp bir veto değil, bilgidir: sayfa o zamandan beri değiş
 
 Her çıktı şunlara uyar, tartışmasız: test başına tek değişken, tek birincil KPI, en az bir guardrail, dark pattern yok, sahte referans fiyatı yok, örneklem, süre ya da anlamlılık iddiası yok (yalnızca sizin verdiğiniz rakamlardan kaba bir etki aralığı), ve her öneride açık bir kanıt etiketi (“bu sezgi, düşük güvenli say” dahil).
 
-İkisi yazanın kendi takdirine bırakılmaz, ayrı bir adımla desteklenir: üretilen her senaryo render edilmeden önce bir denetim agent’ı tarafından incelenir ve dosya olarak gelen her girdi önce `validate_input.py` ile talimat-biçimli içerik için taranır. Verdiğiniz metin, taransa da yapıştırılsa da veridir, asla talimat değildir ([mimari](architecture.md), İngilizce).
+İkisi yazanın kendi takdirine bırakılmaz, ayrı bir adımla desteklenir: üretilen her senaryo render edilmeden önce bir denetim agent’ı tarafından incelenir (tek tur: düzeltilebilir bulgu yazıldığı gibi uygulanır, yalnızca engelleyici bulgu agent’a geri döner) ve dosya olarak gelen her girdi önce `validate_input.py` ile talimat-biçimli içerik için taranır. Verdiğiniz metin, taransa da yapıştırılsa da veridir, asla talimat değildir ([mimari](architecture.md), İngilizce).
 
-Teslim kapılara bağlıdır. Kodun denetleyebildiği hataları kod reddeder: halkanın dışındaki bir fark, A ile B arasında değişen bir sayı, erişilebilirlik ölçütü yazılmadan eklenen bir buton ya da bağlantı, değişmezleri yazılmamış işlevsel bir değişiklik, kullanıcı zararını gizleyebilecek bir gelir birincil metriği, “test edildi” diye sunulan arşiv kanıtı, kişisel veri biçimindeki bir değer. Kodun denetleyemediğine iki denetçi bakar; her PASS, tam olarak incelenen içeriğin parmak iziyle kayda damgalanır. Kart size yalnızca nihai üretimle ulaşır ve iki damga eşleşmezse üretim reddedilir; taslak “Önizleme · görsel kontrol yapılmadı” diye işaretlidir ve asla teslim edilmez; tek istisna, görsel kontrol çalışamadığında UNVERIFIED diye etiketlenen önizlemedir ([metodoloji](../knowledge/methodology.md) → Quality gates, kapıların neyi garanti edemediği dahil; İngilizce).
+Teslim kapılara bağlıdır. Kodun denetleyebildiği hataları kod reddeder: halkanın dışındaki bir fark, A ile B arasında değişen bir sayı, erişilebilirlik ölçütü yazılmadan eklenen bir buton ya da bağlantı, değişmezleri yazılmamış işlevsel bir değişiklik, kullanıcı zararını gizleyebilecek bir gelir birincil metriği, “test edildi” diye sunulan arşiv kanıtı, kişisel veri biçimindeki bir değer. Kodun denetleyemediğine iki denetçi bakar; her PASS, incelenen içeriğin parmak iziyle kayda damgalanır (eleştirmeninki, düzeltilebilir bulgularının hâlâ değiştirebileceği kısa bir metin alanları listesini dışarıda bırakır, her üretim de kaydın tamamını yeniden doğrular). Kart size yalnızca nihai üretimle ulaşır ve iki damga eşleşmezse üretim reddedilir; taslak “Önizleme · görsel kontrol yapılmadı” diye işaretlidir ve asla teslim edilmez; istisnalar, görsel kontrol çalışamadığında UNVERIFIED diye etiketlenen önizleme ve sizin istediğiniz hızlı taslaktır ([metodoloji](../knowledge/methodology.md) → Quality gates, kapıların neyi garanti edemediği dahil; İngilizce).
 
 ## Dil
 
-Senaryo içeriği Türkçedir (arşivin ana dili). Skill’ler sizin kullandığınız dilde yanıt verir; metrik kısaltmaları (CR, AOV, LCP, SQL) olduğu gibi kalır.
+Skill’ler sizin kullandığınız dilde yanıt verir, kartlar da o dilde gelir; metrik kısaltmaları (CR, AOV, LCP, SQL) olduğu gibi kalır. Arşiv iki dilli tek bir kaynaktır: her senaryo, örüntülerin toplandığı dil olan Türkçeyle yazılır, İngilizce bir başlık ve Türkçe kutuları madde madde izleyen İngilizce bir gövde taşır. İngilizce bir konuşma İngilizce gövdeyi okur (henüz gövdesi olmayan senaryoda İngilizce başlığı ve uyarlanan Türkçe metni), Türkçe konuşma Türkçe metni.
+
+## Sözlük
+
+| Terim | Burada ne demek |
+|---|---|
+| Varyant | Testteki sayfa sürümlerinden biri: A bugünkü sayfanız, B tek değişikliği taşıyan sürüm |
+| Tek değişken | B, A’dan yalnızca bir şeyde ayrılır; böylece sonuç o değişikliğe bağlanabilir |
+| Birincil KPI | Testin kararını veren tek metrik: başlığın sorduğu sonuç, iki varyantta da aynı kişiler üzerinden sayılır (ör. teste atanan ziyaretçi başına dönüşüm oranı) |
+| Guardrail | Birincil metrik iyileşirken kötüleşmemesi gereken metrik (iade, marj, hata) ya da erişilebilirlik gibi geçti/kaldı kontrolü |
+| Maruz kalma (exposure) | Testi görmüş sayılan kişiler: akordeonun içindeki ya da ilk ekranın altındaki bir öğede yalnızca ona ulaşanlar, iki varyantta aynı noktada kaydedilir |
+| MDE ve uygulanabilirlik | En küçük saptanabilir etki, trafiğinizin yakalayabileceği en küçük göreli değişim. Yalnızca temel oranı ve ziyaretçi sayısını siz verirseniz bir betik kaba bir aralık ve küçük değişikliklerin mi yoksa yalnızca cesur değişikliklerin mi saptanabileceğini yazar; başka hiçbir şey hesaplanmaz |
+| Eleştirmen (critic) | Kart çizilmeden önce her test planını zorlayan inceleme ajanı (scenario-critic); ikincisi, mockup-reviewer, çizilen kartı kontrol eder |
+| Kart | Tek bir testin tek dosyalık HTML resmi: soru, yan yana A ve B, halkalı değişiklik. İki incelemeden sonra nihai olur |
 
 ## Kapsam
 
