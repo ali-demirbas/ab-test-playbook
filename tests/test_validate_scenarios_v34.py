@@ -105,9 +105,22 @@ class TestHead(unittest.TestCase):
             + DEFAULT_TAG.replace("Etiket", "EN: Is this it?\n\nEtiket"))
         self.assertTrue(meta_errors(text))
 
-    def test_en_variable_is_optional(self):
-        text = make_scenario(en_line="EN: Is this a valid scenario title?\n\nEN-Variable: Button color")
-        self.assertEqual(meta_errors(text), [])
+    def test_en_variable_is_required(self):
+        errors = meta_errors(make_scenario(en_variable=None))
+        self.assertTrue(any("EN-Variable" in e for e in errors), errors)
+
+    def test_english_body_is_required(self):
+        errors = meta_errors(make_scenario(en_body=False))
+        self.assertTrue(any("İngilizce gövde yok" in e and "### EN" in e for e in errors), errors)
+        errors = meta_errors(make_scenario(en_body=False, en_variable=None))
+        self.assertTrue(any("İngilizce gövde yok" in e and "EN-Variable" in e for e in errors), errors)
+
+    def test_every_archive_block_has_an_english_body(self):
+        for name in vs.archive_files():
+            with open(os.path.join(vs.SCENARIO_DIR, name), encoding="utf-8") as fh:
+                for title, body in vs.parse_scenarios(fh.read()):
+                    with self.subTest(block=title[:40]):
+                        self.assertIsNotNone(vs.split_en_body(body)[1])
 
 
 class TestEnglishBody(unittest.TestCase):
@@ -121,13 +134,15 @@ class TestEnglishBody(unittest.TestCase):
         self.assertIsNotNone(vs.split_en_body(body)[1])
 
     def test_format_example_matches_its_archive_block(self):
-        """The example is cc-010 with an English body; its Turkish part is the archive's."""
+        """The example is cc-010 verbatim: head, Turkish body and English body."""
         title, body = first(format_example())
-        tr_part = vs.split_en_body(body)[0].strip()
         with open(os.path.join(ROOT, "knowledge", "scenarios", "cart-checkout.md"), encoding="utf-8") as fh:
             blocks = dict(vs.parse_scenarios(fh.read()))
         archive = re.sub(r"\n+---\s*$", "", blocks[title].strip())
-        self.assertEqual(tr_part.replace("\n\nEN-Variable: Free-shipping threshold amount", ""), archive)
+        self.assertIn("id=cc-010 ", archive)
+        self.assertIsNotNone(vs.split_en_body(archive)[1])
+        self.maxDiff = None
+        self.assertEqual(body.strip(), archive)
 
     def test_format_example_cross_reference_resolves(self):
         meta = []
@@ -182,13 +197,19 @@ class TestEnglishBody(unittest.TestCase):
 class TestFreshnessNotes(unittest.TestCase):
     NOTE = "> **Güncellik notu (2026-11):** Platform kuralı değişti; yerine şunu test edin."
 
+    NOTE_EN = "> **Freshness note (2026-11):** The platform rule changed; test this instead."
+
     def test_dated_note_passes(self):
-        self.assertEqual(meta_errors(make_scenario() + "\n" + self.NOTE + "\n"), [])
+        self.assertEqual(meta_errors(make_scenario(notes=[self.NOTE], en_notes=[self.NOTE_EN])), [])
+
+    def test_note_is_translated(self):
+        errors = meta_errors(make_scenario(notes=[self.NOTE]))
+        self.assertTrue(any("Freshness note" in e for e in errors), errors)
 
     def test_note_needs_a_month(self):
         for bad in ("> **Güncellik notu:** Değişti.", "> **Güncellik notu (Kasım 2026):** Değişti."):
             with self.subTest(note=bad):
-                self.assertTrue(meta_errors(make_scenario() + "\n" + bad + "\n"))
+                self.assertTrue(meta_errors(make_scenario(notes=[bad], en_notes=[self.NOTE_EN])))
 
     def test_archive_uses_the_mechanism(self):
         """Item 39: the stale-ground blocks carry a dated note (autoplay, passkey, source

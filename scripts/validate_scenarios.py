@@ -41,9 +41,9 @@ Denetlenen kurallar (CLAUDE.md ve knowledge/methodology.md'den):
  16. Değişken satırının altında `Etiket: id=… · mercek=… · düzey=… · sektör=… ·
      pazar=… · emek=… · durum=… · tarih=YYYY-AA` satırı: anahtarlar bu sırada,
      değerler izinli listeden; id arşivde benzersiz (knowledge/scenarios/FORMAT.md).
- 17. Etiket satırının altında `EN: <English title>?` satırı; İngilizce başlık
-     arşivde benzersiz, Türkçeye özgü harf taşımaz. İsteğe bağlı `EN-Variable:`.
- 18. Varsa `### EN` sonrası İngilizce gövde: EN-Variable satırı, giriş paragrafı,
+ 17. Etiket satırının altında `EN: <English title>?` ve `EN-Variable: …` satırları;
+     İngilizce başlık arşivde benzersiz, ikisi de Türkçeye özgü harf taşımaz.
+ 18. Her blokta `### EN` sonrası İngilizce gövde (zorunlu): giriş paragrafı,
      Türkçe kutularla aynı sayıda maddeli What to test / KPIs to track / What not
      to do kutuları, sözlüğün English name sütunundan birincil KPI, “must not”
      guardrail, çevrilmiş notlar, İngilizce başlıkla çözülen atıflar.
@@ -365,8 +365,8 @@ def parse_variable_line(body):
 #   Değişken: … · Fark: …
 #   Etiket: id=cc-001 · mercek=… · düzey=… · sektör=… · pazar=… · emek=… · durum=… · tarih=YYYY-MM
 #   EN: <English title>
-#   EN-Variable: <English variable>        (isteğe bağlı; tam çeviriyle gelir)
-# Tam çeviri bloğun sonunda “### EN” satırından sonra gelir (FORMAT.md).
+#   EN-Variable: <English variable>
+# İngilizce gövde (zorunlu) bloğun sonunda “### EN” satırından sonra gelir (FORMAT.md).
 
 TAG_PREFIX = "Etiket:"
 EN_TITLE_PREFIX = "EN:"
@@ -521,7 +521,13 @@ def check_metadata(filename, title, body, glossary=None):
         m = FRESHNESS_NOTE.match(line)
         if m and not DATE_RE.match(m.group("date")):
             errors.append(f"{where}: güncellik notunun tarihi ‘{m.group('date')}’ geçersiz (YYYY-AA)")
-    if en_body is not None:
+    if en_body is None:
+        errors.append(f"{where}: İngilizce gövde yok; her blok, Türkçe gövdeden sonra yalnız ‘### EN’ yazan bir "
+                      f"satır ve onun altında giriş paragrafı, What to test / KPIs to track / What not to do "
+                      f"kutuları ve notlarla Türkçenin paralel çevirisini taşır"
+                      + ("" if en_variable is not None else "; başlık bloğuna ‘EN-Variable: …’ satırı da eklenir")
+                      + " (FORMAT.md → English)")
+    else:
         errors.extend(f"{where}: {e}" for e in en_body_problems(tr_part, en_body, en_variable, glossary))
     return tags, en_title, errors
 
