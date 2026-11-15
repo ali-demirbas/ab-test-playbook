@@ -35,6 +35,7 @@ Değişken: Buton metninin ifade çerçevesi · Fark: değiştir
 
 
 > **Not:** SaaS deneme CTA’sının metni `saas-b2b.md`’de kendi senaryosudur (huni-sonu birincil metrikleriyle); deneme akışı için onu kullanın.
+
 ---
 
 ## Dolu buton mu, çerçeveli buton mu daha çok tıklanıyor?
@@ -186,12 +187,12 @@ Değişken: İkon yanındaki yazılı etiket · Fark: ekle
 
 Değişken: Akış içi yardım bağlantılarının açıldığı sekme · Fark: değiştir
 
-Akışın içindeki yardım, yasal metin veya koşul bağlantısını yeni sekmede açmak kullanıcının yarım kalan formu veya ödemeyi kaybetmemesini sağlar. Karşı tarafta: kullanıcı denetimini elinden alır, geri tuşunu işlevsiz kılar, mobilde sekme yönetimi zordur ve beklenmedik davranış rahatsız eder. “Dış bağlantıları yeni sekmede açmak sayfada kalma oranını artırır mı?” senaryosundan farkı: o senaryo içerik sayfasındaki dış bağlantılarla siteye geri dönüşü ölçer, bu senaryo akış içindeki bağlantılarla form/ödeme tamamlamayı ölçer.
+Akışın içindeki yardım, yasal metin veya koşul bağlantısını yeni sekmede açmak kullanıcının yarım kalan formu veya ödemeyi kaybetmemesini sağlar. Karşı tarafta: kullanıcı denetimini elinden alır, geri tuşunu işlevsiz kılar, mobilde sekme yönetimi zordur ve beklenmedik davranış rahatsız eder. İçerik sayfasındaki dış bağlantıları (blog kaynağı, iş ortağı sitesi) yeni sekmede açmak aynı sorunun etkisi küçük bir türüdür ve ayrı bir test olarak önerilmez; burada ölçülen, akış içindeki bağlantının yarım kalan formu ya da ödemeyi koruyup korumadığıdır.
 
 **Test edilmesi gerekenler**
 - Davranış: Yeni sekmede açmak asıl akışın tamamlanmasını artırıyor mu?
 - Kapsam: Hangi bağlantılar (yasal metin, yardım, dış kaynak) yeni sekmede açılmalı?
-- Beklenti: Kullanıcı davranışı önceden anlıyor mu, sürpriz mi oluyor?
+- Erişilebilirlik: Ekran okuyucu kullanıcısı bağlantının yeni sekmede açılacağını önceden duyuyor mu, yoksa sekme değişimini fark etmeden mi kalıyor?
 - Geri dönüş: Yeni sekmeden asıl akışa dönüş gerçekleşiyor mu?
 - Cihaz: Mobilde sekme değişimi kullanıcıyı kaybettiriyor mu?
 
@@ -471,35 +472,6 @@ Tablo satır ve sütun mantığıyla doğrudan karşılaştırma kurar; çok say
 - Tabloda bir seçeneğin olumsuz satırını (ör. ek ücret) silik biçimlendirip gizlemeyin.
 
 > **Not:** Fiyat planlarının tablo/kart karşılaştırması `pricing.md` → “Planları karşılaştırma tablosunda mı, ayrı kartlarda mı sunmalı?” senaryosunun konusudur; fiyat sayfası için bu senaryoyu değil onu kullanın.
-
----
-
-## Dış bağlantıları yeni sekmede açmak sayfada kalma oranını artırır mı?
-
-Değişken: Dış bağlantıların açıldığı sekme · Fark: değiştir
-
-Bir sayfadaki dış bağlantı (ör. blog yazısındaki kaynak, ortak site linki) aynı sekmede açılırsa kullanıcı asıl siteden tamamen ayrılır; yeni sekmede açılırsa asıl sekme açık kalır. Riski, beklenmedik bir yeni sekmenin bazı kullanıcılarda kafa karışıklığı yaratması ve erişilebilirlik araçlarıyla kullanımı zorlaştırmasıdır. “Form ve ödeme akışındaki yardım bağlantılarını yeni sekmede açmak tamamlamayı artırır mı?” senaryosundan farkı: o senaryo akış içindeki bağlantılarla tamamlamayı ölçer, bu senaryo içerik sayfasındaki dış bağlantılarla siteye geri dönüşü ölçer.
-
-**Test edilmesi gerekenler**
-- Davranış: Yeni sekmede açmak sayfaya geri dönüş oranını artırıyor mu?
-- Dönüş yolu: Yeni sekmeden asıl sekmeye dönen kullanıcı, yazıyı kaldığı yerden okumaya devam ediyor mu?
-- Farkındalık: Kullanıcı yeni sekme açıldığını fark edip kafası mı karışıyor?
-- Cihaz: Mobilde yeni sekme davranışı masaüstünden farklı bir deneyim mi yaratıyor?
-- Erişilebilirlik: Ekran okuyucu kullanıcısı yeni sekme açılacağını önceden anlayabiliyor mu?
-
-**Takip edilecek ana KPI’lar**
-- Asıl Siteye Dönüş Oranı: Dış bağlantıya tıklayan kullanıcılar (iki kolda aynı tetikleyici) içinde aynı oturumda asıl sitede gezinmeye devam edenlerin oranı artıyor mu?
-- Dış Bağlantı Tıklama Oranı: Davranış değişikliği tıklama oranını etkiliyor mu?
-- Oturum Süresi: Toplam site kullanım süresi düşmemeli.
-- Kafa Karışıklığı (anket): Kullanıcı beklenmedik bir sekme açıldığını fark edip rahatsız olmamalı. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
-- Geri Dönüş Oranı: Tarayıcı geri tuşuna basma sıklığı artmamalı; artıyorsa davranış kafa karıştırıyordur.
-
-**Yapılmaması gerekenler**
-- Ekran okuyucu kullanıcısını önceden uyarmadan yeni sekme açan bağlantı kurmayın (erişilebilirlik guardrail’i, kural 3).
-- Aynı testte iç ve dış bağlantıların davranışını birlikte değiştirmeyin.
-- Ödeme veya form gönderimi gibi kritik bir aksiyonu yeni sekmede açıp kullanıcıyı akıştan koparmayın.
-- Yeni sekme davranışını yalnızca bazı tarayıcılarda tutarsız çalışacak şekilde kurmayın.
-- Kullanıcının linke sağ tıklayıp kendi tercihiyle sekme açma imkânını elinden almayın.
 
 ---
 

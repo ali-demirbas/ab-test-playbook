@@ -8,14 +8,14 @@ Yolculuk aşaması: kullanıcı satın almaya karar verdi; sepet, kupon, adres/�
 
 Değişken: CTA buton rengi · Fark: değiştir
 
-Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmızı mı yeşil mi daha iyi” evrensel bir cevabı yoktur, sayfanın geri kalan renk paletiyle kontrastı önemlidir. Marka renginden sapan ama sayfada öne çıkan bir renk genelde kazanır; rengin kendisi değil, göze çarpma derecesi test edilir.
+Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmızı mı yeşil mi” sorusunun evrensel bir cevabı yoktur. Test edilen rengin kendisi değil, butonun sayfadaki öbür öğelerden ayrışma derecesidir: ürün sayfasında sepete ekle butonu galeri, fiyat ve indirim etiketleri arasında, sepet ve ödeme adımında ise ikincil butonlar arasında öne çıkmak zorundadır. Riski: yeni renk indirim etiketiyle aynı tona düşüp fiyat bilgisiyle karışabilir, ya da tıklama artışı yalnızca yenilik etkisinden gelip birkaç gün içinde sönebilir. Test tek sayfadaki tek butonun rengini değiştirir; aynı akıştaki öbür sayfaların butonları sabit kalır.
 
 **Test edilmesi gerekenler**
-- Kontrast: Sayfanın geri kalanına göre en çok öne çıkan renk hangisi?
-- Marka tutarlılığı: Marka renginden sapmak dönüşümü artırsa bile marka algısını bozuyor mu?
-- Sonraki test: Kazanan renk sabit tutulduğunda butonun üstte ya da altta durması, ayrı bir testte tıklamayı değiştiriyor mu?
-- Cihaz: Mobilde ve masaüstünde kazanan renk aynı mı?
-- Erişilebilirlik: Seçilen renk kontrast oranı (WCAG) eşiğini geçiyor mu?
+- Kontrast: Sayfanın geri kalanına göre en çok öne çıkan renk tıklamayı artırıyor mu?
+- Ayırt edilme: Yeni renk butonu fiyat ve indirim etiketlerinden ayırt edilir kılıyor mu, yoksa onlarla karıştırıyor mu?
+- Yenilik etkisi: Renk değişiminin getirdiği tıklama artışı ilk haftadan sonra sönüyor mu, kalıcı mı?
+- Cihaz: Butonun ekran genişliğini kapladığı mobilde renk değişimi, butonun küçük kaldığı masaüstüne göre tıklamayı daha az mı etkiliyor?
+- Erişilebilirlik: Seçilen renk, buton metniyle arasındaki kontrast oranında (WCAG) eşiği geçiyor mu?
 
 **Takip edilecek ana KPI’lar**
 - Dönüşüm Oranı (CR): Renk değişikliği tamamlanan siparişe yansıyor mu?
@@ -25,11 +25,11 @@ Buton rengi klasik bir test konusudur ama genelde yanlış kurulur: “kırmız�
 - Marka Algısı (anket): Ölçülüyorsa düşmemeli. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 
 **Yapılmaması gerekenler**
-- Aynı testte renk ile buton metnini birlikte değiştirmeyin.
+- Aynı testte renk ile buton metnini veya boyutunu birlikte değiştirmeyin.
 - Erişilebilirlik kontrastını sağlamayan bir renk seçmeyin (görme engelli kullanıcı dışlanır).
 - Marka kılavuzuna aykırı rengi test onayı almadan canlıya almayın.
 - Tek bir sayfada kazanan rengi tüm siteye otomatik yaymayın; sayfa bağlamı değişir.
-- Rengi diğer CTA’lardan (ikincil butonlar) ayırt edilemez hale getirmeyin.
+- Kazanan rengi ikincil butonlara da uygulayıp birincil ile ikincil buton ayrımını silmeyin.
 
 ---
 
@@ -386,6 +386,7 @@ Değişken: Checkout ilerleme çubuğu · Fark: ekle
 - Aşırı animasyonlu veya yavaş yüklenen çubuk kullanmayın.
 
 > **Ölçüm notu:** Bu senaryoda ilk adımın tamamlanma oranı neredeyse her zaman yükselir; asıl soru yükselen adımın siparişe dönüp dönmediğidir. Adım metriği testin fotoğrafını çeker, sonucunu değil; birincil metrik huninin sonunda kalır.
+
 ---
 
 ## Otomatik indirim kodu davranışı nasıl etkiler?

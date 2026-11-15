@@ -3,6 +3,7 @@
 Yolculuk aşaması: kullanıcı ürün listesinde geziniyor; grid düzeni, sıralama, kart içeriği ve listeden aksiyon. Her KPI listesinin ilk maddesi birincil metriktir; listede en az bir madde bozulmaması gereken guardrail’dir.
 
 ---
+
 ## Kampanya banner’ında geri sayım sayacı aciliyet yaratıp dönüşümü artırıyor mu?
 
 Değişken: Banner’daki geri sayım sayacı · Fark: ekle
@@ -299,7 +300,7 @@ Kısa mı, uzun ve açıklayıcı mı başlık daha çok dikkat çekiyor? Başl�
 
 Değişken: Pop-up gösterim anı · Fark: değiştir
 
-Çok erken çıkan pop-up kullanıcıyı kaçırır, çok geç çıkan fark edilmez. Doğru zamanlamanın ölçülmesi gerekir. “Çıkış niyetine bağlı pop-up kaçan mobil kullanıcıyı kurtarır mı?” (mobile-app.md) senaryosundan farkı: burada gösterim anı süreye veya kaydırmaya bağlıdır ve gezinmeye devam eden herkese çıkar; çıkış niyeti tetikleyicisi kapsam dışıdır.
+Çok erken çıkan pop-up kullanıcıyı kaçırır, çok geç çıkan fark edilmez. Doğru zamanlamanın ölçülmesi gerekir. “Çıkış niyetine bağlı pop-up kaçan mobil kullanıcıyı kurtarır mı?” senaryosundan farkı: burada gösterim anı süreye veya kaydırmaya bağlıdır ve gezinmeye devam eden herkese çıkar; çıkış niyeti tetikleyicisi kapsam dışıdır.
 
 **Test edilmesi gerekenler**
 - Zamanlama: Hangi anda gösterildiğinde en yüksek performans alınıyor?
@@ -321,6 +322,35 @@ Değişken: Pop-up gösterim anı · Fark: değiştir
 - Kapatma ikonunu gizlemeyin veya küçültmeyin.
 - Aynı pop-up’ı her sayfada tekrar göstermeyin.
 - Aynı testte gösterim anını değiştirirken pop-up’taki teklifi veya metni de değiştirmeyin.
+
+---
+
+## Çıkış niyetine bağlı pop-up kaçan mobil kullanıcıyı kurtarır mı?
+
+Değişken: Çıkış niyetine bağlı pop-up · Fark: ekle
+
+Zamana bağlı pop-up herkesi keser; çıkış niyetine bağlı pop-up sadece zaten gitmekte olan kullanıcıyı yakalar. Teorik olarak maliyeti düşüktür ama mobilde çıkış niyeti sinyali güvenilir değildir. “Pop-up ne zaman gösterilmeli?” senaryosundan farkı: orada pop-up herkese gösterilir ve değişken gösterim anıdır, burada tetik yalnızca ayrılma sinyalidir ve hedef sadece gitmekte olan kullanıcıdır.
+
+**Test edilmesi gerekenler**
+- Varlık: Çıkış niyetinde gösterilen pop-up, gösterilmeyen kola göre oturuma devam eden kullanıcıyı artırıyor mu?
+- Mobil sinyal: Seçilen ayrılma hareketini yapan kullanıcıların kaçı, pop-up gösterilmeyen kolda gerçekten oturumu bitiriyor?
+- Sonraki test: Pop-up kazanırsa, teklif türü (indirim / ücretsiz kargo / e-bülten) ayrı bir testte yanıt oranını değiştiriyor mu?
+- Segment: Sepetinde ürün olan kullanıcı ile boş sepetle ayrılan kullanıcı aynı pop-up’a farklı mı tepki veriyor?
+- Sıklık: Kaç günde bir tekrar gösterilmeli?
+
+**Takip edilecek ana KPI’lar**
+- Oturum Devam Oranı: Çıkış niyeti sinyali iki kolda da loglanır (A’da pop-up çıkmaz); sinyal veren kullanıcılar içinde oturuma devam edenlerin oranı artıyor mu?
+- Pop-up Yanıt Oranı: Tanı metriği; teklifi kabul edenlerin oranı ne kadar (yalnız B kolu içi, kollar arası karşılaştırılmaz)?
+- Dönüşüm Oranı (CR): Toplam satışa etkisi.
+- Oturum Süresi: Düşmemeli.
+- E-bülten Çıkış Oranı: Agresif toplama abonelikleri bozmamalı.
+
+**Yapılmaması gerekenler**
+- Mobilde güvenilmez sinyalle pop-up tetiklemeyin.
+- Kapatma butonunu gizlemeyin veya küçültmeyin.
+- Pop-up’taki indirim teklifini, sepette gerçekten uygulanmayan bir oran veya süreyle yazmayın (kural 6).
+- Aynı oturumda birden fazla pop-up açmayın.
+- Aynı testte hem tetikleyiciyi hem teklifi değiştirmeyin.
 
 ---
 
@@ -554,7 +584,6 @@ Konumun karar için belirleyici olduğu listelerde (emlak, mekân, mağaza, ilan
 - Konum bilgisini kullanıcıdan izin almadan otomatik kullanmayın.
 - Harita kullanımı düşük diye kaldırmayın; kullanan küçük grup için belirleyici olabilir.
 
-
 ---
 
 ## “Peşin fiyatına taksit” rozeti dönüşümü artırıyor mu?
@@ -619,6 +648,7 @@ Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edi
 
 
 > **Pazar notu:** İndirim ve referans fiyat gösterimi yasal olarak düzenlenen bir alandır (kural 11). Rozet bir indirim iması taşıyorsa hedef pazarın kuralını doğrulamadan varyantı yayınlamayın; AB’de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatına bağlıdır.
+
 ---
 
 ## İlk alışveriş indirimi satın almayı etkiliyor mu?
@@ -654,7 +684,7 @@ Değişken: Karttaki ilk alışveriş indirimi bilgisi · Fark: ekle
 
 Değişken: Stok dışı ürünlerin listedeki görünürlüğü · Fark: kaldır
 
-Bir kategori listesinde stokta olmayan ürünleri tamamen gizlemek sayfayı yalnızca satın alınabilir ürünlerle sınırlar ama toplam ürün çeşitliliği algısını daraltabilir. Gri gösterip listede bırakmak çeşitlilik hissini korur ama tıklanamayan öğelerle dolu bir liste de hayal kırıklığı yaratabilir. “Stokta olmayan ürünü gizlemek mi, “haber ver” demek mi?” ve “Stokta olmayan bir ürünün satın alma butonunu kaldırmak mı, haber ver seçeneği mi daha iyi çalışıyor?” (product-detail.md) senaryolarından farkı: burada ürün sayfası değişmez; test edilen yalnızca ürünün liste içinde görünür olup olmadığıdır.
+Bir kategori listesinde stokta olmayan ürünleri tamamen gizlemek sayfayı yalnızca satın alınabilir ürünlerle sınırlar ama toplam ürün çeşitliliği algısını daraltabilir. Gri gösterip listede bırakmak çeşitlilik hissini korur ama tıklanamayan öğelerle dolu bir liste de hayal kırıklığı yaratabilir. “Stokta olmayan bir ürünün satın alma butonunu kaldırmak mı, haber ver seçeneği mi daha iyi çalışıyor?” (`product-detail.md`) senaryosundan farkı: burada ürün sayfası değişmez; test edilen yalnızca ürünün liste içinde görünür olup olmadığıdır.
 
 **Test edilmesi gerekenler**
 - Görünürlük: Gri/soluk gösterim mi, listeden tamamen kaldırma mı tamamlanan satın alma sayısını artırıyor?

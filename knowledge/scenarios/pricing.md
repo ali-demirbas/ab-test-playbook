@@ -1,6 +1,6 @@
 # Fiyatlandırma ve fiyat sunumu
 
-Yolculuk aşaması: fiyatın görüldüğü an. Hem abonelik fiyat sayfası hem e-ticarette fiyat gösterimi bu dosyadadır. Ticari strateji kararları (plan varsayılanı, kurumsal fiyatın gizlenmesi, deneme süresi) `saas-b2b.md`, indirim ve taksit sunumu `product-detail.md` içindedir; burada fiyatın kendisinin nasıl çerçevelendiği ele alınır.
+Yolculuk aşaması: fiyatın görüldüğü an. Hem abonelik fiyat sayfası hem e-ticarette fiyat gösterimi bu dosyadadır. Ticari strateji kararları (plan varsayılanı, kurumsal fiyatın gizlenmesi, deneme süresi) `saas-b2b.md`, indirim, taksit ve fiyat küsuratı `product-detail.md` içindedir; burada fiyatın kendisinin nasıl çerçevelendiği ele alınır.
 
 **Bu dosyadaki tüm senaryolarda birincil metrik gelir bazlıdır.** Fiyatı ucuz göstermek veya seçenek azaltmak dönüşüm oranını neredeyse her zaman artırır ama geliri düşürebilir; bu yüzden Ziyaretçi Başına Gelir (RPV) birincil, dönüşüm oranı ikincil metriktir (`knowledge/methodology.md` → Dönüşüm oranı geliri gizleyebilir). Her KPI listesinde en az bir madde bozulmaması gereken guardrail’dir.
 
@@ -293,35 +293,6 @@ Planların soldan sağa hangi sırayla dizildiği, karşılaştırma sırasında
 - Pahalı planı önce göstererek ucuz planı yapay biçimde küçük veya eksik göstermeyin.
 - Pahalıdan ucuza sıralamada mobilde yalnızca en pahalı planın görüneceği bir düzeni, diğer planlara geçiş ipucu vermeden yayınlamayın.
 - Enterprise/kurumsal planı bu sıralamaya dahil ediyorsanız `saas-b2b.md`’deki fiyat gizleme senaryosuyla çelişmeyin.
-
----
-
-## Fiyatın küsuratını üst simge olarak yazmak algılanan tutarı küçültür mü?
-
-Değişken: Fiyat küsuratının yazım biçimi · Fark: değiştir
-
-“₺199,90” yerine “₺199⁹⁰” gibi küsuratı küçük ve üst simge yazmak, gözün ana sayıya (199) odaklanmasını sağlayıp fiyatı daha küçük hissettirebilir. Riski, küçük yazılan kısmın bazı kullanıcılar tarafından hiç fark edilmemesi veya okunaksız bulunmasıdır.
-
-**Test edilmesi gerekenler**
-- Biçim: Üst simge küsurat mı, standart aynı boyut küsurat mı satın almayı artırıyor?
-- Okunabilirlik: Küçük yazılan küsurat mobilde net okunuyor mu?
-- Tutar büyüklüğü: Etki küçük tutarlarda mı, büyük tutarlarda mı daha belirgin?
-- Yuvarlama algısı: Kullanıcı gerçek tutarı doğru mu tahmin ediyor, yoksa yuvarlıyor mu?
-- Segment: Fiyatı kuruşuna kadar karşılaştıran fiyata duyarlı ziyaretçide küçük küsurat, fiyata bakmayan ziyaretçiye göre etkisiz mi kalıyor?
-
-**Takip edilecek ana KPI’lar**
-- Ziyaretçi Başına Gelir (RPV): Fiyat formatı geliri artırıyor mu?
-- Dönüşüm Oranı (CR): Fiyat formatı satın alma oranını artırıyor mu?
-- Ortalama Sepet Tutarı (AOV): Format, ortalama tutar algısını bozup gerçek harcamayı düşürmemeli.
-- Fiyat Okuma Netliği (oturum kaydı): Küsuratı fark etmeyen kullanıcı oranı yüksek mi?
-- İade veya İtiraz Oranı (30 gün): “Beklediğimden pahalı çıktı” itirazları artmamalı.
-
-**Yapılmaması gerekenler**
-- Toplam ödenecek tutarı, yalnızca ana rakamı büyük göstererek gizlemeyin; küsurat küçük olsa da her zaman okunabilir kalmalı.
-- Aynı testte fiyat formatını ve fiyat seviyesini birlikte değiştirmeyin.
-- Farklı ürünlerde tutarsız bir format kullanıp karşılaştırmayı zorlaştırmayın.
-- Vergi veya ek ücretin küsuratını ana tutarla karıştırıp toplam tutarı belirsizleştirmeyin.
-- Fiyat gösteriminin yasal olarak düzenlendiği pazarlarda kuralı doğrulamadan format değiştirmeyin (kural 11).
 
 ---
 

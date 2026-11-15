@@ -3,6 +3,7 @@
 Yolculuk aşaması: kullanıcı tek bir ürünü değerlendiriyor; görseller, sosyal kanıt, fiyat sunumu ve güven sinyalleri. Her KPI listesinin ilk maddesi birincil metriktir; listede en az bir madde bozulmaması gereken guardrail’dir.
 
 ---
+
 ## Stüdyo çekimi mi, gerçek kullanıcı fotoğrafı mı daha çok satıyor?
 
 Değişken: Ana görselin fotoğraf kaynağı · Fark: değiştir
@@ -31,6 +32,7 @@ Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. 
 - Stüdyo görseli tamamen kaldırıp yalnızca kullanıcı fotoğrafına geçmeyin; A/B olarak karşılaştırın.
 
 > **Ölçüm notu:** Görsel değişiklikleri sepete ekleme oranını hızlı hareket ettirir ama iade oranını geç hareket ettirir. İkisini aynı pencerede okumazsanız kazanç gerçek değil, henüz faturası gelmemiş olur.
+
 ---
 
 ## Tek görsel mi, çoklu görsel mi daha etkili?
@@ -117,35 +119,6 @@ Yıldız ve yorum sayısının fiyatın hemen altında mı, sayfanın alt kısm�
 - Puanı yukarı yuvarlayıp olduğundan yüksek göstermeyin.
 - Negatif yorumları gizlemeyin; sahtelik algısı yaratır.
 - Mobilde özet kutusu CTA’yı ekran dışına itmemeli.
-
----
-
-## Stokta olmayan ürünü gizlemek mi, “haber ver” demek mi?
-
-Değişken: Tükenen ürün sayfasının görünürlüğü · Fark: değiştir
-
-Tükenen ürünü listeden kaldırmak temiz bir deneyim sunar ama arama/SEO trafiğini boşa harcar. “Gelince haber ver” seçeneği o trafiği e-posta listesine çevirebilir ama sayfada ölü bir CTA bırakma riski taşır. “Stokta olmayan bir ürünün satın alma butonunu kaldırmak mı, haber ver seçeneği mi daha iyi çalışıyor?” senaryosundan farkı: burada değişken ürün sayfasının görünür kalıp kalmamasıdır; oradaki değişken sayfa açıkken butonun yerine ne konduğudur. Liste kartındaki gri gösterim ise “Stokta olmayan ürünleri listede gri gösterip bırakmak mı, tamamen gizlemek mi daha iyi çalışıyor?” (`category-listing.md`) senaryosunun konusudur.
-
-**Test edilmesi gerekenler**
-- Görünürlük: Ürünü tamamen gizlemek mi, sayfada tutup pasif göstermek mi daha iyi?
-- Sonraki test: Sayfa açık tutulduğunda, haber ver formunun alanları (yalnız e-posta / e-posta ve beden-renk seçimi) ayrı bir testte kayıt oranını değiştiriyor mu?
-- Tükenme süresi: Birkaç günlük tükenmede sayfayı açık tutmak, haftalarca sürecek tükenmeye göre daha çok haber ver kaydı topluyor mu?
-- Cihaz: E-posta yazmanın zahmetli olduğu mobilde açık tutulan tükenmiş ürün sayfası, masaüstündeki kadar haber ver kaydı topluyor mu?
-- SEO: Gizlenen ürün sayfası arama trafiğini kaybettiriyor mu?
-
-**Takip edilecek ana KPI’lar**
-- Ziyaretçi Başına Gelir (RPV): Tükenen ürünün adresine gelen ziyaretçi (istek iki kolda aynı biçimde loglanır) başına, stok gelene kadarki pencerede alternatif ve geri dönüş alımlarıyla gelir artıyor mu?
-- Haber Ver Kayıt Oranı: Tanı metriği; tükenen ürünün adresine gelen ziyaretçiler içinde e-posta bırakanların oranı.
-- Sayfa Terk Oranı: Tükenen ürün sayfasından çıkış artmamalı.
-- Benzer Ürün Tıklama Oranı: Alternatif öneri kullanılıyor mu?
-- Organik Trafik: Gizlenen sayfaların arama görünürlüğü düşmemeli.
-
-**Yapılmaması gerekenler**
-- Stokta olmayan ürünü aktif gösterip sepette hata vermeyin.
-- “Haber ver” formunun alan sayısını bu testin içinde ayrıca değiştirmeyin; iki değişken karışır.
-- Bildirim sözü verip göndermemeyi alışkanlık haline getirmeyin.
-- Ürün sayfasını tamamen silip 404 vermeyin; SEO değerini kaybedersiniz.
-- Aynı testte hem gizleme hem haber ver formunu birlikte değiştirmeyin.
 
 ---
 
@@ -474,13 +447,14 @@ Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve s
 
 
 > **Not:** Taksit üç ayrı eksende test edilir ve karıştırılmamalıdır: bu senaryo görünürlüğü (fiyat alanında öne çıkarma), “Aylık taksit tutarını ana fiyat gibi göstermek” çerçevelemeyi, “Peşin fiyatına taksit rozeti” liste kartındaki rozeti test eder (`category-listing.md`). Aynı testte yalnızca birini değiştirin.
+
 ---
 
 ## Küsuratlı fiyat mı, tam sayı fiyat mı?
 
 Değişken: Fiyatın küsurat biçimi · Fark: değiştir
 
-299,99 TL ile 300 TL arasındaki tek kuruşluk fark, algılanan fiyatı farklı kırar. Küsurat ucuzluk sinyali verirken, tam sayı premium ve sade durur. Kategoriye göre kazanan değişir.
+299,99 TL ile 300 TL arasındaki fark tek kuruştur ama göz önce soldaki rakamı okur: küsuratlı fiyat bir alt yüzlükte gibi algılanıp ucuzluk sinyali verebilir, tam sayı ise sade ve üst segment bir izlenim bırakır. Hangi etkinin baskın olduğu kategoriye ve fiyat düzeyine bağlıdır. Küsuratın yazım biçimi (aynı boyut ya da küçük üst simge) ayrı bir değişkendir: önce küsuratın kendisi, kazanırsa yazımı test edilir; küçük yazılan küsurat bazı kullanıcılarca hiç fark edilmeyebilir ve toplam tutarın yanlış okunmasına yol açabilir.
 
 **Test edilmesi gerekenler**
 - Cihaz: Mobilin dar fiyat alanında küsurat algısı masaüstünden farklı mı?
@@ -536,6 +510,7 @@ Değişken: İndirim mesajının metni · Fark: değiştir
 
 
 > **Pazar notu:** İndirim gösterimi yasal olarak düzenlenen bir alandır (kural 11): yüzde/tutar gösterimi serbest olsa da referans fiyatın nasıl kurulacağı pazara bağlıdır. AB’de referans fiyat, indirim öncesi belirli bir dönemin en düşük fiyatı olmak zorundadır; hedef pazarın kuralı doğrulanmadan varyant yayınlanmaz.
+
 ---
 
 ## Kargo ve iade bilgisini fiyatın yakınına taşımak satışı artırır mı?
@@ -743,35 +718,6 @@ Değişken: Kaydırmada sabit kalan Satın Al butonu · Fark: ekle
 
 ---
 
-## CTA optimizasyonu dönüşümü etkiler mi?
-
-Değişken: CTA butonunun rengi · Fark: değiştir
-
-Ürün sayfasında sepete ekle butonu galeri, fiyat ve indirim etiketleri arasında öne çıkmak zorundadır; rengin etkisi sayfadan sayfaya değişir, tahmin edilmez, test edilir. “CTA buton rengi dönüşümü etkiler mi?” (`cart-checkout.md`) senaryosundan farkı: burada değişen ürün sayfasındaki sepete ekle butonudur, sepet ve ödeme adımındaki butonlar sabit kalır.
-
-**Test edilmesi gerekenler**
-- Renk: Turuncu, yeşil veya markanın ana rengi hangisi daha çok tıklanıyor?
-- Sonraki test: Kazanan renk sabitken buton metni (“Sepete Ekle” / “Hemen Al” / “Satın Al”) ayrı bir testte tıklamayı değiştiriyor mu?
-- Ayırt edilme: Yeni renk, butonu fiyat ve indirim etiketlerinden ayırt edilir kılıyor mu, yoksa onlarla karıştırıyor mu?
-- Yenilik etkisi: Renk değişiminin getirdiği tıklama artışı ilk haftadan sonra sönüyor mu, kalıcı mı?
-- Cihaz: Butonun ekran genişliğini kapladığı mobilde renk değişimi, butonun küçük kaldığı masaüstüne göre tıklamayı daha az mı etkiliyor?
-
-**Takip edilecek ana KPI’lar**
-- Dönüşüm Oranı (CR): CTA’ya tıklayan gerçekten satın alıyor mu?
-- Tıklama Oranı (CTR): Renk değişince tıklama artıyor mu?
-- Sepete Ekleme Oranı: Eklemeyi artırıyor mu?
-- Çıkış Oranı: Yeni tasarım kullanıcıyı kaçırmamalı.
-- Kaydırma Derinliği: Sabit bar okumayı engellememeli.
-
-**Yapılmaması gerekenler**
-- Renk değiştirirken marka kimliğinden uzaklaşmayın.
-- Renk varyantında metin ile buton arasındaki kontrastı okunabilirlik eşiğinin altına düşürmeyin.
-- Aynı testte renk, metin ve boyutu birlikte değiştirmeyin.
-- Kazanan CTA stilini ikincil butonlara da uygulayıp birincil/ikincil ayrımını silmeyin.
-- CTA’yı sayfada birden fazla farklı tasarımla tekrarlamayın.
-
----
-
 ## Çoklu paket sunumu sepet tutarını artırıyor mu?
 
 Değişken: Çoklu paket seçenekleri · Fark: ekle
@@ -950,13 +896,13 @@ Değişken: Öneri mesajının tonu · Fark: değiştir
 
 Değişken: Satın alma butonunun yerine konan öğe · Fark: değiştir
 
-Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal kırıklığı yaratır. İki yaygın alternatif vardır: butonu tamamen kaldırıp “stokta yok” yazmak, ya da “stok geldiğinde haber ver” seçeneğiyle değiştirmek. İkincisi terk eden kullanıcıyı bildirim listesine dönüştürme fırsatı sunar ama ek bir form alanı gerektirir. “Stokta olmayan ürünü gizlemek mi, “haber ver” demek mi?” senaryosundan farkı: burada ürün sayfası açık kalır, değişen yalnızca satın alma butonunun yerine ne konduğudur.
+Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal kırıklığı yaratır. İki yaygın alternatif vardır: butonu tamamen kaldırıp “stokta yok” yazmak, ya da “stok geldiğinde haber ver” seçeneğiyle değiştirmek. İkincisi terk eden kullanıcıyı bildirim listesine dönüştürme fırsatı sunar ama ek bir form alanı gerektirir. Ürün sayfasını tamamen gizlemek bu testin konusu değildir: arama trafiğini ve sayfanın arama görünürlüğünü etkileyen bir site kararıdır, ziyaretçiye göre bölünen bir testle ölçülmez. Burada ürün sayfası açık kalır, değişen yalnızca satın alma butonunun yerine ne konduğudur; liste kartındaki gri gösterim “Stokta olmayan ürünleri listede gri gösterip bırakmak mı, tamamen gizlemek mi daha iyi çalışıyor?” (`category-listing.md`) senaryosunun konusudur.
 
 **Test edilmesi gerekenler**
 - Biçim: Satın alma butonunun yerini “haber ver” seçeneği mi almalı, yoksa buton tamamen mi kaldırılmalı?
 - Sonraki test: Haber ver seçeneği kazanırsa, bildirim kanalı (e-posta / push / ikisi) ayrı bir testte kayıt oranını değiştiriyor mu?
 - Terk: Buton tamamen kaldırıldığında ziyaretçi sayfadan hemen çıkıyor mu, haber ver seçeneği onu sayfada tutuyor mu?
-- Ürün değeri: Yüksek fiyatlı tükenmiş üründe haber ver seçeneği, düşük fiyatlı ürüne göre daha çok kayıt topluyor mu?
+- Tükenme süresi: Birkaç günlük tükenmede haber ver seçeneği, haftalarca sürecek tükenmeye göre daha çok kayıt ve geri dönüş alımı getiriyor mu?
 - Segment: Mobil ve masaüstünde haber ver formunun tamamlanma oranı farklı mı?
 
 **Takip edilecek ana KPI’lar**

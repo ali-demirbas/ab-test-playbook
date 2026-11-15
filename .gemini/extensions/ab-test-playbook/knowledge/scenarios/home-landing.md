@@ -1,6 +1,6 @@
 # Anasayfa ve landing
 
-Yolculuk aşaması: ziyaretçinin siteye ilk düştüğü ekran. Amaç satış değil, bir sonraki adımın alınmasıdır; bu yüzden buradaki birincil metrik çoğu zaman huninin sonu değil, ilk anlamlı aksiyondur. Menü yapısı `search-filtering.md`, pop-up zamanlaması ve geri sayım sayacı `category-listing.md`, CTA buton rengi `cart-checkout.md` içindedir; burada tekrar edilmezler. Her KPI listesinin ilk maddesi birincil metriktir; listede en az bir madde bozulmaması gereken guardrail’dir.
+Yolculuk aşaması: ziyaretçinin siteye ilk düştüğü ekran. Amaç satış değil, bir sonraki adımın alınmasıdır; bu yüzden buradaki birincil metrik çoğu zaman huninin sonu değil, ilk anlamlı aksiyondur. Menü yapısı `search-filtering.md`, pop-up zamanlaması, çıkış niyeti pop-up’ı ve geri sayım sayacı `category-listing.md`, CTA buton rengi `cart-checkout.md` içindedir; burada tekrar edilmezler. Mobil webdeki uygulama indirme banner’ı ile dönen ziyaretçiye özel anasayfa bu dosyadadır, uygulamanın kendi anasayfası `mobile-app.md` içindedir. Her KPI listesinin ilk maddesi birincil metriktir; listede en az bir madde bozulmaması gereken guardrail’dir.
 
 ---
 
@@ -871,3 +871,90 @@ Değişken: Anasayfanın ziyaretçi tipine göre bölünmesi · Fark: değiştir
 - Bloklardan birini gerçek trafik dağılımıyla orantısız büyüklükte öne çıkarmayın.
 - Mobilde blokları küçültüp aralarındaki dokunma alanını daraltmayın.
 - Yanlış bloğa giren ziyaretçinin doğru bloğa geçişini zorlaştıran bir yapı kurmayın.
+
+---
+
+## Yeni ve dönen kullanıcıya farklı anasayfa göstermek işe yarar mı?
+
+Değişken: Kullanıcı tipine göre anasayfa ayrımı · Fark: değiştir
+
+Yeni ziyaretçinin marka bilgisine, dönen ziyaretçinin ise hızlı devam yoluna ihtiyacı vardır. Aynı anasayfayı ikisine de göstermek her iki grubu da yarı yolda bırakabilir.
+
+**Test edilmesi gerekenler**
+- Devam bloğu: Dönen kullanıcıya “kaldığın yerden devam” göstermek dönüşümü artırıyor mu?
+- Sonraki test: Ayrım kazanırsa, yeni kullanıcının anasayfası (marka vitrini / doğrudan ürün) ayrı bir testte dönüşümü değiştiriyor mu?
+- Sinyal: Segment ayrımı hangi veriyle yapılmalı? (çerez / giriş / sepet)
+- Derinlik: Kişiselleştirme arttıkça etki artıyor mu, doyuma mı ulaşıyor?
+- Hata payı: Yanlış segmentlenen kullanıcıda deneyim bozuluyor mu?
+
+**Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): Segment bazlı okunmalı.
+- Anasayfa Tıklama Oranı: İlk blok fark ediliyor mu?
+- Sepete Dönüş Oranı: Dönen kullanıcı akışı.
+- Yeni Kullanıcı Dönüşümü: Düşmemeli.
+- Sayfa Yüklenme Süresi: Kişiselleştirme LCP’yi bozmamalı.
+
+**Yapılmaması gerekenler**
+- Dönen kullanıcıya “kaldığın yerden devam” bloğunda artık satışta olmayan bir ürünü göstermeyin.
+- Kişisel veriyi anasayfada açıkça göstermeyin (isim, adres).
+- Yanlış segmentte varsayılan deneyimi bozmayın.
+- Aynı testte hem segmenti hem içerik bloklarını değiştirmeyin.
+- Kişiselleştirmeyi önbellek dışı bırakıp sayfayı yavaşlatmayın.
+
+---
+
+## Son gezilen ürünler şeridi geri dönüşü artırır mı?
+
+Değişken: Son gezilen ürünler şeridi · Fark: ekle
+
+Dönen ziyaretçinin anasayfada ilk aradığı çoğu zaman bir önceki ziyarette baktığı üründür; onu bulmak için aramayı ya da kategoriyi baştan yürümesi gerekir. Anasayfaya son gezilen ürünler şeridi eklemek bu yolu tek dokunuşa indirir ve kişinin kendi geçmişine dayandığı için algoritmik öneriden daha alakalıdır. Riski: şerit çok satanlar ve kampanya bloklarını aşağı iter; satın alınmış ya da tükenmiş ürünü tekrar göstermek deneyimi bozar.
+
+**Test edilmesi gerekenler**
+- Sonraki test: Şerit kazanırsa, şeridin anasayfadaki yeri (ilk ekran / çok satanların altı) ayrı bir testte tıklamayı değiştiriyor mu?
+- Sayı: Kaç ürün göstermek optimum? (3 / 6 / 10)
+- Varlık: Son gezilen ürünler şeridi, dönen kullanıcının satın almasını artırıyor mu?
+- Yamyamlık: Şerit çok satanlar bloğunun performansını yiyor mu?
+- Cihaz: Ekranın dar olduğu mobilde şerit, masaüstüne göre çok satanlar bloğunu daha mı çok aşağı itip tıklamasını azaltıyor?
+
+**Takip edilecek ana KPI’lar**
+- Dönüşüm Oranı (CR): Geri dönen kullanıcı satın alıyor mu?
+- Şerit Tıklama Oranı: Blok fark ediliyor mu?
+- Ürün Detay Geçiş Oranı: Trafik nereye kayıyor?
+- Çok Satanlar Tıklaması: Yamyamlık olmamalı.
+- Anasayfa Çıkış Oranı: Artmamalı.
+
+**Yapılmaması gerekenler**
+- Satın alınmış ürünü tekrar göstermeyin.
+- Stokta olmayan ürünü şeritte bırakmayın.
+- Şeridi ilk ekranın tamamını kaplayacak kadar büyütmeyin.
+- Aynı testte öneri algoritmasını da değiştirmeyin.
+- Gizli gezinme oturumlarını şeride dahil etmeyin.
+
+---
+
+## Mobil webe uygulama indirme banner’ı eklemek web dönüşümünü düşürüyor mu?
+
+Değişken: Uygulama indirme banner’ı · Fark: ekle
+
+Mobil webe eklenen uygulama indirme banner’ı kurulum sayısını artırır ama devam eden oturumu böler. Bu test iki hedefin çakıştığı klasik bir örnektir; tek metrikle okunursa yanlış karar verilir.
+
+**Test edilmesi gerekenler**
+- Kazanç: Banner uygulama kurulumunu ne kadar artırıyor?
+- Kayıp: Aynı oturumdaki web dönüşümü ne kadar düşüyor?
+- Sonraki test: Banner kazanırsa, yerleşimi (üstte sabit / içerik arasında) ayrı bir testte kurulum ile web dönüşümü arasındaki dengeyi değiştiriyor mu?
+- Segment: Sadece yeni ziyaretçiye göstermek dengeyi kuruyor mu?
+- Kurulum sonrası: Banner’dan uygulamayı kuran kullanıcı, webde yarım kalan işlemini uygulamada tamamlıyor mu?
+
+**Takip edilecek ana KPI’lar**
+- Ziyaretçi Başına Gelir (RPV): İki kanalı birlikte okuyan metrik.
+- Uygulama Kurulum Oranı: Banner’ın ana amacı.
+- Web Dönüşüm Oranı (CR): Kayıp tarafı.
+- Oturum Devam Oranı: Kullanıcı akıştan kopmamalı.
+- 7. Gün Elde Tutma: Kurulum kalıcı mı?
+
+**Yapılmaması gerekenler**
+- Uygulaması zaten kurulu olan kullanıcıya indirme banner’ı göstermeyin; uygulamayı açma bağlantısı ayrı bir durumdur.
+- Banner’ı kapatılamaz yapmayın.
+- Ödeme akışının içinde göstermeyin.
+- Her sayfada tekrar tekrar açmayın.
+- Aynı testte banner’ı eklerken web fiyatını veya uygulamaya özel indirim teklifini de değiştirmeyin.
