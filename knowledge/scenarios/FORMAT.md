@@ -26,6 +26,14 @@ Four lines in this order under the title (the title is a question), a blank line
 
 Levels. Element level changes how one thing on the page looks or reads: `görsel` visual weight, position, format; `gezinme` search, navigation, listing and discovery; `bilgi` information added or shown at the decision point (price and offer display included); `form` form and field design; `metin` copy and microcopy; `güven` trust and assurance signals; `sosyal-kanıt` reviews, testimonials, logos; `sürtünme` removing effort inside the same flow (defaults, saved data, shortcuts). Structural level changes the thing itself: `teklif` what is offered (threshold, trial length, a new offer); `fiyat` price point or package and plan structure; `kişiselleştirme` content that differs by visitor or segment; `akış` the steps, their order or a new path; `elde-tutma` what happens after the purchase or sign-up; `onboarding` first use and activation.
 
+### Notes under a block
+
+`> **Pazar notu:** …` names a market dependency. `> **Güncellik notu (YYYY-MM):** …` records that the ground under a scenario shifted (a platform rule, a regulation, a pattern turned standard, the technology): what changed, then what to test instead. A stale block keeps its place with its note; it is not deleted (methodology: When the archive goes stale). The month is when the note was written.
+
+### Deliberately out of scope
+
+- **Cookie consent and other consent requests** (cookie banners, marketing permission, data-sharing consent). Their wording, button order, colors and defaults are never a test subject: raising acceptance is a dark pattern and the flow is regulated. The archive has no consent scenario on purpose; a scenario that sits next to a consent step leaves it identical in both arms.
+
 ### English
 
 The archive is one source in two languages. The `EN:` title is the stable English name of the scenario: English searches, history and backlog rows match it, and it is never re-translated per turn. Tag values and `Fark` stay Turkish data; English output renders them through the tables above (`değiştir` change, `ekle` add, `taşı` move, `kaldır` remove).

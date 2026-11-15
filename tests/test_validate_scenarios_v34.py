@@ -179,6 +179,36 @@ class TestEnglishBody(unittest.TestCase):
         self.assertEqual(vs.parse_variable_line(body)[2], [])
 
 
+class TestFreshnessNotes(unittest.TestCase):
+    NOTE = "> **Güncellik notu (2026-11):** Platform kuralı değişti; yerine şunu test edin."
+
+    def test_dated_note_passes(self):
+        self.assertEqual(meta_errors(make_scenario() + "\n" + self.NOTE + "\n"), [])
+
+    def test_note_needs_a_month(self):
+        for bad in ("> **Güncellik notu:** Değişti.", "> **Güncellik notu (Kasım 2026):** Değişti."):
+            with self.subTest(note=bad):
+                self.assertTrue(meta_errors(make_scenario() + "\n" + bad + "\n"))
+
+    def test_archive_uses_the_mechanism(self):
+        """Item 39: the stale-ground blocks carry a dated note (autoplay, passkey, source
+        personalization, chat window, push permission)."""
+        titles = []
+        for name in vs.archive_files():
+            with open(os.path.join(vs.SCENARIO_DIR, name), encoding="utf-8") as fh:
+                titles += [t for t, b in vs.parse_scenarios(fh.read()) if "**Güncellik notu (" in b]
+        for needle in ("Otomatik oynayan", "tek kullanımlık kod", "kaynağa göre başlığı", "Sohbet penceresini",
+                       "Push izni"):
+            with self.subTest(block=needle):
+                self.assertTrue(any(needle in t for t in titles), titles)
+
+    def test_out_of_scope_line_for_consent(self):
+        with open(FORMAT_MD, encoding="utf-8") as fh:
+            text = fh.read()
+        self.assertIn("### Deliberately out of scope", text)
+        self.assertIn("Cookie consent", text)
+
+
 class TestArchiveWide(unittest.TestCase):
     def test_duplicate_id_and_en_title(self):
         meta = [("a.md", "A mı?", {"id": "cc-001"}, "Is it A?"),

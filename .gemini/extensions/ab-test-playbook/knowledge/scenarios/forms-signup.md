@@ -365,6 +365,8 @@ EN: Does sending a one-time code instead of a password raise sign-ins?
 - Kodun gelmediği durumda yeniden gönderme seçeneğini kaldırmayın veya uzun bir bekleme süresinin arkasına saklamayın.
 - Aynı testte giriş yöntemini değiştirirken giriş ekranındaki alanları veya oturum süresini de değiştirmeyin.
 
+> **Güncellik notu (2026-11):** Geçiş anahtarı (passkey) artık yaygın tarayıcı ve işletim sistemlerinde destekleniyor ve kodu e-postada ya da SMS’te beklemeden, cihazın ekran kilidiyle giriş sağlıyor. Tek kullanımlık kod testi hâlâ geçerlidir; ama şifresiz girişte daha güçlü aday, geçiş anahtarını mevcut yöntemin yanında ek seçenek olarak sunmaktır. Bu ayrı bir değişkendir ve kod akışıyla aynı testte değiştirilmez.
+
 ---
 
 ## Kaydı aksiyondan sonraya ertelemek tamamlamayı artırır mı?

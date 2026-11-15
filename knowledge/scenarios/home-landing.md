@@ -167,6 +167,8 @@ Video karmaşık bir ürünü metinden hızlı anlatabilir. Otomatik oynatma dik
 - Veri tasarrufu modundaki veya yavaş bağlantıdaki ziyaretçide otomatik oynatmayı zorla başlatmayın.
 - Durdurulamayan veya kapatılamayan bir video önermeyin.
 
+> **Güncellik notu (2026-11):** Tarayıcılar sesli otomatik oynatmayı yıllardır engelliyor; testin gerçek kolları artık sessiz ve altyazılı otomatik oynatma ile kapak görselli, tıklayınca oynayan videodur. Sessiz otomatik oynatma veri tasarrufu kipinde ve bazı mobil tarayıcılarda hiç başlamayabilir; o ziyaretçi B’de de kapak görselini görür ve fark bu kitlede ölçülmez. Önerilen: kolları bu iki biçimle kurmak, hareketi azaltma tercihine uymak ve otomatik oynatmanın gerçekten başladığı oturumları iki kolda aynı olayla loglamak.
+
 ---
 
 ## Müşteri logoları güven yaratıyor mu?
@@ -331,6 +333,8 @@ Reklamdaki veya yönlendiren sayfadaki ifadeyi başlıkta karşılamak beklenti 
 - Aynı testte hem başlığı hem CTA metnini kaynağa göre değiştirmeyin.
 - Kişiselleştirmeyi sunucu tarafında değil istemci tarafında yapıyorsanız başlık değişiminin gözle görülür titremesini yok saymayın.
 - Tek bir kaynakta kazandı diye tüm kaynaklara açmayın; kaynak bazında ayrı değerlendirin.
+
+> **Güncellik notu (2026-11):** Tarayıcıların takip kısıtları bazı reklam tıklama kimliklerini adresten siliyor ve yönlendiren sayfanın çoğu zaman yalnız alan adını iletiyor; ölçüm izni vermeyen ziyaretçide kaynak bilgisi hiç toplanamayabilir. Önerilen: başlığı yalnız adresteki kampanya parametresinden eşleştirmek, tanınmayan kaynağa varsayılan başlığı göstermek, varsayılan başlığı gören ziyaretçi payını iki kolda izlemek ve kaynak kırılımını yalnız kaynağı bilinen ziyaretçide okumak.
 
 ---
 

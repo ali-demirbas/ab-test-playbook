@@ -101,6 +101,8 @@ EN: When should push permission be requested: at launch or after the first value
 - Aynı testte hem zamanlamayı hem ön açıklama ekranının metnini değiştirmeyin; sistem penceresinin kendi metni zaten değiştirilemez.
 - İzin vermeyen kullanıcıyı uygulamadan mahrum bırakmayın.
 
+> **Güncellik notu (2026-11):** Android 13’ten bu yana bildirim izni iOS’taki gibi kullanım sırasında sistem penceresiyle istenir; eski Android sürümlerinde izin varsayılan olarak açıktı. Bu yüzden iki platformun ve eski ile yeni Android sürümlerinin sonucu aynı izin akışını ölçmeyebilir: platform ve işletim sistemi sürümü ayrı okunur. iOS’ta kullanıcıya sormadan sessiz teslimata izin veren geçici izin de mümkündür; bu ayrı bir değişkendir ve iki kolda aynı kalır.
+
 ---
 
 ## Yükleme ekranı mesajı satışı etkiler mi?

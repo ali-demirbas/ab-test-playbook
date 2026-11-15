@@ -502,6 +502,8 @@ Kendiliğinden açılan sohbet penceresi yardımın varlığını duyurur ve pas
 - Kapatılan pencereyi aynı oturumda tekrar açmayın.
 - Otomatik karşılama mesajını gerçek bir temsilci yazmış gibi gösterip otomatik olduğunu gizlemeyin.
 
+> **Güncellik notu (2026-11):** Sohbet penceresinin arkasında artık çoğu zaman bir temsilci değil, yapay zekâ destekli bir asistan var: kendiliğinden açılan pencere anında cevap verebilir, ama yanlış ya da uydurma bir cevap kararı bozabilir. Bu senaryo pencerenin açılma biçimini test eder; asistan mı temsilci mi sorusu ayrı bir değişkendir ve iki kolda aynı kalır. Asistan kullanılıyorsa kullanıcıya yapay zekâyla konuştuğu açıkça söylenir ve temsilciye geçiş yolu açık kalır; bu birçok pazarda yasal bir yükümlülüktür, hedef pazarın kuralını doğrulayın.
+
 ---
 
 ## Bilgiyi tablo olarak mı, kutular hâlinde mi sunmalı?
