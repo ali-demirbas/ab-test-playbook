@@ -72,13 +72,13 @@ Bu dosyadaki girdiler tek bir alt komuta ait değildir; her akışta geçerli ol
 **Girdi F (kart yalnızca iki incelemeden sonra teslim edilir):** Kayıtların üretildiği herhangi bir `suggest` ya da `design` turu (ör. Girdi A’nın tur 2’si).
 
 **Beklenen davranış:**
-1. Her kayıt için sıra araç çağrıları kaydında görülür: `validate_scenario_json.py` hatasız geçer, `validate_scenario_json.py --fingerprint` parmak izini basar, scenario-critic PASS verir ve `review.scenario_critic` bu parmak iziyle damgalanır; `build_card.py --draft` taslak kartı ve manifesti üretir (taslakta parmak izi yoktur); mockup-reviewer taslağı ve manifesti inceler, PASS’te `build_card.py --stamp <taslak>` çalıştırır ve bastığı JSON `review.mockup_reviewer` alanına yazılır; `build_card.py` `--draft` olmadan nihai kartı yazar.
+1. Her kayıt için sıra araç çağrıları kaydında görülür, betikler ana oturumda çalışır (alt ajan yalnızca iki denetçidir): `validate_scenario_json.py` turun bütün kayıtlarını tek çağrıda hatasız geçirir, scenario-critic PASS verir ve `build_card.py --critic-stamp <kayıt>` çıktısındaki JSON `review.scenario_critic` alanına yazılır; `build_card.py --draft` taslak kartı ve manifesti üretir (taslakta parmak izi yoktur); mockup-reviewer taslağı ve manifesti inceler, PASS’te `build_card.py --stamp <taslak>` çalıştırır ve bastığı JSON `review.mockup_reviewer` alanına yazılır; `build_card.py` `--draft` olmadan nihai kartı yazar.
 2. Parmak izleri yalnızca script çıktısından kopyalanır, elle yazılmaz ya da hesaplanmaz. Damgaya yalnızca PASS yazılır (kural 17).
 3. Kullanıcıya yalnızca nihai kart verilir: sohbette adı geçen dosyada taslak bandı yoktur (`grep -c 'content="draft"' <kart dosyası>` sonucu 0).
-4. İncelemeden sonra kayıtta bir alan değişirse (yazım düzeltmesi dahil) kayıt yeniden scenario-critic’e gider. mockup-reviewer `FIX`’i yalnızca mockup’ı değiştirir; yeni taslak üretilir ve yeniden incelenir. Eski damga yeniden kullanılmaz.
+4. İncelemeden sonra damganın kapsadığı bir alan değişirse (değişken, varyantlar, fark türü, birincil KPI ya da guardrail seçimi, kaynak, kanıt düzeyi, öncelik girdileri, varsayımların sayısı ya da türü) kayıt yeniden scenario-critic’e gider; `build_card.py` eski damgayla taslağı reddeder. Küçük düzeltme alanlarındaki bir değişiklik (başlık, problem ya da mekanizma metni, payda ifadesi, eklenen zorunlu uyarı ya da maruz kalma satırı) damgayı bozmaz; doğrulayıcı bütün kaydı her kurulumda yeniden denetler. mockup-reviewer `FIX`’i yalnızca mockup’ı ya da başlığın yazımını değiştirir; yeni taslak üretilir ve yeniden incelenir. Eski mockup damgası yeniden kullanılmaz.
 5. Nihai üretim reddedilirse kart elle yapılmaz ve taslak teslim edilmez; reddin adını verdiği kapı (eksik ya da eşleşmeyen damga) yeniden incelemeyle kapatılır.
 6. İnceleme raporları sohbete dökülmez; yalnızca kullanıcının bilmesi gereken bir kısıt tek cümleyle yazılır (kural 17).
-7. scenario-critic her FIX maddesini `[blocking]` ya da `[fixable]` diye işaretler ve ilk turda bütün düzeltilebilir eksikleri birlikte bildirir. Eleştirmenin tam tarif ettiği ve yeni bilgi gerektirmeyen bir `[fixable]` düzeltme üretici tarafından doğrudan uygulanır ve sonraki incelemede doğrulanır; kullanıcının vermediği bir bilgi gerekiyorsa kayıt düşürülmez, bilgi uydurulmaz, kritik varsayım olarak koşullu öneriye döner (kural 10).
+7. scenario-critic tek tur çalışır ve her bulguyu `[blocking]` ya da `[fixable]` diye işaretler, hepsini birlikte bildirir. Yalnızca `[fixable]` satırı olan kayıt o turda damgasını alır; ana oturum her satırı yazıldığı gibi uygular, doğrulayıcıyı yeniden çalıştırır ve eleştirmeni yeniden çağırmaz. Eleştirmen yalnızca `[blocking]` bulgu için, en fazla iki kez yeniden çağrılır. Kullanıcının vermediği bir bilgi gerekiyorsa kayıt düşürülmez, bilgi uydurulmaz, kritik varsayım olarak koşullu öneriye döner (kural 10); bu damganın kapsadığı bir değişikliktir ve yeniden incelenir.
 8. Kritik varsayımı olan bir kaydın kartı koşullu karttır (“KOŞULLU · doğrulama gerekli” bandı, asla nihai diye anılmaz) ve iki damgayı da taşır; kullanıcı bilgiyi doğrulayınca varsayım kaldırılır, kayıt yeniden incelenir, yeni taslak incelenir ve nihai kart bantsız yazılır.
 
 **Düşme koşulları:**
@@ -86,4 +86,26 @@ Bu dosyadaki girdiler tek bir alt komuta ait değildir; her akışta geçerli ol
 - `review` alanı olmayan ya da damgaları eşleşmeyen bir kayıttan üretilmiş kartın teslim edilmesi.
 - Elle yazılmış ya da tahmin edilmiş bir parmak izi; `FIX` ya da `RET` için damga yazılması.
 - Reddedilen nihai üretimin elle kart yapılarak aşılması.
-- Düzeltilebilir eksikleri ikinci turda parça parça çıkaran inceleme, ya da eksik bilgi yüzünden güçlü bir önerinin koşullu öneri yerine düşürülmesi veya bilginin uydurulması.
+- Düzeltilebilir eksikleri ikinci turda parça parça çıkaran inceleme, yalnızca `[fixable]` bulgu için eleştirmenin yeniden çağrılması, ya da eksik bilgi yüzünden güçlü bir önerinin koşullu öneri yerine düşürülmesi veya bilginin uydurulması.
+- Doğrulayıcının ya da `build_card.py`’nin bir alt ajanla çalıştırılması.
+
+**Girdi G (birden çok kritik varsayım, numaralı teyit listesi):** Kullanıcı bir B2B demo talep sayfasının ekran görüntüsünü paylaşır ve problemi söyler (“form dolduruluyor ama görüşme ayarlanmıyor”). Üç öneri de doğrulanmamış bir bilgiye dayanır: takvim aracının forma gömülüp gömülemeyeceği, iki açık sorunun satış ekibince kullanılıp kullanılmadığı, geri dönüş süresinin gerçek değeri. Daha yüksek türden açık soru yok.
+
+**Beklenen davranış:**
+1. Üç koşullu kart gelir (“KOŞULLU · doğrulama gerekli”), öncelikler en fazla Orta.
+2. `Koşullu` satırı turun tek sorusu olarak numaralı teyit listesine döner: “Koşullu (3), teyit eder misin: 1) 1 için takvimin forma gömülebildiği; 2) 2 için iki açık sorunun satışta kullanılmadığı; 3) 3 için gerçek geri dönüş süresi?” (kural 19’un dar istisnası). Ayrıca ikinci bir soru sorulmaz.
+3. Daha yüksek türden bir soru açık olsaydı (ör. kural 13’ün problem sorusu), liste soru olmaz; `Koşullu (3):` satırı olguları sıralar ve tek soru o yüksek tür olur.
+
+**Düşme koşulları:**
+- Liste dışında ikinci bir soru; varsayımların ayrı cümlelerle ayrı sorular olarak sorulması.
+- Daha yüksek türden soru varken listenin de soru olarak sorulması.
+
+**Girdi H (ekran envanteri dosyada, sonraki turda yeniden kullanılır):** `design` turu bir ödeme sayfası ekran görüntüsü için kartlar üretmiştir. Kullanıcı bir sonraki turda aynı ekran görüntüsünü göstererek “aynı sayfada bir test daha” ister.
+
+**Beklenen davranış:**
+1. İlk turda envanter çalışma klasörüne `.abtest-screen-<sayfa>.md` olarak yazılmıştır: ilk satırı ekran görüntüsünün dosya adı, ardından yukarıdan aşağı görünür öğeler ve birebir metinler; kişisel değerler yok (kural 15).
+2. İkinci turda envanter yeniden çıkarılmaz, o dosya okunur; iki denetçiye sayfa bağlamı olarak dosyanın yolu verilir. Yeni bir ekran görüntüsü gelseydi envanter yeniden çıkarılırdı.
+
+**Düşme koşulları:**
+- Aynı ekran görüntüsü için envanterin her turda baştan çıkarılması ya da dosyada kişisel bir değer bulunması.
+- Farklı bir ekran görüntüsünde eski envanterin kullanılması.

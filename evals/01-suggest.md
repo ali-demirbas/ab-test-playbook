@@ -7,12 +7,12 @@
 2. `cart-checkout.md` baştan sona okunmaz. Önce `grep -nE '^## |Değişken:'` ile başlıklar listelenir, yalnızca seçilen senaryo blokları okunur. Form tasarımına dair aday çıkarsa `forms-signup.md` için de aynı yol izlenir.
 3. En fazla 3 **güçlü aday** gelir (mekanizma kapısını geçen ve önceliği en az Orta olan); adaylar önceliğe göre sıralanır, her birinin önceliği kayıtta tek cümleyle gerekçelendirilir. Aynı davranışsal mekanizmaya dayanan iki öneri gelmez. Sayıyı tamamlamak için zayıf aday eklenmez; tek güçlü senaryo da tam bir yanıttır (kural 9).
 4. Sayfa paylaşılmadığı için her kaydın `problem` cümlesi sepet sayfası tipinde tipik olan engeli, kendi sayfada doğrulanacak bir varsayım olarak adlandırır. Sohbete bunun için ayrı satır yazılmaz; kartların temsili olduğu satırı yalnızca kullanıcı mockup’ı kendi sayfası sanabilecekse (sitesini ya da ürününü adlandırdıysa) yazılır.
-5. Her senaryo kısa bir kayıttır ve doğrudan `ab-test-card` ile HTML kart olarak üretilir (“arşivden” ya da “arşivden uyarlandı” etiketiyle). Sohbette senaryo başına yalnızca başlık, tek etiket satırı, mekanizmayı sade sözlerle anlatan tek `Neden:` satırı (en fazla 140 karakter, sayı ya da artış iddiası yok) ve kart dosyası kalır; KPI, guardrail, öncelik gerekçesi ya da üç kutu sohbete yazılmaz (kural 9).
+5. Her senaryo kısa bir kayıttır ve doğrudan `ab-test-card` ile HTML kart olarak üretilir (“arşivden” ya da “arşivden uyarlandı” etiketiyle). Sohbette senaryo başına yalnızca başlık, tek etiket satırı, mekanizmayı sade sözlerle anlatan tek `Neden:` satırı (en fazla 140 karakter, sayı ya da artış iddiası yok), tek `Doğru olmalı:` satırı (B’nin dayandığı inanç ve testten önce ucuz bir yoklama; örneklem ya da süre yok) ve kart dosyası kalır; KPI, guardrail, öncelik gerekçesi ya da üç kutu sohbete yazılmaz (kural 9).
 6. Marka kılavuzu **sorulmaz**: nötr palet kullanılır; ne kartta ne sohbette marka ya da yeniden renklendirme notu vardır (kural 12).
 7. Her kaydın birincil KPI’ı paydasıyla yazılır; guardrail “…memeli” kalıbındadır ve birincilin tümleyeni değildir. Kart bunları göstermez: yalnızca başlık, yan yana iki mockup, halka ve kısa etiketi vardır.
 8. Örnekler moda bağlamına yerelleştirilmiş (kulaklık örneği geçmiyor).
 9. `agents/mockup-reviewer` kart başına ayrı ayrı değil, turun bütün kartları için bir kez çalışır.
-10. `agents/scenario-critic` çağrısına eksiksiz girdi verilir (senaryo kaydı: başlık, problem, mekanizma, değişken ve fark türü, varyantlar, birincil KPI, guardrail, kaynak ve kanıt etiketi, gerekçeli öncelik, varsa uyarılar; ayrıca itiraz, sayfa bağlamı, test hafızası, açıkça istenen testler ve planlanan sohbetin tamamı); `FIX: input missing` dönmez. Aynı ekrana düşen iki öneri varsa sohbet bir kez, ikisinin sırayla ya da karşılıklı dışlanan trafikle koşacağını söyler. En fazla iki yeniden inceleme yapılır (kural 17).
+10. `agents/scenario-critic` çağrısına eksiksiz girdi verilir (senaryo kaydı: başlık, problem, mekanizma, değişken ve fark türü, varyantlar, birincil KPI, guardrail, kaynak ve kanıt etiketi, gerekçeli öncelik, varsa uyarılar; ayrıca itiraz, sayfa bağlamı, test hafızası, açıkça istenen testler ve planlanan sohbetin tamamı); `FIX: input missing` dönmez. Aynı ekrana düşen iki öneri varsa sohbet bunu bir kez, sıra satırıyla söyler (“Sıra: 1 → 2, aynı kullanıcılarda üst üste binmeden. 1 kazanırsa sıradaki …; kaybederse …”); bilgi başka satırda tekrarlanmaz. Eleştirmen tek tur çalışır: `[fixable]` satırlarını ana oturum olduğu gibi uygular ve damga geçerli kalır; eleştirmen yalnızca `[blocking]` bulgu için, en fazla iki kez yeniden çağrılır (kural 17).
 11. Tur en fazla bir soru sorar, tek cümleyle: backlog teklifi ya da "N güçlü aday daha var" teklifi, ikisi birden değil ve iki soru tek cümlede birleştirilmez (kural 19).
 
 **Düşme koşulları:**
@@ -49,20 +49,23 @@
 **Beklenen davranış:**
 1. Arşiv yalnızca `grep -nE '^## |Değişken:' <dosya>` ile listelenen başlıklar ve kısa listeye giren bloklar (başlık satırından sonraki `---` ayracına kadar, `python3 scripts/read_section.py <dosya> --line <başlık satırı>` ile) üzerinden okunur; hiçbir aşama dosyası baştan sona, bütün dosyalar hiçbir zaman okunmaz. KPI adı `kpi-glossary.md` içinde `grep` ile aranır, sözlük bütün olarak okunmaz. `methodology.md` turun başında okunmaz; bir karar gerektirdiğinde (düzenleme, erişilebilirlik, hassas alan, etik) yalnızca ilgili bölüm okunur. Bunlar araç çağrıları kaydında görülür.
 2. Tur en fazla 3 kayıt döndürür. Her kayıt `validate_scenario_json.py` ile hatasız geçer ve on bilgiyi taşır: soru biçiminde `title`, `problem`, tek cümlelik `mechanism`, `variable`, iki varyant ve `difference`, paydasıyla `primary_kpi`, `guardrail`, `source` (`adapted_from` ile) ve `evidence`, gerekçeli `priority`, yalnızca gerekiyorsa `warnings`. Kayıtta `detail` yoktur; üç kutu yeniden üretilmez.
-3. Sohbet her senaryo için tam olarak dört satırdır:
+3. Sohbet her senaryo için tam olarak beş satırdır:
    ```
    **1. <başlık>**
    Öncelik: Orta · Kaynak: arşivden · Kanıt: arşiv örüntüsü
    Neden: <mekanizma, sade sözlerle, tek cümle>
+   Doğru olmalı: <B’nin dayandığı inanç>; önce yokla: <ucuz yoklama>
    `<kart dosyası>`
    ```
-   Senaryo başına başka metin yazılmaz: KPI, öncelik gerekçesi, eleme gerekçesi ya da denetçi raporu yok (kullanıcı isterse verilir). Listeden sonra yalnızca geçerli olan satırlar gelir (ör. `Başlamadan önce:`, `Koşullu (<n>):`, sıralama satırı), her biri tek satır.
-4. 3’ten fazla güçlü aday varsa kalanların sayısı söylenir ve devam teklifi turun tek sorusu olur (kural 19, tür 8).
+   Senaryo başına başka metin yazılmaz: KPI, öncelik gerekçesi, eleme gerekçesi ya da denetçi raporu yok (kullanıcı isterse verilir). Kanıt etiketi kural 10’daki dört addan biridir (İngilizcede “industry observation”, asla “sector observation”). Listeden sonra yalnızca geçerli olan satırlar gelir (ör. `Başlamadan önce:`, `Koşullu (<n>):`, sıra satırı), her biri tek satır ve her bilgi bir kez.
+4. 3’ten fazla güçlü aday varsa sıralamada kalan en güçlü aday tek satırla adlandırılır (“Sıralamada kalan güçlü aday: <başlık>.”), kalanların sayısı söylenir ve devam teklifi turun tek sorusu olur (kural 19, tür 8). Daha yüksek türden bir soru varken de o satır yazılır.
+5. Paydaş özeti yalnızca 1. senaryo içindir; ardından tek satır gelir: “2 ve 3 için karar özetini istersen yazarım.”
 
 **Düşme koşulları:**
 - Bir arşiv dosyasının baştan sona ya da bütün aşama dosyalarının okunması; sözlüğün bütün olarak okunması.
 - 3’ten fazla kayıt ya da kullanıcı istemeden `detail` alanı dolu, üç kutusu yeniden yazılmış bir kayıt.
-- Sohbette senaryo başına dört satırdan fazlası.
+- Sohbette senaryo başına beş satırdan fazlası, `Doğru olmalı:` satırının eksik olması ya da örneklem, süre veya artış iddiası taşıması.
+- Sıralamada kalan güçlü adayın hiç anılmaması; birden çok senaryo varken diğerlerinin özetinin istenebileceğini söyleyen satırın olmaması.
 - Eleme gerekçelerinin ya da scenario-critic raporunun istenmeden sohbete dökülmesi.
 
 **Girdi E (kendi fikirleri ve fazlası, doğrudan çağrı):** Kullanıcı `/ab-test-suggest` ile yazar: “Sepet sayfamızda kupon kutusu açık duruyor, ödeme butonu da ilk ekranda görünmüyor. Ekip önce butonu sabitlemeyi, sonra kuponu bağlantı arkasına almayı düşünüyor; bunları değerlendir, başka ne test edebiliriz?”

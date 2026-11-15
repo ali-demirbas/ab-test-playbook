@@ -1,6 +1,6 @@
 # Eval 11: son denetim, yeniden koşulan dokuz senaryo
 
-3.0.0 öncesi son denetimde yeniden koşulan dokuz senaryonun beklenen ana davranışları. Her girdide genel ölçütler de geçerlidir: sohbette senaryo başına dört satır (başlık, etiket satırı, en fazla 140 karakterlik `Neden:` satırı, kart dosyası), listeden sonra yalnızca geçerli satırlar (scenario-critic planlanan sohbetin tamamını görür), en fazla bir soru ve tek cümle, Türkçe metinde uzun tire yok, iki damga olmadan kart yok.
+3.0.0 öncesi son denetimde yeniden koşulan dokuz senaryonun beklenen ana davranışları. Her girdide genel ölçütler de geçerlidir: sohbette senaryo başına beş satır (başlık, etiket satırı, en fazla 140 karakterlik `Neden:` satırı, `Doğru olmalı:` satırı, kart dosyası), listeden sonra yalnızca geçerli satırlar ve her bilgi bir kez (scenario-critic planlanan sohbetin tamamını görür), en fazla bir soru ve tek cümle (iki ya da daha çok kritik varsayımda numaralı teyit listesi tek soru sayılır), hiçbir dilde uzun tire yok, iki damga olmadan kart yok (hızlı kipin etiketli taslakları dışında).
 
 **Girdi A (kupon bağlantı arkasında):** Sepet sayfası, açık kupon kutusu; problem: kod aramaya gidiyorlar.
 - `difference: change`; B’de kutu “İndirim kodum var” bağlantısının arkasındadır, halka B’dedir.
@@ -45,4 +45,4 @@
 - Doğrulanmamış bir bilginin (fiyat gösterimi, adım adı, yasal amaç, telefon ihtiyacı) uydurulması ya da güçlü önerinin koşullu öneri yerine düşürülmesi; koşullu bir kaydın Yüksek önceliği.
 - Aylığa normalize abonelik değerinin tahsilat ya da gerçekleşmiş gelir gibi sunulması.
 - Düzeltilebilir bir erişilebilirlik eksiği yüzünden önerinin düşürülmesi ya da eksiklerin turlara bölünmesi.
-- Sohbette senaryo başına dört satırdan fazlası, iki soru ya da kanıtsız artış iddiası.
+- Sohbette senaryo başına beş satırdan fazlası, iki soru ya da kanıtsız artış iddiası.

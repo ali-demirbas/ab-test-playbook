@@ -334,6 +334,58 @@ class TestQuickDraft(CaseWithTmp):
         self.assertEqual(self.run_main(example(), *QUICK, "--draft").code, 2)
 
 
+def read(*parts):
+    with open(os.path.join(REPO_ROOT, *parts), encoding="utf-8") as fh:
+        return fh.read()
+
+
+def rule(n):
+    return [line for line in read("CLAUDE.md").splitlines() if line.startswith("%d. " % n)][0]
+
+
+class TestTextContract(unittest.TestCase):
+    """The binding text says what the code enforces."""
+
+    def test_rule_17_names_every_small_fix_field(self):
+        text = rule(17)
+        names = {"title": "title", "problem": "problem", "mechanism": "mechanism", "denominator": "denominators",
+                 "note": "evidence note", "rationale": "priority rationale", "source_note": "source note",
+                 "objection": "objection", "exposure": "exposure", "warnings": "warnings",
+                 "invariants": "invariants", "text": "an assumption's wording"}
+        fields = set(bc.CRITIC_SMALL_FIX) | {f for fs in bc.CRITIC_SMALL_FIX_IN.values() for f in fs} | \
+            {f for fs in bc.CRITIC_SMALL_FIX_ITEMS.values() for f in fs}
+        for field in fields - {"question"}:
+            self.assertIn(names[field], text, field)
+        for covered in ("variable", "variants", "primary KPI or guardrail choice", "number or type of assumptions"):
+            self.assertIn(covered, text)
+        self.assertIn("build_card.py --critic-stamp <record>", text)
+        self.assertIn("Scripts run in the main session", text)
+
+    def test_fast_mode_is_documented_where_it_runs(self):
+        self.assertIn("**Fast mode**", rule(17))
+        self.assertIn("fast mode's quick drafts", rule(9))
+        router, card = read("skills", "ab-test", "SKILL.md"), read("skills", "ab-test-card", "SKILL.md")
+        for word in ("hızlı", "taslak", "quick", "fast", "draft"):
+            self.assertIn('"%s"' % word, router)
+        self.assertIn("## Fast mode", card)
+        self.assertIn("build_card.py --quick", card)
+        self.assertIn(bc.QUICK_BANNER["tr"], card)
+        self.assertTrue(os.path.exists(os.path.join(REPO_ROOT, "evals", "12-fast-mode.md")))
+
+    def test_reviewers_run_on_sonnet(self):
+        for name in ("scenario-critic", "mockup-reviewer"):
+            head = read("agents", name + ".md").split("\n---", 1)[0]
+            self.assertIn("\nmodel: sonnet", head, name)
+
+    def test_the_critic_stamps_with_the_builder(self):
+        critic = read("agents", "scenario-critic.md")
+        self.assertIn("build_card.py --critic-stamp <record.json>", critic)
+        self.assertNotIn("validate_scenario_json.py --fingerprint", critic)
+
+    def test_no_em_dash_in_any_language(self):
+        self.assertIn("No em dash in any language", rule(7))
+
+
 def bc_template():
     with open(TEMPLATE_PATH, encoding="utf-8") as fh:
         return fh.read()
