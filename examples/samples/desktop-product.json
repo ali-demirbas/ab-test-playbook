@@ -71,7 +71,15 @@
   "review": {
     "scenario_critic": {
       "verdict": "PASS",
-      "fingerprint": "0dcc6acd208bbccc2941a4a7caac30a79fd1f8516b6d77f22313cc86f3df119f"
+      "fingerprint": "ad084c312792fe8fc879c72defd74745fde8e362a9bdc81dcfe764053bb0aec6",
+      "safeguards": {
+        "warnings": [
+          "market"
+        ],
+        "accessibility": [],
+        "invariants": 3,
+        "exposure": false
+      }
     },
     "mockup_reviewer": {
       "verdict": "PASS",

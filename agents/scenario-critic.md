@@ -80,7 +80,7 @@ PASS when the validator reports no error and no check, set-level ones included, 
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/build_card.py --critic-stamp <record.json>
 ```
 
-and return the JSON line it prints, unchanged (it covers the record except rule 17's small-fix fields, so the producer's `[fixable]` edits keep it valid). Never compute, shorten, guess or reuse a stamp, never give one with a FIX or RET; after a revision, rerun the command.
+and return the JSON line it prints, unchanged (it covers the record except rule 17's small-fix fields, so the producer's `[fixable]` edits keep it valid, and locks the warnings, accessibility criteria, invariants and exposure you passed: a later edit may add or reword, never remove one). Never compute, shorten, guess or reuse a stamp, never give one with a FIX or RET; after a revision, rerun the command.
 
 ## Return format
 

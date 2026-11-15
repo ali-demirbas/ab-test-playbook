@@ -3,8 +3,11 @@
 
 CLAUDE.md rule 17: one critic round; the main session applies the [fixable]
 findings and the stamp stays valid as long as only the small-fix fields
-changed (build_card.critic_core). A change to the test itself (variable,
-variants, KPI or guardrail choice, ...) still voids it. Fast mode (--quick)
+changed (build_card.critic_core). Warnings, invariants and exposure are
+add-only: the stamp records the safeguards the critic saw and a fix that
+removes or weakens one voids it (build_card.critic_safeguards). A change to
+the test itself (variable, variants, KPI or guardrail choice, ...) still voids
+it. Fast mode (--quick)
 builds an unreviewed preview that can never be stamped or finalized.
 """
 import contextlib
@@ -35,7 +38,16 @@ def example():
 
 def critic(sc):
     """The stamp scenario-critic writes on PASS: what --critic-stamp prints."""
-    return {"verdict": "PASS", "fingerprint": bc.critic_fingerprint(sc)}
+    return bc.critic_stamp(sc)
+
+
+def problems_after(base, change):
+    """critic_problems() of `base` stamped by the critic, then changed by `change`."""
+    sc = copy.deepcopy(base)
+    change(sc)
+    review = sc.get("review") if isinstance(sc.get("review"), dict) else {}
+    sc["review"] = dict(review, scenario_critic=critic(base))
+    return bc.critic_problems(sc)
 
 
 # Small fixes the main session may apply after the critic's one round.
@@ -102,15 +114,14 @@ def with_assumption(sc):
 
 
 class TestCriticCore(unittest.TestCase):
-    def test_small_fixes_keep_the_critic_fingerprint(self):
+    def test_small_fixes_keep_the_critic_stamp(self):
         base = with_assumption(example())
-        fp = bc.critic_fingerprint(base)
         for name, fix in SMALL_FIXES.items():
             with self.subTest(fix=name):
                 sc = copy.deepcopy(base)
                 fix(sc)
                 self.assertNotEqual(json.dumps(sc, sort_keys=True), json.dumps(base, sort_keys=True))
-                self.assertEqual(bc.critic_fingerprint(sc), fp)
+                self.assertEqual(problems_after(base, fix), [])
 
     def test_a_change_to_the_test_voids_it(self):
         base = with_assumption(example())
@@ -119,7 +130,10 @@ class TestCriticCore(unittest.TestCase):
             with self.subTest(change=name):
                 sc = copy.deepcopy(base)
                 change(sc)
-                self.assertNotEqual(bc.critic_fingerprint(sc), fp)
+                self.assertNotEqual(bc.critic_fingerprint(sc, bc.critic_safeguards(base)), fp)
+                problems = problems_after(base, change)
+                self.assertEqual(len(problems), 1)
+                self.assertIn("outside the small-fix fields", problems[0])
 
     def test_it_is_never_the_whole_record_fingerprint(self):
         sc = example()
@@ -141,6 +155,176 @@ class TestCriticCore(unittest.TestCase):
                      "priority", "assumptions"):
             self.assertIn(name, bc.critic_core(example()) if name != "assumptions" else
                           bc.critic_core(with_assumption(example())))
+
+
+def guarded():
+    """The example with safeguards the validator doesn't require: two more warnings and exposure."""
+    sc = example()
+    sc["warnings"].append({"type": "market", "text": "Kupon alışkanlığı pazara göre değişir; sonuç başka pazara "
+                                                     "taşınmaz."})
+    sc["warnings"].append({"type": "privacy", "text": "Kişiye özel bir kupon kodu kayıtlara ve analitiğe yazılmaz."})
+    sc["exposure"] = "Sepet sayfasına ulaşan kullanıcılar; tetikleyici iki kolda aynı noktada kaydedilir."
+    return sc
+
+
+def a11y_text(sc):
+    return sc["warnings"][0]["text"]
+
+
+# Every safeguard kind removed or weakened: each voids the stamp, even where the validator has no rule against it.
+SAFEGUARD_REMOVALS = {
+    "a warning removed": (lambda sc: sc["warnings"].pop(1), "'market' warnings (1 reviewed, 0 now)"),
+    "a warning retyped": (lambda sc: sc["warnings"][2].update(type="market"), "'privacy' warnings (1 reviewed, 0 now)"),
+    "the accessibility warning removed": (lambda sc: sc["warnings"].pop(0),
+                                          "'accessibility' warnings (1 reviewed, 0 now)"),
+    "an accessibility criterion removed": (lambda sc: sc["warnings"][0].update(
+        text=a11y_text(sc).replace(", açılınca odağı kupon alanına taşımalı", "")), "taking focus when it opens"),
+    "the contrast weakened": (lambda sc: sc["warnings"][0].update(text=a11y_text(sc).replace("4.5:1", "3:1")),
+                              "text contrast (at least 4.5:1)"),
+    "the touch target weakened": (lambda sc: sc["warnings"][0].update(
+        text=a11y_text(sc).replace("44×44 pt", "24×24 pt")), "touch target"),
+    "an invariant removed": (lambda sc: sc["invariants"].pop(), "invariants (3 reviewed, 2 now)"),
+    "an invariant blanked": (lambda sc: sc["invariants"].__setitem__(0, " "), "invariants (3 reviewed, 2 now)"),
+    "the invariants removed": (lambda sc: sc.pop("invariants"), "invariants (3 reviewed, 0 now)"),
+    "exposure removed": (lambda sc: sc.pop("exposure"), "the exposure statement"),
+    "exposure blanked": (lambda sc: sc.update(exposure="  "), "the exposure statement"),
+}
+# Fixes that add or reword: the stamp holds.
+SAFEGUARD_KEEPS = {
+    "a warning reworded": lambda sc: sc["warnings"][1].update(text="Sonuç yalnızca bu pazar için geçerlidir."),
+    "the accessibility warning reworded, every criterion kept": lambda sc: sc["warnings"][0].update(
+        text="Bağlantı klavyeyle açılabilmeli, ekran okuyucu onu “İndirim kodum var” diye okumalı, açılınca odak "
+             "kupon alanına geçmeli; dokunma alanı en az 44×44 pt, metin kontrastı en az 4.5:1."),
+    "an accessibility criterion added": lambda sc: sc["warnings"][0].update(
+        text=a11y_text(sc) + " Kupon alanı Esc ile kapanır."),
+    "warnings reordered": lambda sc: sc["warnings"].reverse(),
+    "an invariant reworded": lambda sc: sc["invariants"].__setitem__(0, "Geçerli bir kod iki kolda da aynı "
+                                                                        "adımlarla uygulanır."),
+    "an invariant added": lambda sc: sc["invariants"].append("Kupon alanı iki kolda da aynı karakter sınırını alır."),
+    "invariants reordered": lambda sc: sc["invariants"].reverse(),
+    "exposure reworded": lambda sc: sc.update(exposure="Sepet sayfasını açan kullanıcılar, iki kolda aynı tetikle."),
+}
+
+
+class TestAddOnlySafeguards(unittest.TestCase):
+    def test_the_stamp_records_what_the_critic_saw(self):
+        stamp = critic(guarded())
+        self.assertEqual(stamp["safeguards"], {
+            "warnings": ["accessibility", "market", "privacy"],
+            "accessibility": ["touch_target", "text_contrast", "keyboard", "screen_reader", "focus_on_open"],
+            "invariants": 3, "exposure": True})
+        self.assertEqual(stamp["fingerprint"], bc.critic_fingerprint(guarded()))
+
+    def test_removing_or_weakening_any_safeguard_voids_the_stamp(self):
+        base = guarded()
+        for name, (change, named) in SAFEGUARD_REMOVALS.items():
+            with self.subTest(change=name):
+                problems = problems_after(base, change)
+                self.assertEqual(len(problems), 1, problems)
+                self.assertIn("A small fix removed or weakened what scenario-critic reviewed", problems[0])
+                self.assertIn(named, problems[0])
+
+    def test_adding_or_rewording_keeps_it(self):
+        base = guarded()
+        for name, change in SAFEGUARD_KEEPS.items():
+            with self.subTest(change=name):
+                self.assertEqual(problems_after(base, change), [])
+
+    def test_a_removal_the_validator_allows_is_still_refused(self):
+        # The point of the floor: these deletions break no validator rule, only the critic's review.
+        schema = vsj.load_schema()
+        for name in ("a warning removed", "a warning retyped", "an accessibility criterion removed",
+                     "an invariant removed", "exposure removed"):
+            with self.subTest(change=name):
+                sc = guarded()
+                SAFEGUARD_REMOVALS[name][0](sc)
+                self.assertEqual(vsj.validate(sc, schema, "tr"), [])
+                self.assertTrue(problems_after(guarded(), SAFEGUARD_REMOVALS[name][0]))
+
+    def test_a_removal_plus_an_addition_is_still_a_removal(self):
+        def swap(sc):
+            sc["warnings"].pop(2)  # privacy out
+            sc["warnings"].append({"type": "feasibility", "text": "Kupon servisi iki kolda da aynı yanıtı verir."})
+            sc["invariants"].append("Kupon alanı iki kolda da aynı karakter sınırını alır.")
+        problems = problems_after(guarded(), swap)
+        self.assertEqual(len(problems), 1)
+        self.assertIn("'privacy' warnings", problems[0])
+
+    def test_every_removal_is_named(self):
+        def strip(sc):
+            sc["warnings"].pop(1)
+            sc["invariants"].pop()
+            sc.pop("exposure")
+        problem = problems_after(guarded(), strip)[0]
+        for named in ("'market' warnings", "invariants (3 reviewed, 2 now)", "the exposure statement"):
+            self.assertIn(named, problem)
+
+    def test_turkish_message(self):
+        sc = guarded()
+        sc["review"] = {"scenario_critic": critic(guarded())}
+        sc["warnings"].pop(1)
+        sc["invariants"].pop()
+        sc["warnings"][0]["text"] = a11y_text(sc).replace(", açılınca odağı kupon alanına taşımalı", "")
+        problem = bc.critic_problems(sc, "tr")[0]
+        self.assertTrue(problem.startswith("Küçük bir düzeltme scenario-critic'in incelediği bir güvenceyi"))
+        for named in ("'market' türünde uyarı (incelenen 1, şimdi 0)", "açılınca odağı alması",
+                      "değişmezler (incelenen 3, şimdi 2)"):
+            self.assertIn(named, problem)
+
+    def test_the_fingerprint_covers_the_recorded_safeguards(self):
+        # Lowering the stamp's own floor to fit a deletion breaks its fingerprint.
+        sc = guarded()
+        stamp = critic(sc)
+        sc["warnings"].pop(1)
+        stamp["safeguards"]["warnings"].remove("market")
+        sc["review"] = {"scenario_critic": stamp}
+        problems = bc.critic_problems(sc)
+        self.assertEqual(len(problems), 1)
+        self.assertIn("outside the small-fix fields", problems[0])
+
+    def test_a_malformed_floor_is_stale(self):
+        for bad in ({"warnings": [], "accessibility": [], "invariants": "3", "exposure": True},
+                    {"warnings": [], "accessibility": ["nope"], "invariants": 3, "exposure": True},
+                    {"warnings": []}, []):
+            with self.subTest(safeguards=bad):
+                sc = guarded()
+                sc["review"] = {"scenario_critic": dict(critic(sc), safeguards=bad)}
+                self.assertIn("outside the small-fix fields", bc.critic_problems(sc)[0])
+
+    def test_a_stamp_without_safeguards_matches_only_the_exact_record(self):
+        sc = guarded()
+        sc["review"] = {"scenario_critic": {"verdict": "PASS", "fingerprint": bc.critic_fingerprint(sc)}}
+        problem = bc.critic_problems(sc)[0]
+        self.assertIn("this stamp has no safeguards", problem)
+        sc["review"] = {"scenario_critic": {"verdict": "PASS", "fingerprint": vsj.record_fingerprint(sc)}}
+        self.assertEqual(bc.critic_problems(sc), [])
+        sc["invariants"].append("Kupon alanı iki kolda da aynı karakter sınırını alır.")
+        self.assertIn("this stamp has no safeguards", bc.critic_problems(sc)[0])
+
+    def test_the_schema_names_the_same_keys(self):
+        with open(os.path.join(REPO_ROOT, "templates", "scenario.schema.json"), encoding="utf-8") as fh:
+            schema = json.load(fh)
+        floor = schema["$defs"]["criticStamp"]["properties"]["safeguards"]["properties"]
+        self.assertEqual(floor["accessibility"]["items"]["enum"], list(bc.A11Y_SAFEGUARD_KEYS))
+        self.assertEqual(floor["warnings"]["items"]["enum"],
+                         schema["properties"]["warnings"]["items"]["properties"]["type"]["enum"])
+        self.assertEqual(schema["properties"]["review"]["properties"]["scenario_critic"],
+                         {"$ref": "#/$defs/criticStamp"})
+
+    def test_each_key_names_its_criterion(self):
+        labels = {key: c[1] for key, c in bc.a11y_safeguard_criteria()}
+        for key, label in (("touch_target", "touch target"), ("text_contrast", "text contrast"),
+                           ("keyboard", "keyboard access"), ("screen_reader", "a name screen readers announce"),
+                           ("focus_on_open", "taking focus when it opens"), ("close_control", "a visible close"),
+                           ("esc_closes", "closing with Esc"), ("pause", "a way to pause it")):
+            self.assertTrue(labels[key].startswith(label), (key, labels[key]))
+
+    def test_a_printed_stamp_validates(self):
+        sc = guarded()
+        sc["review"] = {"scenario_critic": critic(sc)}
+        self.assertEqual(vsj.validate(sc, vsj.load_schema(), "en"), [])
+        sc["review"]["scenario_critic"]["safeguards"]["extra"] = 1
+        self.assertTrue(vsj.validate(sc, vsj.load_schema(), "en"))
 
 
 class Run:
@@ -266,6 +450,27 @@ class TestDraftGateAfterSmallFixes(CaseWithTmp):
         self.assertEqual(self.run_main(sc, *DRAFT).code, 0)
         sc["mechanism"] += " "
         self.assertEqual(self.run_main(sc, *DRAFT).code, 1)
+
+    def test_deleting_a_safeguard_the_critic_saw_refuses_the_draft(self):
+        sc = guarded()
+        sc["review"] = {"scenario_critic": critic(sc)}
+        sc["warnings"].pop(1)  # the validator doesn't require the market warning; the critic saw it
+        r = self.run_main(sc, *DRAFT)
+        self.assertEqual(r.code, 1)
+        self.assertIn("review stamps", r.stderr)
+        self.assertNotIn("record validation", r.stderr)
+        self.assertIn("A small fix removed or weakened what scenario-critic reviewed: 'market' warnings "
+                      "(1 reviewed, 0 now)", r.stderr)
+        self.assertIsNone(r.text())
+
+    def test_adding_and_rewording_safeguards_keeps_the_draft_buildable(self):
+        sc = guarded()
+        sc["review"] = {"scenario_critic": critic(sc)}
+        sc["warnings"][1]["text"] = "Sonuç yalnızca bu pazar için geçerlidir."
+        sc["invariants"].append("Kupon alanı iki kolda da aynı karakter sınırını alır.")
+        sc["exposure"] = "Sepet sayfasını açan kullanıcılar, iki kolda aynı tetikle."
+        r = self.run_main(sc, *DRAFT)
+        self.assertEqual(r.code, 0, r.stderr)
 
     def test_turkish_stale_message(self):
         sc = self.stamped()

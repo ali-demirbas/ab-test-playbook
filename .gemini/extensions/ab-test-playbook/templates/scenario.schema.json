@@ -67,6 +67,77 @@
           "description": "sha256, 64 lowercase hex characters."
         }
       }
+    },
+    "criticStamp": {
+      "type": "object",
+      "description": "scenario-critic's PASS: the JSON build_card.py --critic-stamp prints. Its fingerprint covers the record except the small-fix fields, and the safeguards it saw; a later small fix may add to or reword those safeguards, never remove one (a whole-record fingerprint, validate_scenario_json.py --fingerprint, needs no safeguards and matches only the exact record).",
+      "required": [
+        "verdict",
+        "fingerprint"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "verdict": {
+          "type": "string",
+          "enum": [
+            "PASS"
+          ]
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "sha256, 64 lowercase hex characters."
+        },
+        "safeguards": {
+          "type": "object",
+          "description": "What the critic saw: every warning's type, the accessibility criteria stated as pass/fail, the number of invariants, whether exposure is stated.",
+          "required": [
+            "warnings",
+            "accessibility",
+            "invariants",
+            "exposure"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "warnings": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "accessibility",
+                  "regulation",
+                  "feasibility",
+                  "privacy",
+                  "market"
+                ]
+              }
+            },
+            "accessibility": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "touch_target",
+                  "text_contrast",
+                  "keyboard",
+                  "screen_reader",
+                  "focus_on_open",
+                  "close_control",
+                  "esc_closes",
+                  "pause"
+                ]
+              }
+            },
+            "invariants": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "exposure": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
     }
   },
   "properties": {
@@ -448,10 +519,10 @@
     "review": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Rule 17: the reviewers' PASS stamps. scenario_critic carries the record fingerprint (validate_scenario_json.py --fingerprint), mockup_reviewer the stamp of the final card it reviewed as a draft (printed by build_card.py --stamp <draft>, from the card's bytes, card.mockup_basis and the manifest). Optional here; the draft build requires the critic stamp and the final build both, each matching what it is about to build. Left out of the record fingerprint.",
+      "description": "Rule 17: the reviewers' PASS stamps. scenario_critic carries the JSON build_card.py --critic-stamp prints (criticStamp), mockup_reviewer the stamp of the final card it reviewed as a draft (printed by build_card.py --stamp <draft>, from the card's bytes, card.mockup_basis and the manifest). Optional here; the draft build requires the critic stamp and the final build both, each matching what it is about to build. Left out of the record fingerprint.",
       "properties": {
         "scenario_critic": {
-          "$ref": "#/$defs/reviewStamp"
+          "$ref": "#/$defs/criticStamp"
         },
         "mockup_reviewer": {
           "$ref": "#/$defs/reviewStamp"

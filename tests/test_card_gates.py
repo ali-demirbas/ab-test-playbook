@@ -530,11 +530,13 @@ class TestShippedExampleIsReviewed(unittest.TestCase):
     """The repo's example and samples went through the real pipeline: both stamps exist and match."""
 
     def test_the_critic_stamp_matches_the_shipped_record(self):
-        for path, _ in SHIPPED:
+        for path in [p for p, _ in SHIPPED] + [os.path.join(REPO_ROOT, "docs", "demo", "scenario-card-en.json")]:
             with self.subTest(os.path.basename(path)):
                 sc = _load(path)
                 self.assertEqual(sc["review"]["scenario_critic"]["verdict"], "PASS")
-                self.assertEqual(bc.stamp_problems(sc, "scenario_critic", critic_stamp(sc)["fingerprint"]), [])
+                self.assertEqual(bc.critic_problems(sc), [])
+                # Stamped by --critic-stamp: the safeguards it printed are the record's own.
+                self.assertEqual(sc["review"]["scenario_critic"], bc.critic_stamp(sc))
 
     def test_the_mockup_stamp_matches_the_shipped_card(self):
         for path, _ in SHIPPED:
