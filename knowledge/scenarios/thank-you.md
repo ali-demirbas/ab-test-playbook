@@ -207,7 +207,7 @@ Bir deneyim büyük ölçüde en yoğun anına ve nasıl bittiğine göre hatır
 - Tekrar Satın Alma Oranı (60 gün): Onay ekranına ulaşan alıcıların ilan edilen pencerede (ör. 60 gün) yeniden sipariş verme oranı artıyor mu?
 - Marka Algısı (anket): İkincil sinyal; deneyimin genel algısı standart ekrana göre daha olumlu mu? Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Sosyal Paylaşım Oranı: Kullanıcı deneyimi kendiliğinden paylaşıyor mu?
-- Sipariş Bilgisi Görünürlüğü: Kutlama anı asıl sipariş veya teslimat bilgisinin görünürlüğünü azaltmamalı.
+- Sipariş Bilgisi Görünürlüğü (anket): Kutlama anı asıl sipariş veya teslimat bilgisinin görünürlüğünü azaltmamalı. Payda anketi yanıtlayan ziyaretçidir; yanıt oranı (yanıt veren / atanan ziyaretçi) iki kolda da izlenir, tanısal sinyaldir.
 - Sayfa Yüklenme Süresi: Animasyon veya ek görsel sayfayı yavaşlatmamalı.
 
 **Yapılmaması gerekenler**
@@ -232,7 +232,7 @@ An experience is remembered largely by its peak and by how it ends; even if the 
 - Repeat Purchase Rate (60 days): Does the share of buyers reaching the confirmation screen who place another order within the stated window (for example 60 days) increase?
 - Brand Perception (survey): A secondary signal; is the overall impression of the experience more positive than with the standard screen? The denominator is the visitors who answer the survey; the response rate (respondents / assigned visitors) is tracked in both arms as a diagnostic signal.
 - Social Share Rate: Do users share the experience spontaneously?
-- Order Information Visibility: The celebration moment must not reduce the visibility of the actual order or delivery information.
+- Order Information Visibility (survey): The celebration moment must not reduce the visibility of the actual order or delivery information. The denominator is the visitors who answer the survey; the response rate (respondents / assigned visitors) is tracked in both arms as a diagnostic signal.
 - Page Load Time: The animation or extra visuals must not slow the page down.
 
 **What not to do**

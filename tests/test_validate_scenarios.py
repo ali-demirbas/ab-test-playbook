@@ -25,12 +25,33 @@ DEFAULT_VARIABLE = "Değişken: Buton rengi · Fark: değiştir"
 DEFAULT_TAG = ("Etiket: id=cc-001 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=düşük · "
                "durum=güncel · tarih=2026-11")
 DEFAULT_EN = "EN: Is this a valid scenario title?"
+DEFAULT_EN_VARIABLE = "EN-Variable: Button color"
+
+
+def english_body(n_tests, n_kpis, n_donts, notes=()):
+    """A parallel English body (FORMAT.md → English) with the Turkish boxes' item counts.
+
+    notes: the English note lines (“> **Market note:** …”) that translate the Turkish ones."""
+    tests = [f"- Case {i + 1}: Does variant B change behavior in case {i + 1}?" for i in range(n_tests - 1)]
+    tests.append("- Device: Is the result the same on mobile and desktop?")
+    kpis = ["- Conversion Rate (CR): Does the change raise purchases?"]
+    kpis += [f"- Metric {i + 1} Rate: This metric must not drop in the test." for i in range(n_kpis - 1)]
+    donts = [f"- Don’t change a second element in the same test (case {i + 1})." for i in range(n_donts)]
+    body = ("### EN\n\nAn intro paragraph that translates the Turkish one.\n\n"
+            "**What to test**\n" + "\n".join(tests) + "\n\n"
+            "**KPIs to track**\n" + "\n".join(kpis) + "\n\n"
+            "**What not to do**\n" + "\n".join(donts) + "\n")
+    return body + "".join("\n" + n + "\n" for n in notes)
 
 
 def make_scenario(title="Geçerli bir senaryo başlığı mı?",
                   tests=None, kpis=None, donts=None, variable_line=DEFAULT_VARIABLE,
                   intro="Açıklama paragrafı burada yeterince uzun duruyor.",
-                  tag_line=DEFAULT_TAG, en_line=DEFAULT_EN):
+                  tag_line=DEFAULT_TAG, en_line=DEFAULT_EN, en_variable=DEFAULT_EN_VARIABLE,
+                  notes=(), en_notes=(), en_body=True):
+    """A complete archive block: head, Turkish body, then (en_body=True) the English body.
+
+    notes / en_notes: note lines placed after the Turkish boxes and after the English ones."""
     tests = tests or [
         "- Konum: Öğenin konumu dönüşümü değiştiriyor mu?",
         "- Metin: Hangi ifade daha çok tıklanıyor peki?",
@@ -53,13 +74,17 @@ def make_scenario(title="Geçerli bir senaryo başlığı mı?",
         "- Renk değişirken buton metnini de yeniden yazmayın lütfen.",
     ]
     head = f"## {title}\n\n"
-    for line in (variable_line, tag_line, en_line):
+    for line in (variable_line, tag_line, en_line, en_variable):
         if line:
             head += line + "\n\n"
-    return (head + intro + "\n\n"
+    text = (head + intro + "\n\n"
             "**Test edilmesi gerekenler**\n" + "\n".join(tests) + "\n\n"
             "**Takip edilecek ana KPI’lar**\n" + "\n".join(kpis) + "\n\n"
             "**Yapılmaması gerekenler**\n" + "\n".join(donts) + "\n")
+    text += "".join("\n" + n + "\n" for n in notes)
+    if en_body:
+        text += "\n" + english_body(len(tests), len(kpis), len(donts), en_notes)
+    return text
 
 
 def first(text):

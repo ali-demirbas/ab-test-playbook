@@ -385,7 +385,7 @@ Her ek form alanı bir sürtünme noktasıdır. Posta koduyla otomatik il/ilçe 
 
 **Takip edilecek ana KPI’lar**
 - Adım Tamamlama Oranı (adres adımı): Adres adımına ulaşan kullanıcıların (iki kolda aynı tetikleyici) adımı bitirme oranı artıyor mu?
-- Ortalama Doldurma Süresi: Kısalıyor mu?
+- Form Doldurma Süresi: Kısalıyor mu?
 - Sipariş Tamamlama Oranı: Zincirin sonuna yansıyor mu?
 - Hatalı Adres / Teslimat Hatası: Artmamalı; en kritik guardrail.
 - Destek Talebi: Adres düzeltme talepleri yükselmemeli.
@@ -410,7 +410,7 @@ Every extra form field is a friction point. Filling in city and district automat
 
 **KPIs to track**
 - Step Completion Rate (address step): Does the share of users who reach the address step (same trigger in both arms) and finish it rise?
-- Median Form Fill Time: Does it get shorter?
+- Form Fill Time: Does it get shorter?
 - Checkout Completion Rate: Does it carry through to the end of the chain?
 - Wrong Address / Delivery Failure Rate: Must not rise; the most critical guardrail.
 - Support Contact Rate: Address correction requests must not rise.
@@ -933,7 +933,7 @@ Formdaki hangi alanın zorunlu, hangisinin isteğe bağlı olduğu genelde belir
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Form adımına atanan kullanıcıların formu gönderme oranı artıyor mu? Birincil metrik.
 - Doğrulama Hatası Oranı: Yükselmemeli; yanlış doldurulan/boş bırakılan zorunlu alan azalmalı.
-- Ortalama Doldurma Süresi: Kısalıyor mu?
+- Form Doldurma Süresi: Kısalıyor mu?
 - Alan Bazlı Terk Oranı: Hangi alanda kayıp azalıyor?
 - Destek Talebi: Form doldurmayla ilgili talepler artmamalı.
 
@@ -959,7 +959,7 @@ It is usually unclear which form field is required and which is optional; users 
 **KPIs to track**
 - Form Completion Rate: Does the rate at which users assigned to the form step submit the form rise? The primary metric.
 - Validation Error Rate: Must not rise; required fields filled in wrongly or left blank should decrease.
-- Median Form Fill Time: Does it get shorter?
+- Form Fill Time: Does it get shorter?
 - Field-Level Abandonment Rate: At which field does the loss fall?
 - Support Contact Rate: Requests about filling in the form must not rise.
 
@@ -1140,7 +1140,7 @@ When a user makes a selection (size, quantity, delivery day), showing clearly th
 
 **KPIs to track**
 - Checkout Completion Rate: Does confirmation feedback raise completion?
-- Wrong-Selection Rate: Do orders with the wrong variant decrease?
+- Wrong Selection Rate: Do orders with the wrong variant decrease?
 - Repeat Click Rate: Does repeated clicking on the same option decrease?
 - Return Rate (30 days): Returns caused by a wrong selection must not rise.
 - Accessibility Check: The confirmation must not be given by color alone, and must not go unannounced to a screen reader.

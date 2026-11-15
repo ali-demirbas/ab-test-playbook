@@ -1,6 +1,6 @@
 # Archive format
 
-Each stage file (`cart-checkout.md`, …) holds scenario blocks: a `## ` title, a fixed head of one-line fields, the Turkish body, and, once translated, an English body. A block ends at its `---` line. `scripts/validate_scenarios.py` checks everything below; this file holds no scenarios and the validator skips it.
+Each stage file (`cart-checkout.md`, …) holds scenario blocks: a `## ` title, a fixed head of one-line fields, the Turkish body and the English body. A block ends at its `---` line. `scripts/validate_scenarios.py` checks everything below; this file holds no scenarios and the validator skips it.
 
 ### Head
 
@@ -11,7 +11,7 @@ Four lines in this order under the title (the title is a question), a blank line
     EN: <the English title, a question>
     EN-Variable: <the English variable>
 
-`EN-Variable:` arrives with the full translation; every other line is required. The tag keys keep this order and every key is present.
+Every line is required. The tag keys keep this order and every key is present.
 
 | Key | Values | Meaning |
 |---|---|---|
@@ -42,14 +42,14 @@ An intro paragraph (the concrete obstacle, the risk on each side, what stays equ
 
 The archive is one source in two languages. The `EN:` title is the stable English name of the scenario: English searches, history and backlog rows match it, and it is never re-translated per turn. Tag values and `Fark` stay Turkish data; English output renders them through the tables above (`değiştir` change, `ekle` add, `taşı` move, `kaldır` remove).
 
-The full translation adds `EN-Variable:` to the head and an English body at the end of the block, after a line holding only `### EN`:
+Every block carries `EN-Variable:` in its head and an English body at its end, after a line holding only `### EN`:
 
 - the intro paragraph, then `**What to test**`, `**KPIs to track**` and `**What not to do**`, each with as many items as its Turkish box, in the same order;
 - test items keep the `Label: question?` shape, `Sonraki test:` becomes `Next test:`;
 - the primary KPI is the glossary's English name (`kpi-glossary.md`, last column) and a guardrail says “must not”;
 - notes are translated (`Pazar notu` → `Market note`, `Ölçüm notu` → `Measurement note`, `Güncellik notu` → `Freshness note`), and a reference to another scenario quotes its `EN:` title followed by “scenario”.
 
-A Turkish turn reads a block up to `### EN`; an English turn reads the head and everything after it. Blocks with and without an English body are both valid. A translator works on one file, leaves the Turkish text untouched, writes curly quotes and apostrophes (’ “ ”), and runs `python3 scripts/validate_scenarios.py <file>` before handing back.
+A Turkish turn reads a block up to `### EN`; an English turn reads the head and everything after it. The English body is required: the validator refuses a block without one. A new or edited block is written in both languages, with curly quotes and apostrophes (’ “ ”), and `python3 scripts/validate_scenarios.py <file>` runs before hand-off.
 
 ### Example
 

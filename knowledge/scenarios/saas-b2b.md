@@ -204,7 +204,7 @@ Her ek form alanı bir sürtünme noktasıdır. Alan sayısını azaltmak talep 
 **Takip edilecek ana KPI’lar**
 - Nitelikli Fırsat Oranı (atanan ziyaretçi başına): Satış ekibinin kabul ettiği fırsatların (SQL) atanan ziyaretçiye oranı artıyor mu?
 - Form Tamamlama Oranı: Form sayfasına atanan ziyaretçilerin gönderme oranı.
-- Ortalama Doldurma Süresi: Kısalıyor mu?
+- Form Doldurma Süresi: Kısalıyor mu?
 - Fırsat Kapanış Oranı: Az bilgiyle gelen talep satışa dönüyor mu?
 - Satış Ekibi Ön Eleme Süresi: Eksik bilgi iş yükü yaratmamalı.
 
@@ -229,7 +229,7 @@ Every extra form field is a friction point. Reducing the number of fields can ra
 **KPIs to track**
 - Qualified Opportunity Rate (per assigned visitor): Does the ratio of opportunities accepted by the sales team (SQL) to assigned visitors rise?
 - Form Completion Rate: The submission rate of visitors assigned to the form page.
-- Median Form Fill Time: Does it get shorter?
+- Form Fill Time: Does it get shorter?
 - Opportunity Win Rate: Do requests that arrive with less information turn into sales?
 - Sales Pre-Qualification Time: Missing information must not create extra workload.
 
@@ -506,7 +506,7 @@ Tek sayfa form tüm alanları baştan gösterir; ne kadar iş olduğu açıktır
 **Takip edilecek ana KPI’lar**
 - Form Tamamlama Oranı: Baştan sona bitirenlerin oranı.
 - Adım Bazlı Terk Oranı: Hangi adımda kayıp yaşanıyor?
-- Ortalama Doldurma Süresi: Toplam süre kısalıyor mu?
+- Form Doldurma Süresi: Toplam süre kısalıyor mu?
 - Nitelikli Fırsat Oranı: Düşmemeli; kolaylaşan form talep kalitesini eritmemeli.
 - Forma Geri Dönüş Oranı: Yarım bırakan kullanıcı formu tamamlamak için geri dönüyor mu?
 
@@ -531,7 +531,7 @@ A single-page form shows all fields up front; how much work there is is clear, b
 **KPIs to track**
 - Form Completion Rate: The share of those who finish from start to end.
 - Step-Level Abandonment Rate: At which step is the loss happening?
-- Median Form Fill Time: Does the total time get shorter?
+- Form Fill Time: Does the total time get shorter?
 - Qualified Opportunity Rate: It must not drop; a form that is easier must not erode request quality.
 - Return-to-Form Rate: Do users who left halfway come back to complete the form?
 
@@ -686,7 +686,7 @@ Bir lead formundaki “şirket büyüklüğü” veya “yıllık bütçe” gib
 - Alan Doldurma Oranı: Gerekçe eklenen alanın doldurulma oranı artıyor mu?
 - Form Tamamlama Oranı: Genel gönderim oranı düşmemeli.
 - Nitelikli Fırsat Oranı: Toplanan ek bilginin satış ekibine gerçek faydası var mı?
-- Ortalama Doldurma Süresi: Gerekçe okuma yükü süreyi kabul edilemez ölçüde uzatmamalı.
+- Form Doldurma Süresi: Gerekçe okuma yükü süreyi kabul edilemez ölçüde uzatmamalı.
 - Alan Bazlı Terk Oranı: Gerekçe eklenen alanda bırakma artmamalı.
 
 **Yapılmaması gerekenler**
@@ -710,7 +710,7 @@ A field on a lead form such as “company size” or “annual budget” delays 
 - Field Fill Rate: Does the fill rate of the field with the rationale added rise?
 - Form Completion Rate: The overall submission rate must not drop.
 - Qualified Opportunity Rate: Is the extra information collected of real use to the sales team?
-- Median Form Fill Time: The reading load of the rationale must not lengthen the time to an unacceptable degree.
+- Form Fill Time: The reading load of the rationale must not lengthen the time to an unacceptable degree.
 - Field-Level Abandonment Rate: Abandonment at the field with the rationale added must not rise.
 
 **What not to do**

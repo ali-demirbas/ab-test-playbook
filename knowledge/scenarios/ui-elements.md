@@ -498,7 +498,7 @@ Tekrarlanan bir işlemi tek dokunuşa indirmek (tekrar sipariş, son aramayı y�
 - Ana Aksiyon Tamamlama Oranı: İşlem tamamlanması artıyor mu?
 - Kısayol Kullanım Oranı: Kısayol gerçekten kullanılıyor mu?
 - Hatalı İşlem Oranı: Yanlış varsayılanla yapılan işlem artmamalı.
-- İşlem Süresi: Tamamlama süresi kısalıyor mu?
+- Görev Tamamlama Süresi (sık yapılan işlem): Tamamlama süresi kısalıyor mu?
 - İptal veya Düzeltme Oranı (30 gün): Sonradan düzeltme talebi artmamalı.
 
 **Yapılmaması gerekenler**
@@ -523,7 +523,7 @@ Reducing a repeated action to one tap (reorder, load the last search, continue w
 - Primary Action Completion Rate: Does completion of the action go up?
 - Shortcut Usage Rate: Is the shortcut actually used?
 - Faulty Action Rate: Actions made with a wrong default must not increase.
-- Action Time: Does completion time get shorter?
+- Task Completion Time (frequent action): Does completion time get shorter?
 - Cancellation or Correction Rate (30 days): Later correction requests must not increase.
 
 **What not to do**
@@ -581,7 +581,7 @@ Moving to the next step as soon as a choice is made removes one click and speeds
 **KPIs to track**
 - Flow Completion Rate: Does auto-advance raise completion?
 - Back-Navigation Rate: Going back to the previous step must not increase.
-- Wrong Choice Rate: Progress with a wrong choice must not increase.
+- Wrong Selection Rate: Progress with a wrong choice must not increase.
 - Task Completion Time (flow): Does the flow get faster?
 - Accessibility Check: With auto-advance, focus must not stay on the old step and the transition must not go unannounced.
 

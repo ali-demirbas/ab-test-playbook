@@ -10,7 +10,7 @@ Değişken: Akordeon içindeki ürün açıklamasının biçimi · Fark: değiş
 
 Etiket: id=fp-001 · mercek=Netlik · düzey=metin · sektör=finans · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
 
-EN: Does splitting a long product description in an accordion into labelled points raise requests?
+EN: Does splitting a long product description in an accordion into labeled points raise requests?
 
 EN-Variable: Format of the product description inside the accordion
 
@@ -39,10 +39,10 @@ Bir sigorta ürününün akordeonu açıldığında tek blok hâlinde uzun bir p
 
 ### EN
 
-When an insurance product’s accordion opens into one long paragraph, the user has to hunt line by line for who the product is for, what it covers and what it does not. Splitting the same sentences into labelled points such as “Who it’s for”, “What it covers” and “What it doesn’t cover” makes scanning easier, because the information needed for the decision can be found from the label. The risk: if an exclusion or condition sentence gets shortened or dropped while the text is turned into bullets, the user assumes the product is broader than it is, and that comes back as post-request drop-out and complaints. The wording is identical in both arms; only the format changes. How it differs from the “Does presenting assurances as a bullet list persuade?” scenario (`home-landing.md`): that one lists trust promises on a marketing page, while this one splits the coverage text of a regulated product and the meaning of the text stays fixed through compliance sign-off.
+When an insurance product’s accordion opens into one long paragraph, the user has to hunt line by line for who the product is for, what it covers and what it does not. Splitting the same sentences into labeled points such as “Who it’s for”, “What it covers” and “What it doesn’t cover” makes scanning easier, because the information needed for the decision can be found from the label. The risk: if an exclusion or condition sentence gets shortened or dropped while the text is turned into bullets, the user assumes the product is broader than it is, and that comes back as post-request drop-out and complaints. The wording is identical in both arms; only the format changes. How it differs from the “Does presenting assurances as a bullet list persuade?” scenario (`home-landing.md`): that one lists trust promises on a marketing page, while this one splits the coverage text of a regulated product and the meaning of the text stays fixed through compliance sign-off.
 
 **What to test**
-- Format: Do labelled points raise request submissions compared with a paragraph carrying the same content?
+- Format: Do labeled points raise request submissions compared with a paragraph carrying the same content?
 - Coverage perception: Do users arriving from the bulleted version ask advisors fewer questions about what the product does not cover?
 - Reading: In the bulleted version, do users who open the accordion scroll down to the request button at the end of the text?
 - Next test: If the bullets win, does the order of the labels (coverage first or “Who it’s for” first) change requests in a separate test?
@@ -219,7 +219,7 @@ Sigorta ürünleri yalnızca adlarıyla sıralandığında (“Ferdi Kaza”, �
 
 ### EN
 
-When insurance products are listed by name only (“Personal Accident”, “Annual Life”, “Critical Illness”), a visitor who does not know the products cannot tell which one to look at and has to open and compare each one. Adding a short guide at the top that leads from need to product (a “Which one suits me?” heading with a few options such as “I want to protect my family” and “I want to secure my debt”) reduces the choice load, because the visitor recognises their own need rather than a product name. The risk: if the guide reads as personal advice, requests arrive for the wrong product; it also pushes the list down and slows visitors who know what they are looking for.
+When insurance products are listed by name only (“Personal Accident”, “Annual Life”, “Critical Illness”), a visitor who does not know the products cannot tell which one to look at and has to open and compare each one. Adding a short guide at the top that leads from need to product (a “Which one suits me?” heading with a few options such as “I want to protect my family” and “I want to secure my debt”) reduces the choice load, because the visitor recognizes their own need rather than a product name. The risk: if the guide reads as personal advice, requests arrive for the wrong product; it also pushes the list down and slows visitors who know what they are looking for.
 
 **What to test**
 - Presence: In the list with the guide added, does the share of visitors who submit a request for any product rise?
@@ -577,7 +577,7 @@ EN-Variable: Next-step line on the request form
 
 ### EN
 
-A “Call me back” form asks for a name and phone number but does not say what happens after sending: who will call, through which channel, and about what? The uncertainty loses people in two places: a visitor wary of an unknown sales call does not submit the form, and one who does submit does not pick up a number they do not recognise. Adding a single line above the button that says how the process really works (“Our customer advisor will call you by phone and answer your questions”) sets the expectation. The risk: if the line describes a process the company does not actually run, the promise is not kept and turns into complaints; and once the idea of being called becomes clear, some visitors may back out.
+A “Call me back” form asks for a name and phone number but does not say what happens after sending: who will call, through which channel, and about what? The uncertainty loses people in two places: a visitor wary of an unknown sales call does not submit the form, and one who does submit does not pick up a number they do not recognize. Adding a single line above the button that says how the process really works (“Our customer advisor will call you by phone and answer your questions”) sets the expectation. The risk: if the line describes a process the company does not actually run, the promise is not kept and turns into complaints; and once the idea of being called becomes clear, some visitors may back out.
 
 **What to test**
 - Presence: With the line stating the next step added, does the share of visitors who submit the form rise?
