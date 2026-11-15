@@ -94,9 +94,11 @@ class TestZips(unittest.TestCase):
             with zipfile.ZipFile(self.zips["ab-test-card"]) as zf:
                 zf.extractall(tmp)
             root = os.path.join(tmp, "ab-test-card")
+            # 3.4: no skill reads the worked example any more, so no ZIP carries it;
+            # the repo's copy checks that the bundled validator runs on its own files.
             r = subprocess.run(
                 [sys.executable, os.path.join(root, "scripts", "validate_scenario_json.py"),
-                 os.path.join(root, "examples", "scenario.json")],
+                 os.path.join(HERE, "..", "examples", "scenario.json")],
                 capture_output=True, text=True)
             self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         finally:

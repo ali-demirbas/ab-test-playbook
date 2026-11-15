@@ -19,9 +19,10 @@ with open(os.path.join(ROOT, "templates", "scenario.schema.json"), encoding="utf
     SCHEMA = json.load(_fh)
 with open(os.path.join(ROOT, "examples", "scenario.json"), encoding="utf-8") as _fh:
     EXAMPLE = json.load(_fh)
-with open(os.path.join(ROOT, "skills", "ab-test-card", "SKILL.md"), encoding="utf-8") as _fh:
+# 3.4: the record-authoring part of ab-test-card lives in templates/record-checklist.md.
+with open(os.path.join(ROOT, "templates", "record-checklist.md"), encoding="utf-8") as _fh:
     SKILL = _fh.read()
-CHECKLIST = SKILL[SKILL.index("### Before the first validation"):SKILL.index("- **Source (rule 8).**")]
+CHECKLIST = SKILL[SKILL.index("## Before the first validation"):SKILL.index("## Field by field")]
 
 
 def record():
@@ -92,8 +93,8 @@ class TestChecklist(unittest.TestCase):
     """Every example the checklist gives is one the code accepts."""
 
     def test_it_sits_before_the_record_rules_and_stays_short(self):
-        self.assertLess(SKILL.index("### Before the first validation"), SKILL.index("- **Source (rule 8).**"))
-        self.assertGreater(SKILL.index("### Before the first validation"), SKILL.index("## The record"))
+        self.assertLess(SKILL.index("## Before the first validation"), SKILL.index("- **Source (rule 8).**"))
+        self.assertGreater(SKILL.index("## Before the first validation"), SKILL.index("## The skeleton"))
         lines = [l for l in CHECKLIST.split("\n") if l.strip()]
         self.assertLessEqual(len(lines), 25)
         self.assertEqual(len(re.findall(r"(?m)^\d+\. \*\*", CHECKLIST)), 10)
