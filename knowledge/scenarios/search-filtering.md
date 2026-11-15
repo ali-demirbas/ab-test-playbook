@@ -262,7 +262,7 @@ Varsayılan sıralama, kullanıcıların büyük çoğunluğunun gördüğü tek
 - İlk Sonuca Tıklama Oranı: İlk 4 sonucun isabeti.
 - Sıralama Değiştirme Oranı: Varsayılan yeterli mi?
 - Ortalama Sepet Tutarı (AOV): Ucuza kayarsa AOV düşebilir.
-- Sıfır Etkileşimli Arama: Artmamalı.
+- Sıfır Etkileşimli Arama Oranı: Arama yapan oturumlardan hiçbir sonuca tıklanmadan biten oturumların payı artmamalı (payda: arama yapan oturum, iki kolda aynı tetikleyici).
 
 **Yapılmaması gerekenler**
 - Sıralama seçeneklerini test sırasında gizlemeyin.
@@ -287,7 +287,7 @@ The default sort order is the only order the vast majority of users see. Relevan
 - First-Result Click Rate: Hit rate of the top 4 results.
 - Sort Change Rate: Is the default enough?
 - Average Order Value (AOV): AOV can drop if it drifts toward cheaper items.
-- Zero-Interaction Searches: Must not increase.
+- Zero-Interaction Search Rate: The share of search sessions that end without a click on any result must not increase (denominator: sessions with a search, same trigger in both arms).
 
 **What not to do**
 - Don’t hide the sort options during the test.

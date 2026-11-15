@@ -349,6 +349,24 @@ class TestCli(unittest.TestCase):
         self.assertIsNotNone(m, out[-800:])
         self.assertEqual(m.group(1), m.group(2))
 
+    def test_glossary_summary_counts_what_is_in_the_glossary(self):
+        """The summary line counts primaries written with their canonical name; it reads
+        “217/217 … kanonik adla”, never “0/217 … (hata)” on a clean archive."""
+        code, out = self.run_main()
+        m = re.search(r"; (\d+)/(\d+) birincil KPI sözlükte kanonik adla yazılmış\.", out)
+        self.assertIsNotNone(m, out[-800:])
+        self.assertEqual(m.group(1), m.group(2))
+        self.assertNotIn("guardrail satırları bir metrik adlandırmıyor", out)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "x.md")
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write(make_scenario(kpis=["- Mutluluk Oranı: Ziyaretçiler daha mutlu ayrılıyor mu?",
+                                             "- Hata Oranı: Yanlış tıklama oranı belirgin şekilde artmamalı.",
+                                             "- Sayfa Yüklenme Süresi: Sayfa bu değişiklikle yavaşlamamalı."]))
+            code, out = self.run_main(path)
+            self.assertEqual(code, 1)
+            self.assertIn("0/1 birincil KPI sözlükte kanonik adla yazılmış; 1 tanesi", out)
+
     def test_next_id_option(self):
         code, out = self.run_main("--next-id", "thank-you.md")
         self.assertEqual(code, 0)

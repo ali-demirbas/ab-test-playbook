@@ -72,8 +72,9 @@ Uyarılar (çıkış kodunu etkilemez; sonda “Uyarı sayısı: N” satırı b
     da), biri diğerine “… senaryosundan farkı” atfı vermiyorsa.
   - “Sonraki test:” maddesi kazananın yerini soruyor (“yeri”, “konumu”): her öğeye
     yapıştırılabilen bir kalıp, senaryonun kazanan varyantı üstüne kurulmuyor.
-  - knowledge/kpi-glossary.md varsa: sözlükte kanonik adı olmayan birincil KPI
-    sayısı da basılır (kural 15'in hataları; --verbose ile liste).
+  - knowledge/kpi-glossary.md varsa: birincil KPI’ların kaçının sözlükte kanonik
+    adla yazıldığı da basılır (“217/217”); kanonik olmayanlar kural 15'in
+    hatalarıdır, --verbose ile liste.
 
 SINIR: Bu araç bir BİÇİM denetçisidir, anlam denetçisi değildir. Etiketi anlamlı
 görünen ama içeriği boş maddeler, birbirinin sonuna tek kelime eklenmiş
@@ -1142,17 +1143,23 @@ def main(argv=None):
         print()
 
     if glossary is not None:
-        missing = []
+        # Kural 15'in özeti: hatalar sorun listesinde ayrıca yazılır; bu satır yalnızca sayar.
+        missing, primaries = [], 0
         for name, title, body in scenarios:
             kpis = box_items(body, KPI_BOX)
             if not kpis:
                 continue
+            primaries += 1
             status = glossary_status(kpi_label(kpis[0]), glossary)
             if status != "canonical":
                 hint = f" → kanonik ad: {status.split(':', 1)[1]}" if status.startswith("synonym:") else ""
                 missing.append(f"{name} → {title[:40]}: {kpi_label(kpis[0])}{hint}")
-        print(f"KPI sözlüğü: {len(glossary)} kanonik ad; {len(missing)}/{total} birincil KPI sözlükte kanonik ad olarak yok "
-              f"(hata{'' if args.verbose or not missing else '; liste için --verbose'}).")
+        line = (f"KPI sözlüğü: {len(glossary)} kanonik ad; {primaries - len(missing)}/{primaries} birincil KPI "
+                f"sözlükte kanonik adla yazılmış")
+        if missing:
+            line += (f"; {len(missing)} tanesi sözlükte yok ya da eş anlamlı (hata"
+                     f"{'' if args.verbose else '; liste için --verbose'})")
+        print(line + ".")
         if args.verbose:
             for m in missing:
                 print(f"  - {m}")
