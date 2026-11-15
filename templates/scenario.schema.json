@@ -273,7 +273,7 @@
         "inputs"
       ],
       "additionalProperties": false,
-      "description": "Rule 9: the tier is derived from the score of the four evidence-led inputs (methodology.md → Prioritization): evidence (user_data 3, behaviour_data 2, archive_or_research 1, intuition 0) + main_path 1 + noticeable 1 + effort (low 2, medium 1, high 0); 6-7 high, 3-5 medium, 0-2 low, medium at most with a critical assumption. The validator recomputes it and refuses a tier that doesn't match. A strong candidate passes the mechanism gate and is medium or high. Stated in chat, not printed on the card.",
+      "description": "Rule 9: the tier is derived from the score of the five evidence-led inputs (methodology.md → Prioritization): evidence (user_data 3, behaviour_data 2, archive_or_research 1, intuition 0) + impact (structural 2, persuasive 1, cosmetic 0) + main_path 1 + noticeable 1 + effort (low 2, medium 1, high 0), out of 9; 7-9 high, 4-6 medium, 0-3 low, medium at most with a critical assumption. The validator recomputes it and refuses a tier that doesn't match. A strong candidate passes the mechanism gate and is medium or high. Stated in chat with its score (\"Öncelik: Yüksek (7/9)\"), not printed on the card.",
       "properties": {
         "tier": {
           "type": "string",
@@ -292,6 +292,7 @@
           "type": "object",
           "required": [
             "evidence",
+            "impact",
             "main_path",
             "noticeable",
             "effort"
@@ -309,9 +310,18 @@
               ],
               "description": "user_data: the user's own analytics or test history; behaviour_data: the user's own behaviour evidence (recordings, heatmaps, user tests, surveys); both need evidence.level user_data. archive_or_research: evidence.level archive or sector. intuition: evidence.level intuition."
             },
+            "impact": {
+              "type": "string",
+              "enum": [
+                "structural",
+                "persuasive",
+                "cosmetic"
+              ],
+              "description": "What the change moves (methodology.md → The idea-generation lens → Impact ranking). structural: the offer itself, a step of the flow, missing information at the decision point, decision structure; persuasive: hierarchy and visual weight, copy answering an objection, a trust signal at the friction point; cosmetic: colour, corner radius, font, generic CTA wording, spacing."
+            },
             "main_path": {
               "type": "boolean",
-              "description": "The tested element sits on the main conversion path or above the fold."
+              "description": "Where in the funnel and how many users: the tested element sits on the main conversion path most of the flow's users pass, or above the fold."
             },
             "noticeable": {
               "type": "boolean",
@@ -324,7 +334,7 @@
                 "medium",
                 "high"
               ],
-              "description": "low: copy, style or order; medium: front-end work; high: backend work, a native app release or an operational change."
+              "description": "low: copy, style, order or a default; medium: front-end work, or any change that ships in a native app release; high: backend work or an operational change (a native release alone is never high)."
             }
           }
         }

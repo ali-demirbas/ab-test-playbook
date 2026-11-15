@@ -61,7 +61,7 @@ def base_scenario():
         "adapted_from": ARCHIVE_TITLE,
         "evidence": {"level": "archive"},
         "priority": {"tier": "medium", "rationale": "Sepetteki kaçağı hedefliyor, kanıt arşiv örüntüsü ve iş küçük.",
-                     "inputs": {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"}},
+                     "inputs": {"evidence": "archive_or_research", "impact": "persuasive", "main_path": True, "noticeable": True, "effort": "low"}},
     }
 
 
@@ -326,7 +326,7 @@ class TestSourceAndPriority(unittest.TestCase):
         self.assertEqual(errors_for(source="generated", source_note="Arşivde uyan senaryo yok.",
                                     evidence={"level": "intuition"},
                                     priority={"tier": "medium", "rationale": self.RATIONALE, "inputs": {
-                                        "evidence": "intuition", "main_path": True, "noticeable": True,
+                                        "evidence": "intuition", "impact": "persuasive", "main_path": True, "noticeable": True,
                                         "effort": "low"}}), [])
 
     RATIONALE = "Sepetteki kaçağı hedefliyor, kanıt arşiv örüntüsü ve yalnızca alanın görünümü değişiyor."
@@ -336,7 +336,7 @@ class TestSourceAndPriority(unittest.TestCase):
         del sc["priority"]
         self.assertTrue(any("missing required field 'priority'" in e for e in validate(sc, SCHEMA)))
 
-    INPUTS = {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"}
+    INPUTS = {"evidence": "archive_or_research", "impact": "persuasive", "main_path": True, "noticeable": True, "effort": "low"}
 
     def test_priority_tier_enum(self):
         user_data = {"level": "user_data", "note": "GA4 raporuna göre sepette kupon kutusunda çıkış yoğun."}

@@ -36,22 +36,27 @@ def scored(sc, tier, evidence_level=None, **inputs):
 
 class TestScore(unittest.TestCase):
     def test_formula(self):
-        self.assertEqual(vsj.priority_score({"evidence": "user_data", "main_path": True, "noticeable": True,
-                                             "effort": "low"}), (7, "3+1+1+2"))
-        self.assertEqual(vsj.priority_score({"evidence": "intuition", "main_path": False, "noticeable": False,
-                                             "effort": "high"}), (0, "0+0+0+0"))
-        self.assertEqual(vsj.priority_score({"evidence": "behaviour_data", "main_path": True, "noticeable": False,
-                                             "effort": "medium"}), (4, "2+1+0+1"))
+        self.assertEqual(vsj.priority_score({"evidence": "user_data", "impact": "structural", "main_path": True,
+                                             "noticeable": True, "effort": "low"}), (9, "3+2+1+1+2"))
+        self.assertEqual(vsj.priority_score({"evidence": "intuition", "impact": "cosmetic", "main_path": False,
+                                             "noticeable": False, "effort": "high"}), (0, "0+0+0+0+0"))
+        self.assertEqual(vsj.priority_score({"evidence": "behaviour_data", "impact": "persuasive", "main_path": True,
+                                             "noticeable": False, "effort": "medium"}), (5, "2+1+1+0+1"))
         self.assertIsNone(vsj.priority_score({"evidence": "user_data"}))
-        self.assertIsNone(vsj.priority_score({"evidence": "x", "main_path": 1, "noticeable": True, "effort": "low"}))
+        self.assertIsNone(vsj.priority_score({"evidence": "x", "impact": "cosmetic", "main_path": 1,
+                                              "noticeable": True, "effort": "low"}))
+        self.assertIsNone(vsj.priority_score({"evidence": "user_data", "main_path": True, "noticeable": True,
+                                              "effort": "low"}))  # a 3.3 record: impact missing
 
     def test_bands(self):
-        self.assertEqual([vsj.score_tier(n) for n in range(8)],
-                         ["low", "low", "low", "medium", "medium", "medium", "high", "high"])
-        self.assertEqual(vsj.score_tier(7, capped=True), "medium")
+        self.assertEqual([vsj.score_tier(n) for n in range(10)],
+                         ["low", "low", "low", "low", "medium", "medium", "medium", "high", "high", "high"])
+        self.assertEqual(vsj.score_tier(9, capped=True), "medium")
 
     def test_intuition_can_never_reach_high(self):
-        best = vsj.priority_score({"evidence": "intuition", "main_path": True, "noticeable": True, "effort": "low"})
+        best = vsj.priority_score({"evidence": "intuition", "impact": "structural", "main_path": True,
+                                   "noticeable": True, "effort": "low"})
+        self.assertEqual(best[0], 6)
         self.assertNotEqual(vsj.score_tier(best[0]), "high")
 
 
@@ -63,10 +68,11 @@ class TestTierMatchesScore(unittest.TestCase):
 
     def test_a_chosen_tier_off_the_score_is_refused(self):
         e = errs(scored(coupon(), "high"))
-        self.assertTrue(has(e, "priority.tier: 'high' doesn't match the inputs' score: 1+1+1+2 = 5/7, which is "
+        self.assertTrue(has(e, "priority.tier: 'high' doesn't match the inputs' score: 1+1+1+1+2 = 6/9, which is "
                                "'medium'"), e)
+        self.assertTrue(has(e, 'write "tier": "medium" or correct the input that is wrong'), e)
         e = errs(scored(coupon(), "medium", main_path=False, noticeable=False, effort="high"))
-        self.assertTrue(has(e, "= 1/7, which is 'low'"), e)
+        self.assertTrue(has(e, "= 2/9, which is 'low'"), e)
         self.assertTrue(has(errs(scored(coupon(), "high"), "tr"), "girdilerin puanıyla uyuşmuyor"))
 
     def test_inputs_are_required(self):
@@ -83,7 +89,7 @@ class TestTierMatchesScore(unittest.TestCase):
     def test_a_critical_assumption_caps_the_band_at_medium(self):
         critical = {"type": "critical", "text": "Kupon kodunun ödeme adımında da girilebildiği varsayılıyor.",
                     "question": "Kod ödeme adımında da girilebiliyor mu?"}
-        sc = scored(coupon(), "medium", "user_data", evidence="user_data")  # 7/7, capped to medium
+        sc = scored(coupon(), "medium", "user_data", evidence="user_data")  # 8/9, capped to medium
         sc["assumptions"] = [critical]
         self.assertEqual(errs(sc), [])
         sc["priority"]["tier"] = "high"

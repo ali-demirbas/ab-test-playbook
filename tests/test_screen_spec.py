@@ -98,7 +98,7 @@ RECORD = {
                  "rationale": ("Formun en hassas alanında bırakmayı hedefliyor ve metin işi olduğu için uygulaması "
                                "kolay, ama gerekçenin metni alanın gerçek amacına ve uyum onayına bağlı olduğundan "
                                "orta."),
-                 "inputs": {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"}},
+                 "inputs": {"evidence": "archive_or_research", "impact": "persuasive", "main_path": True, "noticeable": True, "effort": "low"}},
     "objection": "Güven",
     "warnings": [
         {"type": "regulation", "text": ("Gerekçe satırının tam metni uyum ekibince yayımlanan aydınlatma metniyle "

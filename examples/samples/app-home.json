@@ -54,9 +54,10 @@
     "rationale": "Öneriden artırıma giden yolun girişini etkiliyor ama native uygulamaya buton eklemek sürüm ve mağaza onayı isteyen orta ölçekli bir iş, kanıt arşiv örüntüsü ve yayından önce uyum onayı gerekiyor.",
     "inputs": {
       "evidence": "archive_or_research",
+      "impact": "persuasive",
       "main_path": true,
       "noticeable": true,
-      "effort": "high"
+      "effort": "medium"
     }
   },
   "lang": "tr",
@@ -82,7 +83,7 @@
   "review": {
     "scenario_critic": {
       "verdict": "PASS",
-      "fingerprint": "493fe4f60251f23ac790e4c9f5833ab91907746e3d4833687ffc42bbda9518e5"
+      "fingerprint": "8613b04d4af174fa6dd94e3cc1f749e2c0113664dacb31616d394d7e1e813a1c"
     },
     "mockup_reviewer": {
       "verdict": "PASS",

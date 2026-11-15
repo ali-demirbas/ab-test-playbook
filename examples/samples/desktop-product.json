@@ -49,6 +49,7 @@
     "rationale": "Satın alma kararının verildiği ürün sayfasında fiyatın yanındaki bir kaygıyı hedefliyor ve yalnızca bir bloğun yerini değiştirmek küçük bir şablon işi, ama kanıt bu sayfanın verisi değil arşiv örüntüsü.",
     "inputs": {
       "evidence": "archive_or_research",
+      "impact": "persuasive",
       "main_path": true,
       "noticeable": true,
       "effort": "low"
@@ -70,7 +71,7 @@
   "review": {
     "scenario_critic": {
       "verdict": "PASS",
-      "fingerprint": "18bbeff67c053dda1a2bb6d392a6c4c3b5bca152187130503c42cf4b4cb75ba3"
+      "fingerprint": "0dcc6acd208bbccc2941a4a7caac30a79fd1f8516b6d77f22313cc86f3df119f"
     },
     "mockup_reviewer": {
       "verdict": "PASS",

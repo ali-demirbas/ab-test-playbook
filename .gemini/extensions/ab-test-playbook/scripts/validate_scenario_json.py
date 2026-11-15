@@ -32,9 +32,11 @@ ERRORS (exit 1):
     remove); an archive or adapted record is never labelled 'intuition'
   * priority (rule 9): the tier is the band of the score of priority.inputs
     (evidence user_data 3 / behaviour_data 2 / archive_or_research 1 /
-    intuition 0, + main_path 1, + noticeable 1, + effort low 2 / medium 1 /
-    high 0; 6-7 high, 3-5 medium, 0-2 low, medium at most with a critical
-    assumption), and the evidence input matches evidence.level
+    intuition 0, + impact structural 2 / persuasive 1 / cosmetic 0, +
+    main_path 1, + noticeable 1, + effort low 2 / medium 1 / high 0, out of
+    9; 7-9 high, 4-6 medium, 0-3 low, medium at most with a critical
+    assumption; intuition tops out at 6), and the evidence input matches
+    evidence.level
   * exposure: a tested element in an accordion, modal, tab or below the
     first view (problem, variable or a variant says so) carries `exposure`,
     and it says the trigger is logged at the same point in both arms
@@ -131,6 +133,8 @@ WARNINGS (printed, exit code unaffected; --strict turns them into errors):
   * problem, mechanism or an invariant longer than one sentence; problem,
     mechanism, a variant description, an invariant, the priority rationale or
     a warning text longer than 240 characters
+  * priority effort 'high' whose rationale names only an app release (a
+    native release alone is medium; high is backend or operational work)
   * the title names an abandonment or completion outcome ("terk", "çıkış",
     "abandon") and the primary is a revenue metric, or the title names revenue
     ("gelir", "revenue") and the primary is a completion rate (a heuristic on
@@ -344,10 +348,12 @@ MSG = {
                         "kritik bir olguya dayanan öneri en fazla 'medium' olur (kural 9, 10)",
                         "priority.tier: 'high' with a critical assumption ({text!r}); a proposal resting on an "
                         "unverified critical fact is medium at most (rules 9, 10)"),
-    "priority_band": ("priority.tier: {tier!r} girdilerin puanıyla uyuşmuyor: {calc} = {score}/7, bu da {band!r} "
-                      "demek (6-7 high, 3-5 medium, 0-2 low; kritik varsayımla en fazla medium; kural 9)",
-                      "priority.tier: {tier!r} doesn't match the inputs' score: {calc} = {score}/7, which is {band!r} "
-                      "(6-7 high, 3-5 medium, 0-2 low; medium at most with a critical assumption; rule 9)"),
+    "priority_band": ("priority.tier: {tier!r} girdilerin puanıyla uyuşmuyor: {calc} = {score}/9, bu da {band!r} "
+                      "demek (7-9 high, 4-6 medium, 0-3 low; kritik varsayımla en fazla medium; kural 9); "
+                      "\"tier\": \"{band}\" yazın ya da yanlış girdiyi düzeltin",
+                      "priority.tier: {tier!r} doesn't match the inputs' score: {calc} = {score}/9, which is {band!r} "
+                      "(7-9 high, 4-6 medium, 0-3 low; medium at most with a critical assumption; rule 9); write "
+                      "\"tier\": \"{band}\" or correct the input that is wrong"),
     "priority_evidence": ("priority.inputs.evidence: {inp!r}, evidence.level {level!r} ile uyuşmuyor; {want} yazın "
                           "(kural 9, 10)",
                           "priority.inputs.evidence: {inp!r} doesn't match evidence.level {level!r}; write {want} "
@@ -368,10 +374,11 @@ MSG = {
     "objection_lang": ("objection: {val!r} kaydın dilinde değil ({lang}); {want!r} yazın (kural 7)",
                        "objection: {val!r} isn't in the record's language ({lang}); write {want!r} (rule 7)"),
     "statistics": ("{path}: {word!r} istatistik dili; bu playbook örneklem, süre, anlamlılık, güç, kazanan ya da "
-                   "sayısal öncelik puanı hesaplamaz ve yazmaz, kayıt istatistik iddiası taşımaz (kural 5)",
+                   "ICE gibi bir puan hesaplamaz ve yazmaz (öncelik puanını doğrulayıcı girdilerden hesaplar), kayıt "
+                   "istatistik iddiası taşımaz (kural 5)",
                    "{path}: {word!r} is statistics language; this playbook doesn't compute or write sample size, "
-                   "duration, significance, power, a winner or a numeric priority score, and a record carries no "
-                   "statistical claim (rule 5)"),
+                   "duration, significance, power, a winner or a score such as ICE (the validator computes the "
+                   "priority score from the inputs), and a record carries no statistical claim (rule 5)"),
     "never_claim": ("{path}: {word!r} hiçbir kanıtla yazılmaz; bir testin sonucu garanti edilemez (kural 10)",
                     "{path}: {word!r} is never written, whatever the evidence; no test result can be guaranteed "
                     "(rule 10)"),
@@ -549,6 +556,12 @@ MSG = {
                         "{path}: guardrail has no question text (what must not drop or rise)"),
     "straight_quotes": ("{path}: düz tırnak var; Türkçe metinde kıvrık tırnak kullanın (kural 7)",
                         "{path}: straight quotes; use curly quotes in scenario text (rule 7)"),
+    "effort_release": ("priority.inputs.effort: 'high' ama gerekçe yalnızca bir uygulama sürümünü anlatıyor ({word!r}); "
+                       "yerel uygulama sürümü tek başına \"effort\": \"medium\" sayılır, 'high' arka uç ya da operasyon "
+                       "işidir (kural 9; methodology → Prioritization)",
+                       "priority.inputs.effort: 'high' but the rationale names only an app release ({word!r}); a native "
+                       "app release alone is \"effort\": \"medium\", 'high' is backend or operational work (rule 9; "
+                       "methodology → Prioritization)"),
     "basis_current": ("card.mockup_basis: 'shared_page' ise variants[0].is_current: true beklenir (kural 15)",
                       "card.mockup_basis: 'shared_page' expects variants[0].is_current: true (rule 15)"),
     "card_device": ("card.device: '{card}', senaryonun device değeri '{scn}' ile farklı",
@@ -569,27 +582,38 @@ MSG = {
 # language: a 3.1 record has no priority.inputs, and "missing required field"
 # alone doesn't say what goes there (methodology.md → Prioritization).
 INPUTS_HINT = (
-    "; 3.2.0'da eklendi, dört girdi yazın: evidence (user_data / behaviour_data / archive_or_research / "
-    "intuition), main_path (true/false), noticeable (true/false), effort (low / medium / high); tier bunların "
-    "puanının bandıdır (6-7 high, 3-5 medium, 0-2 low). Örnek: \"inputs\": {{\"evidence\": \"archive_or_research\", "
+    "; 3.2.0'da eklendi (impact 3.4.0'da), beş girdi yazın: evidence (user_data / behaviour_data / "
+    "archive_or_research / intuition), impact (structural / persuasive / cosmetic), main_path (true/false), "
+    "noticeable (true/false), effort (low / medium / high); tier bunların 9 üzerinden puanının bandıdır (7-9 high, "
+    "4-6 medium, 0-3 low). Örnek: \"inputs\": {{\"evidence\": \"archive_or_research\", \"impact\": \"persuasive\", "
     "\"main_path\": true, \"noticeable\": true, \"effort\": \"low\"}} (methodology.md → Prioritization)",
-    "; added in 3.2.0, write the four inputs: evidence (user_data / behaviour_data / archive_or_research / "
-    "intuition), main_path (true/false), noticeable (true/false), effort (low / medium / high); the tier is the "
-    "band of their score (6-7 high, 3-5 medium, 0-2 low). Example: \"inputs\": {{\"evidence\": "
-    "\"archive_or_research\", \"main_path\": true, \"noticeable\": true, \"effort\": \"low\"}} "
+    "; added in 3.2.0 (impact in 3.4.0), write the five inputs: evidence (user_data / behaviour_data / "
+    "archive_or_research / intuition), impact (structural / persuasive / cosmetic), main_path (true/false), "
+    "noticeable (true/false), effort (low / medium / high); the tier is the band of their score out of 9 (7-9 high, "
+    "4-6 medium, 0-3 low). Example: \"inputs\": {{\"evidence\": \"archive_or_research\", \"impact\": "
+    "\"persuasive\", \"main_path\": true, \"noticeable\": true, \"effort\": \"low\"}} "
     "(methodology.md → Prioritization)")
 INPUT_HINTS = {
     "evidence": ("; şunlardan biri: user_data / behaviour_data / archive_or_research / intuition "
                  "(evidence.level'e uygun)",
                  "; one of user_data / behaviour_data / archive_or_research / intuition (matching evidence.level)"),
-    "main_path": ("; true ya da false: öğe ana dönüşüm yolunda ya da ilk ekranda mı",
-                  "; true or false: is the element on the main conversion path or above the fold"),
+    "impact": ("; 3.4.0'da eklendi, şunlardan biri: structural (teklifin kendisi, akıştan bir adım, karar anındaki "
+               "eksik bilgi, karar yapısı) / persuasive (hiyerarşi ve görsel ağırlık, itiraza cevap veren metin, "
+               "sürtünme noktasında güven işareti) / cosmetic (renk, köşe, yazı tipi, genel buton metni, boşluk)",
+               "; added in 3.4.0, one of structural (the offer itself, a step of the flow, missing information at "
+               "the decision point, decision structure) / persuasive (hierarchy and visual weight, copy answering an "
+               "objection, a trust signal at the friction point) / cosmetic (colour, corner radius, font, generic "
+               "CTA wording, spacing)"),
+    "main_path": ("; true ya da false: öğe akışın kullanıcılarının çoğunun geçtiği ana dönüşüm yolunda ya da ilk "
+                  "ekranda mı",
+                  "; true or false: is the element on the main conversion path most of the flow's users pass, or "
+                  "above the fold"),
     "noticeable": ("; true ya da false: kullanıcı B'yi öğeye geldikten birkaç saniye içinde fark eder mi",
                    "; true or false: does a user notice B within a few seconds of reaching the element"),
-    "effort": ("; şunlardan biri: low (metin, stil, sıra) / medium (ön yüz işi) / high (arka uç, uygulama sürümü, "
-               "operasyon)",
-               "; one of low (copy, style, order) / medium (front-end work) / high (backend, an app release, an "
-               "operational change)"),
+    "effort": ("; şunlardan biri: low (metin, stil, sıra, varsayılan) / medium (ön yüz işi ya da yerel uygulama "
+               "sürümü isteyen her değişiklik) / high (arka uç ya da operasyon)",
+               "; one of low (copy, style, order, a default) / medium (front-end work, or any change that ships in "
+               "a native app release) / high (backend or an operational change)"),
 }
 REQUIRED_HINTS = {("priority", "inputs"): INPUTS_HINT}
 REQUIRED_HINTS.update({("priority.inputs", key): hint for key, hint in INPUT_HINTS.items()})
@@ -2058,14 +2082,18 @@ def check_evidence(scenario, errors, lang="tr"):
 
 # ---- priority score (rule 9; contract: methodology.md → Prioritization)
 #
-# A light evidence-led score: evidence weighs most, then where the element sits,
-# whether B is noticeable and the effort. The tier is derived from it, never
-# chosen; the critic checks each input against the page and the evidence.
+# A light evidence-led score: evidence weighs most, then what the change moves
+# (the idea lens' impact tiers), where the element sits, whether B is noticeable
+# and the effort. The tier is derived from it, never chosen; the critic checks
+# each input against the page and the evidence. A strong main-path change on an
+# archive pattern reaches high (1+2+1+1+2 = 7); intuition tops out at 6.
 SCORE_EVIDENCE = {"user_data": 3, "behaviour_data": 2, "archive_or_research": 1, "intuition": 0}
+SCORE_IMPACT = {"structural": 2, "persuasive": 1, "cosmetic": 0}
 SCORE_EFFORT = {"low": 2, "medium": 1, "high": 0}
-SCORE_MAX = 7
+SCORE_MAX = 9
 # (lowest score, tier), highest first.
-SCORE_BANDS = ((6, "high"), (3, "medium"), (0, "low"))
+SCORE_BANDS = ((7, "high"), (4, "medium"), (0, "low"))
+TIER_LABEL = {"high": ("Yüksek", "High"), "medium": ("Orta", "Medium"), "low": ("Düşük", "Low")}
 # evidence.level → the score inputs it allows.
 EVIDENCE_INPUTS = {"user_data": ("user_data", "behaviour_data"), "archive": ("archive_or_research",),
                    "sector": ("archive_or_research",), "intuition": ("intuition",)}
@@ -2076,12 +2104,12 @@ def priority_score(inputs):
     missing or not one of the schema's values (the schema reports that)."""
     if not isinstance(inputs, dict):
         return None
-    ev, eff = inputs.get("evidence"), inputs.get("effort")
+    ev, impact, eff = inputs.get("evidence"), inputs.get("impact"), inputs.get("effort")
     main, notice = inputs.get("main_path"), inputs.get("noticeable")
-    if ev not in SCORE_EVIDENCE or eff not in SCORE_EFFORT or not isinstance(main, bool) \
-            or not isinstance(notice, bool):
+    if ev not in SCORE_EVIDENCE or impact not in SCORE_IMPACT or eff not in SCORE_EFFORT \
+            or not isinstance(main, bool) or not isinstance(notice, bool):
         return None
-    parts = (SCORE_EVIDENCE[ev], int(main), int(notice), SCORE_EFFORT[eff])
+    parts = (SCORE_EVIDENCE[ev], SCORE_IMPACT[impact], int(main), int(notice), SCORE_EFFORT[eff])
     return sum(parts), "+".join(str(n) for n in parts)
 
 
@@ -2089,6 +2117,45 @@ def score_tier(score, capped=False):
     """The tier a score falls in; a critical assumption caps it at medium."""
     tier = next(name for low, name in SCORE_BANDS if score >= low)
     return "medium" if capped and tier == "high" else tier
+
+
+def critical_open(scenario):
+    """An open critical assumption: the tier is medium at most (Conditional proposals)."""
+    return any(isinstance(a, dict) and a.get("type") == "critical" for a in _list(scenario.get("assumptions")))
+
+
+def priority_tag(scenario, lang="tr"):
+    """The tag line's priority, tier and score: "Öncelik: Yüksek (7/9)", "Priority: Medium (7/9, conditional)"
+    when a critical assumption holds a high score at medium; None when the inputs don't score."""
+    scored = priority_score(_obj(scenario.get("priority")).get("inputs"))
+    if scored is None:
+        return None
+    capped = critical_open(scenario)
+    tier = score_tier(scored[0], capped)
+    idx = 1 if lang == "en" else 0
+    held = capped and score_tier(scored[0]) == "high"
+    note = (", conditional" if lang == "en" else ", koşullu") if held else ""
+    return "%s: %s (%d/%d%s)" % ("Priority" if lang == "en" else "Öncelik", TIER_LABEL[tier][idx], scored[0],
+                                 SCORE_MAX, note)
+
+
+# A native release is effort medium on its own; high is backend or operational work (a heuristic on the rationale).
+RELEASE_RE = keywords(("sürüm", "mağaza onay", "uygulama güncelleme"), ("release", "app store", "store review"))
+BACKEND_RE = keywords(("arka uç", "sunucu", "operasyon", "entegrasyon", "veri taban", "altyapı", "servis"),
+                      ("backend", "back-end", "server", "API", "operational", "integration", "database",
+                       "infrastructure", "service"))
+
+
+def release_warnings(scenario, lang="tr"):
+    """effort 'high' whose rationale names an app release and no backend or operational work."""
+    priority = _obj(scenario.get("priority"))
+    rationale = priority.get("rationale")
+    if _obj(priority.get("inputs")).get("effort") != "high" or not isinstance(rationale, str):
+        return []
+    hit = RELEASE_RE.search(rationale)
+    if hit and not BACKEND_RE.search(rationale):
+        return [msg(lang, "effort_release", word=hit.group(0))]
+    return []
 
 
 def check_priority(scenario, errors, lang="tr"):
@@ -2105,7 +2172,7 @@ def check_priority(scenario, errors, lang="tr"):
     tier = priority.get("tier")
     if scored is None or tier not in ("high", "medium", "low"):
         return
-    capped = any(isinstance(a, dict) and a.get("type") == "critical" for a in _list(scenario.get("assumptions")))
+    capped = critical_open(scenario)
     band = score_tier(scored[0], capped)
     if tier != band and not (capped and tier == "high"):  # high with a critical item: assumption_high says it
         errors.append(msg(lang, "priority_band", tier=tier, calc=scored[1], score=scored[0], band=band))
@@ -2631,6 +2698,7 @@ def lint(scenario, schema=None, lang="tr", include_card=True):
             out.append(msg(lang, "too_long", path=path, n=len(text.strip()), max=MAX_TEXT))
 
     out.extend(claim_warnings(scenario, lang))
+    out.extend(release_warnings(scenario, lang))
     level = _obj(scenario.get("evidence")).get("level")
     if level in WEAK_EVIDENCE:
         for path, text in _strings([("problem", scenario.get("problem")), ("mechanism", scenario.get("mechanism")),

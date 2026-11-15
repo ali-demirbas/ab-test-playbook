@@ -58,7 +58,7 @@ def coupon():
         "adapted_from": ARCHIVE_TITLE,
         "evidence": {"level": "archive", "note": "Arşivde derlenmiş bir test fikrine dayanıyor, bir test sonucu değil."},
         "priority": {"tier": "medium", "rationale": "Sepetten çıkışı hedefliyor, kanıt arşiv örüntüsü ve iş küçük.",
-                     "inputs": {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"}},
+                     "inputs": {"evidence": "archive_or_research", "impact": "persuasive", "main_path": True, "noticeable": True, "effort": "low"}},
         "lang": "tr",
     }
 
@@ -81,7 +81,7 @@ def plain(**changes):
         "source_note": "Arşivde bu sayfanın başlık uzunluğuna uyan bir senaryo yok.",
         "evidence": {"level": "intuition"},
         "priority": {"tier": "medium", "rationale": "Ürün sayfasında karar anını hedefliyor, kanıt sezgi, iş yalnızca metin.",
-                     "inputs": {"evidence": "intuition", "main_path": True, "noticeable": True, "effort": "low"}},
+                     "inputs": {"evidence": "intuition", "impact": "persuasive", "main_path": True, "noticeable": True, "effort": "low"}},
     }
     sc.update(changes)
     return sc
@@ -89,10 +89,10 @@ def plain(**changes):
 
 # Score inputs that land in the medium band for each evidence level (methodology.md → Prioritization).
 MEDIUM_INPUTS = {
-    "user_data": {"evidence": "user_data", "main_path": False, "noticeable": False, "effort": "low"},
-    "sector": {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"},
-    "archive": {"evidence": "archive_or_research", "main_path": True, "noticeable": True, "effort": "low"},
-    "intuition": {"evidence": "intuition", "main_path": True, "noticeable": True, "effort": "low"},
+    "user_data": {"evidence": "user_data", "impact": "persuasive", "main_path": False, "noticeable": False, "effort": "low"},
+    "sector": {"evidence": "archive_or_research", "impact": "persuasive", "main_path": True, "noticeable": True, "effort": "low"},
+    "archive": {"evidence": "archive_or_research", "impact": "persuasive", "main_path": True, "noticeable": True, "effort": "low"},
+    "intuition": {"evidence": "intuition", "impact": "persuasive", "main_path": True, "noticeable": True, "effort": "low"},
 }
 
 
@@ -640,10 +640,10 @@ class TestArchiveSource(unittest.TestCase):
         self.assertTrue(has(errs(sc, "tr"), "kanıt 'intuition' iken öncelik 'high' olamaz"), errs(sc, "tr"))
         sc["priority"]["tier"] = "medium"
         self.assertEqual(errs(sc), [])
-        # An archive pattern alone never scores high (1+1+1+2 = 5/7); the user's own data can.
+        # An archive pattern with a persuasive change stays medium (1+1+1+1+2 = 6/9); the user's own data lifts it.
         sc = coupon()
         sc["priority"]["tier"] = "high"
-        self.assertTrue(has(errs(sc), "doesn't match the inputs' score: 1+1+1+2 = 5/7"), errs(sc))
+        self.assertTrue(has(errs(sc), "doesn't match the inputs' score: 1+1+1+1+2 = 6/9"), errs(sc))
         sc["evidence"] = {"level": "user_data", "note": "GA4 raporuna göre sepette kupon kutusunda çıkış yoğun."}
         sc["priority"]["inputs"]["evidence"] = "user_data"
         self.assertEqual(errs(sc), [])
