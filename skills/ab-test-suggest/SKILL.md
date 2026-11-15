@@ -15,12 +15,14 @@ metadata:
 
 ## Reading budget
 
-- **Archive:** one or two stage files (Stage map). List titles, shortlist by title and `Değişken:` line, read only the shortlisted blocks (title line to the next `---`):
+- **Archive:** one or two stage files (Stage map). List each block's head, shortlist by title, variable and tags, read only the shortlisted blocks, in the user's language (`--lang en`: the block's English body when it has one, else its English title and the Turkish body; `--lang tr` stops before the English body):
 
   ```bash
-  grep -nE '^## |Değişken:' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
-  python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md --line <title line> [<title line> ...]
+  grep -nE '^(## |Değişken:|Etiket:|EN:)' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
+  python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md --line <title line> [<title line> ...] --lang <tr|en>
   ```
+
+  The `Etiket:` line (`${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/FORMAT.md` → Head): `mercek` is the record's `objection`; `emek` its `priority.inputs.effort` (`düşük` low, `orta` medium, `yüksek` high); `düzey` the kind of change, element level (`görsel`, `gezinme`, `bilgi`, `form`, `metin`, `güven`, `sosyal-kanıt`, `sürtünme`) or structural (`teklif`, `fiyat`, `kişiselleştirme`, `akış`, `elde-tutma`, `onboarding`); `sektör` and `pazar` say where it fits (`pazar=TR` rests on a Turkish practice); `durum=klasik` is a dated pattern. `adapted_from` is always the Turkish `## ` title; an English record takes the block's `EN-Variable:` as its `variable` when there is one.
 
   Before calling a candidate `generated`, one title-only grep across all stage files for its element (a sticky button lives under product-detail): `grep -n '^## .*<element keyword>' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/*.md`.
 - **KPI names:** `grep -niE '<metric>|<synonym>' ${CLAUDE_PLUGIN_ROOT}/knowledge/kpi-glossary.md` (canonical name and denominator); never the whole glossary.
@@ -50,16 +52,16 @@ Files under `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/`; at most two per turn.
 
 | Page or flow | Stage files |
 |---|---|
-| Homepage, landing, campaign page | `home-landing.md` |
+| Homepage, landing, campaign page; on mobile web also the app download banner, the returning-visitor homepage and the recently viewed strip | `home-landing.md` |
 | Search, filters, results; menu and navigation | `search-filtering.md` |
-| Category or listing | `category-listing.md` |
+| Category or listing; a mobile-web exit-intent pop-up | `category-listing.md` |
 | Product detail | `product-detail.md` |
 | Cart, coupon, checkout, address | `cart-checkout.md` |
 | Order confirmation, thank-you | `thank-you.md` |
 | Logged-in, recurring-use home screen | `dashboard.md` |
 | Form, signup, login | `forms-signup.md` |
 | Pricing page, price display, plan comparison | `pricing.md` |
-| App onboarding, permissions, app home | `mobile-app.md` |
+| App onboarding, permissions, app home (native app only; a mobile website goes by its page type) | `mobile-app.md` |
 | SaaS commercial decisions (plan default, trial length, paywall) | `saas-b2b.md` |
 | Finance, insurance, private pension (BES): product text, calculators, call-back and lead requests, offer steps, contract and contribution screens | `finance-pension.md` (every scenario needs compliance sign-off; disclosures, withdrawal, consent and identity steps are never the subject) |
 | Buttons, links, icons on any page | `ui-elements.md` (a lower tier: not first while a stronger candidate exists) |
@@ -69,7 +71,7 @@ Files under `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/`; at most two per turn.
 | App checkout / app paywall | `cart-checkout.md` + `mobile-app.md` / `saas-b2b.md` + `mobile-app.md` |
 | SaaS web onboarding; account or settings; order tracking; help or blog | `saas-b2b.md` + `forms-signup.md`; `dashboard.md` + `forms-signup.md`; `thank-you.md` + `dashboard.md`; `home-landing.md` + `search-filtering.md` |
 
-A form's own design lives only in `forms-signup.md`. Subscription cancellation is legally bound: the regulation gate comes first. A page type without a row: one line naming the stages it was mapped to.
+A form's own design lives only in `forms-signup.md`. Subscription cancellation is legally bound: the regulation gate comes first. Cookie consent and other consent requests are out of scope on purpose (`FORMAT.md`): never suggested, and a scenario next to a consent step leaves it identical in both arms. A page type without a row: one line naming the stages it was mapped to.
 
 ## Flow
 
@@ -78,7 +80,8 @@ A form's own design lives only in `forms-signup.md`. Subscription cancellation i
 3. **Retrieve** (Reading budget), candidates acting on the stated problem first. With a named loss point, separate a clogged vein (a busy step that converts poorly: improve it) from a missing link (a step the funnel lacks: add it).
 4. **Select.**
    - **Mechanism gate, page-type version:** the obstacle typical for this page type ("on a cart page an open coupon field sends code-less shoppers off to hunt for a code"), stated in `problem` as an assumption to check. A generic reason fails.
-   - **Fit, never force-fit:** use a block only when its obstacle plausibly exists in the user's context; when none fits but a strong idea does, generate it. Two candidates on one mechanism are one idea: keep the stronger.
+   - **Fit, never force-fit:** use a block only when its obstacle plausibly exists in the user's context (its `sektör`, and `pazar=TR` only for a Turkish market or with its market note); a `durum=klasik` block only when the user names it; when none fits but a strong idea does, generate it. Two candidates on one mechanism are one idea: keep the stronger.
+   - **Diversity:** among the playbook's own picks, at most one per element-level `düzey` (two `metin` blocks are one slot, the stronger kept); structural levels are not capped. Explicit asks are exempt.
    - **History:** state a recorded outcome as the tool reported it. Won → the next step building on it; lost or no difference → retry only with a stated reason, otherwise one line saying it was left out; inconclusive → suggest, noting the run; a pattern that won on the user's product sets `evidence.level: user_data`.
    - **Order and cap** (rule 9): the tier is the band of the five `priority.inputs` (`Prioritization`), set honestly (`effort` from the block's `emek`, `impact` from its level and the impact ranking); the user's explicit asks first, in the order asked, always produced, weak or not; then the playbook's own candidates by priority, problem-acting first, ties as in `Prioritization`; at most three strong, never padded; more → the top three, the strongest left out named in one line, and the count for the offer.
    - **Gates:** regulation (rule 11: hold (a) with its "once X is confirmed, test Y" line, produce (b) with its warning), accessibility (rule 3), market (rule 11), sensitive fields (rule 14), protections and dark patterns (rule 6); a stale block is flagged or left out. An unverified fact the idea needs → a critical assumption (rule 10), not a drop and not an invented fact.

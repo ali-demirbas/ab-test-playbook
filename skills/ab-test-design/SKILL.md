@@ -18,9 +18,11 @@ metadata:
 - **Archive:** one or two stage files under `${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/` (home-landing, search-filtering, category-listing, product-detail, cart-checkout, thank-you, dashboard, forms-signup, pricing, mobile-app, saas-b2b, finance-pension, ui-elements); a form's own design uses `forms-signup`, a finance, insurance or pension flow `finance-pension`. Titles first, then only the shortlisted blocks:
 
   ```bash
-  grep -nE '^## |Değişken:' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
-  python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md --line <title line> [<title line> ...]
+  grep -nE '^(## |Değişken:|Etiket:|EN:)' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md
+  python3 ${CLAUDE_PLUGIN_ROOT}/scripts/read_section.py ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/<stage>.md --line <title line> [<title line> ...] --lang <tr|en>
   ```
+
+  `--lang en` reads a block's English body when it has one; the tags are read as in `ab-test-suggest` → Reading budget (`emek` is the effort input).
 
   Before calling a candidate `generated`, one title-only grep across all stage files: `grep -n '^## .*<element keyword>' ${CLAUDE_PLUGIN_ROOT}/knowledge/scenarios/*.md`.
 - **KPI names:** `grep -niE '<metric>|<synonym>' ${CLAUDE_PLUGIN_ROOT}/knowledge/kpi-glossary.md`; never the whole glossary.

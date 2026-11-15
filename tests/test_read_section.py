@@ -117,6 +117,83 @@ class TestReadSection(unittest.TestCase):
         self.assertEqual(run([self.path])[0], 2)
 
 
+BILINGUAL = """## Eşik yükselirse sepet büyür mü?
+
+Değişken: Kargo eşiği · Fark: değiştir
+
+Etiket: id=cc-010 · mercek=Fiyat
+
+EN: Does a higher threshold grow the cart?
+
+EN-Variable: Shipping threshold
+
+Türkçe giriş.
+
+**Test edilmesi gerekenler**
+- Eşik: Ne olur?
+
+### EN
+
+English intro.
+
+**What to test**
+- Threshold: What happens?
+
+---
+
+## Gövdesi yalnız Türkçe mi?
+
+Değişken: Rozet · Fark: ekle
+
+EN: Is the body Turkish only?
+
+Yalnız Türkçe gövde.
+
+---
+"""
+
+
+class TestLanguage(unittest.TestCase):
+    """--lang reads a bilingual archive block in one language (FORMAT.md → English)."""
+
+    def setUp(self):
+        fh = tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8")
+        fh.write(BILINGUAL)
+        fh.close()
+        self.path = fh.name
+        self.addCleanup(os.unlink, self.path)
+        self.second = str(BILINGUAL.split("\n").index("## Gövdesi yalnız Türkçe mi?") + 1)
+
+    def test_turkish_stops_before_the_english_body(self):
+        code, out, _ = run([self.path, "--line", "1", "--lang", "tr"])
+        self.assertEqual(code, 0)
+        self.assertIn("EN: Does a higher threshold grow the cart?", out)
+        self.assertTrue(out.endswith("- Eşik: Ne olur?\n"))
+        self.assertNotIn("### EN", out)
+        self.assertNotIn("English intro.", out)
+
+    def test_english_keeps_the_head_and_reads_the_english_body(self):
+        code, out, _ = run([self.path, "--line", "1", "--lang", "en"])
+        self.assertEqual(code, 0)
+        self.assertTrue(out.startswith("## Eşik yükselirse sepet büyür mü?\n\nDeğişken: Kargo eşiği · Fark: değiştir\n"))
+        self.assertIn("EN-Variable: Shipping threshold\n\nEnglish intro.\n", out)
+        self.assertTrue(out.endswith("- Threshold: What happens?\n"))
+        self.assertNotIn("Türkçe giriş.", out)
+        self.assertNotIn("### EN", out)
+
+    def test_a_block_without_an_english_body_is_read_whole(self):
+        whole = run([self.path, "--line", self.second])[1]
+        for lang in ("en", "tr"):
+            code, out, _ = run([self.path, "--line", self.second, "--lang", lang])
+            self.assertEqual((code, out), (0, whole), lang)
+        self.assertIn("EN: Is the body Turkish only?", whole)
+
+    def test_without_lang_the_block_is_printed_whole(self):
+        _, out, _ = run([self.path, "--line", "1"])
+        self.assertIn("Türkçe giriş.", out)
+        self.assertIn("English intro.", out)
+
+
 class TestRealFiles(unittest.TestCase):
     def test_every_methodology_section_a_skill_names_exists(self):
         path = os.path.join(ROOT, "knowledge", "methodology.md")
