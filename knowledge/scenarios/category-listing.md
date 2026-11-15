@@ -8,6 +8,10 @@ Yolculuk aşaması: kullanıcı ürün listesinde geziniyor; grid düzeni, sıra
 
 Değişken: Banner’daki geri sayım sayacı · Fark: ekle
 
+Etiket: id=cl-001 · mercek=Zamanlama · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a countdown timer on a campaign banner create urgency and raise conversion?
+
 Geri sayım sayacı “şimdi karar ver” baskısı yaratır ve kısa vadede tıklamayı artırabilir. Ama süre sürekli sıfırlanıyorsa (her ziyarette yeniden başlıyorsa) güvenilirliğini kaybeder ve marka algısını zedeler.
 
 **Test edilmesi gerekenler**
@@ -39,6 +43,10 @@ Geri sayım sayacı “şimdi karar ver” baskısı yaratır ve kısa vadede t�
 
 Değişken: Sayfa içi kategori bloklarının sırası · Fark: değiştir
 
+Etiket: id=cl-002 · mercek=Netlik · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: How does the order of category blocks on the listing page affect conversion?
+
 Liste veya kategori açılış sayfasındaki kategori bloklarının (vitrin kutuları, alt kategori şeritleri) sırasındaki küçük bir değişiklik bile keşif yönünü değiştirebilir. Hangi sıranın daha çok dönüşüm getirdiği ölçülmelidir. “Kategori sırası menüde önceliği nasıl etkiler?” senaryosundan farkı: burada sayfa içindeki bloklar yer değiştirir, menü navigasyonu sabit kalır.
 
 **Test edilmesi gerekenler**
@@ -67,6 +75,10 @@ Liste veya kategori açılış sayfasındaki kategori bloklarının (vitrin kutu
 ## Sonsuz scroll mu, “daha fazla göster” mi daha iyi çalışıyor?
 
 Değişken: Liste yükleme mekanizması · Fark: değiştir
+
+Etiket: id=cl-003 · mercek=Çaba · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Infinite scroll or a “show more” button: which works better?
 
 Sonsuz scroll keşfi artırır ama kullanıcının konum hissini ve sayfa altındaki filtre/footer erişimini bozar. Butonla yükleme kontrolü kullanıcıya bırakır ve ölçümü kolaylaştırır.
 
@@ -97,6 +109,10 @@ Sonsuz scroll keşfi artırır ama kullanıcının konum hissini ve sayfa altın
 
 Değişken: Mobil ızgaranın kolon sayısı · Fark: değiştir
 
+Etiket: id=cl-004 · mercek=Netlik · düzey=görsel · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does a two-column or a three-column grid convert more on mobile?
+
 Daha dar kolon ekranda daha fazla ürün gösterir ama görsel detayı küçültür. Moda kategorisinde görsel büyüklüğü karar için kritikken, standart üründe seçenek genişliği öne çıkabilir.
 
 **Test edilmesi gerekenler**
@@ -125,6 +141,10 @@ Daha dar kolon ekranda daha fazla ürün gösterir ama görsel detayı küçült
 ## Ürün kartında ikinci görsele geçiş dönüşümü artırır mı?
 
 Değişken: Kartta ikinci görsele geçiş · Fark: ekle
+
+Etiket: id=cl-005 · mercek=Netlik · düzey=görsel · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does switching to a second image on the product card raise conversion?
 
 Kartta ikinci görsele swipe veya hover ile geçebilmek, kullanıcının detay sayfasına gitmeden karar vermesini sağlar. Bu detay sayfası trafiğini düşürebilir ama toplam dönüşümü yükseltebilir.
 
@@ -155,6 +175,10 @@ Kartta ikinci görsele swipe veya hover ile geçebilmek, kullanıcının detay s
 
 Değişken: Karttaki hızlı sepete ekle butonu · Fark: ekle
 
+Etiket: id=cl-006 · mercek=Çaba · düzey=sürtünme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a “Quick add to cart” button speed up purchase?
+
 Liste sayfasındaki hızlı ekleme butonu, kullanıcının ürünü incelemeden sepete ekleme davranışını değiştirebilir ve satın alma akışını kısaltabilir.
 
 **Test edilmesi gerekenler**
@@ -183,6 +207,10 @@ Liste sayfasındaki hızlı ekleme butonu, kullanıcının ürünü incelemeden 
 ## Hikâye odaklı mesajlar liste sayfasında işe yarıyor mu?
 
 Değişken: Liste kartındaki ürün mesajının türü · Fark: değiştir
+
+Etiket: id=cl-007 · mercek=Netlik · düzey=metin · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Do story-led messages work on the listing page?
 
 Liste sayfasında teknik özellik yerine kısa ve duygusal mesaj kullanmak, ürünün algılanan değerini ve inceleme motivasyonunu değiştirebilir.
 
@@ -213,6 +241,10 @@ Liste sayfasında teknik özellik yerine kısa ve duygusal mesaj kullanmak, ür�
 
 Değişken: Karşılaştırma tablosunun varsayılan görünümü · Fark: değiştir
 
+Etiket: id=cl-008 · mercek=Çaba · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does showing only the differences speed up the decision?
+
 Karşılaştırma tablosunda tüm özellikler yerine sadece farkları göstermek bilişsel yükü azaltabilir ve kullanıcının kritik bilgilere odaklanmasını kolaylaştırabilir. Bu da karar sürecini hızlandırıp yanlış seçim riskini düşürebilir.
 
 **Test edilmesi gerekenler**
@@ -241,6 +273,10 @@ Karşılaştırma tablosunda tüm özellikler yerine sadece farkları göstermek
 ## Kategori sırası menüde önceliği nasıl etkiler?
 
 Değişken: Menüdeki kategori sırası · Fark: değiştir
+
+Etiket: id=cl-009 · mercek=Netlik · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: How does category order in the menu shape priority?
 
 Menüdeki kategorilerin sırası, hangisinin öncelikli/popüler kabul edildiği algısını kurar. Üste alınan kategori daha fazla tıklama alabilir ama bu etkinin gerçek dönüşüme yansıyıp yansımadığı ölçülmelidir. “Liste sayfasındaki kategori bloklarının sırası dönüşümü nasıl etkiler?” senaryosundan farkı: burada yalnızca site menüsündeki sıra değişir, liste sayfasının içeriği sabit kalır.
 
@@ -271,6 +307,10 @@ Menüdeki kategorilerin sırası, hangisinin öncelikli/popüler kabul edildiği
 
 Değişken: Başlık uzunluğu · Fark: değiştir
 
+Etiket: id=cl-010 · mercek=Netlik · düzey=metin · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Which headline length works best?
+
 Kısa mı, uzun ve açıklayıcı mı başlık daha çok dikkat çekiyor? Başlık uzunluğu içeriğe yönelme davranışını ve dönüşümü etkileyebilir.
 
 **Test edilmesi gerekenler**
@@ -299,6 +339,10 @@ Kısa mı, uzun ve açıklayıcı mı başlık daha çok dikkat çekiyor? Başl�
 ## Pop-up ne zaman gösterilmeli?
 
 Değişken: Pop-up gösterim anı · Fark: değiştir
+
+Etiket: id=cl-011 · mercek=Zamanlama · düzey=görsel · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: When should a pop-up appear?
 
 Çok erken çıkan pop-up kullanıcıyı kaçırır, çok geç çıkan fark edilmez. Doğru zamanlamanın ölçülmesi gerekir. “Çıkış niyetine bağlı pop-up kaçan mobil kullanıcıyı kurtarır mı?” senaryosundan farkı: burada gösterim anı süreye veya kaydırmaya bağlıdır ve gezinmeye devam eden herkese çıkar; çıkış niyeti tetikleyicisi kapsam dışıdır.
 
@@ -329,6 +373,10 @@ Değişken: Pop-up gösterim anı · Fark: değiştir
 
 Değişken: Çıkış niyetine bağlı pop-up · Fark: ekle
 
+Etiket: id=cl-012 · mercek=Zamanlama · düzey=görsel · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does an exit-intent pop-up win back a mobile user who is leaving?
+
 Zamana bağlı pop-up herkesi keser; çıkış niyetine bağlı pop-up sadece zaten gitmekte olan kullanıcıyı yakalar. Teorik olarak maliyeti düşüktür ama mobilde çıkış niyeti sinyali güvenilir değildir. “Pop-up ne zaman gösterilmeli?” senaryosundan farkı: orada pop-up herkese gösterilir ve değişken gösterim anıdır, burada tetik yalnızca ayrılma sinyalidir ve hedef sadece gitmekte olan kullanıcıdır.
 
 **Test edilmesi gerekenler**
@@ -357,6 +405,10 @@ Zamana bağlı pop-up herkesi keser; çıkış niyetine bağlı pop-up sadece za
 ## Sayfa başına kaç ürün gösterilmeli?
 
 Değişken: Sayfa başına ürün sayısı · Fark: değiştir
+
+Etiket: id=cl-013 · mercek=Çaba · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: How many products should a page show?
 
 Sayfa başına daha çok ürün göstermek sayfalar arası geçiş sayısını azaltır ve karşılaştırmayı kolaylaştırır. Bedeli: sayfa ağırlaşır, yüklenme yavaşlar ve seçenek fazlalığı karar vermeyi zorlaştırabilir. Az ürün ise hızlı yüklenir ama kullanıcıyı sürekli tıklamaya zorlar.
 
@@ -387,6 +439,10 @@ Sayfa başına daha çok ürün göstermek sayfalar arası geçiş sayısını a
 
 Değişken: Ürün listesinin görünüm tipi · Fark: değiştir
 
+Etiket: id=cl-014 · mercek=Netlik · düzey=görsel · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: List view or grid view: which converts more?
+
 Izgara görünümü aynı anda çok ürün gösterir ve görselin öne çıktığı kategorilerde işe yarar. Liste görünümü her ürüne daha fazla metin alanı verir; teknik özelliklerin veya fiyat ayrıntılarının belirleyici olduğu kategorilerde karşılaştırmayı kolaylaştırır. Doğru cevap kategoriye göre değişir.
 
 **Test edilmesi gerekenler**
@@ -415,6 +471,10 @@ Izgara görünümü aynı anda çok ürün gösterir ve görselin öne çıktı�
 ## Daha önce görülen ürünleri işaretlemek işe yarar mı?
 
 Değişken: Görülen ürün işareti · Fark: ekle
+
+Etiket: id=cl-015 · mercek=Çaba · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does marking products already viewed pay off?
 
 Ziyaret edilmiş ürünleri işaretlemek uzun listelerde nerede kalındığını gösterir ve aynı ürünü tekrar açma kaybını önler. Karşı tarafta: işaret ürünü “elenmiş” gibi gösterip tekrar değerlendirilmesini engelleyebilir ve kararsız kullanıcının geri dönmesini zorlaştırabilir.
 
@@ -445,6 +505,10 @@ Ziyaret edilmiş ürünleri işaretlemek uzun listelerde nerede kalındığını
 
 Değişken: Karttaki varyant seçici · Fark: ekle
 
+Etiket: id=cl-016 · mercek=Uygunluk · düzey=bilgi · sektör=moda · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does offering variant selection on the product card raise conversion?
+
 Kartın üzerinde renk veya beden seçeneği göstermek kullanıcının ürün sayfasına girmeden uygunluğu anlamasını sağlar. Riski: kart kalabalıklaşır, yanlış varyantla ürün sayfasına giriş olur ve seçenek gösterimi ürün görselinin alanını daraltır.
 
 **Test edilmesi gerekenler**
@@ -473,6 +537,10 @@ Kartın üzerinde renk veya beden seçeneği göstermek kullanıcının ürün s
 ## Ürün kartında hangi bilgi öne çıkmalı?
 
 Değişken: Kartta öne çıkan bilgi türü · Fark: değiştir
+
+Etiket: id=cl-017 · mercek=Netlik · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Which information should lead on the product card?
 
 Kartta yer sınırlıdır; öne çıkarılan bilgi (fiyat, teslimat, puan, kampanya, stok) kararın hangi eksende verileceğini belirler. Fazla bilgi kartı okunmaz yapar, az bilgi ise kullanıcıyı gereksiz yere ürün sayfasına gönderir.
 
@@ -503,6 +571,10 @@ Kartta yer sınırlıdır; öne çıkarılan bilgi (fiyat, teslimat, puan, kampa
 
 Değişken: Kategori kartındaki görsel · Fark: ekle
 
+Etiket: id=cl-018 · mercek=Netlik · düzey=görsel · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does using images on category cards improve wayfinding?
+
 Kategori adının yanına görsel eklemek taramayı hızlandırır ve ne satıldığını hızla anlatır. Riski: yanlış seçilmiş görsel kategoriyi daraltarak anlatır (tek bir ürün türü gösteren görsel, kategorinin tamamını temsil etmez) ve görseller sayfa yükünü artırır.
 
 **Test edilmesi gerekenler**
@@ -531,6 +603,10 @@ Kategori adının yanına görsel eklemek taramayı hızlandırır ve ne satıld
 ## Listede en erken teslimat bilgisini göstermek işe yarar mı?
 
 Değişken: Karttaki tahmini teslimat bilgisi · Fark: ekle
+
+Etiket: id=cl-019 · mercek=Netlik · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does showing the earliest delivery date in the list pay off?
 
 Ürün kartında en erken teslim tarihini göstermek acelesi olan kullanıcı için belirleyici olabilir ve ürün sayfasına girmeden eleme yapmasını sağlar. Riski: geç teslimat gösterilen ürünler baştan elenir, tarih hesabı yanlışsa güven kaybı ve iptal doğurur, ayrıca kart kalabalıklaşır.
 
@@ -561,6 +637,10 @@ Değişken: Karttaki tahmini teslimat bilgisi · Fark: ekle
 
 Değişken: Harita görünümünün yerleşimi · Fark: taşı
 
+Etiket: id=cl-020 · mercek=Çaba · düzey=gezinme · sektör=ilan · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should the map view sit beside the list or in a separate tab?
+
 Konumun karar için belirleyici olduğu listelerde (emlak, mekân, mağaza, ilan) harita ile listeyi aynı ekranda göstermek ikisi arasında gidip gelmeyi kaldırır. Bedeli: liste alanı daralır, sayfa ağırlaşır ve mobilde iki öğe birden sığmaz. Ayrı sekme ise her ikisine tam alan verir ama geçiş maliyeti yaratır.
 
 **Test edilmesi gerekenler**
@@ -589,6 +669,10 @@ Konumun karar için belirleyici olduğu listelerde (emlak, mekân, mağaza, ilan
 ## “Peşin fiyatına taksit” rozeti dönüşümü artırıyor mu?
 
 Değişken: Karttaki taksit rozeti · Fark: ekle
+
+Etiket: id=cl-021 · mercek=Fiyat · düzey=bilgi · sektör=e-ticaret · pazar=TR · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does an “installments at the cash price” badge raise conversion?
 
 Liste sayfasında, ürün kartında taksit avantajını küçük bir rozetle göstermek, ürüne tıklanmadan önce fiyat algısını ve satın alma eğilimini değiştirebilir. “Taksit bilgisi satın almayı etkiliyor mu?” ve “Aylık taksit tutarını ana fiyat gibi göstermek işe yarar mı?” (product-detail.md) senaryolarından farkı: burada ürün sayfası sabit kalır; test edilen yalnızca listedeki karttaki rozetin varlığıdır.
 
@@ -623,6 +707,10 @@ Liste sayfasında, ürün kartında taksit avantajını küçük bir rozetle gö
 
 Değişken: Karttaki kampanya rozeti · Fark: ekle
 
+Etiket: id=cl-022 · mercek=Fiyat · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does a campaign badge affect purchases?
+
 Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edilmesini ve satın alma motivasyonunu artırabilir.
 
 **Test edilmesi gerekenler**
@@ -655,6 +743,10 @@ Kampanya dönemlerinde ürün üzerindeki küçük bir rozet, indirimin fark edi
 
 Değişken: Karttaki ilk alışveriş indirimi bilgisi · Fark: ekle
 
+Etiket: id=cl-023 · mercek=Fiyat · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does a first-purchase discount affect purchases?
+
 Ürün kartında “İlk alışverişe özel indirim” bilgisinin görünür olması, özellikle yeni kullanıcıların satın alma motivasyonunu artırabilir.
 
 **Test edilmesi gerekenler**
@@ -683,6 +775,10 @@ Değişken: Karttaki ilk alışveriş indirimi bilgisi · Fark: ekle
 ## Stokta olmayan ürünleri listede gri gösterip bırakmak mı, tamamen gizlemek mi daha iyi çalışıyor?
 
 Değişken: Stok dışı ürünlerin listedeki görünürlüğü · Fark: kaldır
+
+Etiket: id=cl-024 · mercek=Netlik · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Is it better to grey out out-of-stock products in the list or to hide them completely?
 
 Bir kategori listesinde stokta olmayan ürünleri tamamen gizlemek sayfayı yalnızca satın alınabilir ürünlerle sınırlar ama toplam ürün çeşitliliği algısını daraltabilir. Gri gösterip listede bırakmak çeşitlilik hissini korur ama tıklanamayan öğelerle dolu bir liste de hayal kırıklığı yaratabilir. “Stokta olmayan bir ürünün satın alma butonunu kaldırmak mı, haber ver seçeneği mi daha iyi çalışıyor?” (`product-detail.md`) senaryosundan farkı: burada ürün sayfası değişmez; test edilen yalnızca ürünün liste içinde görünür olup olmadığıdır.
 

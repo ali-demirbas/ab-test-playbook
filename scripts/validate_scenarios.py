@@ -37,6 +37,17 @@ Denetlenen kurallar (CLAUDE.md ve knowledge/methodology.md'den):
      “İade Oranı (30 gün)”, “7. Gün Elde Tutma”.
  15. knowledge/kpi-glossary.md varsa: birincil KPI sözlükte kanonik addır
      (Türkçe kanonik ad, varsa İngilizce adı, kısaltmasız biçimi de olur).
+ 16. Değişken satırının altında `Etiket: id=… · mercek=… · düzey=… · sektör=… ·
+     pazar=… · emek=… · durum=… · tarih=YYYY-AA` satırı: anahtarlar bu sırada,
+     değerler izinli listeden; id arşivde benzersiz (knowledge/scenarios/FORMAT.md).
+ 17. Etiket satırının altında `EN: <English title>?` satırı; İngilizce başlık
+     arşivde benzersiz, Türkçeye özgü harf taşımaz. İsteğe bağlı `EN-Variable:`.
+ 18. Varsa `### EN` sonrası İngilizce gövde: EN-Variable satırı, giriş paragrafı,
+     Türkçe kutularla aynı sayıda maddeli What to test / KPIs to track / What not
+     to do kutuları, sözlüğün English name sütunundan birincil KPI, “must not”
+     guardrail, çevrilmiş notlar, İngilizce başlıkla çözülen atıflar.
+ FORMAT.md gibi büyük harfli dosyalar senaryo içermez ve denetlenmez;
+ `--next-id <dosya>` sıradaki boş kimliği basar.
 
 Uyarılar (çıkış kodunu etkilemez; sonda “Uyarı sayısı: N” satırı basılır):
   - Değişken ifadesi “ ve ” veya “/” içeriyor: iki değişken olabilir.
@@ -290,6 +301,249 @@ def parse_variable_line(body):
     if fark not in FARK_VALUES:
         errors.append(f"Fark ‘{fark}’ geçersiz (yalnızca: {' / '.join(FARK_VALUES)})")
     return var, fark, errors
+
+
+# --- Etiket ve İngilizce satırları (knowledge/scenarios/FORMAT.md) -------------
+#
+# Başlık bloğu sabit sıradadır, her satır kendi paragrafıdır:
+#   Değişken: … · Fark: …
+#   Etiket: id=cc-001 · mercek=… · düzey=… · sektör=… · pazar=… · emek=… · durum=… · tarih=YYYY-MM
+#   EN: <English title>
+#   EN-Variable: <English variable>        (isteğe bağlı; tam çeviriyle gelir)
+# Tam çeviri bloğun sonunda “### EN” satırından sonra gelir (FORMAT.md).
+
+TAG_PREFIX = "Etiket:"
+EN_TITLE_PREFIX = "EN:"
+EN_VARIABLE_PREFIX = "EN-Variable:"
+EN_BODY_MARKER = "### EN"
+TAG_KEYS = ("id", "mercek", "düzey", "sektör", "pazar", "emek", "durum", "tarih")
+# Öğe düzeyi: sayfadaki bir öğenin görünüşü, yeri, metni ya da bilgisi. Yapı düzeyi:
+# teklifin, fiyatın, akışın, kişiye göre içeriğin ya da yaşam döngüsünün kendisi.
+ELEMENT_LEVELS = ("görsel", "gezinme", "bilgi", "form", "metin", "güven", "sosyal-kanıt", "sürtünme")
+STRUCTURAL_LEVELS = ("teklif", "fiyat", "kişiselleştirme", "akış", "elde-tutma", "onboarding")
+TAG_VALUES = {
+    "mercek": ("Güven", "Fiyat", "Uygunluk", "Zamanlama", "Çaba", "Netlik"),
+    "düzey": ELEMENT_LEVELS + STRUCTURAL_LEVELS,
+    "sektör": ("genel", "e-ticaret", "moda", "saas", "b2b", "finans", "ilan"),
+    "pazar": ("TR", "global"),
+    "emek": ("düşük", "orta", "yüksek"),
+    "durum": ("güncel", "klasik"),
+}
+MAX_SECTORS = 2
+# Kimliğin öneki bloğun ilk yazıldığı dosyayı söyler; blok başka dosyaya taşınsa da
+# kimlik değişmez (geçmiş ve backlog dosyaları kimlikle eşleşir).
+ID_PREFIXES = {
+    "cart-checkout.md": "cc", "category-listing.md": "cl", "dashboard.md": "db",
+    "finance-pension.md": "fp", "forms-signup.md": "fs", "home-landing.md": "hl",
+    "mobile-app.md": "ma", "pricing.md": "pr", "product-detail.md": "pd",
+    "saas-b2b.md": "sb", "search-filtering.md": "sf", "thank-you.md": "ty",
+    "ui-elements.md": "ui",
+}
+ID_RE = re.compile(r"^(?P<prefix>[a-z]{2})-(?P<num>\d{3})$")
+DATE_RE = re.compile(r"^20\d\d-(?:0[1-9]|1[0-2])$")
+# İngilizce başlıkta yalnız Türkçeye özgü harf: çevrilmemiş başlık işareti.
+TURKISH_ONLY = re.compile(r"[ğĞşŞıİ]")
+EN_BOXES = ("What to test", "KPIs to track", "What not to do")
+EN_GUARDRAIL = re.compile(r"\b(?:must not|should not|must never|mustn’t|shouldn’t)\b", re.IGNORECASE)
+EN_SEGMENT = re.compile(r"[Dd]evice|[Mm]obile|[Ss]egment|[Dd]esktop|[Uu]ser type|[Pp]latform|[Cc]ategor|"
+                        r"[Nn]ew and returning|[Rr]eturning")
+EN_CROSS_REF_TAIL = re.compile(r"”\s*(?:\(`?[\w.\-]+\.md`?\)\s*)?scenario\w*")
+NOTE_PAIRS = (("Pazar notu", "Market note"), ("Ölçüm notu", "Measurement note"),
+              ("Güncellik notu", "Freshness note"))
+# Güncellik notu: “> **Güncellik notu (2026-11):** …” (methodology → When the archive goes stale).
+FRESHNESS_NOTE = re.compile(r"^> \*\*Güncellik notu \((?P<date>[^)]*)\):\*\* \S")
+FRESHNESS_NOTE_EN = re.compile(r"^> \*\*Freshness note \((?P<date>[^)]*)\):\*\* \S")
+
+
+def head_lines(body):
+    """Başlıktan sonra, ilk paragrafa kadar gelen dolu satırlar (Değişken, Etiket, EN …)."""
+    out = []
+    for line in body.split("\n")[1:]:
+        s = line.strip()
+        if not s:
+            continue
+        if s.startswith((VARIABLE_PREFIX, TAG_PREFIX, EN_TITLE_PREFIX, EN_VARIABLE_PREFIX)):
+            out.append(s)
+            continue
+        break
+    return out
+
+
+def parse_tag_line(line):
+    """'Etiket: id=… · mercek=… …' → ({anahtar: değer}, hatalar)."""
+    errors = []
+    rest = line[len(TAG_PREFIX):].strip()
+    pairs = [p.strip() for p in rest.split("·")]
+    tags, keys = {}, []
+    for p in pairs:
+        if "=" not in p:
+            errors.append(f"Etiket satırında ‘anahtar=değer’ olmayan parça → {p[:30]}")
+            continue
+        k, v = (x.strip() for x in p.split("=", 1))
+        keys.append(k)
+        tags[k] = v
+    if keys != list(TAG_KEYS) and not errors:
+        errors.append(f"Etiket anahtarları bu sırada olmalı: {' · '.join(TAG_KEYS)} (bulunan: {' · '.join(keys)})")
+    for k in TAG_KEYS:
+        v = tags.get(k)
+        if not v:
+            if k in tags or not errors:
+                errors.append(f"Etiket ‘{k}’ boş ya da yok")
+            continue
+        if k == "id":
+            m = ID_RE.match(v)
+            if not m or m.group("prefix") not in ID_PREFIXES.values():
+                errors.append(f"Etiket id ‘{v}’ geçersiz (biçim: <önek>-<üç hane>, önek: "
+                              f"{', '.join(sorted(set(ID_PREFIXES.values())))})")
+        elif k == "tarih":
+            if not DATE_RE.match(v):
+                errors.append(f"Etiket tarih ‘{v}’ geçersiz (YYYY-AA, ör. 2026-11)")
+        elif k == "sektör":
+            values = [s.strip() for s in v.split(",")]
+            bad = [s for s in values if s not in TAG_VALUES[k]]
+            if bad:
+                errors.append(f"Etiket sektör ‘{', '.join(bad)}’ geçersiz (yalnızca: {' / '.join(TAG_VALUES[k])})")
+            if len(values) > MAX_SECTORS or len(set(values)) != len(values):
+                errors.append(f"Etiket sektör en çok {MAX_SECTORS} farklı değer alır → {v}")
+        elif v not in TAG_VALUES[k]:
+            errors.append(f"Etiket {k} ‘{v}’ geçersiz (yalnızca: {' / '.join(TAG_VALUES[k])})")
+    return tags, errors
+
+
+def split_en_body(body):
+    """(Türkçe bölüm, İngilizce gövde ya da None): '### EN' satırı bloğu ikiye böler."""
+    lines = body.split("\n")
+    for i, line in enumerate(lines):
+        if line.strip() == EN_BODY_MARKER:
+            return "\n".join(lines[:i]), "\n".join(lines[i + 1:])
+    return body, None
+
+
+def check_metadata(filename, title, body, glossary=None):
+    """Etiket satırı, İngilizce başlık ve varsa İngilizce gövde (FORMAT.md).
+
+    Dönüş: (tags, en_title, hatalar). Arşiv geneli denetimler (benzersiz id ve
+    İngilizce başlık) find_metadata_duplicates içindedir."""
+    errors = []
+    where = f"{filename} → {title[:50]}"
+    head = head_lines(body)
+    tags, en_title = {}, None
+    if len(head) < 2 or not head[1].startswith(TAG_PREFIX):
+        errors.append(f"{where}: Değişken satırının altında ‘Etiket: id=… · mercek=… …’ satırı yok (FORMAT.md)")
+    else:
+        tags, tag_errors = parse_tag_line(head[1])
+        errors.extend(f"{where}: {e}" for e in tag_errors)
+    if len(head) < 3 or not head[2].startswith(EN_TITLE_PREFIX):
+        errors.append(f"{where}: Etiket satırının altında ‘EN: <English title>’ satırı yok (FORMAT.md)")
+    else:
+        en_title = head[2][len(EN_TITLE_PREFIX):].strip()
+        if not en_title:
+            errors.append(f"{where}: EN başlığı boş")
+        elif not en_title.endswith("?"):
+            errors.append(f"{where}: EN başlığı soru işaretiyle bitmiyor → {en_title[:50]}")
+        elif TURKISH_ONLY.search(en_title):
+            errors.append(f"{where}: EN başlığında Türkçe harf var, çevrilmemiş olabilir → {en_title[:50]}")
+    en_variable = None
+    extra = head[3:]
+    if extra and extra[0].startswith(EN_VARIABLE_PREFIX):
+        en_variable = extra[0][len(EN_VARIABLE_PREFIX):].strip()
+        if not en_variable:
+            errors.append(f"{where}: EN-Variable boş")
+        elif len(en_variable) > MAX_VARIABLE_CHARS:
+            errors.append(f"{where}: EN-Variable {len(en_variable)} karakter (en çok {MAX_VARIABLE_CHARS})")
+        elif TURKISH_ONLY.search(en_variable):
+            errors.append(f"{where}: EN-Variable içinde Türkçe harf var, çevrilmemiş olabilir → {en_variable[:50]}")
+        extra = extra[1:]
+    for line in extra:
+        errors.append(f"{where}: başlık bloğunda fazla ya da sırası bozuk satır (sıra: Değişken, Etiket, EN, "
+                      f"EN-Variable) → {line[:50]}")
+
+    tr_part, en_body = split_en_body(body)
+    for line in body.split("\n"):
+        if line.startswith("> **Güncellik notu") and not FRESHNESS_NOTE.match(line):
+            errors.append(f"{where}: güncellik notu ‘> **Güncellik notu (YYYY-AA):** …’ biçiminde değil")
+        m = FRESHNESS_NOTE.match(line)
+        if m and not DATE_RE.match(m.group("date")):
+            errors.append(f"{where}: güncellik notunun tarihi ‘{m.group('date')}’ geçersiz (YYYY-AA)")
+    if en_body is not None:
+        errors.extend(f"{where}: {e}" for e in en_body_problems(tr_part, en_body, en_variable, glossary))
+    return tags, en_title, errors
+
+
+def en_body_problems(tr_part, en_body, en_variable, glossary=None):
+    """İngilizce gövde, Türkçe kutuların paralel çevirisidir (FORMAT.md)."""
+    out = []
+    if en_variable is None:
+        out.append("İngilizce gövde var ama başlık bloğunda ‘EN-Variable: …’ satırı yok")
+    paras = [p for p in en_body.split("\n\n") if p.strip()]
+    if not paras or paras[0].lstrip().startswith(("**", "- ", ">")):
+        out.append("İngilizce gövde bir giriş paragrafıyla başlamıyor (Türkçe girişin çevirisi)")
+    for tr_header, en_header in zip(BOXES, EN_BOXES):
+        tr_items = box_items(tr_part, tr_header) or []
+        en_items = box_items(en_body, en_header)
+        if en_items is None:
+            out.append(f"İngilizce gövdede ‘**{en_header}**’ kutusu yok")
+            continue
+        if len(en_items) != len(tr_items):
+            out.append(f"‘{en_header}’ {len(en_items)} madde, Türkçe karşılığı {len(tr_items)} madde (paralel çeviri)")
+        if en_header == EN_BOXES[0]:
+            for item in en_items:
+                if not re.match(r"^- [^:\n]{2,}:\s*\S[^?]*\?", item):
+                    out.append(f"İngilizce test maddesi ‘Label: question?’ biçiminde değil → {item[:45]}")
+            if en_items and not EN_SEGMENT.search("\n".join(en_items)):
+                out.append("İngilizce test listesinde cihaz/segment kırılımı sorusu yok")
+        if en_header == EN_BOXES[1] and en_items:
+            if not EN_GUARDRAIL.search("\n".join(en_items[1:])):
+                out.append("İngilizce KPI listesinde guardrail yok (“… must not …”)")
+            if EN_GUARDRAIL.search(en_items[0]):
+                out.append("İngilizce birincil KPI guardrail gibi yazılmış (“must not”)")
+            if glossary is not None:
+                label = kpi_label(en_items[0])
+                english = getattr(glossary, "english", {})
+                if not any(c in english for c in (label, bare_label(label))) and \
+                        not any(bare_label(n) == bare_label(label) for n in english):
+                    out.append(f"İngilizce birincil KPI sözlüğün ‘English name’ sütununda yok → {label}")
+    for tr_note, en_note in NOTE_PAIRS:
+        if f"**{tr_note}" in tr_part and f"**{en_note}" not in en_body:
+            out.append(f"Türkçe bölümde ‘{tr_note}’ var, İngilizce gövdede ‘{en_note}’ yok")
+    return out
+
+
+def find_metadata_duplicates(meta):
+    """meta: [(dosya, başlık, tags, en_title)]. Tekrar eden id ve İngilizce başlık."""
+    out = []
+    for key, label in (("id", "id"), ("en", "EN başlığı")):
+        seen = {}
+        for name, title, tags, en_title in meta:
+            value = tags.get("id") if key == "id" else (en_title.casefold() if en_title else None)
+            if value:
+                seen.setdefault(value, []).append(f"{name} → {title[:40]}")
+        out.extend(f"{label} birden fazla senaryoda aynı: “{value}” ({'; '.join(places)})"
+                   for value, places in seen.items() if len(places) > 1)
+    return out
+
+
+def next_free_id(filename, meta):
+    """Bir dosya için sıradaki boş kimlik (ör. cc-023)."""
+    prefix = ID_PREFIXES[os.path.basename(filename)]
+    used = [int(m.group("num")) for _, _, tags, _ in meta
+            for m in [ID_RE.match(tags.get("id", ""))] if m and m.group("prefix") == prefix]
+    return f"{prefix}-{(max(used) if used else 0) + 1:03d}"
+
+
+def find_unresolved_en_cross_refs(meta, en_bodies):
+    """İngilizce gövdedeki “English title” scenario atıfları var olan bir EN başlığına çözülür."""
+    known = {normalize_title(en) for _, _, _, en in meta if en}
+    problems = []
+    for where, text in en_bodies:
+        for m in EN_CROSS_REF_TAIL.finditer(text):
+            start = _quoted_before(text, m.start())
+            if start is None:
+                continue
+            quoted = text[start + 1: m.start()]
+            if normalize_title(quoted) not in known:
+                problems.append(f"{where}: İngilizce atıf yapılan senaryo başlığı bulunamadı → “{quoted[:70]}”")
+    return problems
 
 
 def unclosed_blocks(parsed):
@@ -700,13 +954,35 @@ def glossary_status(label, glossary):
     return "missing"
 
 
+def archive_files(directory=SCENARIO_DIR):
+    """Aşama dosyaları: küçük harfli adlar (cart-checkout.md). FORMAT.md gibi büyük
+    harfli belgeler senaryo içermez ve denetlenmez."""
+    return [n for n in sorted(os.listdir(directory)) if re.match(r"^[a-z0-9-]+\.md$", n)]
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Senaryo arşivinin biçim denetimi.")
     parser.add_argument("files", nargs="*",
                         help="arşiv yerine denetlenecek .md dosyaları (ör. kullanıcının yazdığı tek senaryo)")
     parser.add_argument("--verbose", action="store_true",
                         help="sözlükte kanonik adı olmayan birincil KPI’ları da listele")
+    parser.add_argument("--next-id", metavar="DOSYA",
+                        help="bu arşiv dosyası için sıradaki boş kimliği bas (ör. cart-checkout.md → cc-023)")
     args = parser.parse_args(argv)
+
+    if args.next_id:
+        name = os.path.basename(args.next_id)
+        if name not in ID_PREFIXES:
+            print(f"HATA: bilinen bir arşiv dosyası değil: {name} (ID_PREFIXES)")
+            return 1
+        meta = []
+        for n in archive_files():
+            with open(os.path.join(SCENARIO_DIR, n), encoding="utf-8") as f:
+                for title, body in parse_scenarios(f.read()):
+                    tags, en_title, _ = check_metadata(n, title, body)
+                    meta.append((n, title, tags, en_title))
+        print(next_free_id(name, meta))
+        return 0
 
     if args.files:
         paths = list(args.files)
@@ -718,12 +994,12 @@ def main(argv=None):
         if not os.path.isdir(SCENARIO_DIR):
             print(f"HATA: senaryo dizini bulunamadı: {SCENARIO_DIR}")
             return 1
-        paths = [os.path.join(SCENARIO_DIR, n) for n in sorted(os.listdir(SCENARIO_DIR)) if n.endswith(".md")]
+        paths = [os.path.join(SCENARIO_DIR, n) for n in archive_files()]
 
     all_errors, all_warnings = [], []
     total = 0
     per_file = {}
-    file_texts, scenarios = [], []
+    file_texts, scenarios, meta, en_bodies = [], [], [], []
     glossary = load_glossary()
 
     for path in paths:
@@ -754,7 +1030,15 @@ def main(argv=None):
                     all_errors.append(f"{name} → {title[:50]}: '{header}' kutusu birden fazla kez tanımlı")
             all_errors.extend(check_scenario(name, title, body, glossary=glossary))
             all_warnings.extend(check_warnings(name, title, body, glossary=glossary))
+            tags, en_title, meta_errors = check_metadata(name, title, body, glossary=glossary)
+            all_errors.extend(meta_errors)
+            meta.append((name, title, tags, en_title))
+            en_body = split_en_body(body)[1]
+            if en_body is not None:
+                en_bodies.append((f"{name} → {title[:50]}", en_body))
 
+    all_errors.extend(find_metadata_duplicates(meta))
+    all_errors.extend(find_unresolved_en_cross_refs(meta, en_bodies))
     all_errors.extend(find_duplicate_never_do(scenarios))
     all_errors.extend(find_unresolved_cross_refs(file_texts, [t for _, t, _ in scenarios]))
     dup_errors, dup_infos = find_near_duplicates(scenarios)
@@ -794,6 +1078,15 @@ def main(argv=None):
         if args.verbose:
             for m in missing:
                 print(f"  - {m}")
+        print()
+
+    tagged = [tags for _, _, tags, _ in meta if tags.get("düzey") in TAG_VALUES["düzey"]]
+    if tagged:
+        structural = sum(1 for t in tagged if t["düzey"] in STRUCTURAL_LEVELS)
+        classic = sum(1 for t in tagged if t.get("durum") == "klasik")
+        en_full = len(en_bodies)
+        print(f"Etiketler: {len(tagged)}/{total} senaryo; öğe düzeyi {len(tagged) - structural}, yapı düzeyi "
+              f"{structural}; klasik {classic}; tam İngilizce gövde {en_full}.")
         print()
 
     if all_warnings:

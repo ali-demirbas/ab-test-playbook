@@ -8,6 +8,10 @@ Yolculuk aşaması: düzenlemeye tabi finansal ürünlerde (sigorta, hayat, bire
 
 Değişken: Akordeon içindeki ürün açıklamasının biçimi · Fark: değiştir
 
+Etiket: id=fp-001 · mercek=Netlik · düzey=metin · sektör=finans · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does splitting a long product description in an accordion into labelled points raise requests?
+
 Bir sigorta ürününün akordeonu açıldığında tek blok hâlinde uzun bir paragraf çıkıyorsa kullanıcı ürünün kimin için olduğunu, neyi kapsadığını ve neyi kapsamadığını satır satır aramak zorunda kalır. Aynı cümleleri “Kimler için”, “Neleri kapsar”, “Neleri kapsamaz” gibi etiketli maddelere bölmek taramayı kolaylaştırır, çünkü karar için aranan bilgi etiketinden bulunur. Riski: maddeleştirirken bir istisna ya da koşul cümlesi kısalır veya düşerse kullanıcı ürünü olduğundan geniş sanar; bu da talepten sonra vazgeçme ve şikâyet olarak geri döner. İki kolda metnin içeriği aynıdır, yalnızca biçimi değişir. “Güvenceleri madde listesi hâlinde vermek ikna ediyor mu?” (`home-landing.md`) senaryosundan farkı: orada pazarlama sayfasındaki güven vaatleri listelenir, burada düzenlemeye tabi bir ürünün kapsam metni bölünür ve metnin anlamı uyum onayıyla sabit tutulur.
 
 **Test edilmesi gerekenler**
@@ -36,6 +40,10 @@ Bir sigorta ürününün akordeonu açıldığında tek blok hâlinde uzun bir p
 ## Hizmet tanıtımında açıklama cümlelerini ilgili adımın altına taşımak katılımı artırır mı?
 
 Değişken: Tanıtım açıklamasının ekrandaki yeri · Fark: taşı
+
+Etiket: id=fp-002 · mercek=Netlik · düzey=görsel · sektör=finans · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does moving the explanatory sentences of a service introduction under the step they describe raise take-up?
 
 Fon dağılımını müşteri adına yöneten bir hizmetin tanıtım ekranında açıklama paragrafı üstte, üç adım (risk profilini belirle, öneriyi incele, onayla) altta durduğunda hangi cümlenin hangi adıma ait olduğunu kullanıcı kendi eşleştirir. Aynı cümleleri ait oldukları adımın altına taşımak, her adımda ne olacağını tam o adımın yanında söyler; belirsizlik azaldığı için başlama eşiği düşebilir. Riski: üstteki özet kalkınca hizmetin ne olduğu ilk bakışta anlaşılmayabilir ve adım listesi uzadığı için başlat butonu ekranın altına iner.
 
@@ -66,6 +74,10 @@ Fon dağılımını müşteri adına yöneten bir hizmetin tanıtım ekranında 
 
 Değişken: Öneri slaytındaki eylem butonu · Fark: ekle
 
+Etiket: id=fp-003 · mercek=Netlik · düzey=görsel · sektör=finans · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does adding a button that names the promise to a slide offering a personal recommendation pay off?
+
 Uygulamanın ana ekranındaki bir slayt “Size özel katkı payı önerimiz hazır” dediği hâlde üzerinde dokunulacak belirgin bir öğe yoksa müşteri vaadin nereden açılacağını bilemez. Slayta vaadi adlandıran bir buton (“Önerimi gör”) eklemek hem dokunulabilirliği işaretler hem dokununca ne çıkacağını söyler. Riski: buton merakla dokunmayı artırır, ama açılan ekran gerçekten kişisel değilse ya da beklenenden yüksek bir tutar öneriyorsa müşteri vazgeçer; dokunma artar, artırım artmaz. Bu yüzden birincil metrik dokunma değil, tamamlanan katkı payı artırımıdır.
 
 **Test edilmesi gerekenler**
@@ -94,6 +106,10 @@ Uygulamanın ana ekranındaki bir slayt “Size özel katkı payı önerimiz haz
 ## Yalnızca ürün adlarından oluşan listenin başına “Hangisi bana uygun?” yönlendirmesi eklemek talebi artırır mı?
 
 Değişken: Liste başındaki ürün seçme yönlendirmesi · Fark: ekle
+
+Etiket: id=fp-004 · mercek=Uygunluk · düzey=bilgi · sektör=finans · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does adding a “Which one suits me?” guide at the top of a list of bare product names raise requests?
 
 Sigorta ürünleri yalnızca adlarıyla sıralandığında (“Ferdi Kaza”, “Yıllık Hayat”, “Kritik Hastalıklar”) ürünleri tanımayan ziyaretçi hangisine bakacağını bilemez; her birini tek tek açıp karşılaştırmak zorunda kalır. Listenin başına ihtiyaçtan ürüne götüren kısa bir yönlendirme (“Hangisi bana uygun?” başlığı altında “Ailemi korumak istiyorum”, “Borcumu güvenceye almak istiyorum” gibi birkaç seçenek) eklemek seçim yükünü azaltır, çünkü ziyaretçi ürün adını değil kendi ihtiyacını tanır. Riski: yönlendirme kişiye özel tavsiye gibi algılanırsa yanlış ürüne talep gelir; ayrıca liste aşağı itilir ve ne aradığını bilen ziyaretçi yavaşlar.
 
@@ -124,6 +140,10 @@ Sigorta ürünleri yalnızca adlarıyla sıralandığında (“Ferdi Kaza”, �
 
 Değişken: Sözleşme seçimi adımındaki yönerge satırı · Fark: ekle
 
+Etiket: id=fp-005 · mercek=Netlik · düzey=metin · sektör=finans · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does adding an instruction line to the contract selection step raise progress?
+
 Birden fazla sözleşmesi olan müşteri bir işlem akışına girdiğinde (katkı payı değişikliği, fon dağılımı, ödeme aracı güncelleme) ilk ekranda sözleşmelerin listesini ve pasif bir “Devam” butonunu bulur; ne yapması gerektiği yazmıyorsa butonun neden çalışmadığını anlamaz ve çıkar. Listenin üstüne tek satırlık bir yönerge (“İşlem yapmak istediğiniz sözleşmeyi seçin”) eklemek beklenen eylemi söyler. Riski: satır fark edilmezse hiçbir şey değişmez. “Daha hızlı olsun” diye sözleşmeyi önceden işaretlemek cazip görünür, ama işlemin kapsamını müşteri yerine seçmek olur; o yüzden bu senaryonun dışındadır ve aşağıda yasak olarak yazılıdır.
 
 **Test edilmesi gerekenler**
@@ -152,6 +172,10 @@ Birden fazla sözleşmesi olan müşteri bir işlem akışına girdiğinde (katk
 ## Hesaplama sonuç ekranına sonucu talebe bağlayan bir buton eklemek talep oluşturmayı artırır mı?
 
 Değişken: Hesaplama sonuç ekranındaki talep butonu · Fark: ekle
+
+Etiket: id=fp-006 · mercek=Netlik · düzey=görsel · sektör=finans · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a button on the calculator result screen that carries the result into a request raise request creation?
 
 Emeklilik birikimi ya da prim hesaplama aracı sonucu gösterip orada bitiyorsa ziyaretçi en ilgili olduğu anda çıkmaza girer: sonucu almıştır ama devam etmek için menüden başka bir sayfa bulması gerekir. Sonuç ekranına talep formunu açan bir buton (“Bu hesapla teklif iste”) eklemek ilgiyi eyleme bağlar. Riski: araç yalnızca merak eden ziyaretçiden düşük niyetli talep toplar ve danışman ekibinin yükü artar; ayrıca hesaplanan tutar bir taahhüt gibi okunursa teklif aşamasında hayal kırıklığı doğar.
 
@@ -182,6 +206,10 @@ Emeklilik birikimi ya da prim hesaplama aracı sonucu gösterip orada bitiyorsa 
 
 Değişken: Kimlik numarası alanının yanındaki gerekçe satırı · Fark: ekle
 
+Etiket: id=fp-007 · mercek=Güven · düzey=güven · sektör=finans · pazar=TR · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does writing why the ID number is needed next to its field on a pre-quote form raise quotes?
+
 Sigorta ya da emeklilik ön teklif formunda kimlik numarası veya doğum tarihi alanı, henüz fiyat bile almamış ziyaretçiye ağır gelir: “neden şimdi istiyorlar” sorusu yanıtsız kalınca form orada bırakılır. Alanı kaldırmak çoğu zaman mümkün değildir, çünkü teklif bu bilgiyle hesaplanır; kural 14’teki ara yöntemlerden biri olan gerekçe vermek, alanın yanına bilginin ne için kullanılacağını yazar (“Primi yaşınıza göre hesaplayabilmemiz için gerekir”). Riski: gerekçe yayımlanan aydınlatma metniyle birebir örtüşmezse yanıltıcı olur; ayrıca gerekçe, ziyaretçinin aklına gelmemiş bir kaygıyı uyandırabilir. “Alanın yanına “neden soruyoruz” açıklaması eklemek, amacı belirsiz görünen bir alanı doldurtur mu?” (`saas-b2b.md`) senaryosundan farkı: orada alan hassas olmayan bir niteleme sorusudur ve ölçülen o alanın doldurulmasıdır; burada alan zorunlu ve hassastır, gerekçenin metni kişisel veri kurallarına bağlıdır ve ölçülen teklifin alınmasıdır.
 
 **Test edilmesi gerekenler**
@@ -210,6 +238,10 @@ Sigorta ya da emeklilik ön teklif formunda kimlik numarası veya doğum tarihi 
 ## Teklif akışındaki adım göstergesinde numaraların yanına adım adlarını yazmak sözleşmeye ulaşmayı artırır mı?
 
 Değişken: Adım göstergesindeki adım etiketleri · Fark: değiştir
+
+Etiket: id=fp-008 · mercek=Netlik · düzey=bilgi · sektör=finans · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does writing step names next to the numbers in a quote flow’s step indicator raise contract completion?
 
 Teklif akışında yalnızca numara gösteren bir gösterge (“2 / 4”) kullanıcıya kaçıncı adımda olduğunu söyler ama sırada ne olduğunu söylemez: fiyatı hangi adımda alacağını, ödemenin ne zaman isteneceğini bilmeyen kullanıcı kişisel bilgi vermeye isteksiz davranır. Numaraların yanına adımların adını yazmak (“1 Bilgiler, 2 Teminat, 3 Teklif, 4 Onay”) yolu önceden gösterir; fiyatın üçüncü adımda geleceğini bilen kullanıcı ilk iki adımı bitirmeye daha yatkın olabilir. Riski: adlar akışı olduğundan uzun gösterebilir ve dar ekranda sığmayıp kırpılır. “İlerleme çubuğu tamamlama oranını artırıyor mu?” (`cart-checkout.md`) senaryosundan farkı: orada göstergenin kendisi eklenir, burada gösterge iki kolda da vardır ve yalnızca adımların adlandırılması değişir.
 
@@ -240,6 +272,10 @@ Teklif akışında yalnızca numara gösteren bir gösterge (“2 / 4”) kullan
 
 Değişken: Hesaplama aracındaki alanların başlangıç değeri · Fark: değiştir
 
+Etiket: id=fp-009 · mercek=Çaba · düzey=sürtünme · sektör=finans · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does opening the calculator prefilled with the customer’s existing contract data get the calculation finished?
+
 Giriş yapmış müşteri uygulamadaki birikim hesaplama aracını açtığında yaş, aylık katkı payı ve mevcut birikim alanları boş geliyorsa, şirketin zaten bildiği bilgiyi yeniden yazması istenir; çoğu müşteri katkı payı tutarını ezbere bilmez ve araç yarıda kalır. Alanları müşterinin kendi sözleşme verisiyle dolu açmak yazma yükünü kaldırır ve sonucu ilk dokunuşta kişisel kılar. Riski: veri eski ya da yanlış sözleşmeden gelirse sonuç yanlış olur ve müşteri bunu fark etmeyebilir; birden fazla sözleşmesi olan müşteride hangisinin kullanıldığı açık değilse güven zedelenir. Dolu gelen her alan düzenlenebilir kalır; değişen yalnızca başlangıç değeridir. Bu bir benzetim aracıdır: bir işlemin kapsamını önceden seçmekle aynı şey değildir ve hiçbir işlemi başlatmaz.
 
 **Test edilmesi gerekenler**
@@ -268,6 +304,10 @@ Giriş yapmış müşteri uygulamadaki birikim hesaplama aracını açtığında
 ## “Sizi arayalım” formuna talepten sonra kimin, hangi kanaldan döneceğini yazmak talebi artırır mı?
 
 Değişken: Talep formundaki sonraki adım satırı · Fark: ekle
+
+Etiket: id=fp-010 · mercek=Netlik · düzey=bilgi · sektör=finans · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does stating on a “Call me back” form who will get back to you, and through which channel, raise requests?
 
 “Sizi arayalım” formu ad ve telefon ister ama gönderdikten sonra ne olacağını söylemez: kim arayacak, hangi kanaldan, ne için? Belirsizlik iki yerde kayıp yaratır: bilinmeyen bir satış aramasından çekinen ziyaretçi formu göndermez, gönderen ise tanımadığı numarayı açmaz. Butonun üstüne sürecin gerçekte nasıl işlediğini söyleyen tek satır (“Müşteri danışmanımız sizi telefonla arar ve sorularınızı yanıtlar”) eklemek beklentiyi kurar. Riski: satır şirketin gerçekten yürütmediği bir süreci anlatırsa vaat tutulmaz ve şikâyete dönüşür; arama fikri netleşince bazı ziyaretçiler de vazgeçebilir.
 

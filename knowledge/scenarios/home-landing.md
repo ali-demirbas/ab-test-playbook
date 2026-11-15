@@ -8,6 +8,10 @@ Yolculuk aşaması: ziyaretçinin siteye ilk düştüğü ekran. Amaç satış d
 
 Değişken: Ana CTA’nın konumu · Fark: taşı
 
+Etiket: id=hl-001 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should the main CTA be visible on the first screen?
+
 CTA’yı kaydırmadan görünen alana almak aksiyonu erken sunar ve kararı vermiş ziyaretçiyi hemen ilerletir. Karşı argüman: henüz ikna olmamış ziyaretçiye erken sunulan CTA boşa gider, üstelik başlığın ve değer önerisinin yerini daraltır. Uzun ve karmaşık teklifi olan sayfalarda erken CTA tıklansa bile sonraki adımda dökülme yaratabilir.
 
 **Test edilmesi gerekenler**
@@ -36,6 +40,10 @@ CTA’yı kaydırmadan görünen alana almak aksiyonu erken sunar ve kararı ver
 ## Başlık problemi mi, çözümü mü anlatmalı?
 
 Değişken: Başlığın anlatı çerçevesi · Fark: değiştir
+
+Etiket: id=hl-002 · mercek=Netlik · düzey=metin · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should the headline describe the problem or the solution?
 
 Problemi adlandıran başlık ziyaretçinin kendini tanımasını sağlar ve “bu benim için” hissi yaratır. Çözümü anlatan başlık ise ne satıldığını hemen netleştirir ve zaman kaybettirmez. Problem odaklı çerçeveleme, ziyaretçi problemini zaten biliyorsa gereksiz bir adım; çözüm odaklı çerçeveleme, ziyaretçi problemin farkında değilse anlamsız gelir.
 
@@ -66,6 +74,10 @@ Problemi adlandıran başlık ziyaretçinin kendini tanımasını sağlar ve “
 
 Değişken: Fayda ifadesinin somutluk düzeyi · Fark: değiştir
 
+Etiket: id=hl-003 · mercek=Netlik · düzey=metin · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should the benefit statement be abstract or concrete?
+
 Soyut fayda (“daha verimli çalışın”) geniş kitleye hitap eder ama kimseye özel gelmez. Somut fayda (“rapor hazırlama süresi yarıya iner”) inandırıcıdır ama dar bir kullanım senaryosunu tarif eder ve diğer ziyaretçileri dışarıda bırakabilir. Somutluk aynı zamanda doğrulanabilir bir iddia yaratır; arkasında veri yoksa risklidir.
 
 **Test edilmesi gerekenler**
@@ -94,6 +106,10 @@ Soyut fayda (“daha verimli çalışın”) geniş kitleye hitap eder ama kimse
 ## Sayfa sonunda CTA’yı tekrarlamak dönüşümü artırır mı?
 
 Değişken: Sayfa sonundaki ikinci CTA · Fark: ekle
+
+Etiket: id=hl-004 · mercek=Çaba · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does repeating the CTA at the end of the page raise conversion?
 
 Uzun sayfada aşağı inen ziyaretçi ikna olduğunda yukarı dönmek zorunda kalmamalıdır. Sayfa sonuna ikinci bir CTA koymak bu sürtünmeyi kaldırır. Karşı tarafta: tekrar eden CTA sayfayı satış baskısı gibi hissettirebilir ve iki CTA farklı metin taşırsa mesaj dağılır.
 
@@ -124,6 +140,10 @@ Uzun sayfada aşağı inen ziyaretçi ikna olduğunda yukarı dönmek zorunda ka
 
 Değişken: Tanıtım videosunun oynatma biçimi · Fark: değiştir
 
+Etiket: id=hl-005 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does an autoplaying intro video strengthen the message?
+
 Video karmaşık bir ürünü metinden hızlı anlatabilir. Otomatik oynatma dikkat çeker ama ses açıksa rahatsız eder, veri tüketir, sayfa yükünü artırır ve bazı ziyaretçilerin hemen çıkmasına yol açar. Tıklayınca oynayan video ise izlenme oranını düşürür fakat izleyeni gerçekten ilgili kılar.
 
 **Test edilmesi gerekenler**
@@ -152,6 +172,10 @@ Video karmaşık bir ürünü metinden hızlı anlatabilir. Otomatik oynatma dik
 ## Müşteri logoları güven yaratıyor mu?
 
 Değişken: Müşteri logo bandı · Fark: ekle
+
+Etiket: id=hl-006 · mercek=Güven · düzey=sosyal-kanıt · sektör=b2b · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Do customer logos build trust?
 
 Tanınan kurum logoları hızlı bir güven kısayolu sağlar. Ancak logolar ziyaretçinin tanımadığı kurumlardansa etkisizdir, hedef kitleden farklı ölçekteki kurumlarsa (kurumsal logolar küçük işletme ziyaretçisine) “bu benim için değil” hissi bile yaratabilir. Logo bandı ayrıca sayfanın ilk ekranından değerli yer alır.
 
@@ -182,6 +206,10 @@ Tanınan kurum logoları hızlı bir güven kısayolu sağlar. Ancak logolar ziy
 
 Değişken: Gerçek kişiyi tanıtan blok · Fark: ekle
 
+Etiket: id=hl-007 · mercek=Güven · düzey=güven · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does showing an expert or the founder build trust?
+
 Arkasında gerçek bir insan olduğunu göstermek (kurucu fotoğrafı ve imzası, alan uzmanının açıklaması) soyut bir markayı somutlaştırır. Karşı tarafta: kişi öne çıkarıldığında marka küçük ölçekli görünebilir, kurumsal alıcıda “tek kişilik iş” algısı yaratabilir ve kişiye bağımlılık riski doğar.
 
 **Test edilmesi gerekenler**
@@ -210,6 +238,10 @@ Arkasında gerçek bir insan olduğunu göstermek (kurucu fotoğrafı ve imzası
 ## Uzun sayfa mı, kısa sayfa mı daha çok dönüştürüyor?
 
 Değişken: Sayfadaki bölüm sayısı · Fark: değiştir
+
+Etiket: id=hl-008 · mercek=Netlik · düzey=bilgi · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Long page or short page: which converts more?
 
 Uzun sayfa itirazları tek tek karşılar ve karmaşık ürünü anlatmaya yer bırakır. Kısa sayfa kararı hızlandırır ve dikkat dağınıklığını azaltır. Belirleyici olan uzunluk değil, ziyaretçinin karar vermek için ihtiyaç duyduğu bilgi miktarıdır; bu da ürünün karmaşıklığına ve fiyat seviyesine bağlıdır.
 
@@ -240,6 +272,10 @@ Uzun sayfa itirazları tek tek karşılar ve karmaşık ürünü anlatmaya yer b
 
 Değişken: “Nasıl çalışır” bölümü · Fark: ekle
 
+Etiket: id=hl-009 · mercek=Netlik · düzey=bilgi · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a “How it works” section remove hesitation?
+
 Sürecin adım adım anlatılması belirsizliği azaltır ve “kaydolunca ne olacak” sorusunu cevaplar. Karşı tarafta: süreci göstermek işin ne kadar emek gerektirdiğini de ortaya koyar ve basit sanılan bir hizmetin karmaşık görünmesine yol açabilir. Adım sayısı burada mesajın kendisidir.
 
 **Test edilmesi gerekenler**
@@ -268,6 +304,10 @@ Sürecin adım adım anlatılması belirsizliği azaltır ve “kaydolunca ne ol
 ## Ziyaretçinin geldiği kaynağa göre başlığı değiştirmek işe yarar mı?
 
 Değişken: Başlığın trafik kaynağına göre uyarlanması · Fark: değiştir
+
+Etiket: id=hl-010 · mercek=Uygunluk · düzey=kişiselleştirme · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does changing the headline to match the visitor’s traffic source pay off?
 
 Reklamdaki veya yönlendiren sayfadaki ifadeyi başlıkta karşılamak beklenti sürekliliği kurar ve “yanlış yere geldim” hissini önler. Riski: kaynak sayısı arttıkça yönetilemez sayıda varyasyon doğar, yanlış eşleştirme alakasız bir başlık gösterir ve kişiselleştirme rahatsız edici bir takip hissi yaratabilir.
 
@@ -298,6 +338,10 @@ Reklamdaki veya yönlendiren sayfadaki ifadeyi başlıkta karşılamak beklenti 
 
 Değişken: İlk ekranda alt bölümün görünürlüğü · Fark: değiştir
 
+Etiket: id=hl-011 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does a design that looks like the end of the page stop scrolling?
+
 Tam ekran kaplayan bir bölüm veya güçlü bir yatay ayırıcı, ziyaretçide sayfanın sona erdiği izlenimi yaratabilir ve altındaki içerik hiç görülmez. Bu genelde fark edilmeyen bir kayıptır: içerik oradadır, ölçümde “okunmadı” görünür ve içeriğin kendisi suçlanır. Ayırıcıyı yumuşatmak veya alttan bir parça göstermek kaydırmayı sürdürebilir.
 
 **Test edilmesi gerekenler**
@@ -326,6 +370,10 @@ Tam ekran kaplayan bir bölüm veya güçlü bir yatay ayırıcı, ziyaretçide 
 ## Örnek kullanım senaryoları göstermek karar verdiriyor mu?
 
 Değişken: Kullanım örnekleri bölümü · Fark: ekle
+
+Etiket: id=hl-012 · mercek=Uygunluk · düzey=bilgi · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does showing example use cases help visitors decide?
 
 Ziyaretçi çoğu zaman ürünün ne olduğunu değil, kendi durumunda ne işe yarayacağını anlamakta zorlanır. Somut kullanım örnekleri bu boşluğu doldurur. Karşı tarafta: örnekler dar seçilirse kendini orada görmeyen ziyaretçi elenir ve sayfa uzar.
 
@@ -356,6 +404,10 @@ Ziyaretçi çoğu zaman ürünün ne olduğunu değil, kendi durumunda ne işe y
 
 Değişken: Sayfa içi bölüm navigasyonu · Fark: ekle
 
+Etiket: id=hl-013 · mercek=Çaba · düzey=gezinme · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does section navigation on a long page pay off?
+
 Sayfa içi bağlantılar (sabit bir bölüm menüsü veya içindekiler) ziyaretçinin aradığı bölüme atlamasını sağlar. Riski: navigasyon ziyaretçiyi tek bir bölüme götürüp geri kalan ikna içeriğini atlatabilir; ayrıca ekranda yer kaplar ve mobilde dar alanda sıkışır.
 
 **Test edilmesi gerekenler**
@@ -384,6 +436,10 @@ Sayfa içi bağlantılar (sabit bir bölüm menüsü veya içindekiler) ziyaret�
 ## Teklifin yanına açık bir reddetme seçeneği eklemek dönüşümü etkiler mi?
 
 Değişken: Açık “şimdi değil” reddetme seçeneği · Fark: ekle
+
+Etiket: id=hl-014 · mercek=Güven · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does adding a clear option to decline next to an offer affect conversion?
 
 Bir teklifin yanına açık bir “şimdi değil” seçeneği koymak kullanıcıya kontrol hissi verir ve zorlanma tepkisini azaltır. Sezgiye aykırı olan şudur: reddetmeyi kolaylaştırmak kabul oranını düşürebileceği gibi, güven artışı yoluyla toplam ilişkiyi güçlendirebilir. Ölçülmesi gereken tek seferlik kabul değil, sonraki davranıştır.
 
@@ -414,6 +470,10 @@ Bir teklifin yanına açık bir “şimdi değil” seçeneği koymak kullanıc�
 
 Değişken: Sayfa üstündeki fayda çubuğu · Fark: ekle
 
+Etiket: id=hl-015 · mercek=Netlik · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does a benefits bar at the top of the page raise action?
+
 Başlığın hemen üstünde veya altında duran ince bir şerit (ücretsiz kargo, iade süresi, teslimat vaadi) en sık sorulan üç soruyu kaydırmadan cevaplar. Karşı tarafta: şerit reklam bandına benzeyip görmezden gelinebilir, dikkat çekerse asıl başlığın önüne geçer ve ekranın en değerli bölümünden yer alır.
 
 **Test edilmesi gerekenler**
@@ -442,6 +502,10 @@ Başlığın hemen üstünde veya altında duran ince bir şerit (ücretsiz karg
 ## Başlıkta özellik mi, fayda mı önce gelmeli?
 
 Değişken: Başlıkta fayda ile özelliğin sırası · Fark: değiştir
+
+Etiket: id=hl-016 · mercek=Netlik · düzey=metin · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should the headline lead with the feature or the benefit?
 
 Faydayı öne almak ziyaretçinin kendi sonucunu görmesini sağlar. Özelliği öne almak ise ne olduğunu hemen netleştirir ve ne aradığını bilen ziyaretçiyi hızlandırır. Fayda önde olduğunda ürünün ne olduğu belirsiz kalabilir; özellik önde olduğunda ise “bu bana ne kazandırır” sorusu cevapsız kalır. “Başlık problemi mi, çözümü mü anlatmalı?” senaryosundan farkı: orada başlığın anlatı çerçevesi (problem ya da çözüm) değişir, burada çerçeve sabit kalır ve yalnızca aynı başlıktaki fayda ile özelliğin sırası değişir.
 
@@ -472,6 +536,10 @@ Faydayı öne almak ziyaretçinin kendi sonucunu görmesini sağlar. Özelliği 
 
 Değişken: Güvencelerin sunum biçimi · Fark: değiştir
 
+Etiket: id=hl-017 · mercek=Güven · düzey=güven · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does presenting assurances as a bullet list persuade?
+
 Kısa madde listesi (iptal koşulu, veri güvenliği, destek, teslimat) paragraf içinde kaybolan güvenceleri taranabilir hâle getirir. Riski: liste uzarsa hiçbiri okunmaz, ayrıca güvence listesi ziyaretçinin aklına gelmemiş endişeleri hatırlatıp tereddüt yaratabilir.
 
 **Test edilmesi gerekenler**
@@ -500,6 +568,10 @@ Kısa madde listesi (iptal koşulu, veri güvenliği, destek, teslimat) paragraf
 ## Güvenceleri tek blokta mı, akışa yayarak mı sunmalı?
 
 Değişken: Güvencelerin sayfadaki yerleşimi · Fark: taşı
+
+Etiket: id=hl-018 · mercek=Güven · düzey=güven · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should assurances sit in one block or be spread through the flow?
 
 Tüm güvenceleri tek bölümde toplamak derli toplu bir cevap verir ama o bölüme ulaşmayan ziyaretçi hiçbirini görmez. Endişenin doğduğu yere yerleştirmek (fiyatın yanına iade koşulu, forma veri güvencesi) her güvenceyi tam ihtiyaç anında sunar; buna karşılık sayfa dağınıklaşabilir ve mesaj tekrarı yorucu gelebilir.
 
@@ -530,6 +602,10 @@ Tüm güvenceleri tek bölümde toplamak derli toplu bir cevap verir ama o böl�
 
 Değişken: Müşteri referansının biçimi · Fark: değiştir
 
+Etiket: id=hl-019 · mercek=Güven · düzey=sosyal-kanıt · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Is a video testimonial more persuasive than a written one?
+
 Videoda gerçek bir kişinin konuşması metinden daha inandırıcı gelir ve taklit edilmesi zordur. Bedeli: izlenme oranı okumaya göre düşüktür, üretimi pahalıdır, sayfa yükünü artırır ve videoyu açmayan ziyaretçi hiçbir referans görmemiş olur.
 
 **Test edilmesi gerekenler**
@@ -558,6 +634,10 @@ Videoda gerçek bir kişinin konuşması metinden daha inandırıcı gelir ve ta
 ## Referansı sonuç anlatan müşteriden seçmek fark yaratır mı?
 
 Değişken: Referansın içerik türü · Fark: değiştir
+
+Etiket: id=hl-020 · mercek=Güven · düzey=sosyal-kanıt · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does choosing testimonials from customers who describe a result make a difference?
 
 “Çok memnun kaldım” diyen genel bir referans duygu bildirir; “şu sorunu şu kadar sürede çözdük” diyen referans ise somut bir sonuç gösterir. Sonuç odaklı referans daha ikna edicidir ama dar bir kullanım senaryosunu tarif eder ve kendini orada görmeyen ziyaretçiyi kapsamayabilir.
 
@@ -588,6 +668,10 @@ Değişken: Referansın içerik türü · Fark: değiştir
 
 Değişken: Referansın trafik kaynağına göre seçimi · Fark: değiştir
 
+Etiket: id=hl-021 · mercek=Uygunluk · düzey=kişiselleştirme · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does showing a testimonial that matches the visitor’s traffic source pay off?
+
 Ziyaretçiyle aynı sektörden veya aynı kanaldan gelen bir müşterinin referansı “benim gibi biri” etkisi yaratır. Riski: kaynak eşleştirmesi yanlışsa alakasız bir referans gösterilir, ayrıca her kaynak için ayrı referans yönetmek sürdürülemez hâle gelebilir. “Ziyaretçinin geldiği kaynağa göre başlığı değiştirmek işe yarar mı?” senaryosundan farkı: orada kaynağa göre uyarlanan öğe başlıktır, burada başlık sabit kalır ve yalnızca gösterilen referans kaynağa göre seçilir; ikisini aynı testte birlikte uyarlamayın.
 
 **Test edilmesi gerekenler**
@@ -616,6 +700,10 @@ Ziyaretçiyle aynı sektörden veya aynı kanaldan gelen bir müşterinin refera
 ## Bölümleri zigzag dizmek okumayı sürdürüyor mu?
 
 Değişken: Bölümlerde görsel-metin hizalaması · Fark: değiştir
+
+Etiket: id=hl-022 · mercek=Çaba · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=klasik · tarih=2026-11
+
+EN: Does a zigzag section layout keep people reading?
 
 Görsel ve metnin dönüşümlü olarak sağa sola geçmesi (zigzag) monotonluğu kırar ve her bölümü ayrı bir birim gibi gösterir. Karşı tarafta: göz her bölümde yön değiştirmek zorunda kalır, tarama yavaşlar ve tek sütunlu düzenin sunduğu hızlı okuma kaybolur.
 
@@ -646,6 +734,10 @@ Görsel ve metnin dönüşümlü olarak sağa sola geçmesi (zigzag) monotonluğ
 
 Değişken: Sayfa görsellerinin türü · Fark: değiştir
 
+Etiket: id=hl-023 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Abstract theme images or real product screens: which works better?
+
 Soyut veya kavramsal görseller estetik bir bütünlük kurar ve ürün henüz olgunlaşmamışken işe yarar. Gerçek ürün ekranları ise ne alındığını gösterir ve belirsizliği kaldırır; buna karşılık ekranlar karmaşık görünüp caydırabilir ve hızla eskiyip bakım yükü yaratabilir.
 
 **Test edilmesi gerekenler**
@@ -674,6 +766,10 @@ Soyut veya kavramsal görseller estetik bir bütünlük kurar ve ürün henüz o
 ## İndirilebilir bir kaynak sunmak lead sayısını artırır mı?
 
 Değişken: İndirilebilir kaynak teklifi · Fark: ekle
+
+Etiket: id=hl-024 · mercek=Zamanlama · düzey=teklif · sektör=b2b · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does offering a downloadable resource raise lead volume?
 
 Rehber, şablon veya kontrol listesi karşılığında iletişim bilgisi istemek, satın almaya hazır olmayan ziyaretçiyi de yakalar. Riski: gelen kayıtların çoğu ürünle değil kaynakla ilgilenir, satış ekibinin yükü artar ve niteliksiz lead oranı yükselir. Asıl ölçülmesi gereken kayıt sayısı değil, atanan ziyaretçi başına nitelikli fırsat oranıdır.
 
@@ -704,6 +800,10 @@ Rehber, şablon veya kontrol listesi karşılığında iletişim bilgisi istemek
 
 Değişken: Para iade garantisi ifadesinin konumu · Fark: taşı
 
+Etiket: id=hl-025 · mercek=Güven · düzey=güven · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does moving the money-back guarantee next to the buy button raise purchases?
+
 Koşulsuz iade vaadi algılanan riski satıcıya aktarır ve kararsız ziyaretçiyi ilerletir. Bu testte garanti metni aynı kalır; yalnızca sayfanın altındaki yerinden satın alma butonunun hemen yanına taşınır. Bedeli: iade oranı yükselebilir, operasyonel maliyet artabilir ve garanti çok öne çıkarsa ürüne güvenilmediği izlenimi bile doğurabilir. Kazanç, ek satışın iade maliyetini aşıp aşmadığına bağlıdır.
 
 **Test edilmesi gerekenler**
@@ -732,6 +832,10 @@ Koşulsuz iade vaadi algılanan riski satıcıya aktarır ve kararsız ziyaretç
 ## Ziyaretçiyi kendi diliyle karşılamak işe yarar mı?
 
 Değişken: Karşılama ifadesinin dili · Fark: değiştir
+
+Etiket: id=hl-026 · mercek=Uygunluk · düzey=kişiselleştirme · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does greeting visitors in their own language pay off?
 
 Tarayıcı diline veya konuma göre karşılama ifadesini uyarlamak yakınlık kurar ve doğru yere geldiğini hissettirir. Riski: yanlış tespit edilen dil rahatsız eder, yarım çevrilmiş bir sayfa güveni düşürür ve karşılama dili ile içerik dili farklı olursa kafa karışıklığı yaratır.
 
@@ -762,6 +866,10 @@ Tarayıcı diline veya konuma göre karşılama ifadesini uyarlamak yakınlık k
 
 Değişken: Referansların sunum düzeni · Fark: değiştir
 
+Etiket: id=hl-027 · mercek=Güven · düzey=sosyal-kanıt · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Testimonials in a carousel or all visible: which works better?
+
 Kaydırıcı çok sayıda referansı az yerde barındırır ve sayfayı kısaltır. Bedeli: ilk kartın ötesini çok az ziyaretçi görür, otomatik ilerleyen kaydırıcı okumayı yarıda keser ve kaydırılabilir olduğu fark edilmezse geri kalan içerik boşa gider. Hepsini göstermek ise sayfayı uzatır ama tamamının görülmesini sağlar.
 
 **Test edilmesi gerekenler**
@@ -790,6 +898,10 @@ Kaydırıcı çok sayıda referansı az yerde barındırır ve sayfayı kısalt�
 ## Sosyal medya takipçi veya beğeni sayısını göstermek güveni artırır mı?
 
 Değişken: Sosyal medya takipçi sayısı göstergesi · Fark: ekle
+
+Etiket: id=hl-028 · mercek=Güven · düzey=sosyal-kanıt · sektör=genel · pazar=global · emek=düşük · durum=klasik · tarih=2026-11
+
+EN: Does showing social media follower or like counts build trust?
 
 Bir marka sayfasının yanında görünen takipçi veya beğeni sayısı, ürünün başkaları tarafından da tercih edildiğini gösteren dolaylı bir sosyal kanıttır. Risk, sayının küçük veya büyümekte olduğu bir markada beklenenin tersi bir etki yaratmasıdır; düşük bir sayı, kanıt yerine şüphe uyandırabilir.
 
@@ -820,6 +932,10 @@ Bir marka sayfasının yanında görünen takipçi veya beğeni sayısı, ürün
 
 Değişken: Açılıştaki kısmi karşılama ekranı · Fark: ekle
 
+Etiket: id=hl-029 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=orta · durum=klasik · tarih=2026-11
+
+EN: Does a large welcome screen that partly covers the content on page load raise interest?
+
 Küçük bir pop-up’tan farklı olarak, kısmi karşılama ekranı sayfanın büyük bir kısmını (genelde ilk ekranın tamamına yakınını) tek bir mesaj veya teklifle kaplar, altındaki içeriğin bir kısmı kenarlarda görünür kalır. Amaç dikkati tek bir noktaya toplamaktır; risk, ziyaretçinin asıl sayfaya hiç ulaşmadan ayrılmasıdır.
 
 **Test edilmesi gerekenler**
@@ -848,6 +964,10 @@ Küçük bir pop-up’tan farklı olarak, kısmi karşılama ekranı sayfanın b
 ## Anasayfayı tek bir anlatı yerine ziyaretçi tipine göre ayrı bloklara bölmek ilerlemeyi artırır mı?
 
 Değişken: Anasayfanın ziyaretçi tipine göre bölünmesi · Fark: değiştir
+
+Etiket: id=hl-030 · mercek=Uygunluk · düzey=kişiselleştirme · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does splitting the homepage into separate blocks per visitor type, instead of one narrative, raise progress?
 
 Çoğu anasayfa tek bir ziyaretçi profilini varsayıp doğrusal bir anlatı kurar (başlık → fayda → sosyal kanıt → CTA). Farklı ziyaretçi tipleri (ör. bireysel kullanıcı / kurumsal alıcı, yeni müşteri / mevcut müşteri) farklı sorularla geldiğinde bu tek anlatı hiçbirine tam oturmaz. Sayfayı bir yönlendirme sayfası gibi kurup her tipe ayrı bir blok sunmak (ör. “Bireysel kullanım için” / “Ekibiniz için” iki ayrı kart) ilgili ziyaretçiyi daha hızlı doğru içeriğe taşıyabilir; riski, tek bir net mesaj yerine sayfanın başında birden fazla seçenek sunmanın kararsızlık yaratmasıdır. Bu, “Ziyaretçinin geldiği kaynağa göre başlığı değiştirmek işe yarar mı?” senaryosundan farklıdır: orada tek başlık ziyaretçiye göre değişir, burada ekranda aynı anda birden fazla yol görünür durur.
 
@@ -878,6 +998,10 @@ Değişken: Anasayfanın ziyaretçi tipine göre bölünmesi · Fark: değiştir
 
 Değişken: Kullanıcı tipine göre anasayfa ayrımı · Fark: değiştir
 
+Etiket: id=hl-031 · mercek=Uygunluk · düzey=kişiselleştirme · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does showing new and returning visitors different homepages pay off?
+
 Yeni ziyaretçinin marka bilgisine, dönen ziyaretçinin ise hızlı devam yoluna ihtiyacı vardır. Aynı anasayfayı ikisine de göstermek her iki grubu da yarı yolda bırakabilir.
 
 **Test edilmesi gerekenler**
@@ -907,6 +1031,10 @@ Yeni ziyaretçinin marka bilgisine, dönen ziyaretçinin ise hızlı devam yolun
 
 Değişken: Son gezilen ürünler şeridi · Fark: ekle
 
+Etiket: id=hl-032 · mercek=Çaba · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a recently viewed products strip help visitors pick up where they left off?
+
 Dönen ziyaretçinin anasayfada ilk aradığı çoğu zaman bir önceki ziyarette baktığı üründür; onu bulmak için aramayı ya da kategoriyi baştan yürümesi gerekir. Anasayfaya son gezilen ürünler şeridi eklemek bu yolu tek dokunuşa indirir ve kişinin kendi geçmişine dayandığı için algoritmik öneriden daha alakalıdır. Riski: şerit çok satanlar ve kampanya bloklarını aşağı iter; satın alınmış ya da tükenmiş ürünü tekrar göstermek deneyimi bozar.
 
 **Test edilmesi gerekenler**
@@ -935,6 +1063,10 @@ Dönen ziyaretçinin anasayfada ilk aradığı çoğu zaman bir önceki ziyarett
 ## Mobil webe uygulama indirme banner’ı eklemek web dönüşümünü düşürüyor mu?
 
 Değişken: Uygulama indirme banner’ı · Fark: ekle
+
+Etiket: id=hl-033 · mercek=Zamanlama · düzey=görsel · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does adding an app download banner to the mobile web lower web conversion?
 
 Mobil webe eklenen uygulama indirme banner’ı kurulum sayısını artırır ama devam eden oturumu böler. Bu test iki hedefin çakıştığı klasik bir örnektir; tek metrikle okunursa yanlış karar verilir.
 

@@ -8,6 +8,10 @@ Yolculuk aşaması: bir formun doldurulmaya başlanmasından gönderilmesine kad
 
 Değişken: Alan etiketinin konumu · Fark: taşı
 
+Etiket: id=fs-001 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should field labels sit above the field or to its left?
+
 Sola hizalı etiket dikeyde yer kazandırır ama gözün her alanda yatay sıçrama yapmasını gerektirir. Üst hizalı etiket tek bir dikey tarama hattı oluşturur, buna karşılık form daha uzun görünür. Uzun etiketli veya çok dilli formlarda sola hizalama alan genişliğini de daraltır.
 
 **Test edilmesi gerekenler**
@@ -36,6 +40,10 @@ Sola hizalı etiket dikeyde yer kazandırır ama gözün her alanda yatay sıçr
 ## Yüzen etiket doldurmayı kolaylaştırıyor mu?
 
 Değişken: Alan etiketinin tipi (sabit, yüzen) · Fark: değiştir
+
+Etiket: id=fs-002 · mercek=Netlik · düzey=form · sektör=genel · pazar=global · emek=orta · durum=klasik · tarih=2026-11
+
+EN: Do floating labels make forms easier to fill in?
 
 Yüzen etiket (alanın içinde başlayıp yazmaya başlayınca üste kayan etiket) yer kazandırır ve form kısa görünür. Ancak boş haldeyken etiketi placeholder’dan ayırt etmek zorlaşır, kullanıcı alana tıklamadan ne isteneceğini kestiremeyebilir. Otomatik doldurma ile de çakışabilir.
 
@@ -66,6 +74,10 @@ Yüzen etiket (alanın içinde başlayıp yazmaya başlayınca üste kayan etike
 
 Değişken: Form sütun sayısı · Fark: değiştir
 
+Etiket: id=fs-003 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does putting form fields in a single column raise completion?
+
 İki sütunlu form ekranda kısa görünür ama gözün zikzak çizmesini gerektirir ve bir sütunu tamamen atlama riski yaratır. Tek sütun daha uzun görünür, buna karşılık sıra belirsizliği ortadan kalkar. Birlikte anlam taşıyan alanlarda (il/ilçe, ad/soyad) yan yana dizilim savunulabilir.
 
 **Test edilmesi gerekenler**
@@ -94,6 +106,10 @@ Değişken: Form sütun sayısı · Fark: değiştir
 ## En kolay alanı başa koymak formu tamamlatır mı?
 
 Değişken: Kolay alanların formdaki sırası · Fark: taşı
+
+Etiket: id=fs-004 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does putting the easiest field first get the form completed?
 
 Formu doldurmaya başlayan kullanıcının bitirme olasılığı artar. Bu nedenle ilk alanın düşünmeyi değil refleksi tetiklemesi (ad, e-posta) tamamlamayı artırabilir. Karşı argüman: kolay alanları öne almak zor alanları sona yığar ve terk noktasını öteler, toplam tamamlama değişmez.
 
@@ -124,6 +140,10 @@ Formu doldurmaya başlayan kullanıcının bitirme olasılığı artar. Bu neden
 
 Değişken: Form alanlarının açılma biçimi · Fark: değiştir
 
+Etiket: id=fs-005 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Show all fields up front or reveal them step by step: which gets more forms completed?
+
 Tüm alanları baştan göstermek beklentiyi netleştirir ama form uzun görünür. Kademeli açma (bir alan doldurulunca sonrakinin belirmesi, ya da isteğe bağlı bir bölümün bir bağlantıyla açılması) algılanan uzunluğu düşürür. Riski: kullanıcı formun ne kadar süreceğini bilemez ve gizlenen alan sürpriz gibi gelir.
 
 **Test edilmesi gerekenler**
@@ -152,6 +172,10 @@ Tüm alanları baştan göstermek beklentiyi netleştirir ama form uzun görün�
 ## Sayfa açılır açılmaz imleci ilk alana koymak işe yarar mı?
 
 Değişken: İlk alana otomatik odaklanma · Fark: değiştir
+
+Etiket: id=fs-006 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does placing the cursor in the first field as soon as the page opens pay off?
 
 Sayfa açılır açılmaz ilk alana odaklanmak bir adımı ortadan kaldırır ve masaüstünde yazmaya doğrudan başlatır. Mobilde ise klavyeyi zorla açar, sayfayı yukarı iter ve kullanıcının önce içeriği okumasını engelleyebilir. Formun sayfa içindeki konumu da sonucu değiştirir.
 
@@ -182,6 +206,10 @@ Sayfa açılır açılmaz ilk alana odaklanmak bir adımı ortadan kaldırır ve
 
 Değişken: Giriş alanı yüksekliği · Fark: değiştir
 
+Etiket: id=fs-007 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=düşük · durum=klasik · tarih=2026-11
+
+EN: Does making input fields taller affect form filling?
+
 Daha büyük giriş alanı dokunma hedefini büyütür, mobilde yanlış dokunmayı azaltır ve alanın tıklanabilir olduğunu görsel olarak netleştirir. Karşı tarafta: büyüyen alanlar formu uzatır, ekranda aynı anda daha az alan görünür ve form daha ağır hissettirebilir.
 
 **Test edilmesi gerekenler**
@@ -210,6 +238,10 @@ Daha büyük giriş alanı dokunma hedefini büyütür, mobilde yanlış dokunma
 ## Otomatik tamamlama form doldurmayı hızlandırır mı?
 
 Değişken: Otomatik tamamlama öneri listesi · Fark: ekle
+
+Etiket: id=fs-008 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does autocomplete speed up form filling?
 
 Adres, şehir, şirket gibi alanlarda öneri listesi yazma yükünü azaltır ve yazım hatasını düşürür. Riski: öneri listesi yanlış eşleşme sunarsa kullanıcı hatalı veriyi onaylar, ya da liste klavyenin üstünü kapatıp kullanıcıyı kilitler. Veri kalitesi kazancı ile tamamlama kazancı aynı yönde olmayabilir.
 
@@ -240,6 +272,10 @@ Adres, şehir, şirket gibi alanlarda öneri listesi yazma yükünü azaltır ve
 
 Değişken: Alan altı yardım metni · Fark: ekle
 
+Etiket: id=fs-009 · mercek=Netlik · düzey=form · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does adding help text under a field lower the error rate?
+
 Kısa bir yardım metni (“Fatura adresinizle aynı olmalı”, “Örnek: 5xx xxx xx xx”) hatalı girişi azaltabilir ve tereddüdü giderebilir. Karşı tarafta: her alana açıklama eklemek formu görsel olarak ağırlaştırır, önemli uyarının fark edilmesini zorlaştırır ve gerçek sorunun yanlış alan tasarımı olduğunu gizler.
 
 **Test edilmesi gerekenler**
@@ -268,6 +304,10 @@ Kısa bir yardım metni (“Fatura adresinizle aynı olmalı”, “Örnek: 5xx 
 ## Sosyal hesapla giriş seçeneği kaydı artırır mı?
 
 Değişken: Sosyal hesapla giriş seçeneği · Fark: ekle
+
+Etiket: id=fs-010 · mercek=Çaba · düzey=sürtünme · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does a social login option raise sign-ups?
 
 Sosyal giriş şifre oluşturma yükünü kaldırır ve kaydı hızlandırır. Buna karşılık kullanıcı hangi verinin paylaşılacağından çekinebilir, kurumsal kullanıcı kişisel hesabıyla giriş yapmak istemeyebilir ve sonradan “hangi yöntemle giriş yapmıştım” karışıklığı destek yüküne dönüşebilir.
 
@@ -298,6 +338,10 @@ Sosyal giriş şifre oluşturma yükünü kaldırır ve kaydı hızlandırır. B
 
 Değişken: Birincil giriş yöntemi · Fark: değiştir
 
+Etiket: id=fs-011 · mercek=Çaba · düzey=sürtünme · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does sending a one-time code instead of a password raise sign-ins?
+
 Şifresiz giriş (e-postaya veya telefona gönderilen tek kullanımlık kod) unutulan şifre kaynaklı kayıpları ortadan kaldırır. Bedeli: kullanıcı e-posta veya SMS’e geçmek zorunda kalır, kod gecikirse akış kopar ve kanal teslim oranı doğrudan dönüşüme yansır.
 
 **Test edilmesi gerekenler**
@@ -326,6 +370,10 @@ Değişken: Birincil giriş yöntemi · Fark: değiştir
 ## Kaydı aksiyondan sonraya ertelemek tamamlamayı artırır mı?
 
 Değişken: Kayıt adımının akıştaki yeri · Fark: taşı
+
+Etiket: id=fs-012 · mercek=Çaba · düzey=akış · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does postponing sign-up until after the action raise completion?
 
 Kayıt ekranını aksiyonun önüne koymak niyeti test eder ama hazır olmayan kullanıcıyı kaybeder. Kaydı sonraya bırakmak (önce işlemi yaptırmak, sonra kaydetmeyi teklif etmek) tamamlamayı artırabilir, buna karşılık kayıtsız tamamlanan işlemlerin geri dönüşü ve iletişimi zorlaşır.
 
@@ -356,6 +404,10 @@ Kayıt ekranını aksiyonun önüne koymak niyeti test eder ama hazır olmayan k
 
 Değişken: Formun sunum biçimi (modal, sayfa içi) · Fark: değiştir
 
+Etiket: id=fs-013 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should the form appear in a modal or in the page flow?
+
 Modal form dikkati toplar ve kullanıcıyı sayfadan koparmaz. Ancak küçük ekranda dar kalır, arkadaki bağlamı gizler, tarayıcı geri tuşuyla ilişkisi kırılgandır ve yanlışlıkla kapatma kaybı yaratır. Sayfa içi form ise bağlamı korur ama kullanıcı formu fark etmeyebilir.
 
 **Test edilmesi gerekenler**
@@ -384,6 +436,10 @@ Modal form dikkati toplar ve kullanıcıyı sayfadan koparmaz. Ancak küçük ek
 ## Çok adımlı formda geri dönüş imkânı tamamlamayı etkiler mi?
 
 Değişken: Çok adımlı formdaki geri düğmesi · Fark: ekle
+
+Etiket: id=fs-014 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a way back in a multi-step form affect completion?
 
 Görünür bir geri düğmesi hata düzeltmeyi kolaylaştırır ve kullanıcıya kontrol hissi verir. Karşı argüman: geri dönüş imkânı ilerlemeyi yavaşlatır, kullanıcı adımlar arasında gidip gelir ve girilen veri kaybolursa güven zedelenir. Asıl belirleyici, geri dönüldüğünde verinin korunup korunmadığıdır.
 
@@ -414,6 +470,10 @@ Görünür bir geri düğmesi hata düzeltmeyi kolaylaştırır ve kullanıcıya
 
 Değişken: Formun cümle biçiminde kurulması · Fark: değiştir
 
+Etiket: id=fs-015 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does turning a form into a sentence raise form filling?
+
 Alanları bir cümlenin içine yerleştirmek (“Ben [ad], [şehir]’de [hizmet] arıyorum”) formu ankete değil sohbete benzetir ve kısa formlarda samimi durur. Riski: uzun formlarda cümle yapısı dağılır, alanların sırası dilbilgisine esir olur, hata mesajlarını yerleştirmek zorlaşır ve ekran okuyucu deneyimi bozulabilir.
 
 **Test edilmesi gerekenler**
@@ -442,6 +502,10 @@ Alanları bir cümlenin içine yerleştirmek (“Ben [ad], [şehir]’de [hizmet
 ## Formu sayfanın ortasına almak mı, sola hizalamak mı?
 
 Değişken: Formun sayfadaki yatay konumu · Fark: taşı
+
+Etiket: id=fs-016 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=klasik · tarih=2026-11
+
+EN: Center the form on the page or align it left?
 
 Ortalanmış form dikkati toplar ve tek amaçlı sayfalarda doğal durur. Sola hizalı form ise okuma yönüyle uyumludur ve yanına açıklama, güvence veya özet yerleştirmeye izin verir. Ortalama, formun yanındaki destekleyici içeriği de ortadan kaldırır.
 
@@ -472,6 +536,10 @@ Ortalanmış form dikkati toplar ve tek amaçlı sayfalarda doğal durur. Sola h
 
 Değişken: Modal arka plan karartması · Fark: ekle
 
+Etiket: id=fs-017 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=klasik · tarih=2026-11
+
+EN: Does dimming the background behind a modal form focus attention?
+
 Arka planı karartmak veya bulanıklaştırmak modalı öne çıkarır ve form dışındaki her şeyi görsel olarak susturur. Karşı tarafta: karartma kullanıcının bağlamını kaybetmesine yol açar, hangi sayfadan geldiğini hatırlamasını zorlaştırır ve yoğun karartma kapana kısılma hissi verebilir.
 
 **Test edilmesi gerekenler**
@@ -500,6 +568,10 @@ Arka planı karartmak veya bulanıklaştırmak modalı öne çıkarır ve form d
 ## Hazır şablon metin sunmak serbest metin alanını doldurtuyor mu?
 
 Değişken: Düzenlenebilir hazır şablon metin · Fark: ekle
+
+Etiket: id=fs-018 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does offering an editable template text get a free-text field filled in?
 
 Boş bir metin kutusu, ne yazacağını bilmeyen kullanıcıyı durdurur. Hazır bir örnek metin sunmak (düzenlenebilir bir taslak) bu engeli kaldırır ve alanın doldurulma oranını artırabilir. Riski: gönderilen metinlerin çoğu birbirinin aynısı olur, kişisel olmaktan çıkar ve alıcı tarafında değeri düşer.
 
@@ -530,6 +602,10 @@ Boş bir metin kutusu, ne yazacağını bilmeyen kullanıcıyı durdurur. Hazır
 
 Değişken: Hazır tutar butonları · Fark: ekle
 
+Etiket: id=fs-019 · mercek=Fiyat · düzey=form · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does adding preset amount buttons above a free amount field raise the total amount?
+
 Hazır tutar butonları karar yükünü kaldırır, bir aralık önerir ve yazma zahmetini sıfırlar. Serbest giriş kutusu ise kullanıcıyı kendi tutarını belirlemekte özgür bırakır ama boş kutu ne yazılacağı konusunda bir işaret vermez. Bu testte butonlar serbest giriş kutusunun üstüne eklenir, kutu yerinde kalır. Sunulan butonların hangi tutarları içerdiği, seçilen ortalama tutarı doğrudan belirler.
 
 **Test edilmesi gerekenler**
@@ -558,6 +634,10 @@ Hazır tutar butonları karar yükünü kaldırır, bir aralık önerir ve yazma
 ## Formun başına uygunluk açıklaması koymak talebin niteliğini artırır mı?
 
 Değişken: Form başı uygunluk açıklaması · Fark: ekle
+
+Etiket: id=fs-020 · mercek=Uygunluk · düzey=bilgi · sektör=b2b · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does an eligibility note at the top of the form raise lead quality?
 
 Formun üstüne kimin için uygun olduğunu yazmak (asgari bütçe, hizmet bölgesi, gerekli koşul) uymayan kullanıcıyı baştan eler ve satış ekibinin yükünü azaltır. Bedeli: toplam talep sayısı düşer, sınırda kalan bazı uygun kullanıcılar da kendini dışarıda görüp vazgeçer.
 
@@ -588,6 +668,10 @@ Formun üstüne kimin için uygun olduğunu yazmak (asgari bütçe, hizmet bölg
 
 Değişken: Asıl formdan önceki ısındırma sorusu · Fark: ekle
 
+Etiket: id=fs-021 · mercek=Çaba · düzey=akış · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does asking a small warm-up question before the main form raise completion?
+
 Kullanıcıyı doğrudan çok alanlı bir formla karşılaştırmak yerine, önce tek ve kolay bir soruyla (“Hangisi size en yakın?”) başlamak küçük bir taahhüt yaratır; bu taahhüdün ardından gelen asıl formu tamamlama isteği güçlenebilir. Bu, alanları kademeli açmaktan farklıdır: orada aynı formun alanları sırayla açılır, burada asıl formdan önce ayrı, ilgisiz görünmeyen bir soru sorulur.
 
 **Test edilmesi gerekenler**
@@ -617,6 +701,10 @@ Kullanıcıyı doğrudan çok alanlı bir formla karşılaştırmak yerine, önc
 
 Değişken: Alan yanındaki gizlilik güvence metni · Fark: ekle
 
+Etiket: id=fs-022 · mercek=Güven · düzey=güven · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does adding a data-privacy assurance next to a form field raise sign-ups?
+
 E-posta veya telefon isteyen bir form, kullanıcıda “bu bilgi spam’e mi dönüşecek” tereddüdü yaratabilir. Alanın hemen yanına kısa bir güvence metni (“E-postanızı kimseyle paylaşmayız”) koymak bu tereddüdü giderebilir, ama gereksiz yere hatırlatma da tam tersi bir etki yaratıp “neden bunu söylemeleri gerekti” şüphesi doğurabilir.
 
 **Test edilmesi gerekenler**
@@ -645,6 +733,10 @@ E-posta veya telefon isteyen bir form, kullanıcıda “bu bilgi spam’e mi dö
 ## Tek seçimlik bir alanda radio button mu, açılır liste (dropdown) mu daha çok tamamlatıyor?
 
 Değişken: Tek seçimlik alanın kontrol tipi · Fark: değiştir
+
+Etiket: id=fs-023 · mercek=Çaba · düzey=form · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Radio buttons or a dropdown for a single-choice field: which gets more forms completed?
 
 Radio button tüm seçenekleri aynı anda görünür kılar, kullanıcı tıklamadan karşılaştırma yapabilir ama seçenek sayısı arttıkça dikey yer kaplar. Dropdown yer kazandırır ve çok seçenekli durumlarda formu kısa gösterir, buna karşılık seçenekleri görmek için bir ek tıklama gerektirir ve mobilde platformun kendi bileşenine bağlı bir davranışa geçer; kullanıcı neyle karşılaşacağını göremeden tıklar.
 

@@ -8,6 +8,10 @@ Yolculuk aşaması: kullanıcı zaten kayıtlı ve düzenli olarak geri dönüp 
 
 Değişken: Boş durumdaki aksiyon kartı · Fark: ekle
 
+Etiket: id=db-001 · mercek=Netlik · düzey=onboarding · sektör=saas · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does an action card that guides the user in the empty state (before any data exists) raise engagement?
+
 Yeni kaydolan bir kullanıcı dashboard’u ilk açtığında ekran genelde boştur; grafik, liste veya widget’ları dolduracak veri henüz yoktur. Boş bir tablo veya “veri yok” mesajı kullanıcıyı ne yapması gerektiği konusunda yalnız bırakır; somut bir sonraki-aksiyon kartı bu boşluğu bir davete çevirebilir.
 
 **Test edilmesi gerekenler**
@@ -37,6 +41,10 @@ Yeni kaydolan bir kullanıcı dashboard’u ilk açtığında ekran genelde boş
 
 Değişken: Widget sıralama mantığı · Fark: değiştir
 
+Etiket: id=db-002 · mercek=Çaba · düzey=kişiselleştirme · sektör=saas · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does moving the most recently used widget to the front of the dashboard raise engagement?
+
 Sabit bir widget sırası her kullanıcıya aynı düzeni sunar ve öngörülebilirdir, ama çoğu kullanıcının asıl ilgilendiği widget sayfanın altında kalabilir. Kullanım geçmişine göre sıralamak ilgiyi öne çıkarır, ama düzenin sürekli değişmesi kullanıcının “her şeyin yerini bildiği” hissini bozabilir.
 
 **Test edilmesi gerekenler**
@@ -65,6 +73,10 @@ Sabit bir widget sırası her kullanıcıya aynı düzeni sunar ve öngörülebi
 ## Kullanılmayan bir özelliği dashboard’da tek seferlik bir ipucu kartıyla tanıtmak kullanımını artırır mı?
 
 Değişken: Özelliği tanıtan tek seferlik ipucu kartı · Fark: ekle
+
+Etiket: id=db-003 · mercek=Netlik · düzey=onboarding · sektör=saas · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does introducing an unused feature with a one-off tip card on the dashboard raise its use?
 
 Bir ürünün değerli ama az bilinen bir özelliği, arayüzde durduğu hâlde kullanıcı tarafından hiç keşfedilmeyebilir. Tek seferlik, kapatılabilir bir ipucu kartı bu özelliği görünür kılabilir, ama sık tekrarlanan veya çok sayıda ipucu “bildirim yorgunluğu” yaratıp asıl işe odaklanmayı bozar.
 

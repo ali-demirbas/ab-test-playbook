@@ -8,6 +8,10 @@ Yolculuk aşaması: satın alma veya kayıt tamamlandıktan hemen sonraki an. Ku
 
 Değişken: Onay sayfasındaki ürün önerisi şeridi · Fark: ekle
 
+Etiket: id=ty-001 · mercek=Zamanlama · düzey=elde-tutma · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does showing related product recommendations on the order confirmation page create add-on purchases?
+
 Kullanıcı zaten ödeme yaptı, kart bilgisi elinde ve satın alma kararı tazeyken tekrar sürtünmeden geçmiş olur; bu, ikinci bir satın almayı önermek için nadir bir andır. Risk, önerinin asıl siparişin teslimat/onay bilgisini gölgelemesi veya kullanıcının “az önce ödedim, şimdi mi” hissiyle rahatsız olmasıdır.
 
 **Test edilmesi gerekenler**
@@ -36,6 +40,10 @@ Kullanıcı zaten ödeme yaptı, kart bilgisi elinde ve satın alma kararı taze
 ## Misafir olarak ödeme yapana teşekkür sayfasında hesap oluşturma daveti göstermek kayıt oranını artırır mı?
 
 Değişken: Teşekkür sayfasındaki hesap oluşturma daveti · Fark: ekle
+
+Etiket: id=ty-002 · mercek=Zamanlama · düzey=elde-tutma · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does inviting guest buyers to create an account on the thank-you page raise sign-ups?
 
 Misafir ödemesi checkout sürtünmesini azaltır ama işletmeyi tekrar iletişim kurabileceği bir hesaptan mahrum bırakır. Sipariş tamamlandıktan hemen sonra, bilgiler zaten girilmişken hesap oluşturmayı önermek, checkout öncesinde zorunlu kayıt istemekten farklı bir sürtünme profiline sahiptir; kullanıcı artık kaybedecek bir dönüşümü riske atmıyor.
 
@@ -66,6 +74,10 @@ Misafir ödemesi checkout sürtünmesini azaltır ama işletmeyi tekrar iletişi
 
 Değişken: Arkadaşını davet et kartı · Fark: ekle
 
+Etiket: id=ty-003 · mercek=Zamanlama · düzey=elde-tutma · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does showing a refer-a-friend offer on the thank-you page raise sharing?
+
 Kullanıcı memnuniyetinin tepe noktası satın alma anının hemen sonrasıdır; referans isteği için davranışsal olarak en uygun an burasıdır. Riski, teklifin asıl sipariş bilgisini gölgelemesi veya ödül teklifi gerçek değilse güven kaybı yaratmasıdır.
 
 **Test edilmesi gerekenler**
@@ -94,6 +106,10 @@ Kullanıcı memnuniyetinin tepe noktası satın alma anının hemen sonrasıdır
 ## Sipariş onayını rutin bir bilgi ekranı yerine akılda kalıcı bir an olarak tasarlamak sadakati artırır mı?
 
 Değişken: Onay ekranındaki kutlama anı · Fark: ekle
+
+Etiket: id=ty-004 · mercek=Güven · düzey=elde-tutma · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does designing the order confirmation as a memorable moment, instead of a routine information screen, raise loyalty?
 
 Bir deneyim büyük ölçüde en yoğun anına ve nasıl bittiğine göre hatırlanır; sürecin geri kalanı ortalama olsa bile güçlü bir bitiş, deneyimin genel algısını yükseltebilir. Standart bir “siparişiniz alındı” ekranı yerine kısa bir kutlama animasyonu, kişiselleştirilmiş bir teşekkür mesajı veya beklenmedik küçük bir jest, satın alma sürecinin son izlenimini güçlendirebilir.
 

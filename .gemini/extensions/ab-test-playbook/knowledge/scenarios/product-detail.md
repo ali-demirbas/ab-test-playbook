@@ -8,6 +8,10 @@ Yolculuk aşaması: kullanıcı tek bir ürünü değerlendiriyor; görseller, s
 
 Değişken: Ana görselin fotoğraf kaynağı · Fark: değiştir
 
+Etiket: id=pd-001 · mercek=Güven · düzey=görsel · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Studio shot or real customer photo: which sells more?
+
 Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. İzinli, gerçekten o kullanıcıdan alınmış bir kullanıcı fotoğrafı ürünün gerçek hayattaki halini gösterip güveni artırabilir; ama markanın algılanan kalitesini de düşürebilir. Gerçek olmayan bir fotoğrafı “kullanıcı fotoğrafı” gibi sunmak bu testin kapsamı dışındadır (CLAUDE.md kural 6). “Ürünü kullanım ortamında göstermek düz stüdyo çekiminden daha mı etkili?” senaryosundan farkı: orada iki profesyonel çekim tarzı karşılaştırılır, burada değişken fotoğrafın kaynağıdır (marka mı, müşteri mi).
 
 **Test edilmesi gerekenler**
@@ -39,6 +43,10 @@ Profesyonel stüdyo çekimi ürünü kusursuz gösterir ama mesafeli durabilir. 
 
 Değişken: Galerideki görsel sayısı · Fark: değiştir
 
+Etiket: id=pd-002 · mercek=Güven · düzey=görsel · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: One image or several: which works better?
+
 Ürün fotoğrafı, e-ticarette dokunma deneyiminin yerini alır. Farklı açılardan çoklu görsel güveni artırabilir, ancak düşük kaliteli görsel en iyi testi bile boşa çıkarır.
 
 **Test edilmesi gerekenler**
@@ -67,6 +75,10 @@ Değişken: Galerideki görsel sayısı · Fark: değiştir
 ## Model beden bilgisi satın almayı etkiler mi?
 
 Değişken: Model beden bilgisi · Fark: ekle
+
+Etiket: id=pd-003 · mercek=Uygunluk · düzey=bilgi · sektör=moda · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does showing the model’s size affect purchases?
 
 Modelin boyu ve giydiği beden, kullanıcının kendi bedenini seçmesini hızlandırabilir. Bu küçük bilgi beden belirsizliğini azaltarak hem satın almayı hem iade oranını etkileyebilir.
 
@@ -97,6 +109,10 @@ Modelin boyu ve giydiği beden, kullanıcının kendi bedenini seçmesini hızla
 
 Değişken: Yorum özetinin konumu · Fark: taşı
 
+Etiket: id=pd-004 · mercek=Güven · düzey=sosyal-kanıt · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does the position of the review summary affect the purchase decision?
+
 Yıldız ve yorum sayısının fiyatın hemen altında mı, sayfanın alt kısmında mı sunulduğu güven algısını ve karar anını değiştirebilir. Sosyal kanıtı yukarı taşımak inceleme süresini kısaltabilir.
 
 **Test edilmesi gerekenler**
@@ -125,6 +141,10 @@ Yıldız ve yorum sayısının fiyatın hemen altında mı, sayfanın alt kısm�
 ## Aylık taksit tutarını ana fiyat gibi göstermek işe yarar mı?
 
 Değişken: Fiyatın aylık taksit tutarı olarak çerçevelenmesi · Fark: değiştir
+
+Etiket: id=pd-005 · mercek=Fiyat · düzey=bilgi · sektör=e-ticaret · pazar=TR · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does showing the monthly installment amount as the main price pay off?
 
 Yüksek fiyatlı üründe “aylık 2.000 TL” ifadesi, toplam tutardan daha erişilebilir algılanır. Ancak şeffaflık algısını zedeleyebilir ve iptal/iade oranını yükseltebilir. “Taksit bilgisi satın almayı etkiliyor mu?” senaryosundan farkı: orada taksit bilgisinin görünürlüğü, burada fiyatın aylık tutar olarak çerçevelenmesi test edilir; liste kartındaki rozet “‘Peşin fiyatına taksit’ rozeti dönüşümü artırıyor mu?” (`category-listing.md`) senaryosudur.
 
@@ -157,6 +177,10 @@ Yüksek fiyatlı üründe “aylık 2.000 TL” ifadesi, toplam tutardan daha er
 
 Değişken: Üstü çizili eski fiyat · Fark: ekle
 
+Etiket: id=pd-006 · mercek=Fiyat · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does showing a struck-through old price raise purchases?
+
 Referans fiyat (çıpa) indirimin büyüklüğünü algılatır ama sürekli kullanıldığında inandırıcılığını kaybeder ve fiyat güvenini zedeler. Etki kategori ve kampanya sıklığına göre değişir.
 
 **Test edilmesi gerekenler**
@@ -188,6 +212,10 @@ Referans fiyat (çıpa) indirimin büyüklüğünü algılatır ama sürekli kul
 
 Değişken: Ürün görsellerinin çekim sahnesi · Fark: değiştir
 
+Etiket: id=pd-007 · mercek=Uygunluk · düzey=görsel · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Is showing the product in use more effective than a plain studio shot?
+
 Düz zeminli stüdyo çekimi ürünün kendisine odaklanır, ayrıntıyı net gösterir ve katalog bütünlüğü sağlar. Kullanım ortamında çekilmiş görsel ise ürünün ölçeğini ve nerede işe yarayacağını anlatır, buna karşılık ayrıntıyı gizleyebilir ve sahne ürünün önüne geçebilir. Bu senaryo profesyonel çekimin iki tarzını karşılaştırır; müşterinin kendi çektiği fotoğrafla karşılaştırma ayrı bir senaryodur. “Stüdyo çekimi mi, gerçek kullanıcı fotoğrafı mı daha çok satıyor?” senaryosundan farkı: burada fotoğrafın kaynağı sabittir (marka), değişen yalnızca sahnedir.
 
 **Test edilmesi gerekenler**
@@ -216,6 +244,10 @@ Düz zeminli stüdyo çekimi ürünün kendisine odaklanır, ayrıntıyı net g�
 ## Beden geri bildirimi iade oranını düşürür mü?
 
 Değişken: Kalıp geri bildirimi kutusu · Fark: ekle
+
+Etiket: id=pd-008 · mercek=Uygunluk · düzey=sosyal-kanıt · sektör=moda · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does fit feedback from buyers lower the return rate?
 
 Kullanıcıların “kalıbı dar/normal/bol geldi” oyları, beden tablosundan daha hızlı okunan bir sinyaldir. Moda kategorisinde iadenin en büyük sebebi beden uyumsuzluğu olduğu için doğrudan kâra dokunur.
 
@@ -246,6 +278,10 @@ Kullanıcıların “kalıbı dar/normal/bol geldi” oyları, beden tablosundan
 
 Değişken: Beden seçiminin açıldığı yüzey · Fark: değiştir
 
+Etiket: id=pd-009 · mercek=Çaba · düzey=görsel · sektör=moda · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should size selection open in a bottom sheet or inline on the page?
+
 Bottom sheet kullanıcıyı sayfadan koparmadan seçim yaptırır ve tek elle erişilebilir. Sayfa içi seçim ise daha az adım gerektirir ama uzun sayfada kaybolabilir.
 
 **Test edilmesi gerekenler**
@@ -274,6 +310,10 @@ Bottom sheet kullanıcıyı sayfadan koparmadan seçim yaptırır ve tek elle er
 ## Beden tablosu mu, kişiselleştirilmiş öneri mi daha iyi çalışıyor?
 
 Değişken: Beden yardımının biçimi · Fark: değiştir
+
+Etiket: id=pd-010 · mercek=Uygunluk · düzey=kişiselleştirme · sektör=moda · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Size chart or personalized recommendation: which works better?
 
 Ölçü tablosu doğru bilgiyi verir ama kullanıcıdan yorum yapmasını ister. Boy/kilo girişine dayalı kişiselleştirilmiş beden önerisi kararı tek adıma indirir ama yanlış tahmin güveni kırabilir.
 
@@ -304,6 +344,10 @@ Değişken: Beden yardımının biçimi · Fark: değiştir
 
 Değişken: Yorum bölümünün içerik türü · Fark: değiştir
 
+Etiket: id=pd-011 · mercek=Güven · düzey=sosyal-kanıt · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Are reviews with photos more persuasive than text reviews?
+
 Müşteri fotoğrafları ürünün gerçek hayattaki halini gösterir ve stüdyo çekimiyle beklenti arasındaki boşluğu kapatır. Özellikle moda ve ev kategorisinde iade oranına doğrudan etki edebilir.
 
 **Test edilmesi gerekenler**
@@ -332,6 +376,10 @@ Müşteri fotoğrafları ürünün gerçek hayattaki halini gösterir ve stüdyo
 ## Yorumları “en yeni” mi “en faydalı” mı sıralamalı?
 
 Değişken: Yorumların varsayılan sıralaması · Fark: değiştir
+
+Etiket: id=pd-012 · mercek=Güven · düzey=sosyal-kanıt · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should reviews be sorted by “newest” or “most helpful”?
 
 Varsayılan yorum sıralaması, kullanıcının ilk okuduğu üç yorumu belirler ve algıyı büyük ölçüde şekillendirir. En faydalı sıralama daha dengeli bir resim verirken, en yeni sıralama güncellik hissi yaratır.
 
@@ -362,6 +410,10 @@ Varsayılan yorum sıralaması, kullanıcının ilk okuduğu üç yorumu belirle
 
 Değişken: Düşük stok uyarısı · Fark: ekle
 
+Etiket: id=pd-013 · mercek=Zamanlama · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does stock information create a sense of urgency?
+
 “Son 3 ürün kaldı” gibi mesajlar bazı kullanıcıyı tetikler, bazısında baskı yaratıp kaçırır. Satın alma davranışına net etkisi ölçülmelidir. Uyarı yalnızca gerçek envanterden beslenebiliyorsa test edilir (kural 6).
 
 **Test edilmesi gerekenler**
@@ -391,6 +443,10 @@ Değişken: Düşük stok uyarısı · Fark: ekle
 
 Değişken: Aciliyet mesajının tipi · Fark: değiştir
 
+Etiket: id=pd-014 · mercek=Zamanlama · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Live activity notice or stock warning: which is less intrusive?
+
 “Son 24 saatte 37 kişi satın aldı” sosyal kanıt üretirken, “son 3 ürün kaldı” baskı yaratır. İkisi de aciliyet kurar ama güven üzerindeki etkileri farklı olabilir. “Stok bilgisi aciliyet hissi oluşturur mu?” senaryosundan farkı: orada stok uyarısının varlığı ve biçimi, burada iki aciliyet mesajı tipinin birbirine karşı etkisi test edilir. Her iki sayı da gerçek veriden gelmelidir (kural 6).
 
 **Test edilmesi gerekenler**
@@ -419,6 +475,10 @@ Değişken: Aciliyet mesajının tipi · Fark: değiştir
 ## Taksit bilgisi satın almayı etkiliyor mu?
 
 Değişken: Fiyat alanındaki taksit bilgisi · Fark: ekle
+
+Etiket: id=pd-015 · mercek=Fiyat · düzey=bilgi · sektör=e-ticaret · pazar=TR · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does installment information affect purchases?
 
 Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve satın alma motivasyonunu değiştirebilir. “Aylık taksit tutarını ana fiyat gibi göstermek işe yarar mı?” senaryosundan farkı: burada ana fiyat aynı kalır, yalnızca taksit bilgisinin görünürlüğü değişir.
 
@@ -454,6 +514,10 @@ Taksit seçeneklerini ürün sayfasında öne çıkarmak, fiyat algısını ve s
 
 Değişken: Fiyatın küsurat biçimi · Fark: değiştir
 
+Etiket: id=pd-016 · mercek=Fiyat · düzey=fiyat · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Charm price or round price?
+
 299,99 TL ile 300 TL arasındaki fark tek kuruştur ama göz önce soldaki rakamı okur: küsuratlı fiyat bir alt yüzlükte gibi algılanıp ucuzluk sinyali verebilir, tam sayı ise sade ve üst segment bir izlenim bırakır. Hangi etkinin baskın olduğu kategoriye ve fiyat düzeyine bağlıdır. Küsuratın yazım biçimi (aynı boyut ya da küçük üst simge) ayrı bir değişkendir: önce küsuratın kendisi, kazanırsa yazımı test edilir; küçük yazılan küsurat bazı kullanıcılarca hiç fark edilmeyebilir ve toplam tutarın yanlış okunmasına yol açabilir.
 
 **Test edilmesi gerekenler**
@@ -484,6 +548,10 @@ Değişken: Fiyatın küsurat biçimi · Fark: değiştir
 ## İndirimi nasıl sunmalısınız?
 
 Değişken: İndirim mesajının metni · Fark: değiştir
+
+Etiket: id=pd-017 · mercek=Fiyat · düzey=metin · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: How should you present a discount?
 
 İndirim mesajının türü, konumu ve sunuluşu davranışı ciddi biçimde değiştirebilir. Bazen tek bir kelime tıklama oranını değiştirir.
 
@@ -517,6 +585,10 @@ Değişken: İndirim mesajının metni · Fark: değiştir
 
 Değişken: Kargo-iade bloğunun konumu · Fark: taşı
 
+Etiket: id=pd-018 · mercek=Güven · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does moving shipping and returns information next to the price raise sales?
+
 Sayfanın altında veya kapalı bir akordeonda duran kargo ve iade bloğunu fiyatın yakınına taşımak, “ya beğenmezsem” kaygısını azaltarak satın alma motivasyonunu güçlendirebilir. “Avantaj bilgilerini net sunmak satın almayı etkiler mi?” senaryosundan farkı: burada yalnızca kargo ve iade bloğunun konumu değişir, metni aynı kalır; “Teslimat bilgisi satın almayı etkiliyor mu?” senaryosundan farkı: burada teslimat tarihi değil, kargo ücreti ve iade koşulu anlatılır.
 
 **Test edilmesi gerekenler**
@@ -548,6 +620,10 @@ Sayfanın altında veya kapalı bir akordeonda duran kargo ve iade bloğunu fiya
 
 Değişken: Avantaj kutusunun sunum biçimi · Fark: değiştir
 
+Etiket: id=pd-019 · mercek=Güven · düzey=görsel · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does presenting the benefits clearly affect purchases?
+
 Taksit, ücretsiz kargo ve kolay iade gibi avantajlar zaten sayfadayken bunların tek bir düzenli kutuda, net hiyerarşiyle sunulması kullanıcı güvenini güçlendirebilir. “Kargo ve iade bilgisini fiyatın yakınına taşımak satışı artırır mı?” senaryosundan farkı: burada bilgi içeriği sabittir, değişen avantaj kutusunun sunum biçimidir; “Teslimat bilgisi satın almayı etkiliyor mu?” senaryosundan farkı: teslimat tarihi vaadi bu kutunun konusu değildir.
 
 **Test edilmesi gerekenler**
@@ -576,6 +652,10 @@ Taksit, ücretsiz kargo ve kolay iade gibi avantajlar zaten sayfadayken bunları
 ## Ürün sayfasındaki SSS satın almayı etkiliyor mu?
 
 Değişken: Ürüne özel SSS bölümü · Fark: ekle
+
+Etiket: id=pd-020 · mercek=Netlik · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a FAQ on the product page affect purchases?
 
 Taksit, iade, garanti ve teslimat gibi sık sorulan bilgilerin ürün sayfasında görünür olması belirsizliği azaltıp kararı hızlandırabilir.
 
@@ -606,6 +686,10 @@ Taksit, iade, garanti ve teslimat gibi sık sorulan bilgilerin ürün sayfasınd
 
 Değişken: Fayda vurgusu satırı · Fark: ekle
 
+Etiket: id=pd-021 · mercek=Güven · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does highlighting benefits affect conversion?
+
 Ek fayda mesajları güven yaratabilir ama fark edilmeyebilir. Satın alma kararına gerçek etkisi ölçülmelidir.
 
 **Test edilmesi gerekenler**
@@ -634,6 +718,10 @@ Ek fayda mesajları güven yaratabilir ama fark edilmeyebilir. Satın alma karar
 ## Header’a iletişim bilgisi eklemek güveni artırır mı?
 
 Değişken: Header’daki iletişim bilgisi · Fark: ekle
+
+Etiket: id=pd-022 · mercek=Güven · düzey=güven · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does adding contact details to the header build trust?
 
 Header’a telefon veya e-posta bilgisi eklemek markanın ulaşılabilirlik algısını güçlendirebilir, ancak bu her zaman dönüşüme yansımaz.
 
@@ -664,6 +752,10 @@ Header’a telefon veya e-posta bilgisi eklemek markanın ulaşılabilirlik alg�
 
 Değişken: Birincil CTA’nın ilk ekrandaki konumu · Fark: taşı
 
+Etiket: id=pd-023 · mercek=Çaba · düzey=görsel · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does moving the CTA into the thumb zone raise clicks?
+
 Mobilde ekranın üst yarısı tek elle zor erişilir. Birincil CTA’yı ilk ekranın alt kısmına, başparmağın rahat eriştiği bölgeye yerleştirmek tıklama maliyetini düşürebilir ama görsel ve fiyatla yer yarışına girebilir. “Sticky ‘Satın Al’ butonu dönüşümü artırıyor mu?” senaryosundan farkı: burada butonun sayfadaki sabit konumu değişir, kaydırırken ekranda kalıp kalmaması değil; ikisini aynı testte birleştirmeyin.
 
 **Test edilmesi gerekenler**
@@ -692,6 +784,10 @@ Mobilde ekranın üst yarısı tek elle zor erişilir. Birincil CTA’yı ilk ek
 ## Sticky “Satın Al” butonu dönüşümü artırıyor mu?
 
 Değişken: Kaydırmada sabit kalan Satın Al butonu · Fark: ekle
+
+Etiket: id=pd-024 · mercek=Çaba · düzey=görsel · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does a sticky “Buy” button raise conversion?
 
 “Satın Al” butonunun kaydırma sırasında ekranda sabit kalması, uzun ürün sayfalarında kullanıcıyı yukarı çıkma zorunluluğundan kurtarıp satın alma adımına geçişi hızlandırabilir. “CTA’yı başparmak bölgesine almak tıklamayı artırır mı?” senaryosundan farkı: burada butonun konumu değil, kaydırırken görünür kalması test edilir.
 
@@ -722,6 +818,10 @@ Değişken: Kaydırmada sabit kalan Satın Al butonu · Fark: ekle
 
 Değişken: Çoklu paket seçenekleri · Fark: ekle
 
+Etiket: id=pd-025 · mercek=Fiyat · düzey=fiyat · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Do multi-pack options raise cart value?
+
 Ürün sayfasında 2’li, 3’lü paket seçenekleri sunmak, kullanıcının değer algısını ve sepet büyüklüğünü değiştirebilir.
 
 **Test edilmesi gerekenler**
@@ -750,6 +850,10 @@ Değişken: Çoklu paket seçenekleri · Fark: ekle
 ## Teslimat bilgisi satın almayı etkiliyor mu?
 
 Değişken: Tahmini teslimat tarihi bilgisi · Fark: ekle
+
+Etiket: id=pd-026 · mercek=Netlik · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does delivery information affect purchases?
 
 “Bugün sipariş ver, yarın kargoda” gibi net teslimat bilgisi belirsizliği azaltır ve satın alma hızını etkileyebilir. “Kargo ve iade bilgisini fiyatın yakınına taşımak satışı artırır mı?” senaryosundan farkı: burada kargo ücreti veya iade değil, ürünün ne zaman elde olacağı vaadi test edilir.
 
@@ -780,6 +884,10 @@ Değişken: Tahmini teslimat tarihi bilgisi · Fark: ekle
 
 Değişken: Küçük görsellerin konumu · Fark: taşı
 
+Etiket: id=pd-027 · mercek=Netlik · düzey=görsel · sektör=e-ticaret · pazar=global · emek=düşük · durum=klasik · tarih=2026-11
+
+EN: Should thumbnails sit below or to the left?
+
 Küçük görsellerin (thumbnail) solda dikey dizilmesi ana görsele daha çok yükseklik bırakır ve galerinin varlığını sürekli görünür kılar. Altta yatay dizilim ise ana görseli genişletir ama kaydırmada gözden kaçabilir. Konum, kaç görselin ilk bakışta görüldüğünü de değiştirir.
 
 **Test edilmesi gerekenler**
@@ -808,6 +916,10 @@ Küçük görsellerin (thumbnail) solda dikey dizilmesi ana görsele daha çok y
 ## Ürünün boyutunu anlatan bir referans göstermek işe yarar mı?
 
 Değişken: Görseldeki ölçek referansı · Fark: ekle
+
+Etiket: id=pd-028 · mercek=Uygunluk · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does showing a reference for the product’s size pay off?
 
 Ürünün yanında bilinen bir nesne veya ölçü göstergesi bulunması, ölçek algısını netleştirir ve “sandığımdan küçükmüş” kaynaklı iadeyi azaltabilir. Riski: referans nesne ürünün önüne geçebilir, görsel dili bozabilir ve yanlış seçilmiş bir referans ölçeği daha da belirsizleştirir.
 
@@ -838,6 +950,10 @@ Değişken: Görseldeki ölçek referansı · Fark: ekle
 
 Değişken: Açıklamanın varsayılan açılım durumu · Fark: değiştir
 
+Etiket: id=pd-029 · mercek=Netlik · düzey=görsel · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should the product description open expanded or collapsed?
+
 Açıklamanın tamamen açık gelmesi bilgiyi erişilebilir kılar ama sayfayı uzatır ve satın alma butonunu aşağı iter. Katlanmış başlıklar (akordiyon) sayfayı derli toplu tutar, buna karşılık açmayan kullanıcı bilgiyi hiç görmez ve karar için gereken ayrıntı gizli kalır.
 
 **Test edilmesi gerekenler**
@@ -866,6 +982,10 @@ Açıklamanın tamamen açık gelmesi bilgiyi erişilebilir kılar ama sayfayı 
 ## Öneriyi kararlı bir dille sunmak seçim yapmayı kolaylaştırır mı?
 
 Değişken: Öneri mesajının tonu · Fark: değiştir
+
+Etiket: id=pd-030 · mercek=Çaba · düzey=metin · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does presenting a recommendation in decisive language make choosing easier?
 
 “Sizin için en uygunu bu” diyen kararlı bir öneri, seçenek karşısında donan kullanıcıyı ilerletir. Karşı tarafta: öneri yanlışsa güven kaybı yaratır, kullanıcının kendi kararını verdiği hissi zayıflar ve kararlı ton bazı bağlamlarda baskı gibi algılanır.
 
@@ -896,6 +1016,10 @@ Değişken: Öneri mesajının tonu · Fark: değiştir
 
 Değişken: Satın alma butonunun yerine konan öğe · Fark: değiştir
 
+Etiket: id=pd-031 · mercek=Zamanlama · düzey=elde-tutma · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: For an out-of-stock product, is removing the buy button or offering a back-in-stock alert better?
+
 Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal kırıklığı yaratır. İki yaygın alternatif vardır: butonu tamamen kaldırıp “stokta yok” yazmak, ya da “stok geldiğinde haber ver” seçeneğiyle değiştirmek. İkincisi terk eden kullanıcıyı bildirim listesine dönüştürme fırsatı sunar ama ek bir form alanı gerektirir. Ürün sayfasını tamamen gizlemek bu testin konusu değildir: arama trafiğini ve sayfanın arama görünürlüğünü etkileyen bir site kararıdır, ziyaretçiye göre bölünen bir testle ölçülmez. Burada ürün sayfası açık kalır, değişen yalnızca satın alma butonunun yerine ne konduğudur; liste kartındaki gri gösterim “Stokta olmayan ürünleri listede gri gösterip bırakmak mı, tamamen gizlemek mi daha iyi çalışıyor?” (`category-listing.md`) senaryosunun konusudur.
 
 **Test edilmesi gerekenler**
@@ -924,6 +1048,10 @@ Stokta olmayan bir üründe satın alma butonunu olduğu gibi bırakmak hayal k�
 ## Satın almadan önce ürünü özelleştirme imkânı sunmak satın alma niyetini artırır mı?
 
 Değişken: Satın alma öncesi özelleştirme seçeneği · Fark: ekle
+
+Etiket: id=pd-032 · mercek=Uygunluk · düzey=teklif · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does offering product customization before purchase raise purchase intent?
 
 Kullanıcıya rengi, gravürü veya kombinasyonu kendi seçtirmek, ürünü kendi emeğiyle şekillendirdiği bir şey hâline getirir; bu sahiplenme hissi, hazır bir üründen daha yüksek bir değer algısı yaratabilir. Riski, özelleştirme adımının karmaşık gelip asıl satın alma kararını geciktirmesi veya terke yol açmasıdır.
 
@@ -954,6 +1082,10 @@ Kullanıcıya rengi, gravürü veya kombinasyonu kendi seçtirmek, ürünü kend
 
 Değişken: Ürünün köken bilgisi · Fark: ekle
 
+Etiket: id=pd-033 · mercek=Güven · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does showing the country where the product was made or designed affect the purchase decision?
+
 “İtalya’da üretildi” veya “Almanya’da tasarlandı” gibi bir köken bilgisi, bazı kategorilerde (deri, elektronik, otomotiv) algılanan kaliteyi yükseltebilir. Riski, köken bilgisinin kategoriyle veya hedef pazarla uyumsuz olduğunda hiçbir etki yaratmaması, hatta beklenmedik bir soru işareti doğurmasıdır.
 
 **Test edilmesi gerekenler**
@@ -982,6 +1114,10 @@ Değişken: Ürünün köken bilgisi · Fark: ekle
 ## Paket içeriğini benzer fiyat aralığındaki ürünlerden mi, farklı fiyat aralığındaki ürünlerden mi oluşturmalı?
 
 Değişken: Paket içeriğinin fiyat dağılımı · Fark: değiştir
+
+Etiket: id=pd-034 · mercek=Fiyat · düzey=fiyat · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Should a bundle be built from products in a similar price range or in different price ranges?
 
 Bir paket ucuz ve pahalı ürünleri bir araya getirdiğinde, ucuz ürün pahalı ürünün algılanan değerini sulandırabilir; ziyaretçi paketin ortalama değerini pahalı üründen değil ucuz üründen referans alabilir. Benzer fiyat aralığındaki ürünleri bir araya getirmek bu riski azaltır ama paketin toplam faydasını daraltabilir.
 

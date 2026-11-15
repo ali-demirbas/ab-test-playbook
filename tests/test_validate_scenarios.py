@@ -22,11 +22,15 @@ from validate_scenarios import (  # noqa: E402
 )
 
 DEFAULT_VARIABLE = "Değişken: Buton rengi · Fark: değiştir"
+DEFAULT_TAG = ("Etiket: id=cc-001 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=düşük · "
+               "durum=güncel · tarih=2026-11")
+DEFAULT_EN = "EN: Is this a valid scenario title?"
 
 
 def make_scenario(title="Geçerli bir senaryo başlığı mı?",
                   tests=None, kpis=None, donts=None, variable_line=DEFAULT_VARIABLE,
-                  intro="Açıklama paragrafı burada yeterince uzun duruyor."):
+                  intro="Açıklama paragrafı burada yeterince uzun duruyor.",
+                  tag_line=DEFAULT_TAG, en_line=DEFAULT_EN):
     tests = tests or [
         "- Konum: Öğenin konumu dönüşümü değiştiriyor mu?",
         "- Metin: Hangi ifade daha çok tıklanıyor peki?",
@@ -49,8 +53,9 @@ def make_scenario(title="Geçerli bir senaryo başlığı mı?",
         "- Renk değişirken buton metnini de yeniden yazmayın lütfen.",
     ]
     head = f"## {title}\n\n"
-    if variable_line:
-        head += variable_line + "\n\n"
+    for line in (variable_line, tag_line, en_line):
+        if line:
+            head += line + "\n\n"
     return (head + intro + "\n\n"
             "**Test edilmesi gerekenler**\n" + "\n".join(tests) + "\n\n"
             "**Takip edilecek ana KPI’lar**\n" + "\n".join(kpis) + "\n\n"

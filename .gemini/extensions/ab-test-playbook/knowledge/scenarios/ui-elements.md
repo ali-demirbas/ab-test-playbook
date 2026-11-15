@@ -10,6 +10,10 @@ Yolculuk aşaması: sayfaya değil öğeye bağlı kararlar. Bir butonun ne dedi
 
 Değişken: Buton metninin ifade çerçevesi · Fark: değiştir
 
+Etiket: id=ui-001 · mercek=Netlik · düzey=metin · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should button copy say the action or what you get?
+
 “Gönder” butonun ne yaptığını söyler, “Fiyat teklifimi al” tıklandığında ne kazanılacağını söyler. Kazanç ifadesi motive edebilir ama uzar, butonu şişirir ve bazı bağlamlarda abartılı durur. Eylem ifadesi kısadır ve beklentiyi tam karşılar; buna karşılık ilerlemek için bir sebep sunmaz.
 
 **Test edilmesi gerekenler**
@@ -42,6 +46,10 @@ Değişken: Buton metninin ifade çerçevesi · Fark: değiştir
 
 Değişken: Buton dolgu biçimi · Fark: değiştir
 
+Etiket: id=ui-002 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=klasik · tarih=2026-11
+
+EN: Solid button or outline button: which gets more clicks?
+
 Dolu buton görsel ağırlığıyla öne çıkar ve birincil aksiyonu işaret eder. Çerçeveli (içi boş) buton sayfayı sakinleştirir ve ikincil aksiyonlar için doğal görünür. İkisini de dolu yapmak hiyerarşiyi yok eder; ikisini de çerçeveli yapmak hiçbirini öne çıkarmaz.
 
 **Test edilmesi gerekenler**
@@ -70,6 +78,10 @@ Dolu buton görsel ağırlığıyla öne çıkar ve birincil aksiyonu işaret ed
 ## İkincil aksiyonu bağlantı mı, buton mu yapmalı?
 
 Değişken: İkincil aksiyonun biçimi · Fark: değiştir
+
+Etiket: id=ui-003 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should the secondary action be a link or a button?
 
 Butona benzeyen bir öğe tıklanabilirliğini açıkça duyurur; bağlantı ise daha hafif durur ve birincil aksiyonla rekabet etmez. İkincil aksiyonu buton yapmak onu görünür kılar ama asıl istenen aksiyonun payını azaltabilir. Bağlantı yapmak ise onu tamamen görünmez kılabilir. “Sepet ve ödeme adımlarında tekrarlayan CTA’ları azaltmak dönüşümü artırır mı?” senaryosundan (`cart-checkout.md`) farkı: o senaryo aynı işlevdeki CTA’ların sayısını azaltır, bu senaryo farklı işlevdeki ikincil aksiyonun biçimini değiştirir.
 
@@ -100,6 +112,10 @@ Butona benzeyen bir öğe tıklanabilirliğini açıkça duyurur; bağlantı ise
 
 Değişken: Buton stillerinin sayfa içi tutarlılığı · Fark: değiştir
 
+Etiket: id=ui-004 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=orta · durum=klasik · tarih=2026-11
+
+EN: Does keeping button styles consistent across the page make a difference?
+
 Tutarlı buton stili neyin tıklanabilir olduğunu öğretir ve kullanıcı bir kez öğrendiğinde her yerde uygular. Bölümden bölüme değişen stiller dikkat çekebilir ama tıklanabilirlik işaretini bulanıklaştırır. Tutarlılık aynı zamanda tek tek bölümlerin öne çıkma imkânını azaltır.
 
 **Test edilmesi gerekenler**
@@ -128,6 +144,10 @@ Tutarlı buton stili neyin tıklanabilir olduğunu öğretir ve kullanıcı bir 
 ## Büyük taahhüt butonu mu, küçük adım butonu mu daha çok ilerletiyor?
 
 Değişken: CTA’nın taahhüt düzeyi · Fark: değiştir
+
+Etiket: id=ui-005 · mercek=Çaba · düzey=akış · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Big-commitment button or small-step button: which moves more people forward?
 
 “Satın al” doğrudan sonuca gider ama hazır olmayan ziyaretçiyi durdurur. “Önce dene”, “Fiyatı gör” gibi küçük bir adım daha çok tıklanır ama ilerleyen kullanıcıların bir kısmı sonuca hiç ulaşmaz. Doğru cevap, ziyaretçinin karar aşamasına ve ürünün fiyat seviyesine bağlıdır.
 
@@ -158,6 +178,10 @@ Değişken: CTA’nın taahhüt düzeyi · Fark: değiştir
 
 Değişken: İkon yanındaki yazılı etiket · Fark: ekle
 
+Etiket: id=ui-006 · mercek=Netlik · düzey=metin · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does adding a text label next to icons pay off?
+
 İkon yer kazandırır ve dili aşar ama anlamı çoğu zaman öğrenilmiş bir konvansiyona dayanır; tanınmayan bir ikon boş bir kutudur. Etiket eklemek anlamı netleştirir, buna karşılık yer kaplar ve arayüzü kalabalıklaştırır. Özellikle az kullanılan işlevlerde etiketin değeri yükselir.
 
 **Test edilmesi gerekenler**
@@ -186,6 +210,10 @@ Değişken: İkon yanındaki yazılı etiket · Fark: ekle
 ## Form ve ödeme akışındaki yardım bağlantılarını yeni sekmede açmak tamamlamayı artırır mı?
 
 Değişken: Akış içi yardım bağlantılarının açıldığı sekme · Fark: değiştir
+
+Etiket: id=ui-007 · mercek=Çaba · düzey=gezinme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does opening help links in a form or checkout flow in a new tab raise completion?
 
 Akışın içindeki yardım, yasal metin veya koşul bağlantısını yeni sekmede açmak kullanıcının yarım kalan formu veya ödemeyi kaybetmemesini sağlar. Karşı tarafta: kullanıcı denetimini elinden alır, geri tuşunu işlevsiz kılar, mobilde sekme yönetimi zordur ve beklenmedik davranış rahatsız eder. İçerik sayfasındaki dış bağlantıları (blog kaynağı, iş ortağı sitesi) yeni sekmede açmak aynı sorunun etkisi küçük bir türüdür ve ayrı bir test olarak önerilmez; burada ölçülen, akış içindeki bağlantının yarım kalan formu ya da ödemeyi koruyup korumadığıdır.
 
@@ -216,6 +244,10 @@ Akışın içindeki yardım, yasal metin veya koşul bağlantısını yeni sekme
 
 Değişken: Paragraftaki yolun sunuluş biçimi · Fark: değiştir
 
+Etiket: id=ui-008 · mercek=Netlik · düzey=metin · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Do links placed inside the text get clicked?
+
 Açıklama metninin içine gömülü bir bağlantı, tam ilgili düşünce oluştuğu anda yol sunar ve ayrı bir buton kadar rahatsız etmez. Riski: metin içinde gözden kaçar, tıklanabilirliği butona göre zayıf işaretlenir ve okuma akışını bölerek kullanıcıyı erken uzaklaştırabilir.
 
 **Test edilmesi gerekenler**
@@ -244,6 +276,10 @@ Açıklama metninin içine gömülü bir bağlantı, tam ilgili düşünce oluş
 ## Sık yapılan işlemler için kısayol sunmak işe yarar mı?
 
 Değişken: Sık işlemler için kısayol · Fark: ekle
+
+Etiket: id=ui-009 · mercek=Çaba · düzey=sürtünme · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does offering shortcuts for frequent actions pay off?
 
 Tekrarlanan bir işlemi tek dokunuşa indirmek (tekrar sipariş, son aramayı yükle, kayıtlı adresle devam) deneyimli kullanıcıyı hızlandırır. Riski: kısayol arayüzde yer kaplar, yeni kullanıcı için anlamsızdır ve yanlış varsayımla hazırlanmış bir kısayol hatalı işleme yol açabilir.
 
@@ -274,6 +310,10 @@ Tekrarlanan bir işlemi tek dokunuşa indirmek (tekrar sipariş, son aramayı y�
 
 Değişken: Adımlar arası geçiş davranışı · Fark: değiştir
 
+Etiket: id=ui-010 · mercek=Çaba · düzey=sürtünme · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does moving on to the next step automatically once a step is done pay off?
+
 Seçim yapılır yapılmaz sonraki adıma geçmek bir tıklamayı ortadan kaldırır ve akışı hızlandırır. Bedeli: kullanıcı seçimini gözden geçiremez, yanlış dokunuş geri alınamaz bir ilerlemeye dönüşür ve kontrol hissi kaybolur. Geri dönüşün ne kadar kolay olduğu belirleyicidir.
 
 **Test edilmesi gerekenler**
@@ -302,6 +342,10 @@ Seçim yapılır yapılmaz sonraki adıma geçmek bir tıklamayı ortadan kaldı
 ## Süreli kampanya duyurusunu site genelinde göstermek işe yarar mı?
 
 Değişken: Site geneli kampanya duyuru şeridi · Fark: ekle
+
+Etiket: id=ui-011 · mercek=Zamanlama · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does showing a time-limited campaign announcement across the site pay off?
 
 Belirli bir süre boyunca tüm sayfalarda görünen bir duyuru şeridi kampanyayı kaçırılmaz kılar. Riski: kullanıcılar reklam bandına benzeyen öğeleri görmezden gelmeyi öğrenmiştir, şerit her sayfada dikey alan yer ve süreklileşen bir duyuru bir süre sonra görünmez hâle gelir. (Kalıcı hizmet vaatlerini; kargo, iade, teslimat; sayfa üstünde göstermek ayrı bir senaryodur: `home-landing.md` → fayda çubuğu.)
 
@@ -332,6 +376,10 @@ Belirli bir süre boyunca tüm sayfalarda görünen bir duyuru şeridi kampanyay
 
 Değişken: Kampanya şeridinin görünme anı · Fark: değiştir
 
+Etiket: id=ui-012 · mercek=Zamanlama · düzey=görsel · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should a campaign announcement appear at once or after a delay?
+
 Çubuğun sayfa açılır açılmaz görünmesi mesajı herkese ulaştırır ama içerikle rekabet eder. Kaydırma sonrası veya birkaç saniye gecikmeyle belirmesi ise ziyaretçi bağlamı kurduktan sonra devreye girer; buna karşılık geç beliren bir öğe içeriği kaydırarak yanlış tıklamaya yol açabilir.
 
 **Test edilmesi gerekenler**
@@ -360,6 +408,10 @@ Değişken: Kampanya şeridinin görünme anı · Fark: değiştir
 ## Bildirim işaretini sayı olarak mı, nokta olarak mı göstermeli?
 
 Değişken: Bildirim işaretinin biçimi · Fark: değiştir
+
+Etiket: id=ui-013 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should a notification badge show a number or a dot?
 
 Sayılı rozet ne kadar bekleyen iş olduğunu söyler ve aciliyeti ölçeklendirir. Sade bir nokta ise yalnızca “yeni bir şey var” der; daha az baskı yaratır ama bilgi vermez. Yüksek sayılar motive etmek yerine bunaltabilir, sıfırlanamayan bir rozet ise kalıcı bir rahatsızlığa dönüşür.
 
@@ -390,6 +442,10 @@ Sayılı rozet ne kadar bekleyen iş olduğunu söyler ve aciliyeti ölçeklendi
 
 Değişken: Canlı destek düğmesi · Fark: ekle
 
+Etiket: id=ui-014 · mercek=Güven · düzey=güven · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does adding a live support button raise conversion?
+
 Erişilebilir bir destek düğmesi tereddüt eden kullanıcıya çıkış yolu verir ve cevapsız kalan soruyu terke dönüşmeden yakalar. Bedeli: düğme ekranda yer kaplar, mobilde içeriği kapatabilir ve destek yükünü artırır. Ayrıca canlı destek gerçekten canlı değilse (yanıt gecikmesi) güveni düşürür.
 
 **Test edilmesi gerekenler**
@@ -419,6 +475,10 @@ Erişilebilir bir destek düğmesi tereddüt eden kullanıcıya çıkış yolu v
 
 Değişken: Sohbet penceresinin açılma biçimi · Fark: değiştir
 
+Etiket: id=ui-015 · mercek=Zamanlama · düzey=görsel · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does opening the chat window automatically pay off?
+
 Kendiliğinden açılan sohbet penceresi yardımın varlığını duyurur ve pasif düğmeye göre çok daha fazla sohbet başlatır. Riski: davetsiz açılan bir pencere içeriği kapatır, kullanıcıyı böler ve rahatsızlık yaratır; gelen sohbetlerin niteliği de düşebilir çünkü kullanıcı yardım istemek yerine tepki vermiştir.
 
 **Test edilmesi gerekenler**
@@ -447,6 +507,10 @@ Kendiliğinden açılan sohbet penceresi yardımın varlığını duyurur ve pas
 ## Bilgiyi tablo olarak mı, kutular hâlinde mi sunmalı?
 
 Değişken: Karşılaştırma bilgisinin sunum biçimi · Fark: değiştir
+
+Etiket: id=ui-016 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Present information as a table or as cards?
 
 Tablo satır ve sütun mantığıyla doğrudan karşılaştırma kurar; çok sayıda özelliği yan yana koymak gerektiğinde en verimli biçimdir. Kutular her seçeneği bağımsız bir teklif gibi gösterir ve tarama kolaylığı sağlar ama farkların bulunmasını zorlaştırır. Yatay ve dikey yönelim de aynı içeriği farklı okutur.
 
@@ -479,6 +543,10 @@ Tablo satır ve sütun mantığıyla doğrudan karşılaştırma kurar; çok say
 
 Değişken: Buton metninin kipi · Fark: değiştir
 
+Etiket: id=ui-017 · mercek=Netlik · düzey=metin · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should button copy be a command (“Start”) or a first-person statement (“I’m starting”)?
+
 Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağzından söylediği birinci şahıs bildirimiyle mi (“Başlıyorum”) yazıldığı, kararı kimin verdiği hissini değiştirebilir; emir kipi siteden gelen bir talimat gibi okunurken, birinci şahıs ifade kullanıcının kendi kararını onayladığı bir cümle gibi okunur. Etkisi küçük ama tutarlı bir mikro-copy farkıdır; markanın genel ses tonuyla uyumlu olmayan bir kalıp tuhaf durabilir. “Buton metni eylemi mi, kazanılan şeyi mi söylemeli?” senaryosundan farkı: o senaryo metnin içeriğini (eylem mi kazanç mı), bu senaryo aynı içeriğin dilbilgisel kipini değiştirir.
 
 **Test edilmesi gerekenler**
@@ -508,6 +576,10 @@ Bir CTA’nın emir kipiyle mi (“Başlat”), yoksa kullanıcının kendi ağz
 
 Değişken: Promosyon banner’ının mesaj odağı · Fark: değiştir
 
+Etiket: id=ui-018 · mercek=Netlik · düzey=metin · sektör=e-ticaret · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should an internal promo banner focus on one motivation or on several options?
+
 Bir sitenin herhangi bir noktasındaki tanıtım banner’ı genellikle birden fazla fayda veya seçeneği aynı anda listeler (“Ücretsiz kargo, yeni koleksiyon, üyelik avantajları”). Banner’ı tek bir net motivasyona kilitlemek (yalnızca “Bugüne özel: ilk siparişte %15”) mesajı netleştirebilir ama diğer tekliflerin görünürlüğünü tamamen kaybettirebilir. Bu, “Süreli kampanya duyurusunu site genelinde göstermek işe yarar mı?” senaryosundan farklıdır: o senaryo banner’ın var olup olmamasını ve zamanlamasını, bu senaryo banner içeriğinin tek mi çok mu odaklı olacağını test eder.
 
 **Test edilmesi gerekenler**
@@ -536,6 +608,10 @@ Bir sitenin herhangi bir noktasındaki tanıtım banner’ı genellikle birden f
 ## Birden fazla seçenek arasından birini görsel ağırlıkla öne çıkarmak seçimi hızlandırır mı?
 
 Değişken: Seçeneklerden birine verilen görsel ağırlık · Fark: değiştir
+
+Etiket: id=ui-019 · mercek=Çaba · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does giving one of several options more visual weight speed up the choice?
 
 Kullanıcıya birden fazla eşdeğer seçenek (ör. ürün varyantı, özellik kartı, indirilecek kaynak) sunulduğunda hepsini aynı görsel ağırlıkta göstermek nötr durur ama karar yükünü tamamen kullanıcıya bırakır. Seçeneklerden birini boyut, renk veya konumla diğerlerinden görünür biçimde ağır göstermek seçimi hızlandırabilir; riski, öne çıkarılan seçeneğin gerçekten çoğunluğun ihtiyacına uymamasıdır; bu durumda ağırlık seçimi değil yalnızca tıklamayı yönlendirmiş olur. Bu, `pricing.md`’deki plan sırası veya “en popüler” rozeti senaryolarından farklıdır: onlar fiyat planlarına özgüdür, bu senaryo fiyat içermeyen herhangi bir çoklu seçenek sunumuna uygulanır.
 

@@ -10,6 +10,10 @@ Yolculuk aşaması: fiyatın görüldüğü an. Hem abonelik fiyat sayfası hem 
 
 Değişken: Gösterilen fiyat planı sayısı · Fark: kaldır
 
+Etiket: id=pr-001 · mercek=Fiyat · düzey=fiyat · sektör=saas · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does showing fewer pricing plans raise revenue?
+
 Çok sayıda plan farklı ihtiyaçları karşılar ama seçim felcine yol açabilir ve ziyaretçiyi hiçbirini seçmemeye itebilir. Mevcut çok planlı sayfadan (A) en az seçilen planı kaldırmak (B) kararı hızlandırır ve karşılaştırma yükünü azaltır. Plan sayısını değiştirmek aynı zamanda hangi planın ortada kaldığını da değiştirir; bu, seçim dağılımını fiyattan bağımsız olarak kaydırır.
 
 **Test edilmesi gerekenler**
@@ -38,6 +42,10 @@ Değişken: Gösterilen fiyat planı sayısı · Fark: kaldır
 ## Planları karşılaştırma tablosunda mı, ayrı kartlarda mı sunmalı?
 
 Değişken: Plan sunum biçimi · Fark: değiştir
+
+Etiket: id=pr-002 · mercek=Netlik · düzey=görsel · sektör=saas · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should plans be shown in a comparison table or on separate cards?
 
 Karşılaştırma tablosu farkları satır satır görünür kılar ve ayrıntılı değerlendirme yapan ziyaretçiye hitap eder. Ayrı kartlar her planı kendi başına bir teklif gibi sunar, hızlı karar verdirir ama farkları gizler. Tablo aynı zamanda ucuz planda eksik olan her şeyi de görünür kılar; bu hem ikna edici hem caydırıcı olabilir.
 
@@ -68,6 +76,10 @@ Karşılaştırma tablosu farkları satır satır görünür kılar ve ayrıntı
 
 Değişken: Fiyatın sayfadaki sırası · Fark: taşı
 
+Etiket: id=pr-003 · mercek=Fiyat · düzey=görsel · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Lead with the price or show it after the benefits: which works better?
+
 Fiyatı erken göstermek beklentiyi netleştirir ve bütçesi uymayan ziyaretçinin vaktini almaz. Faydayı önce anlatmak, fiyat görüldüğünde algılanan değeri yükseltir. Erken fiyat pahalı algılanan üründe kayıp yaratabilir; geç fiyat ise güvensizlik ve “fiyatı gizliyorlar” hissi doğurabilir.
 
 **Test edilmesi gerekenler**
@@ -96,6 +108,10 @@ Fiyatı erken göstermek beklentiyi netleştirir ve bütçesi uymayan ziyaretçi
 ## Abonelik fiyatını aylık birime bölerek göstermek işe yarar mı?
 
 Değişken: Abonelik fiyatının gösterim birimi · Fark: değiştir
+
+Etiket: id=pr-004 · mercek=Fiyat · düzey=bilgi · sektör=saas · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does showing a subscription price as a monthly amount pay off?
 
 Yıllık bir tutarı aylık karşılığıyla göstermek rakamı küçültür ve giriş engelini düşürür. Buna karşılık toplam taahhüdü belirsizleştirir, kullanıcı ödeme anında beklemediği bir tutarla karşılaşabilir ve bu iptal ile itiraza dönüşebilir. Belirleyici olan, toplam tutarın aynı ekranda ne kadar net durduğudur.
 
@@ -126,6 +142,10 @@ Yıllık bir tutarı aylık karşılığıyla göstermek rakamı küçültür ve
 
 Değişken: Paket kartındaki birim fiyat · Fark: ekle
 
+Etiket: id=pr-005 · mercek=Fiyat · düzey=bilgi · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does showing a unit price make comparison easier and raise revenue?
+
 Birim başına fiyat (kilogram, adet, kullanıcı, ay) farklı boyuttaki paketleri karşılaştırılabilir kılar ve büyük paketin avantajını görünür yapar. Riski: birim fiyat küçük paketi pahalı gösterir ve ziyaretçiyi bütçesini aşan bir pakete iter; ayrıca fiyat alanını kalabalıklaştırıp asıl tutarın okunmasını zorlaştırabilir.
 
 **Test edilmesi gerekenler**
@@ -154,6 +174,10 @@ Birim başına fiyat (kilogram, adet, kullanıcı, ay) farklı boyuttaki paketle
 ## Ödemenin tek seferlik olduğunu açıkça yazmak dönüşümü artırır mı?
 
 Değişken: Tek seferlik ödeme ifadesi · Fark: ekle
+
+Etiket: id=pr-006 · mercek=Güven · düzey=metin · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does stating clearly that the payment is one-off raise conversion?
 
 Abonelik yorgunluğu yaşayan kullanıcı, her ödemenin tekrarlayacağını varsayabilir. “Tek seferlik ödeme, otomatik yenileme yok” gibi bir ifade bu tereddüdü kaldırabilir. Karşı tarafta: bu ifade abonelik seçeneğini de akla getirip karşılaştırma yükü yaratabilir, ya da tekrar satın alma ihtimalini zayıflatabilir.
 
@@ -184,6 +208,10 @@ Abonelik yorgunluğu yaşayan kullanıcı, her ödemenin tekrarlayacağını var
 
 Değişken: Fiyatta verginin gösterim şekli · Fark: değiştir
 
+Etiket: id=pr-007 · mercek=Fiyat · düzey=bilgi · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should prices be shown with tax included or excluded?
+
 Vergi hariç fiyat rakamı küçük gösterir ve kurumsal alıcının zaten hariç düşündüğü pazarlarda doğaldır. Vergi dahil fiyat ise ödenecek gerçek tutarı verir ve ödeme adımında sürpriz yaşatmaz. Bu tercih büyük ölçüde pazara ve alıcı tipine bağlıdır; birçok pazarda ise tüketiciye dahil fiyat göstermek zorunludur.
 
 **Test edilmesi gerekenler**
@@ -212,6 +240,10 @@ Vergi hariç fiyat rakamı küçük gösterir ve kurumsal alıcının zaten hari
 ## Pakete dahil olanların parasal değerini göstermek algılanan değeri artırır mı?
 
 Değişken: Paket içeriğinin parasal değer gösterimi · Fark: ekle
+
+Etiket: id=pr-008 · mercek=Fiyat · düzey=bilgi · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does showing the money value of what the package includes raise perceived value?
 
 Fiyatın yanında “içindekilerin toplam değeri” göstermek alınan şeyin büyüklüğünü somutlaştırır. Riski: karşılaştırma değeri gerçekçi değilse güven kaybı yaratır, ayrıca şişirilmiş referans değer bazı pazarlarda yanıltıcı fiyat gösterimi sayılır. Değer iddiası doğrulanabilir olmalıdır.
 
@@ -242,6 +274,10 @@ Fiyatın yanında “içindekilerin toplam değeri” göstermek alınan şeyin 
 
 Değişken: Çekici-alternatif üçüncü plan · Fark: ekle
 
+Etiket: id=pr-009 · mercek=Fiyat · düzey=fiyat · sektör=saas · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does adding a decoy third plan raise the share choosing the middle plan?
+
 İki plan arasında seçim yapmak zordur çünkü karşılaştırılacak ortak bir ölçüt yoktur. Orta plana yakın fiyatlı ama daha az içerikli üçüncü bir plan eklemek, orta planı “açık ara daha iyi seçenek” gibi gösterebilir; üçüncü planın kendisi neredeyse hiç seçilmez, işlevi karşılaştırma çıpası olmaktır. Bu, yeni bir avantaj eklemez; var olan iki planın algısını üçüncüsüne göre değiştirir.
 
 **Test edilmesi gerekenler**
@@ -271,6 +307,10 @@ Değişken: Çekici-alternatif üçüncü plan · Fark: ekle
 
 Değişken: Fiyat planlarının sıralama yönü · Fark: değiştir
 
+Etiket: id=pr-010 · mercek=Fiyat · düzey=görsel · sektör=saas · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should pricing plans run from cheapest to most expensive or the other way round?
+
 Planların soldan sağa hangi sırayla dizildiği, karşılaştırma sırasında hangi planın çapa görevi göreceğini belirler. Pahalı plan önce görünürse sonraki planlar daha uygun hissettirebilir; ucuz plan önce görünürse ziyaretçi bütçe eksenli düşünmeye başlar. Bu, plan sayısından ve tablo/kart biçiminden ayrı bir değişkendir; sıralama, ne gösterildiğini değil hangi sırayla görüldüğünü test eder.
 
 **Test edilmesi gerekenler**
@@ -299,6 +339,10 @@ Planların soldan sağa hangi sırayla dizildiği, karşılaştırma sırasında
 ## Fiyattan önce yüksek bir referans sayı göstermek algılanan değeri artırır mı?
 
 Değişken: Fiyattan önce gösterilen referans sayı · Fark: ekle
+
+Etiket: id=pr-011 · mercek=Fiyat · düzey=bilgi · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does showing a high reference number before the price raise perceived value?
 
 Bir fiyat, yanında yüksek bir referans sayı (“piyasa ortalaması ₺X”, “benzer hizmetler ₺Y’ye kadar”) olmadan gösterildiğinde ziyaretçi değeri tek başına yargılar; referans sayı önce görüldüğünde asıl fiyat ona göre daha uygun hissedilebilir. Bu, üstü çizili “eski fiyat” göstermekten farklıdır; burada referans sizin geçmiş fiyatınız değil, dış bir karşılaştırma noktasıdır ve doğruluğu ayrıca doğrulanmalıdır.
 

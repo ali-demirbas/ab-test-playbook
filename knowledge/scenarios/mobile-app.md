@@ -8,6 +8,10 @@ Yolculuk aşaması: yüklü uygulamanın içindeki akışlar (onboarding, izinle
 
 Değişken: Öncelikli servis ikonunun boyutu · Fark: değiştir
 
+Etiket: id=ma-001 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does enlarging service icons change behavior?
+
 Tüm servisleri eşit boyutta göstermek nötr bir deneyim yaratır. Öncelikli servisleri büyütmek o servislere yönelmeyi artırabilir ama diğerlerini gölgeleyebilir.
 
 **Test edilmesi gerekenler**
@@ -36,6 +40,10 @@ Tüm servisleri eşit boyutta göstermek nötr bir deneyim yaratır. Öncelikli 
 ## Kayıt duvarı sert mi, yumuşak mı olmalı?
 
 Değişken: Kayıt duvarının sertliği · Fark: değiştir
+
+Etiket: id=ma-002 · mercek=Zamanlama · düzey=akış · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Should the sign-up wall be hard or soft?
 
 Uygulamayı açar açmaz üye olmayı zorunlu tutmak (sert duvar), kullanıcının değeri görmeden ayrılmasına yol açabilir. Önce denemesine izin vermek (yumuşak duvar) ilk izlenimi artırabilir ama kayıt oranını düşürebilir.
 
@@ -66,6 +74,10 @@ Uygulamayı açar açmaz üye olmayı zorunlu tutmak (sert duvar), kullanıcın�
 
 Değişken: Push izninin istendiği an · Fark: değiştir
 
+Etiket: id=ma-003 · mercek=Zamanlama · düzey=onboarding · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: When should push permission be requested: at launch or after the first value?
+
 İzin isteğini açılışta göstermek çoğu kullanıcıdan “İzin Verme” yanıtı alır ve o izni bir daha kolay isteyemezsiniz. İlk değeri gördükten sonra sormak kabul oranını yükseltebilir. Bu testte değişen tek şey iznin istendiği andır; akışın geri kalanı iki kolda aynıdır. “İzin istemeden önce nedenini anlatan bir ekran göstermek işe yarar mı?” senaryosundan farkı: orada zamanlama sabit tutulup sistem penceresinden önce açıklama ekranı eklenip eklenmemesi test edilir, burada ise ekran yapısı sabit, yalnızca iznin istendiği an değişir.
 
 **Test edilmesi gerekenler**
@@ -94,6 +106,10 @@ Değişken: Push izninin istendiği an · Fark: değiştir
 ## Yükleme ekranı mesajı satışı etkiler mi?
 
 Değişken: Yükleme ekranındaki kampanya mesajı · Fark: ekle
+
+Etiket: id=ma-004 · mercek=Fiyat · düzey=bilgi · sektör=e-ticaret · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does a message on the loading screen affect sales?
 
 Yükleme ekranları çoğunlukla boş geçer. Bu anlarda kampanya veya avantaj bilgisi göstermek dikkati çekebilir ve bekleme algısını yumuşatabilir.
 
@@ -124,6 +140,10 @@ Yükleme ekranları çoğunlukla boş geçer. Bu anlarda kampanya veya avantaj b
 
 Değişken: İlk kullanım arayüz ipuçları · Fark: ekle
 
+Etiket: id=ma-005 · mercek=Netlik · düzey=onboarding · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does showing interface tips on first use pay off?
+
 Uygulamanın üstüne yerleşen kısa baloncuklar, bulunması zor işlevleri ilk kullanımda tanıtır. Riski: kullanıcı henüz ne aradığını bilmeden gösterilen ipucu ezberlenmez, akışı keser ve atlanır; ayrıca ipuçları ilk deneyimi bir eğitim seansına çevirip kullanıcıyı ürünle temas etmeden yorabilir.
 
 **Test edilmesi gerekenler**
@@ -152,6 +172,10 @@ Uygulamanın üstüne yerleşen kısa baloncuklar, bulunması zor işlevleri ilk
 ## İzin istemeden önce nedenini anlatan bir ekran göstermek işe yarar mı?
 
 Değişken: İzin öncesi açıklama ekranı · Fark: ekle
+
+Etiket: id=ma-006 · mercek=Güven · düzey=onboarding · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does a screen that explains why, shown before a permission request, pay off?
 
 Sistem izin penceresi tek seferliktir ve reddedildiğinde geri dönmek zordur. Öncesinde neden gerektiğini anlatan bir ekran göstermek, izni yalnızca ikna olan kullanıcıya sordurur ve sistem penceresini boşa harcamamayı sağlar. Karşı tarafta: fazladan bir adım eklenir ve bazı kullanıcı bu ekranda da düşer. “Push izni hangi anda istenmeli: açılışta mı, ilk değerden sonra mı?” senaryosundan farkı: orada yalnızca iznin istendiği an değişir, burada an sabit tutulup sistem penceresinden önce açıklama ekranının varlığı test edilir.
 
@@ -182,6 +206,10 @@ Sistem izin penceresi tek seferliktir ve reddedildiğinde geri dönmek zordur. �
 
 Değişken: Sonraki adım önerisinin kişiselleştirilmesi · Fark: değiştir
 
+Etiket: id=ma-007 · mercek=Uygunluk · düzey=kişiselleştirme · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does suggesting the next step based on the user’s status pay off?
+
 Herkese aynı “sonraki adım” yerine kullanıcının nerede kaldığına göre öneri sunmak (profilini tamamla, ilk siparişini ver, uygulamayı indir) ilerlemeyi hızlandırabilir. Riski: durum tespiti yanlışsa alakasız bir öneri gösterilir, öneri mantığı bakım yükü yaratır ve kullanıcı kendi önceliğini seçme imkânını kaybeder.
 
 **Test edilmesi gerekenler**
@@ -210,6 +238,10 @@ Herkese aynı “sonraki adım” yerine kullanıcının nerede kaldığına gö
 ## Profil tamamlama yüzdesi göstermek eksik alanları doldurtuyor mu?
 
 Değişken: Profil tamamlama göstergesi · Fark: ekle
+
+Etiket: id=ma-008 · mercek=Netlik · düzey=onboarding · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does showing a profile completion percentage get missing fields filled in?
 
 Görünürde biten ama tam dolu olmayan bir gösterge (“Profiliniz %70 tamamlandı”) bitmemiş bir işi akılda tutar ve kapatma isteği yaratır; bu, ilk kayıt formunun kendisindeki adım-adım ilerleme çubuğundan (bkz. `cart-checkout.md`) farklı bir mekanizmadır: orada amaç akışta nerede olunduğunu göstermek, burada amaç kayıttan sonra kalan, isteğe bağlı alanlara geri döndürmektir.
 

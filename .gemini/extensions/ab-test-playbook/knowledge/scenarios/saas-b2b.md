@@ -8,6 +8,10 @@ Yolculuk aşaması: lead üretimi, fiyatlandırma sayfası, deneme/abonelik dön
 
 Değişken: Deneme CTA’sının metni · Fark: değiştir
 
+Etiket: id=sb-001 · mercek=Netlik · düzey=metin · sektör=saas · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does the wording of the trial CTA change conversion?
+
 Aynı işlevi yapan CTA’nın kelime seçimi (kısa/soyut vs. somut/süre belirten) tıklama isteğini değiştirebilir. “Ücretsiz Dene” nötr ve kısa; “14 Gün Ücretsiz Başla” süreyi netleştirip taahhüt hissini azaltabilir ama daha uzun ve dikkat dağıtıcı da olabilir.
 
 **Test edilmesi gerekenler**
@@ -36,6 +40,10 @@ Aynı işlevi yapan CTA’nın kelime seçimi (kısa/soyut vs. somut/süre belir
 ## “Ücretsiz başla”nın yanına ikinci bir “Demo iste” CTA’sı eklemek daha çok fırsat getiriyor mu?
 
 Değişken: İkincil “Demo iste” CTA’sı · Fark: ekle
+
+Etiket: id=sb-002 · mercek=Uygunluk · düzey=akış · sektör=saas,b2b · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does adding a second “Request a demo” CTA next to “Start free” bring more opportunities?
 
 Tek CTA basit ve nettir ama farklı alım hazırlığındaki ziyaretçiyi tek kalıba sokar. İkinci bir “Demo iste” seçeneği eklemek kurumsal alıcıyı kaybetmeden self-servis kullanıcıyı da tutabilir.
 
@@ -66,6 +74,10 @@ Tek CTA basit ve nettir ama farklı alım hazırlığındaki ziyaretçiyi tek ka
 
 Değişken: Varsayılan plan periyodu · Fark: değiştir
 
+Etiket: id=sb-003 · mercek=Fiyat · düzey=fiyat · sektör=saas · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does making the annual plan the default raise conversion?
+
 Yıllık planın seçili gelmesi indirim algısını öne çıkarır ama kullanıcıyı daha büyük bir taahhüde iter. Dönüşüm ile güven arasındaki denge ölçülmelidir.
 
 **Test edilmesi gerekenler**
@@ -94,6 +106,10 @@ Yıllık planın seçili gelmesi indirim algısını öne çıkarır ama kullan�
 ## Form alan sayısını azaltmak talep sayısını artırır mı?
 
 Değişken: Talep formundaki alan sayısı · Fark: kaldır
+
+Etiket: id=sb-004 · mercek=Çaba · düzey=form · sektör=b2b · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does cutting the number of form fields raise requests?
 
 Her ek form alanı bir sürtünme noktasıdır. Alan sayısını azaltmak talep hacmini yükseltebilir ama satış ekibine daha az bilgi bırakır. Hacim ile lead kalitesi arasındaki denge ölçülmelidir. “Adres formundaki alan sayısını azaltmak tamamlamayı artırır mı?” (`cart-checkout.md`) senaryosundan farkı: burada form bir satış talebi formudur; kazananı gönderim hacmi değil, satış ekibinin kabul ettiği nitelikli fırsat belirler (birincil Nitelikli Fırsat Oranı).
 
@@ -124,6 +140,10 @@ Her ek form alanı bir sürtünme noktasıdır. Alan sayısını azaltmak talep 
 
 Değişken: Yükseltme uyarısının gösterilme anı · Fark: değiştir
 
+Etiket: id=sb-005 · mercek=Zamanlama · düzey=akış · sektör=saas · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: When should the paywall or usage-limit prompt appear?
+
 Yükseltme çağrısını erken göstermek kullanıcıyı değeri görmeden karşılar. Limite gerçekten değince göstermek daha ikna edici olabilir ama iş akışını böler.
 
 **Test edilmesi gerekenler**
@@ -153,6 +173,10 @@ Yükseltme çağrısını erken göstermek kullanıcıyı değeri görmeden kar�
 
 Değişken: “En popüler” rozetinin bulunduğu plan · Fark: taşı
 
+Etiket: id=sb-006 · mercek=Fiyat · düzey=görsel · sektör=saas · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should the “Most popular” badge sit on the middle plan or the top plan?
+
 Fiyatlandırma sayfasında bir planı öne çıkarmak seçim davranışını yönlendirir. Rozetin ortadaki planda mı, üst planda mı durduğu hem dönüşümü hem ortalama geliri değiştirebilir.
 
 **Test edilmesi gerekenler**
@@ -181,6 +205,10 @@ Fiyatlandırma sayfasında bir planı öne çıkarmak seçim davranışını yö
 ## Enterprise fiyatını göstermek mi, gizlemek mi?
 
 Değişken: Kurumsal plan fiyatının görünürlüğü · Fark: kaldır
+
+Etiket: id=sb-007 · mercek=Fiyat · düzey=fiyat · sektör=saas,b2b · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Show the enterprise price or hide it?
 
 Kurumsal planın fiyatını gizlemek satış ekibine görüşme kazandırır ama alıcıyı elemeye de yol açar. Lead kalitesi ile hacim arasındaki denge ölçülmelidir.
 
@@ -213,6 +241,10 @@ Kurumsal planın fiyatını gizlemek satış ekibine görüşme kazandırır ama
 
 Değişken: Deneme süresi · Fark: değiştir
 
+Etiket: id=sb-008 · mercek=Zamanlama · düzey=teklif · sektör=saas · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Should the trial last 7, 14 or 30 days?
+
 Kısa deneme aciliyet yaratır ama kullanıcı değeri görmeden biter. Uzun deneme değeri gösterir ama karar anını erteler. Optimum sürenin ölçülmesi gerekir.
 
 **Test edilmesi gerekenler**
@@ -241,6 +273,10 @@ Kısa deneme aciliyet yaratır ama kullanıcı değeri görmeden biter. Uzun den
 ## Çok adımlı form mu, tek sayfa form mu daha çok talep getiriyor?
 
 Değişken: Talep formunun adım yapısı · Fark: değiştir
+
+Etiket: id=sb-009 · mercek=Çaba · düzey=akış · sektör=b2b · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Multi-step form or single-page form: which brings more requests?
 
 Tek sayfa form tüm alanları baştan gösterir; ne kadar iş olduğu açıktır ama yoğun görünür. Çok adımlı form küçük taahhütlerle ilerletir, ilk adımı bitirenin devam etme olasılığı yüksektir. Bu senaryoyu kurmadan önce şunu kontrol edin: form tek ekrana sığacak şekilde yoğunlaştırılabiliyorsa (ilişkili alanlar yan yana, gereksiz alan çıkarılmış, dikey boşluk azaltılmış) önce onu test edin; adım eklemek her adımda yeni bir terk noktası açar ve çoğu formda tek sayfa kalmak daha iyi çalışır. “Tek sayfa checkout mu, çok adımlı checkout mu?” (`cart-checkout.md`) senaryosundan farkı: burada form bir satış talebi formudur; gönderim kolaylaşırken gelen talebin niteliği de korunmalıdır (guardrail Nitelikli Fırsat Oranı).
 
@@ -271,6 +307,10 @@ Tek sayfa form tüm alanları baştan gösterir; ne kadar iş olduğu açıktır
 
 Değişken: Kurumsal e-posta zorunluluğu · Fark: değiştir
 
+Etiket: id=sb-010 · mercek=Uygunluk · düzey=form · sektör=b2b · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does requiring a work email decide lead quality or lead volume?
+
 Kurumsal e-posta zorunluluğu spam ve kişisel hesapları eler, satış ekibine daha nitelikli talep bırakır. Ama gerçek bir alıcıyı da kurumsal e-postası olmadığı için kapıda bırakabilir.
 
 **Test edilmesi gerekenler**
@@ -299,6 +339,10 @@ Kurumsal e-posta zorunluluğu spam ve kişisel hesapları eler, satış ekibine 
 ## Deneme süresi bitmeden gönderilen mesajı kayıp çerçevesiyle mi, kazanım çerçevesiyle mi yazmalı?
 
 Değişken: Deneme bitiş mesajının çerçevesi · Fark: değiştir
+
+Etiket: id=sb-011 · mercek=Zamanlama · düzey=elde-tutma · sektör=saas · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Should the message sent before the trial ends use a loss frame or a gain frame?
 
 Aynı bilgi iki farklı çerçeveyle verilebilir: “Yükseltmezsen 3 gün sonra [X özelliğine] erişimini kaybedeceksin” (kayıp) ya da “Şimdi yükselt, [X özelliğini] kullanmaya devam et” (kazanım). Kayıp çerçevesi genelde kazanım çerçevesinden daha güçlü bir davranışsal tepki yaratır, çünkü insanlar eşdeğer bir kaybı bir kazançtan daha ağır hisseder; ama sürekli kayıp diliyle konuşmak markayı baskıcı hissettirebilir.
 
@@ -329,6 +373,10 @@ Aynı bilgi iki farklı çerçeveyle verilebilir: “Yükseltmezsen 3 gün sonra
 
 Değişken: Alanın yanındaki gerekçe açıklaması · Fark: ekle
 
+Etiket: id=sb-012 · mercek=Güven · düzey=güven · sektör=b2b · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does adding a “why we ask” note next to a field get a field with an unclear purpose filled in?
+
 Bir lead formundaki “şirket büyüklüğü” veya “yıllık bütçe” gibi bir alan, kullanıcıya neden sorulduğu açık değilse doldurmayı geciktirir veya alanın boş bırakılmasına yol açar. Bu, `forms-signup.md`’deki gizlilik güvencesinden farklı bir tereddüttür: orada endişe “bu bilgi paylaşılır mı”, burada “bu bilgi neden isteniyor”dur. Alanın hemen yanına kısa bir gerekçe eklemek (“Şirket büyüklüğünüzü size doğru planı önerebilmek için soruyoruz”) bu belirsizliği giderebilir, ama her alana gerekçe eklemek formu ağırlaştırır ve gerçekten önemli bir gerekçenin fark edilmesini zorlaştırır.
 
 **Test edilmesi gerekenler**
@@ -357,6 +405,10 @@ Bir lead formundaki “şirket büyüklüğü” veya “yıllık bütçe” gib
 ## Satış sayfasını tek sütunlu mu, ikinci bir sütunla (yan bağlantılar/ek bilgi) mi kurmalı?
 
 Değişken: Satış sayfasının sütun yapısı · Fark: değiştir
+
+Etiket: id=sb-013 · mercek=Netlik · düzey=görsel · sektör=genel · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should the sales page have one column or a second column (side links, extra information)?
 
 Bu senaryo `forms-signup.md`’deki form alanı sütun düzeninden farklıdır; orası formun içindeki alanların yerleşimini, bu senaryo sayfanın genel iskeletini (ana içerik + varsa yan sütun) ele alır. İkinci bir sütun (ilgili bağlantılar, ek sosyal kanıt, site içi arama) sayfaya ek bilgi katar ama gözü ana anlatıdan uzaklaştırıp dikkati bölebilir. Tek sütuna indirmek doğrusal, kesintisiz bir okuma akışı kurar; riski, yan sütunda duran bilgiye erişimin kaybolmasıdır.
 

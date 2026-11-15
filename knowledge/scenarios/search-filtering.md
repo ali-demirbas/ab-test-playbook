@@ -8,6 +8,10 @@ Yolculuk aşaması: kullanıcı ne istediğini biliyor veya keşfediyor; arama k
 
 Değişken: Filtre uygulama biçimi · Fark: değiştir
 
+Etiket: id=sf-001 · mercek=Çaba · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should filters apply instantly or all at once?
+
 Anında filtreleme hızlı geri bildirim verir; toplu filtreleme daha kontrollü bir deneyim sunar. Hangisinin keşif ve dönüşümde daha iyi çalıştığı ölçülmelidir.
 
 **Test edilmesi gerekenler**
@@ -36,6 +40,10 @@ Anında filtreleme hızlı geri bildirim verir; toplu filtreleme daha kontrollü
 ## Arama çubuğu ne kadar görünür olmalı?
 
 Değişken: Arama alanının görünürlük düzeyi · Fark: değiştir
+
+Etiket: id=sf-002 · mercek=Çaba · düzey=gezinme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: How visible should the search bar be?
 
 Arama çubuğunun konumu ve görünürlüğü, kullanıcının ürün keşif davranışını değiştirebilir. Bunun dönüşüme yansıyıp yansımadığı ölçülmelidir.
 
@@ -66,6 +74,10 @@ Arama çubuğunun konumu ve görünürlüğü, kullanıcının ürün keşif dav
 
 Değişken: Önceki arama önerileri · Fark: kaldır
 
+Etiket: id=sf-003 · mercek=Çaba · düzey=gezinme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does removing past-search suggestions from the search box affect conversion?
+
 Arama kutusu açıldığında önceki aramaları varsayılan öneri olarak listelemek aramaya başlamayı hızlandırır ama kullanıcıyı eski aramalarına geri çeker. Bu varsayılan öneri listesini kaldırmak (geçmişe erişim ayrı bir bağlantıda kalır) keşif sürecini ve karar hızını değiştirebilir.
 
 **Test edilmesi gerekenler**
@@ -94,6 +106,10 @@ Arama kutusu açıldığında önceki aramaları varsayılan öneri olarak liste
 ## Sıfır sonuç sayfası kullanıcıyı elde tutuyor mu?
 
 Değişken: Sıfır sonuç ekranındaki öneri blokları · Fark: ekle
+
+Etiket: id=sf-004 · mercek=Çaba · düzey=gezinme · sektör=genel · pazar=global · emek=yüksek · durum=güncel · tarih=2026-11
+
+EN: Does the zero-results page keep users from leaving?
 
 Sonuç bulunamayan arama, terk oranı en yüksek ekranlardan biridir. Boş bir ekran yerine yazım önerisi, popüler kategoriler ve benzer ürünler sunmak bu trafiği kurtarabilir.
 
@@ -124,6 +140,10 @@ Sonuç bulunamayan arama, terk oranı en yüksek ekranlardan biridir. Boş bir e
 
 Değişken: Arama sonuçlarının varsayılan sıralaması · Fark: değiştir
 
+Etiket: id=sf-005 · mercek=Uygunluk · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: What should the default sort order of search results be?
+
 Varsayılan sıralama, kullanıcıların büyük çoğunluğunun gördüğü tek sıralamadır. İlgi düzeyi, çok satan ve fiyat sıralamaları farklı kullanıcı gruplarına hizmet eder ve marj üzerinde farklı etki yaratır.
 
 **Test edilmesi gerekenler**
@@ -152,6 +172,10 @@ Varsayılan sıralama, kullanıcıların büyük çoğunluğunun gördüğü tek
 ## Sticky menü deneyimi iyileştiriyor mu?
 
 Değişken: Menünün kaydırmada sabit kalması · Fark: değiştir
+
+Etiket: id=sf-006 · mercek=Çaba · düzey=gezinme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does a sticky menu improve the experience?
 
 Menünün sabit kalması sayfa içi gezinme hızını artırabilir, ancak ekran alanı kaplayarak rahatsız da edebilir.
 
@@ -182,6 +206,10 @@ Menünün sabit kalması sayfa içi gezinme hızını artırabilir, ancak ekran 
 
 Değişken: Ana menünün yapısı · Fark: değiştir
 
+Etiket: id=sf-007 · mercek=Netlik · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Mega menu or horizontal menu?
+
 Mega menü mü, sade yatay menü mü daha iyi gezinme sunuyor? Yapıdaki fark, içerik keşif davranışını ciddi biçimde değiştirebilir.
 
 **Test edilmesi gerekenler**
@@ -210,6 +238,10 @@ Mega menü mü, sade yatay menü mü daha iyi gezinme sunuyor? Yapıdaki fark, i
 ## Menü sadeleştirmesi deneyimi etkiler mi?
 
 Değişken: Menüdeki alt başlık sayısı · Fark: kaldır
+
+Etiket: id=sf-008 · mercek=Netlik · düzey=gezinme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does simplifying the menu affect the experience?
 
 Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir. Daha az karmaşık menü odaklanmayı kolaylaştırabilir.
 
@@ -240,6 +272,10 @@ Menüyü sadeleştirmek navigasyon hızını ve kategori keşfini etkileyebilir.
 
 Değişken: İndirim oranı filtresi · Fark: ekle
 
+Etiket: id=sf-009 · mercek=Fiyat · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: How does a discount filter affect behavior?
+
 İndirim yüzdesine göre filtreleme sunmak ürün keşfini hızlandırabilir ve fiyat hassas kullanıcıyı hedefe daha çabuk ulaştırabilir.
 
 **Test edilmesi gerekenler**
@@ -268,6 +304,10 @@ Değişken: İndirim oranı filtresi · Fark: ekle
 ## Filtreler kaydırma boyunca görünür kalmalı mı?
 
 Değişken: Filtre panelinin kaydırmada sabit kalması · Fark: değiştir
+
+Etiket: id=sf-010 · mercek=Çaba · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Should filters stay visible while scrolling?
 
 Filtre panelinin sayfa kaydırılırken ekranda kalması, listenin ortasında fikir değiştiren kullanıcının yukarı dönmesini gerektirmez. Bedeli: panel sürekli yer kaplar, ürünlere kalan alan daralır ve mobilde ekranın önemli bir kısmını yiyebilir.
 
@@ -298,6 +338,10 @@ Filtre panelinin sayfa kaydırılırken ekranda kalması, listenin ortasında fi
 
 Değişken: Filtrelerin görünürlüğü · Fark: değiştir
 
+Etiket: id=sf-011 · mercek=Netlik · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Show filters openly or behind a button: which works better?
+
 Filtreleri doğrudan görünür kılmak varlıklarını hatırlatır ve kullanımı artırır. Düğme arkasına almak ise ürünlere daha çok yer bırakır ve sayfayı sadeleştirir; buna karşılık filtrenin varlığından habersiz kullanıcı hiç filtrelemeden gezinir ve doğru ürünü bulamaz.
 
 **Test edilmesi gerekenler**
@@ -327,6 +371,10 @@ Filtreleri doğrudan görünür kılmak varlıklarını hatırlatır ve kullanı
 
 Değişken: Aranan kelimenin sonuçlarda vurgulanması · Fark: ekle
 
+Etiket: id=sf-012 · mercek=Netlik · düzey=gezinme · sektör=genel · pazar=global · emek=düşük · durum=güncel · tarih=2026-11
+
+EN: Does highlighting the search term in the results pay off?
+
 Aranan kelimenin sonuç başlıklarında işaretlenmesi eşleşmenin nerede olduğunu gösterir ve doğru sonuca ulaşmayı hızlandırır. Riski: vurgu görsel gürültü yaratır, çok sayıda eşleşme olduğunda başlık okunmaz hâle gelir ve alakasız bir eşleşme vurgulandığında arama kalitesizmiş gibi görünür.
 
 **Test edilmesi gerekenler**
@@ -355,6 +403,10 @@ Aranan kelimenin sonuç başlıklarında işaretlenmesi eşleşmenin nerede oldu
 ## Filtreleri seçenek listesi yerine cümle hâlinde sormak işe yarar mı?
 
 Değişken: Filtrelerin sorulma biçimi · Fark: değiştir
+
+Etiket: id=sf-013 · mercek=Uygunluk · düzey=gezinme · sektör=e-ticaret · pazar=global · emek=orta · durum=güncel · tarih=2026-11
+
+EN: Does asking filters as a sentence instead of option lists pay off?
 
 Filtreleri “kimin için, hangi bütçeyle” gibi bir soru akışına çevirmek, ne aradığını tam bilmeyen kullanıcıyı yönlendirir. Karşı tarafta: ne aradığını bilen kullanıcı için bu fazladan adımdır, akış onu yavaşlatır ve klasik filtreye göre daha az hassas sonuç verir.
 
